@@ -1,12 +1,10 @@
 import React, { createContext, useContext, useState, useEffect } from 'react'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import { useKV } from '@github/spark/hooks'
-
-interface User {
-  id: string
-  email: string
-  name: string
-  image?: string | null
-}
+import { tokenUtils } from '../lib/api-config'
+import { useAuthProfile, useLogin, useRegister, useLogout } from '../hooks'
+import type { User } from '../types'
 
 interface AuthContextType {
   user: User | null
@@ -18,63 +16,81 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
 
-export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const [user, setUser] = useKV('current-user', null)
-  const [isLoading, setIsLoading] = useState(true)
+// Create React Query client
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 5 * 60 * 1000, // 5 minutes
+      gcTime: 10 * 60 * 1000, // 10 minutes
+      retry: (failureCount, error: any) => {
+        // Don't retry on 401/403 errors
+        if (error?.status === 401 || error?.status === 403) {
+          return false
+        }
+        return failureCount < 2
+      },
+    },
+    mutations: {
+      retry: 1,
+    },
+  },
+})
 
+// Auth provider component that uses React Query
+function AuthProviderContent({ children }: { children: React.ReactNode }) {
+  const [token, setToken] = useKV('auth-token', null)
+  const [isInitialized, setIsInitialized] = useState(false)
+
+  // Sync token with API client
   useEffect(() => {
-    // Check for existing session on mount
-    setIsLoading(false)
-  }, [])
+    if (token) {
+      tokenUtils.setToken(token)
+    } else {
+      tokenUtils.removeToken()
+    }
+    setIsInitialized(true)
+  }, [token])
+
+  const { 
+    data: user, 
+    isLoading: isProfileLoading,
+    error: profileError 
+  } = useAuthProfile()
+
+  const loginMutation = useLogin()
+  const registerMutation = useRegister()
+  const logoutMutation = useLogout()
+
+  // Clear token if profile fetch fails with auth error
+  useEffect(() => {
+    if (profileError && (profileError as any)?.status === 401) {
+      setToken(null)
+    }
+  }, [profileError, setToken])
 
   const login = async (email: string, password: string) => {
-    setIsLoading(true)
-    try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000))
-      
-      const user: User = {
-        id: 'user-' + Date.now(),
-        email,
-        name: email.split('@')[0],
-        image: null
-      }
-      
-      setUser(user)
-    } catch (error) {
-      throw new Error('Login failed')
-    } finally {
-      setIsLoading(false)
-    }
+    const response = await loginMutation.mutateAsync({ email, password })
+    setToken(response.access_token)
   }
 
   const register = async (email: string, password: string, name: string) => {
-    setIsLoading(true)
-    try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000))
-      
-      const user: User = {
-        id: 'user-' + Date.now(),
-        email,
-        name,
-        image: null
-      }
-      
-      setUser(user)
-    } catch (error) {
-      throw new Error('Registration failed')
-    } finally {
-      setIsLoading(false)
-    }
+    const response = await registerMutation.mutateAsync({ email, password, name })
+    setToken(response.access_token)
   }
 
   const logout = async () => {
-    setUser(null)
+    await logoutMutation.mutateAsync()
+    setToken(null)
   }
 
+  const isLoading = !isInitialized || 
+    (!!token && isProfileLoading) || 
+    loginMutation.isPending || 
+    registerMutation.isPending ||
+    logoutMutation.isPending
+
   const value: AuthContextType = {
-    user,
+    user: user || null,
     isLoading,
     login,
     register,
@@ -88,6 +104,17 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   )
 }
 
+export function AuthProvider({ children }: { children: React.ReactNode }) {
+  return (
+    <QueryClientProvider client={queryClient}>
+      <AuthProviderContent>
+        {children}
+      </AuthProviderContent>
+      <ReactQueryDevtools initialIsOpen={false} />
+    </QueryClientProvider>
+  )
+}
+
 export function useAuth() {
   const context = useContext(AuthContext)
   if (context === undefined) {
@@ -95,3 +122,6 @@ export function useAuth() {
   }
   return context
 }
+
+// Export query client for use in other hooks
+export { queryClient }

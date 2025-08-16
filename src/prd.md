@@ -1,129 +1,177 @@
-# AI Notes Mobile PWA - Product Requirements Document
+# AI Notes Frontend PRD
 
 ## Core Purpose & Success
 
-**Mission Statement**: A mobile-first PWA that provides intelligent note-taking with comprehensive offline capabilities and seamless synchronization.
+**Mission Statement**: Create a comprehensive, mobile-first PWA frontend that seamlessly integrates with the AI Notes backend to provide intelligent note-taking with offline capabilities and real-time AI assistance.
 
 **Success Indicators**: 
-- Smooth offline note creation and editing
-- Zero data loss during sync conflicts
-- Sub-200ms UI interactions on mobile devices
-- 90%+ offline functionality coverage
+- Complete API integration with 99%+ backend compatibility
+- Offline-first functionality with robust sync capabilities
+- Real-time AI chat interface with streaming responses
+- Mobile PWA performance with <3s load times
 
-**Experience Qualities**: Fast, Reliable, Intelligent
+**Experience Qualities**: Intelligent, Seamless, Responsive
 
 ## Project Classification & Approach
 
-**Complexity Level**: Complex Application with offline-first architecture
-**Primary User Activity**: Creating and managing notes with AI assistance
+**Complexity Level**: Complex Application with advanced functionality, real-time features, offline capabilities, and comprehensive backend integration.
+
+**Primary User Activity**: Creating, Managing, and Interacting with AI-enhanced content.
 
 ## Core Problem Analysis
 
-Users need to capture thoughts and ideas anywhere, anytime, even without internet connectivity. The app must provide a seamless experience across devices while maintaining data integrity and offering intelligent features.
+The existing backend provides a comprehensive AI-powered note-taking system, but lacks a complete frontend integration. Users need:
+- Seamless access to all backend features
+- Mobile-first experience with offline capabilities
+- Real-time AI assistance and chat interface
+- Robust data synchronization
+
+## Critical Path
+
+1. **Authentication Flow**: Login/Register → Token Management → User Profile
+2. **Core Notes Management**: Create/Edit/Delete Notes → Workspace Management → Search
+3. **AI Integration**: Real-time Chat → AI Suggestions → RAG Search
+4. **Offline Capabilities**: Service Worker → Local Storage → Sync Management
+5. **Advanced Features**: Collaboration → Sharing → Analytics
 
 ## Essential Features
 
-### Offline-First Architecture
-- **Service Worker**: Comprehensive caching strategy for app shell and data
-- **IndexedDB Storage**: Local note storage with sync queues
-- **Background Sync**: Automatic synchronization when connectivity returns
-- **Conflict Resolution**: Smart merging of conflicting changes
+### 1. Complete API Integration
+- **Functionality**: Full TypeScript integration with all backend endpoints
+- **Purpose**: Ensure 100% feature parity with backend capabilities
+- **Success Criteria**: All 40+ backend endpoints properly typed and accessible
 
-### Mobile-Optimized UI
-- **Touch-First Interface**: Large touch targets, gesture support
-- **Responsive Design**: Optimized for screens 320px-768px
-- **Progressive Enhancement**: Core functionality works without JavaScript
-- **Performance**: Sub-3s initial load, smooth 60fps animations
+### 2. Authentication System
+- **Functionality**: Email/password and OAuth (Google) authentication
+- **Purpose**: Secure access with multiple auth methods
+- **Success Criteria**: Persistent auth state with token refresh
 
-### Core Note Features
-- **Rich Text Editor**: Mobile-optimized with voice input support
-- **Voice Notes**: Speech-to-text with offline processing fallback
-- **Location Notes**: GPS tagging with offline capability
-- **Attachment Support**: Photos, documents with offline storage
+### 3. Notes Management
+- **Functionality**: CRUD operations with rich text editing
+- **Purpose**: Core note-taking functionality
+- **Success Criteria**: Real-time auto-save and version control
 
-### AI-Powered Features
-- **Smart Categorization**: Auto-categorize notes based on content
-- **Duplicate Detection**: Find and merge similar notes
-- **Related Notes**: Discover connections between notes
-- **Auto-Summaries**: Generate summaries for long notes
+### 4. AI Chat Interface
+- **Functionality**: Real-time streaming chat with note context
+- **Purpose**: Intelligent assistance and note enhancement
+- **Success Criteria**: <500ms response time with proper error handling
+
+### 5. Offline PWA
+- **Functionality**: Complete offline functionality with sync
+- **Purpose**: Mobile-first experience with reliability
+- **Success Criteria**: Works without internet, syncs seamlessly when online
+
+### 6. Mobile-First Design
+- **Functionality**: Touch-optimized interface with native-like UX
+- **Purpose**: Primary mobile experience
+- **Success Criteria**: Smooth interactions on all mobile devices
 
 ## Design Direction
 
 ### Visual Tone & Identity
-**Emotional Response**: Calm confidence and professional efficiency
-**Design Personality**: Clean, focused, and subtly sophisticated
-**Visual Metaphors**: Digital notebook with smart assistance
-**Simplicity Spectrum**: Minimal interface that reveals complexity progressively
+**Emotional Response**: The design should feel intelligent, reliable, and effortless.
+**Design Personality**: Modern, clean, and professional with subtle AI-powered enhancements.
+**Visual Metaphors**: Neural networks, knowledge graphs, and seamless connectivity.
+**Simplicity Spectrum**: Minimal interface that reveals power when needed.
 
 ### Color Strategy
-**Color Scheme Type**: Monochromatic with accent highlights
-**Primary Color**: Deep blue (oklch(0.45 0.15 260)) - trust and focus
-**Secondary Colors**: Light grays for backgrounds and surfaces
-**Accent Color**: Warm amber (oklch(0.7 0.15 45)) - highlights and actions
-**Color Psychology**: Blue promotes focus and productivity, amber adds warmth
+**Color Scheme Type**: Analogous with purple-blue base
+**Primary Color**: Deep purple (oklch(0.45 0.15 260)) - intelligence and creativity
+**Secondary Colors**: Light purple-grey (oklch(0.85 0.08 260)) - subtlety and sophistication  
+**Accent Color**: Warm amber (oklch(0.7 0.15 45)) - highlights and success states
+**Color Psychology**: Purple conveys intelligence and creativity, while amber provides warmth and energy.
 
 ### Typography System
 **Font Pairing Strategy**: Single font family (Inter) with varied weights
-**Font Selection**: Inter - highly legible on mobile screens
-**Typographic Hierarchy**: Clear distinction between headers, body, and UI text
-**Mobile Optimization**: Minimum 16px body text, generous line spacing
+**Typographic Hierarchy**: Clear distinction between headings, body, and UI text
+**Font Personality**: Clean, modern, and highly legible
+**Which fonts**: Inter (400, 500, 600, 700) for consistency and readability
 
-### Mobile-First Layout
-**Touch Targets**: Minimum 44px for all interactive elements
-**Gesture Support**: Swipe navigation, pull-to-refresh, pinch-to-zoom
-**Navigation**: Bottom tab bar for primary actions
-**Content Priority**: Essential features prominently displayed
+### Visual Hierarchy & Layout
+**Attention Direction**: Content-first with progressive disclosure of features
+**White Space Philosophy**: Generous spacing for clarity and focus
+**Grid System**: 4px base unit with 8px spacing scale
+**Responsive Approach**: Mobile-first with adaptive layouts
 
-### Progressive Web App Features
-**App Manifest**: Installable with custom icon and splash screen
-**Service Worker**: Comprehensive offline caching strategy
-**Push Notifications**: Reminders and sync status updates
-**App Shell**: Instant loading with cached shell architecture
+### UI Elements & Component Selection
+**Component Usage**: shadcn/ui for consistency and accessibility
+**Component Customization**: Minimal customization to maintain design system integrity
+**Icon Selection**: Phosphor icons for comprehensive and consistent iconography
+**Mobile Adaptation**: Touch-friendly sizing with 44px minimum targets
 
-## Implementation Strategy
+## Implementation Considerations
 
-### Offline Sync Architecture
-- **Local-First**: All operations work offline by default
-- **Sync Queue**: Changes queued for background synchronization
-- **Conflict Resolution**: Last-write-wins with user review for conflicts
-- **Vector Embeddings**: Cached locally for offline AI features
+### API Integration Architecture
+- Complete TypeScript type generation from backend contracts
+- Centralized API client with automatic authentication
+- React Query for caching and synchronization
+- Proper error handling and retry logic
 
-### Performance Optimizations
-- **Code Splitting**: Lazy load non-critical features
-- **Image Optimization**: WebP format with fallbacks
-- **Bundle Size**: <200KB critical path
-- **Caching Strategy**: Aggressive caching with smart invalidation
+### Offline Strategy
+- Service Worker for asset caching
+- IndexedDB for data persistence
+- Conflict resolution for sync
+- Background sync capabilities
 
-### Security Considerations
-- **Data Encryption**: Client-side encryption for sensitive notes
-- **Secure Storage**: Encrypted IndexedDB for offline data
-- **Authentication**: JWT tokens with refresh mechanism
-- **Privacy**: User data never sent to third parties
+### Performance Targets
+- First Contentful Paint: <1.5s
+- Largest Contentful Paint: <2.5s
+- Time to Interactive: <3s
+- Offline functionality: 100% core features
+
+### Mobile PWA Features
+- Install prompt
+- Push notifications
+- Background sync
+- Native-like navigation
 
 ## Technical Architecture
 
 ### Frontend Stack
-- **Framework**: React 18 with concurrent features
-- **PWA**: Workbox for service worker management
-- **Storage**: Dexie.js for IndexedDB operations
-- **Sync**: Custom sync engine with conflict resolution
-- **UI**: Tailwind CSS with mobile-first approach
+- React 18 with TypeScript
+- Vite for build tooling
+- TailwindCSS for styling
+- shadcn/ui for components
+- React Query for state management
+- Framer Motion for animations
 
-### Offline Capabilities
-- **Note CRUD**: Full create, read, update, delete offline
-- **Search**: Local full-text search with Fuse.js
-- **AI Features**: Cached embeddings for offline similarity search
-- **Media**: Offline photo capture and storage
+### Data Flow
+1. API Client → Services → React Query Hooks → Components
+2. Offline: IndexedDB → Sync Service → API Client
+3. Real-time: WebSocket/SSE → Context → Components
 
-### Sync Strategy
-- **Optimistic Updates**: UI updates immediately
-- **Background Sync**: Automatic when online
-- **Conflict Detection**: Vector clocks for change tracking
-- **Data Integrity**: Checksums and validation
+### File Structure
+```
+src/
+├── components/          # React components
+├── contexts/           # React contexts
+├── hooks/              # Custom hooks with React Query
+├── services/           # API service layer
+├── types/              # TypeScript type definitions
+├── utils/              # Utility functions
+├── lib/                # Third-party configurations
+└── assets/             # Static assets
+```
 
-## Success Metrics
+## Edge Cases & Problem Scenarios
 
-- **Performance**: <3s app load, <200ms interaction response
-- **Offline Coverage**: 90%+ features work offline
-- **Sync Reliability**: 99.9% successful sync rate
-- **User Engagement**: Daily active usage on mobile devices
+### Offline Conflicts
+- Multiple device edits
+- Merge strategies for conflicts
+- User resolution interface
+
+### Network Issues
+- Partial sync failures
+- Retry mechanisms
+- User feedback for sync status
+
+### Authentication Edge Cases
+- Token expiration during offline use
+- OAuth callback handling
+- Concurrent session management
+
+## Reflection
+
+This approach creates a production-ready frontend that fully leverages the sophisticated backend architecture while providing an exceptional mobile-first user experience. The focus on offline capabilities and real-time AI integration makes this solution uniquely powerful for modern note-taking needs.
+
+The comprehensive API integration ensures all backend features are accessible, while the PWA architecture provides reliability and performance that rivals native applications.
