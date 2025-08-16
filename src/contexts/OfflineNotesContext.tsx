@@ -1,7 +1,6 @@
 import React, { createContext, useContext, useEffect, useState, useCallback } from 'react'
 import { offlineStorage, OfflineNote, OfflineWorkspace } from '@/lib/offline-storage'
 import { syncService, SyncStatus } from '@/lib/sync-service'
-import { useKV } from '@github/spark/hooks'
 import { v4 as uuidv4 } from 'uuid'
 import { toast } from 'sonner'
 
@@ -48,7 +47,8 @@ interface OfflineNotesContextType {
 const OfflineNotesContext = createContext<OfflineNotesContextType | undefined>(undefined)
 
 export function OfflineNotesProvider({ children }: { children: React.ReactNode }) {
-  const [user] = useKV('current-user', null)
+  // For now, use a mock user ID. In production, this would come from AuthContext
+  const userId = 'mock-user-1'
   const [notes, setNotes] = useState<OfflineNote[]>([])
   const [workspaces, setWorkspaces] = useState<OfflineWorkspace[]>([])
   const [currentNote, setCurrentNote] = useState<OfflineNote | null>(null)
@@ -64,7 +64,7 @@ export function OfflineNotesProvider({ children }: { children: React.ReactNode }
   // Initialize data on mount
   useEffect(() => {
     initializeData()
-  }, [user])
+  }, [userId])
 
   // Setup sync listener
   useEffect(() => {
@@ -73,19 +73,19 @@ export function OfflineNotesProvider({ children }: { children: React.ReactNode }
   }, [])
 
   const initializeData = async () => {
-    if (!user?.id) return
+    if (!userId) return
 
     try {
       setIsLoading(true)
       
       // Load workspaces
-      const userWorkspaces = await offlineStorage.getWorkspaces(user.id)
+      const userWorkspaces = await offlineStorage.getWorkspaces(userId)
       setWorkspaces(userWorkspaces)
       
       // Set default workspace
-      let defaultWorkspace = await offlineStorage.getDefaultWorkspace(user.id)
+      let defaultWorkspace = await offlineStorage.getDefaultWorkspace(userId)
       if (!defaultWorkspace && userWorkspaces.length === 0) {
-        defaultWorkspace = await createDefaultWorkspace(user.id)
+        defaultWorkspace = await createDefaultWorkspace(userId)
       } else if (!defaultWorkspace) {
         defaultWorkspace = userWorkspaces[0]
       }
@@ -128,7 +128,7 @@ export function OfflineNotesProvider({ children }: { children: React.ReactNode }
 
   // Note Operations
   const createNote = useCallback(async (title: string, content = ''): Promise<OfflineNote> => {
-    if (!user?.id || !currentWorkspace) {
+    if (!userId || !currentWorkspace) {
       throw new Error('User or workspace not available')
     }
 
@@ -138,7 +138,7 @@ export function OfflineNotesProvider({ children }: { children: React.ReactNode }
       content,
       tags: [],
       workspaceId: currentWorkspace.id,
-      ownerId: user.id,
+      ownerId: userId,
       isDeleted: false,
       createdAt: new Date(),
       updatedAt: new Date(),
@@ -158,7 +158,7 @@ export function OfflineNotesProvider({ children }: { children: React.ReactNode }
       toast.error('Failed to create note')
       throw error
     }
-  }, [user, currentWorkspace])
+  }, [userId, currentWorkspace])
 
   const updateNote = useCallback(async (id: string, updates: Partial<OfflineNote>): Promise<void> => {
     try {
@@ -225,14 +225,14 @@ export function OfflineNotesProvider({ children }: { children: React.ReactNode }
 
   // Workspace Operations
   const createWorkspace = useCallback(async (name: string): Promise<OfflineWorkspace> => {
-    if (!user?.id) {
+    if (!userId) {
       throw new Error('User not available')
     }
 
     const workspace: OfflineWorkspace = {
       id: uuidv4(),
       name,
-      ownerId: user.id,
+      ownerId: userId,
       isDefault: false,
       createdAt: new Date(),
       updatedAt: new Date(),
@@ -252,7 +252,7 @@ export function OfflineNotesProvider({ children }: { children: React.ReactNode }
       toast.error('Failed to create workspace')
       throw error
     }
-  }, [user])
+  }, [userId])
 
   const selectWorkspace = useCallback(async (workspace: OfflineWorkspace) => {
     setCurrentWorkspace(workspace)

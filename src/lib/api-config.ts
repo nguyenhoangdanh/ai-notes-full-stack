@@ -79,5 +79,5 @@ export const tokenUtils = {
   },
 }
 
-// Initialize on import
-export const apiClient = initializeApiClient()
+// Export the initialization function
+// Note: Call initializeApiClient() manually in your app startup

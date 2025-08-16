@@ -1,10 +1,10 @@
-import { useKV } from '@github/spark/hooks'
+// This file is replaced by the useAuth hook in AuthContext.tsx
+// Keeping this file as a reference but it should not be used
 
-export function useAuth() {
-  const [user] = useKV('current-user', null)
-  
+export function _deprecatedUseAuth() {
+  console.warn('This useAuth hook is deprecated. Use the one from AuthContext instead.')
   return {
-    user,
+    user: null,
     isLoading: false
   }
 }
