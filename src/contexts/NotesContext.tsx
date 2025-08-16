@@ -20,6 +20,7 @@ interface NotesContextType {
   deleteNote: (id: string) => Promise<void>
   searchNotes: (query: string) => Note[]
   getRelatedNotes: (noteId: string) => Note[]
+  getNote: (id: string) => Note | undefined
 }
 
 const NotesContext = createContext<NotesContextType | undefined>(undefined)
@@ -105,6 +106,10 @@ export function NotesProvider({ children }: { children: ReactNode }) {
       .slice(0, 3)
   }
 
+  const getNote = (id: string): Note | undefined => {
+    return notes.find(note => note.id === id)
+  }
+
   return (
     <NotesContext.Provider value={{
       notes,
@@ -113,7 +118,8 @@ export function NotesProvider({ children }: { children: ReactNode }) {
       updateNote,
       deleteNote,
       searchNotes,
-      getRelatedNotes
+      getRelatedNotes,
+      getNote
     }}>
       {children}
     </NotesContext.Provider>

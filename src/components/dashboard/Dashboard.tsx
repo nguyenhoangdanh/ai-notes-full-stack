@@ -5,6 +5,7 @@ import { Sidebar } from './Sidebar'
 import { NotesList } from './NotesList'
 import { NoteEditor } from './NoteEditor'
 import { SearchBar } from './SearchBar'
+import { AIAssistantToggle } from '../ai/AIAssistantToggle'
 import { Button } from '../ui/button'
 import { Plus, SidebarSimple } from '@phosphor-icons/react'
 import { useIsMobile } from '../../hooks/use-mobile'
@@ -118,6 +119,9 @@ export function Dashboard() {
           )}
         </div>
       </div>
+
+      {/* AI Assistant Toggle */}
+      <AIAssistantToggle selectedNoteId={selectedNoteId} />
     </div>
   )
 }

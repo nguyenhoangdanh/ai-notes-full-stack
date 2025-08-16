@@ -6,6 +6,7 @@ import { Textarea } from '../ui/textarea'
 import { Badge } from '../ui/badge'
 import { Separator } from '../ui/separator'
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card'
+import { AISuggestions } from '../ai/AISuggestions'
 import { 
   X, 
   Tag as TagIcon, 
@@ -13,7 +14,8 @@ import {
   ArrowLeft,
   Sparkles,
   Robot,
-  Clock
+  Clock,
+  Brain
 } from '@phosphor-icons/react'
 import { formatDistanceToNow } from 'date-fns'
 import { useIsMobile } from '../../hooks/use-mobile'
@@ -81,6 +83,32 @@ export function NoteEditor({ noteId, onClose }: NoteEditorProps) {
     if (e.key === 'Enter') {
       e.preventDefault()
       handleAddTag()
+    }
+  }
+
+  const handleApplySuggestion = async (type: string, suggestion: string) => {
+    try {
+      switch (type) {
+        case 'title':
+          setTitle(suggestion)
+          break
+        case 'content':
+          setContent(suggestion)
+          break
+        case 'tags':
+          // Parse tags from suggestion
+          const newTags = suggestion.split(',').map(tag => tag.trim().toLowerCase())
+          setTags(prev => [...new Set([...prev, ...newTags])])
+          break
+        case 'structure':
+          // Apply structured content
+          setContent(suggestion)
+          break
+        default:
+          toast.info('Suggestion type not yet implemented')
+      }
+    } catch (error) {
+      toast.error('Failed to apply suggestion')
     }
   }
 
@@ -225,41 +253,57 @@ export function NoteEditor({ noteId, onClose }: NoteEditorProps) {
         </div>
 
         {/* Related Notes Sidebar */}
-        {!isMobile && relatedNotes.length > 0 && (
-          <div className="w-80 border-l border-border bg-card/30 p-4">
-            <Card>
-              <CardHeader className="pb-3">
-                <CardTitle className="text-sm flex items-center space-x-2">
-                  <Sparkles className="h-4 w-4 text-accent" weight="fill" />
-                  <span>Related Notes</span>
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-3">
-                {relatedNotes.map((relatedNote) => (
-                  <div
-                    key={relatedNote.id}
-                    className="p-3 rounded-md border border-border hover:bg-secondary/50 cursor-pointer transition-colors"
-                  >
-                    <h4 className="font-medium text-sm text-foreground line-clamp-1">
-                      {relatedNote.title}
-                    </h4>
-                    <p className="text-xs text-muted-foreground line-clamp-2 mt-1">
-                      {relatedNote.content}
-                    </p>
-                    <div className="flex items-center justify-between mt-2">
-                      {relatedNote.category && (
-                        <Badge variant="secondary" className="text-xs capitalize">
-                          {relatedNote.category}
-                        </Badge>
-                      )}
-                      <span className="text-xs text-muted-foreground">
-                        {formatDistanceToNow(new Date(relatedNote.updatedAt), { addSuffix: true })}
-                      </span>
-                    </div>
-                  </div>
-                ))}
-              </CardContent>
-            </Card>
+        {!isMobile && (
+          <div className="w-80 border-l border-border bg-card/30 flex flex-col">
+            {/* AI Suggestions */}
+            <div className="p-4 border-b border-border">
+              <AISuggestions
+                noteId={noteId}
+                noteTitle={title}
+                noteContent={content}
+                noteTags={tags}
+                onApplySuggestion={handleApplySuggestion}
+              />
+            </div>
+
+            {/* Related Notes */}
+            {relatedNotes.length > 0 && (
+              <div className="flex-1 p-4 overflow-y-auto">
+                <Card>
+                  <CardHeader className="pb-3">
+                    <CardTitle className="text-sm flex items-center space-x-2">
+                      <Sparkles className="h-4 w-4 text-accent" weight="fill" />
+                      <span>Related Notes</span>
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-3">
+                    {relatedNotes.map((relatedNote) => (
+                      <div
+                        key={relatedNote.id}
+                        className="p-3 rounded-md border border-border hover:bg-secondary/50 cursor-pointer transition-colors"
+                      >
+                        <h4 className="font-medium text-sm text-foreground line-clamp-1">
+                          {relatedNote.title}
+                        </h4>
+                        <p className="text-xs text-muted-foreground line-clamp-2 mt-1">
+                          {relatedNote.content}
+                        </p>
+                        <div className="flex items-center justify-between mt-2">
+                          {relatedNote.category && (
+                            <Badge variant="secondary" className="text-xs capitalize">
+                              {relatedNote.category}
+                            </Badge>
+                          )}
+                          <span className="text-xs text-muted-foreground">
+                            {formatDistanceToNow(new Date(relatedNote.updatedAt), { addSuffix: true })}
+                          </span>
+                        </div>
+                      </div>
+                    ))}
+                  </CardContent>
+                </Card>
+              </div>
+            )}
           </div>
         )}
       </div>

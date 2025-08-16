@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { AuthProvider } from './contexts/AuthContext'
 import { NotesProvider } from './contexts/NotesContext'
+import { AIProvider } from './contexts/AIContext'
 import { AuthScreen } from './components/auth/AuthScreen'
 import { Dashboard } from './components/dashboard/Dashboard'
 import { useAuth } from './hooks/useAuth'
@@ -23,7 +24,9 @@ function AppContent() {
 
   return (
     <NotesProvider>
-      <Dashboard />
+      <AIProvider>
+        <Dashboard />
+      </AIProvider>
     </NotesProvider>
   )
 }
