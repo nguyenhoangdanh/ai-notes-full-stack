@@ -30,6 +30,21 @@ import { TagsModule } from './tags/tags.module';
 import { TemplatesModule } from './templates/templates.module';
 import { AttachmentsModule } from './attachments/attachments.module';
 
+// Productivity Features
+import { ProductivityModule } from './productivity/productivity.module';
+
+// Notifications & Reminders
+import { NotificationModule } from './notifications/notifications.module';
+
+// Mobile Features
+import { MobileModule } from './mobile/mobile.module';
+
+// Export System
+import { ExportModule } from './export/export.module';
+
+// Analytics
+import { AnalyticsModule } from './analytics/analytics.module';
+
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -75,6 +90,21 @@ import { AttachmentsModule } from './attachments/attachments.module';
     TagsModule,
     TemplatesModule,
     AttachmentsModule,
+
+    // Productivity Features
+    ProductivityModule,
+
+    // Notifications & Reminders
+    NotificationModule,
+
+    // Mobile Features
+    MobileModule,
+
+    // Export System
+    ExportModule,
+
+    // Analytics
+    AnalyticsModule,
   ],
 })
 export class AppModule {}
