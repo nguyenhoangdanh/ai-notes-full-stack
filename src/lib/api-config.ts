@@ -48,7 +48,7 @@ function handleApiError(error: HTTPError): void {
 
 // Initialize the API client
 export function initializeApiClient() {
-  const baseURL = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:3001/api/v1'
+  const baseURL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3001/api/v1'
   
   return createApiClient({
     baseURL,

@@ -12,7 +12,7 @@ export class SyncService {
   private static instance: SyncService
   private syncInProgress = false
   private syncListeners: Set<(status: SyncStatus) => void> = new Set()
-  private retryTimeout?: NodeJS.Timeout
+  private retryTimeout?: number
 
   static getInstance(): SyncService {
     if (!SyncService.instance) {
@@ -290,7 +290,7 @@ export class SyncService {
 
   // Utility Methods
   private getApiBase(): string {
-    return process.env.VITE_API_BASE || 'http://localhost:3000/api'
+    return import.meta.env.VITE_API_BASE || 'http://localhost:3000/api'
   }
 
   private getHeaders(): Record<string, string> {

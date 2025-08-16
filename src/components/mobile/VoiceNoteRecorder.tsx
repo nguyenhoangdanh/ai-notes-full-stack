@@ -45,8 +45,8 @@ export function VoiceNoteRecorder({ onBack }: VoiceNoteRecorderProps) {
   const audioContextRef = useRef<AudioContext | null>(null)
   const analyserRef = useRef<AnalyserNode | null>(null)
   const audioChunksRef = useRef<Blob[]>([])
-  const recordingIntervalRef = useRef<NodeJS.Timeout>()
-  const audioLevelIntervalRef = useRef<NodeJS.Timeout>()
+  const recordingIntervalRef = useRef<number>()
+  const audioLevelIntervalRef = useRef<number>()
   const audioElementRef = useRef<HTMLAudioElement | null>(null)
 
   // Load existing recordings
