@@ -1,11 +1,11 @@
-import { createContext, useContext, ReactNode } from 'react'
+import React, { createContext, useContext, useState, useEffect } from 'react'
 import { useKV } from '@github/spark/hooks'
 
 interface User {
   id: string
   email: string
   name: string
-  avatarUrl?: string
+  image?: string | null
 }
 
 interface AuthContextType {
@@ -13,14 +13,19 @@ interface AuthContextType {
   isLoading: boolean
   login: (email: string, password: string) => Promise<void>
   register: (email: string, password: string, name: string) => Promise<void>
-  logout: () => void
+  logout: () => Promise<void>
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
 
-export function AuthProvider({ children }: { children: ReactNode }) {
-  const [user, setUser] = useKV<User | null>('auth-user', null)
-  const [isLoading, setIsLoading] = useKV('auth-loading', false)
+export function AuthProvider({ children }: { children: React.ReactNode }) {
+  const [user, setUser] = useKV('current-user', null)
+  const [isLoading, setIsLoading] = useState(true)
+
+  useEffect(() => {
+    // Check for existing session on mount
+    setIsLoading(false)
+  }, [])
 
   const login = async (email: string, password: string) => {
     setIsLoading(true)
@@ -28,15 +33,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       // Simulate API call
       await new Promise(resolve => setTimeout(resolve, 1000))
       
-      // For demo purposes, create a user based on email
-      const newUser: User = {
-        id: `user-${Date.now()}`,
+      const user: User = {
+        id: 'user-' + Date.now(),
         email,
         name: email.split('@')[0],
-        avatarUrl: `https://avatar.vercel.sh/${email}`
+        image: null
       }
       
-      setUser(newUser)
+      setUser(user)
     } catch (error) {
       throw new Error('Login failed')
     } finally {
@@ -50,14 +54,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       // Simulate API call
       await new Promise(resolve => setTimeout(resolve, 1000))
       
-      const newUser: User = {
-        id: `user-${Date.now()}`,
+      const user: User = {
+        id: 'user-' + Date.now(),
         email,
         name,
-        avatarUrl: `https://avatar.vercel.sh/${email}`
+        image: null
       }
       
-      setUser(newUser)
+      setUser(user)
     } catch (error) {
       throw new Error('Registration failed')
     } finally {
@@ -65,18 +69,20 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   }
 
-  const logout = () => {
+  const logout = async () => {
     setUser(null)
   }
 
+  const value: AuthContextType = {
+    user,
+    isLoading,
+    login,
+    register,
+    logout
+  }
+
   return (
-    <AuthContext.Provider value={{
-      user,
-      isLoading,
-      login,
-      register,
-      logout
-    }}>
+    <AuthContext.Provider value={value}>
       {children}
     </AuthContext.Provider>
   )
