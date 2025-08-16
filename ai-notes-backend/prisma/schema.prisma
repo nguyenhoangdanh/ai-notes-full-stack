@@ -1,0 +1,836 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  name      String?
+  image     String?
+  password  String?  // Add password field for credentials auth
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  workspaces Workspace[]
+  notes      Note[]
+  vectors    Vector[]
+  settings   Settings?
+  usage      Usage[]
+  collaborations     Collaboration[]
+  invitedCollaborations Collaboration[] @relation("Inviter")
+  noteVersions       NoteVersion[]
+  tags               Tag[]
+  templates          Template[]
+  activities         UserActivity[]
+  notifications      Notification[]
+  reminders          Reminder[]
+  conversations      AIConversation[]
+  attachments        Attachment[]
+  themes             Theme[]
+  
+  // Smart Features
+  categories         Category[]
+  duplicateReports   DuplicateReport[]
+  autoSummaries      AutoSummary[]
+  
+  // Productivity Features
+  pomodoroSessions   PomodoroSession[]
+  tasks              Task[]
+  calendarEvents     CalendarEvent[]
+  reviewPrompts      ReviewPrompt[]
+  
+  // Search Enhancement
+  searchHistory      SearchHistory[]
+  savedSearches      SavedSearch[]
+  
+  // Export History
+  exportHistory      ExportHistory[]
+  
+  // Mobile Features
+  voiceNotes         VoiceNote[]
+  locationNotes      LocationNote[]
+  offlineSyncs       OfflineSync[]
+
+  @@map("users")
+}
+
+model Workspace {
+  id        String   @id @default(cuid())
+  name      String
+  ownerId   String
+  isDefault Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  owner User   @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  notes Note[]
+
+  @@map("workspaces")
+}
+
+model Note {
+  id          String   @id @default(cuid())
+  title       String
+  content     String
+  tags        String[]
+  workspaceId String
+  ownerId     String
+  isDeleted   Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  workspace Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  owner     User      @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  vectors   Vector[]
+
+  // Add missing relations
+  collaborations    Collaboration[]
+  shareLinks       ShareLink[]
+  noteVersions     NoteVersion[]
+  noteTags         NoteTag[]
+  analytics        NoteAnalytics?
+  activities       UserActivity[]
+  notifications    Notification[]
+  reminders        Reminder[]
+  aiConversations  AIConversation[]
+  aiSuggestions    AISuggestion[]
+  attachments      Attachment[]
+
+  // New relationships for smart features
+  categories        NoteCategory[]
+  originalDuplicates DuplicateReport[] @relation("OriginalNote")
+  duplicateReports  DuplicateReport[] @relation("DuplicateNote")
+  relatedSources    RelatedNote[] @relation("SourceNote")
+  relatedTargets    RelatedNote[] @relation("TargetNote")
+  autoSummary       AutoSummary?
+  
+  // Productivity features
+  pomodoroSessions  PomodoroSession[]
+  tasks             Task[]
+  calendarEvents    CalendarEvent[]
+  
+  // Search enhancement
+  searchRankings    SearchRanking[]
+  
+  // Mobile features
+  voiceNotes        VoiceNote[]
+  locationNote      LocationNote?
+  offlineSyncs      OfflineSync[]
+
+  @@map("notes")
+}
+
+model Vector {
+  id           String   @id @default(cuid())
+  noteId       String
+  chunkId      String
+  chunkContent String
+  chunkIndex   Int
+  heading      String?
+  embedding    Float[]
+  ownerId      String
+  createdAt    DateTime @default(now())
+
+  note  Note @relation(fields: [noteId], references: [id], onDelete: Cascade)
+  owner User @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+
+  @@map("vectors")
+}
+
+model Settings {
+  id          String   @id @default(cuid())
+  ownerId     String   @unique
+  model       String   @default("gemini-1.5-flash")
+  maxTokens   Int      @default(4000)
+  autoReembed Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  owner User @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+
+  @@map("settings")
+}
+
+model Usage {
+  id              String   @id @default(cuid())
+  ownerId         String
+  date            String   // YYYY-MM-DD format
+  embeddingTokens Int      @default(0)
+  chatTokens      Int      @default(0)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  owner User @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+
+  @@unique([ownerId, date])
+  @@map("usage")
+}
+
+//Collaboration & Sharing 
+model Collaboration {
+  id          String   @id @default(cuid())
+  noteId      String
+  userId      String
+  permission  Permission @default(READ)
+  invitedBy   String
+  createdAt   DateTime @default(now())
+
+  note     Note @relation(fields: [noteId], references: [id], onDelete: Cascade)
+  user     User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  inviter  User @relation("Inviter", fields: [invitedBy], references: [id])
+
+  @@unique([noteId, userId])
+  @@map("collaborations")
+}
+
+enum Permission {
+  READ
+  WRITE
+  ADMIN
+}
+
+model ShareLink {
+  id            String    @id @default(cuid())
+  noteId        String
+  token         String    @unique
+  isPublic      Boolean   @default(false)
+  expiresAt     DateTime?
+  allowComments Boolean   @default(false)
+  requireAuth   Boolean   @default(false)
+  maxViews      Int?
+  passwordHash  String?
+  settings      Json?     // Additional settings like download permissions, etc.
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  note       Note        @relation(fields: [noteId], references: [id], onDelete: Cascade)
+  shareViews ShareView[]
+
+  @@map("share_links")
+}
+
+model ShareView {
+  id          String   @id @default(cuid())
+  shareLinkId String
+  viewerIp    String
+  viewerAgent String?
+  referrer    String?
+  viewerId    String?  // If authenticated user
+  isUnique    Boolean  @default(true)
+  metadata    Json?    // Country, device type, etc.
+  viewedAt    DateTime @default(now())
+
+  shareLink ShareLink @relation(fields: [shareLinkId], references: [id], onDelete: Cascade)
+
+  @@map("share_views")
+}
+
+//Version Control & History
+
+model NoteVersion {
+  id        String   @id @default(cuid())
+  noteId    String
+  version   Int
+  title     String
+  content   String
+  changeLog String?
+  createdBy String
+  createdAt DateTime @default(now())
+
+  note Note @relation(fields: [noteId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [createdBy], references: [id])
+
+  @@unique([noteId, version])
+  @@map("note_versions")
+}
+
+//Advanced Tagging & Categories
+
+model Tag {
+  id          String   @id @default(cuid())
+  name        String
+  color       String?
+  description String?
+  ownerId     String
+  createdAt   DateTime @default(now())
+
+  owner     User      @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  noteTags  NoteTag[]
+
+  @@unique([name, ownerId])
+  @@map("tags")
+}
+
+model NoteTag {
+  noteId String
+  tagId  String
+
+  note Note @relation(fields: [noteId], references: [id], onDelete: Cascade)
+  tag  Tag  @relation(fields: [tagId], references: [id], onDelete: Cascade)
+
+  @@id([noteId, tagId])
+  @@map("note_tags")
+}
+
+model Template {
+  id          String   @id @default(cuid())
+  name        String
+  description String?
+  content     String
+  tags        String[]
+  isPublic    Boolean  @default(false)
+  ownerId     String
+  metadata    Json?    // Add metadata field for template variables and settings
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @default(now())
+
+  owner User @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+
+  @@map("templates")
+}
+
+// Analytics & Insights
+model NoteAnalytics {
+  id           String   @id @default(cuid())
+  noteId       String
+  viewCount    Int      @default(0)
+  editCount    Int      @default(0)
+  shareCount   Int      @default(0)
+  lastViewed   DateTime?
+  lastEdited   DateTime?
+  readingTime  Int?     // in minutes
+  wordCount    Int      @default(0)
+  updatedAt    DateTime @updatedAt
+
+  note Note @relation(fields: [noteId], references: [id], onDelete: Cascade)
+
+  @@unique([noteId])
+  @@map("note_analytics")
+}
+
+model UserActivity {
+  id        String   @id @default(cuid())
+  userId    String
+  action    String   // CREATE, UPDATE, DELETE, VIEW, SEARCH
+  noteId    String?
+  metadata  Json?    // Additional context
+  createdAt DateTime @default(now())
+
+  user User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  note Note? @relation(fields: [noteId], references: [id], onDelete: SetNull)
+
+  @@map("user_activities")
+}
+
+//Notifications & Reminders
+model Notification {
+  id        String   @id @default(cuid())
+  userId    String
+  title     String
+  message   String
+  type      NotificationType
+  isRead    Boolean  @default(false)
+  noteId    String?
+  createdAt DateTime @default(now())
+
+  user User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  note Note? @relation(fields: [noteId], references: [id], onDelete: SetNull)
+
+  @@map("notifications")
+}
+
+model Reminder {
+  id         String   @id @default(cuid())
+  noteId     String
+  userId     String
+  title      String
+  remindAt   DateTime
+  isComplete Boolean  @default(false)
+  recurrence String?  // daily, weekly, monthly
+  createdAt  DateTime @default(now())
+
+  note Note @relation(fields: [noteId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("reminders")
+}
+
+enum NotificationType {
+  REMINDER
+  COLLABORATION
+  SYSTEM
+  AI_SUGGESTION
+}
+
+//AI Enhancement
+model AIConversation {
+  id          String   @id @default(cuid())
+  userId      String
+  noteId      String?
+  title       String
+  messages    Json[]   // Array of {role, content, timestamp}
+  context     String[] // Related note IDs
+  totalTokens Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  user User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  note Note? @relation(fields: [noteId], references: [id], onDelete: SetNull)
+
+  @@map("ai_conversations")
+}
+
+model AISuggestion {
+  id          String   @id @default(cuid())
+  noteId      String
+  type        SuggestionType
+  suggestion  String
+  confidence  Float
+  isAccepted  Boolean?
+  createdAt   DateTime @default(now())
+
+  note Note @relation(fields: [noteId], references: [id], onDelete: Cascade)
+
+  @@map("ai_suggestions")
+}
+
+enum SuggestionType {
+  TAG
+  TITLE
+  SUMMARY
+  LINK
+  IMPROVEMENT
+}
+
+//File Attachments
+
+model Attachment {
+  id        String   @id @default(cuid())
+  noteId    String
+  filename  String
+  filepath  String
+  fileType  String
+  fileSize  Int
+  uploadedBy String
+  createdAt DateTime @default(now())
+
+  note Note @relation(fields: [noteId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [uploadedBy], references: [id], onDelete: Cascade)
+
+  ocrResult OCRResult?
+
+  @@map("attachments")
+}
+
+//Customization
+
+model Theme {
+  id          String   @id @default(cuid())
+  name        String
+  colors      Json     // Color palette
+  typography  Json     // Font settings
+  isDefault   Boolean  @default(false)
+  ownerId     String?
+  createdAt   DateTime @default(now())
+
+  owner User? @relation(fields: [ownerId], references: [id])
+
+  @@map("themes")
+}
+
+// SMART FEATURES
+
+model Category {
+  id          String   @id @default(cuid())
+  name        String
+  description String?
+  color       String?
+  icon        String?
+  keywords    String[] // Keywords for auto-categorization
+  ownerId     String
+  isAuto      Boolean  @default(false) // Auto-generated category
+  confidence  Float?   // AI confidence score
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  owner         User           @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  noteCategories NoteCategory[]
+
+  @@unique([name, ownerId])
+  @@map("categories")
+}
+
+model NoteCategory {
+  noteId     String
+  categoryId String
+  confidence Float? // AI confidence for auto-categorization
+  isAuto     Boolean @default(false)
+  createdAt  DateTime @default(now())
+
+  note     Note     @relation(fields: [noteId], references: [id], onDelete: Cascade)
+  category Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+
+  @@id([noteId, categoryId])
+  @@map("note_categories")
+}
+
+model DuplicateReport {
+  id            String   @id @default(cuid())
+  originalNoteId String
+  duplicateNoteId String
+  similarity    Float    // 0-1 similarity score
+  type          DuplicateType
+  status        DuplicateStatus @default(PENDING)
+  ownerId       String
+  createdAt     DateTime @default(now())
+  resolvedAt    DateTime?
+
+  originalNote  Note @relation("OriginalNote", fields: [originalNoteId], references: [id], onDelete: Cascade)
+  duplicateNote Note @relation("DuplicateNote", fields: [duplicateNoteId], references: [id], onDelete: Cascade)
+  owner         User @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+
+  @@unique([originalNoteId, duplicateNoteId])
+  @@map("duplicate_reports")
+}
+
+enum DuplicateType {
+  CONTENT
+  TITLE
+  SEMANTIC
+}
+
+enum DuplicateStatus {
+  PENDING
+  CONFIRMED
+  DISMISSED
+  MERGED
+}
+
+model RelatedNote {
+  id         String   @id @default(cuid())
+  sourceNoteId String
+  targetNoteId String
+  relevance  Float    // 0-1 relevance score
+  type       RelationType
+  createdAt  DateTime @default(now())
+
+  sourceNote Note @relation("SourceNote", fields: [sourceNoteId], references: [id], onDelete: Cascade)
+  targetNote Note @relation("TargetNote", fields: [targetNoteId], references: [id], onDelete: Cascade)
+
+  @@unique([sourceNoteId, targetNoteId])
+  @@map("related_notes")
+}
+
+enum RelationType {
+  SEMANTIC
+  CONTEXTUAL
+  TEMPORAL
+  REFERENCE
+}
+
+model AutoSummary {
+  id        String   @id @default(cuid())
+  noteId    String
+  summary   String
+  keyPoints String[]
+  wordCount Int
+  ownerId   String
+  model     String   // AI model used
+  createdAt DateTime @default(now())
+
+  note  Note @relation(fields: [noteId], references: [id], onDelete: Cascade)
+  owner User @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+
+  @@unique([noteId])
+  @@map("auto_summaries")
+}
+
+// PRODUCTIVITY FEATURES
+
+model PomodoroSession {
+  id          String   @id @default(cuid())
+  noteId      String?
+  userId      String
+  duration    Int      // in minutes
+  type        PomodoroType @default(WORK)
+  status      SessionStatus @default(ACTIVE)
+  startedAt   DateTime
+  completedAt DateTime?
+  createdAt   DateTime @default(now())
+
+  user User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  note Note? @relation(fields: [noteId], references: [id], onDelete: SetNull)
+
+  @@map("pomodoro_sessions")
+}
+
+enum PomodoroType {
+  WORK
+  SHORT_BREAK
+  LONG_BREAK
+}
+
+enum SessionStatus {
+  ACTIVE
+  PAUSED
+  COMPLETED
+  CANCELLED
+}
+
+model Task {
+  id          String   @id @default(cuid())
+  noteId      String?
+  title       String
+  description String?
+  status      TaskStatus @default(TODO)
+  priority    TaskPriority @default(MEDIUM)
+  dueDate     DateTime?
+  completedAt DateTime?
+  ownerId     String
+  tags        String[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  owner User  @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  note  Note? @relation(fields: [noteId], references: [id], onDelete: SetNull)
+
+  @@map("tasks")
+}
+
+enum TaskStatus {
+  TODO
+  IN_PROGRESS
+  COMPLETED
+  CANCELLED
+}
+
+enum TaskPriority {
+  LOW
+  MEDIUM
+  HIGH
+  URGENT
+}
+
+model CalendarEvent {
+  id          String   @id @default(cuid())
+  noteId      String?
+  title       String
+  description String?
+  startTime   DateTime
+  endTime     DateTime
+  location    String?
+  ownerId     String
+  isAllDay    Boolean  @default(false)
+  recurrence  String?  // RRULE format
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  owner User  @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  note  Note? @relation(fields: [noteId], references: [id], onDelete: SetNull)
+
+  @@map("calendar_events")
+}
+
+model ReviewPrompt {
+  id          String   @id @default(cuid())
+  userId      String
+  type        ReviewType
+  title       String
+  questions   String[]
+  frequency   String   // daily, weekly, monthly
+  nextDue     DateTime
+  lastAnswered DateTime?
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("review_prompts")
+}
+
+enum ReviewType {
+  DAILY
+  WEEKLY
+  MONTHLY
+  CUSTOM
+}
+
+// SEARCH ENHANCEMENT
+
+model SearchHistory {
+  id        String   @id @default(cuid())
+  userId    String
+  query     String
+  filters   Json?    // Search filters applied
+  resultCount Int
+  searchedAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("search_history")
+}
+
+model SavedSearch {
+  id          String   @id @default(cuid())
+  userId      String
+  name        String
+  query       String
+  filters     Json?
+  isDefault   Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("saved_searches")
+}
+
+model SearchRanking {
+  id        String   @id @default(cuid())
+  noteId    String
+  query     String
+  score     Float    // Ranking score
+  factors   Json     // Ranking factors (title match, content match, etc.)
+  createdAt DateTime @default(now())
+
+  note Note @relation(fields: [noteId], references: [id], onDelete: Cascade)
+
+  @@unique([noteId, query])
+  @@map("search_rankings")
+}
+
+// EXPORT OPTIONS
+
+model ExportHistory {
+  id         String   @id @default(cuid())
+  userId     String
+  type       ExportType
+  format     ExportFormat
+  noteIds    String[] // Notes included in export
+  filename   String
+  fileSize   Int?
+  settings   Json?    // Export settings
+  status     ExportStatus @default(PROCESSING)
+  downloadUrl String?
+  expiresAt  DateTime?
+  createdAt  DateTime @default(now())
+  completedAt DateTime?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("export_history")
+}
+
+enum ExportType {
+  SINGLE_NOTE
+  MULTIPLE_NOTES
+  WORKSPACE
+  FULL_BACKUP
+}
+
+enum ExportFormat {
+  MARKDOWN
+  PDF
+  EPUB
+  HTML
+  DOCX
+  NOTION
+  OBSIDIAN
+}
+
+enum ExportStatus {
+  PROCESSING
+  COMPLETED
+  FAILED
+}
+
+// MOBILE FEATURES
+
+model VoiceNote {
+  id            String   @id @default(cuid())
+  noteId        String?
+  userId        String
+  filename      String
+  filepath      String
+  duration      Int      // in seconds
+  transcription String?
+  language      String?
+  quality       Float?   // Transcription quality score
+  status        TranscriptionStatus @default(PROCESSING)
+  createdAt     DateTime @default(now())
+  processedAt   DateTime?
+
+  user User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  note Note? @relation(fields: [noteId], references: [id], onDelete: SetNull)
+
+  @@map("voice_notes")
+}
+
+enum TranscriptionStatus {
+  PROCESSING
+  COMPLETED
+  FAILED
+}
+
+model LocationNote {
+  id        String   @id @default(cuid())
+  noteId    String
+  userId    String
+  latitude  Float
+  longitude Float
+  address   String?
+  placeName String?
+  accuracy  Float?   // GPS accuracy in meters
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  note Note @relation(fields: [noteId], references: [id], onDelete: Cascade)
+
+  @@unique([noteId])
+  @@map("location_notes")
+}
+
+model OfflineSync {
+  id          String   @id @default(cuid())
+  userId      String
+  deviceId    String
+  noteId      String
+  action      SyncAction
+  data        Json
+  timestamp   DateTime
+  synced      Boolean  @default(false)
+  syncedAt    DateTime?
+  conflictId  String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  note Note @relation(fields: [noteId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, deviceId, noteId, timestamp])
+  @@map("offline_sync")
+}
+
+enum SyncAction {
+  CREATE
+  UPDATE
+  DELETE
+}
+
+model OCRResult {
+  id           String   @id @default(cuid())
+  attachmentId String
+  text         String
+  confidence   Float
+  language     String?
+  boundingBoxes Json?    // Text regions
+  createdAt    DateTime @default(now())
+
+  attachment Attachment @relation(fields: [attachmentId], references: [id], onDelete: Cascade)
+
+  @@unique([attachmentId])
+  @@map("ocr_results")
+}
