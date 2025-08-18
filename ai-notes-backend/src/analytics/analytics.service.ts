@@ -390,7 +390,7 @@ export class AnalyticsService {
 
       // Count words
       const words = content.match(/\b\w+\b/g) || [];
-      words.forEach(word => {
+      words.forEach((word: string) => {
         if (word.length > 3) { // Filter out short words
           wordFrequency.set(word, (wordFrequency.get(word) || 0) + 1);
         }

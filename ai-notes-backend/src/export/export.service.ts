@@ -123,7 +123,7 @@ export class ExportService {
         throw new Error('Export record not found');
       }
 
-      let exportContent: string;
+      let exportContent: string | Buffer;
       let fileExtension: string;
 
       switch (exportRecord.format) {
