@@ -73,7 +73,10 @@ export function NotesList({ searchQuery, selectedNoteId, onSelectNote }: NotesLi
     <div className="p-4 space-y-3">
       {/* Results Header */}
       <div className="flex items-center justify-between px-2">
-        <h2 className="text-sm font-medium text-muted-foreground">
+        <h2
+          className="text-sm font-medium text-muted-foreground"
+          id="notes-list-title"
+        >
           {searchQuery ? `${sortedNotes.length} results` : `${sortedNotes.length} notes`}
         </h2>
         {searchQuery && (
@@ -86,7 +89,11 @@ export function NotesList({ searchQuery, selectedNoteId, onSelectNote }: NotesLi
       <Separator />
 
       {/* Notes List */}
-      <div className="space-y-3">
+      <div
+        className="space-y-3"
+        role="list"
+        aria-labelledby="notes-list-title"
+      >
         {sortedNotes.map((note) => (
           <Card
             key={note.id}
