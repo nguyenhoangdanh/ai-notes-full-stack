@@ -7,7 +7,7 @@ import { AuthScreen } from './components/auth/AuthScreen'
 import { Dashboard } from './components/dashboard/Dashboard'
 import { MobileDashboard } from './components/mobile/MobileDashboard'
 import { useIsMobile } from './hooks/use-mobile'
-import { Toaster } from 'sonner'
+import { Toaster, toast } from 'sonner'
 import { initializeApiClient } from './lib/api-config'
 
 function AppContent() {
