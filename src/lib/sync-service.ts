@@ -287,7 +287,7 @@ export class SyncService {
       if (!response.ok) return
 
       const serverWorkspaces = await response.json()
-      
+
       for (const serverWorkspace of serverWorkspaces) {
         const offlineWorkspace: OfflineWorkspace = {
           ...serverWorkspace,
@@ -297,7 +297,11 @@ export class SyncService {
         await offlineStorage.saveWorkspace(offlineWorkspace)
       }
     } catch (error) {
-      console.error('Failed to sync workspaces from server:', error)
+      // Only log if it's not a network connectivity issue
+      if (!(error instanceof TypeError && error.message.includes('Failed to fetch'))) {
+        console.error('Failed to sync workspaces from server:', error)
+      }
+      throw error
     }
   }
 
