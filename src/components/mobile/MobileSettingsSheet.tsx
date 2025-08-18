@@ -25,7 +25,7 @@ import {
 } from '@phosphor-icons/react'
 import { useOfflineNotes } from '@/contexts/OfflineNotesContext'
 import { offlineStorage, AppSettings } from '@/lib/offline-storage'
-import { useKV } from '@github/spark/hooks'
+import { useAuthProfile, useUserSettings, useUpdateSettings } from '@/hooks'
 import { toast } from 'sonner'
 
 interface MobileSettingsSheetProps {
@@ -41,47 +41,24 @@ export function MobileSettingsSheet({ isOpen, onClose }: MobileSettingsSheetProp
     importNotes 
   } = useOfflineNotes()
   
-  const [user] = useKV('current-user', null)
-  const [settings, setSettings] = useState<AppSettings | null>(null)
+  const { data: user } = useAuthProfile()
+  const { data: settings } = useUserSettings()
+  const updateSettingsMutation = useUpdateSettings()
   const [storageUsage, setStorageUsage] = useState({ notes: 0, attachments: 0, total: 0 })
   const [isExporting, setIsExporting] = useState(false)
-  const [theme, setTheme] = useKV('app-theme', 'system')
+  const [theme, setTheme] = useState(settings?.theme || 'system')
 
   useEffect(() => {
     if (isOpen) {
-      loadSettings()
       loadStorageUsage()
     }
   }, [isOpen])
 
-  const loadSettings = async () => {
-    if (!user?.id) return
-    
-    try {
-      let userSettings = await offlineStorage.getSettings(user.id)
-      
-      if (!userSettings) {
-        // Create default settings
-        userSettings = {
-          id: user.id,
-          userId: user.id,
-          model: 'gemini-1.5-flash',
-          maxTokens: 4000,
-          autoReembed: true,
-          offlineMode: false,
-          syncOnWifi: true,
-          voiceLanguage: 'en-US',
-          theme: 'system',
-          updatedAt: new Date()
-        }
-        await offlineStorage.saveSettings(userSettings)
-      }
-      
-      setSettings(userSettings)
-    } catch (error) {
-      console.error('Failed to load settings:', error)
+  useEffect(() => {
+    if (settings?.theme) {
+      setTheme(settings.theme)
     }
-  }
+  }, [settings])
 
   const loadStorageUsage = async () => {
     try {
@@ -92,24 +69,19 @@ export function MobileSettingsSheet({ isOpen, onClose }: MobileSettingsSheetProp
     }
   }
 
-  const updateSetting = async (key: keyof AppSettings, value: any) => {
+  const updateSetting = async (key: string, value: any) => {
     if (!settings) return
 
     try {
       const updatedSettings = {
-        ...settings,
-        [key]: value,
-        updatedAt: new Date()
+        [key]: value
       }
       
-      await offlineStorage.saveSettings(updatedSettings)
-      setSettings(updatedSettings)
+      await updateSettingsMutation.mutateAsync(updatedSettings)
       
       if (key === 'theme') {
         setTheme(value)
       }
-      
-      toast.success('Settings updated')
     } catch (error) {
       console.error('Failed to update settings:', error)
       toast.error('Failed to update settings')

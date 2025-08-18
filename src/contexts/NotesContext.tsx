@@ -1,22 +1,15 @@
-import { createContext, useContext, ReactNode } from 'react'
-import { useKV } from '@github/spark/hooks'
+import { createContext, useContext, ReactNode, useMemo } from 'react'
+import { useNotes, useCreateNote, useUpdateNote, useDeleteNote, useSearchNotes } from '../hooks'
+import { Note } from '../types'
 
-export interface Note {
-  id: string
-  title: string
-  content: string
-  tags: string[]
-  category?: string
-  createdAt: string
-  updatedAt: string
-  embeddings?: number[]
-}
+// Re-export Note type for backward compatibility
+export type { Note }
 
 interface NotesContextType {
   notes: Note[]
   isLoading: boolean
-  createNote: (note: Omit<Note, 'id' | 'createdAt' | 'updatedAt'>) => Promise<Note>
-  updateNote: (id: string, updates: Partial<Note>) => Promise<void>
+  createNote: (note: { title: string; content: string; tags?: string[]; category?: string }) => Promise<Note>
+  updateNote: (id: string, updates: { title?: string; content?: string; tags?: string[]; category?: string }) => Promise<void>
   deleteNote: (id: string) => Promise<void>
   searchNotes: (query: string) => Note[]
   getRelatedNotes: (noteId: string) => Note[]
@@ -26,59 +19,28 @@ interface NotesContextType {
 const NotesContext = createContext<NotesContextType | undefined>(undefined)
 
 export function NotesProvider({ children }: { children: ReactNode }) {
-  const [notes, setNotes] = useKV<Note[]>('user-notes', [])
-  const [isLoading, setIsLoading] = useKV('notes-loading', false)
+  const { data: notes = [], isLoading } = useNotes()
+  const createNoteMutation = useCreateNote()
+  const updateNoteMutation = useUpdateNote()
+  const deleteNoteMutation = useDeleteNote()
 
-  const createNote = async (noteData: Omit<Note, 'id' | 'createdAt' | 'updatedAt'>): Promise<Note> => {
-    setIsLoading(true)
-    try {
-      const newNote: Note = {
-        ...noteData,
-        id: `note-${Date.now()}`,
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-      }
-
-      // Simulate AI categorization
-      if (noteData.content.toLowerCase().includes('meeting') || noteData.title.toLowerCase().includes('meeting')) {
-        newNote.category = 'meetings'
-      } else if (noteData.content.toLowerCase().includes('idea') || noteData.title.toLowerCase().includes('idea')) {
-        newNote.category = 'ideas'
-      } else if (noteData.content.toLowerCase().includes('task') || noteData.content.toLowerCase().includes('todo')) {
-        newNote.category = 'tasks'
-      } else {
-        newNote.category = 'general'
-      }
-
-      setNotes(currentNotes => [...currentNotes, newNote])
-      return newNote
-    } finally {
-      setIsLoading(false)
-    }
+  const createNote = async (noteData: { title: string; content: string; tags?: string[]; category?: string }): Promise<Note> => {
+    const result = await createNoteMutation.mutateAsync({
+      title: noteData.title,
+      content: noteData.content,
+      tags: noteData.tags || [],
+      category: noteData.category,
+      workspaceId: 'default' // Use default workspace for now
+    })
+    return result
   }
 
-  const updateNote = async (id: string, updates: Partial<Note>) => {
-    setIsLoading(true)
-    try {
-      setNotes(currentNotes =>
-        currentNotes.map(note =>
-          note.id === id
-            ? { ...note, ...updates, updatedAt: new Date().toISOString() }
-            : note
-        )
-      )
-    } finally {
-      setIsLoading(false)
-    }
+  const updateNote = async (id: string, updates: { title?: string; content?: string; tags?: string[]; category?: string }) => {
+    await updateNoteMutation.mutateAsync({ id, data: updates })
   }
 
   const deleteNote = async (id: string) => {
-    setIsLoading(true)
-    try {
-      setNotes(currentNotes => currentNotes.filter(note => note.id !== id))
-    } finally {
-      setIsLoading(false)
-    }
+    await deleteNoteMutation.mutateAsync(id)
   }
 
   const searchNotes = (query: string): Note[] => {
@@ -88,7 +50,7 @@ export function NotesProvider({ children }: { children: ReactNode }) {
     return notes.filter(note =>
       note.title.toLowerCase().includes(searchTerm) ||
       note.content.toLowerCase().includes(searchTerm) ||
-      note.tags.some(tag => tag.toLowerCase().includes(searchTerm)) ||
+      note.tags?.some(tag => tag.toLowerCase().includes(searchTerm)) ||
       note.category?.toLowerCase().includes(searchTerm)
     )
   }
@@ -101,7 +63,7 @@ export function NotesProvider({ children }: { children: ReactNode }) {
       .filter(note => note.id !== noteId)
       .filter(note => 
         note.category === currentNote.category ||
-        note.tags.some(tag => currentNote.tags.includes(tag))
+        note.tags?.some(tag => currentNote.tags?.includes(tag))
       )
       .slice(0, 3)
   }
@@ -110,17 +72,19 @@ export function NotesProvider({ children }: { children: ReactNode }) {
     return notes.find(note => note.id === id)
   }
 
+  const contextValue = useMemo(() => ({
+    notes,
+    isLoading: isLoading || createNoteMutation.isPending || updateNoteMutation.isPending || deleteNoteMutation.isPending,
+    createNote,
+    updateNote,
+    deleteNote,
+    searchNotes,
+    getRelatedNotes,
+    getNote
+  }), [notes, isLoading, createNoteMutation, updateNoteMutation, deleteNoteMutation])
+
   return (
-    <NotesContext.Provider value={{
-      notes,
-      isLoading,
-      createNote,
-      updateNote,
-      deleteNote,
-      searchNotes,
-      getRelatedNotes,
-      getNote
-    }}>
+    <NotesContext.Provider value={contextValue}>
       {children}
     </NotesContext.Provider>
   )

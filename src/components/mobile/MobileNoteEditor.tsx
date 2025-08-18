@@ -19,7 +19,6 @@ import {
   Clock
 } from '@phosphor-icons/react'
 import { OfflineNote } from '@/lib/offline-storage'
-import { useKV } from '@github/spark/hooks'
 import { toast } from 'sonner'
 
 interface MobileNoteEditorProps {

@@ -17,7 +17,6 @@ import {
   Robot,
   User
 } from '@phosphor-icons/react'
-import { useKV } from '@github/spark/hooks'
 import { cn } from '../../lib/utils'
 import { toast } from 'sonner'
 
@@ -45,7 +44,7 @@ export function AIChatHistory({
   selectedConversationId,
   className 
 }: AIChatHistoryProps) {
-  const [conversations, setConversations] = useKV<ChatConversation[]>('ai-chat-history', [])
+  const [conversations, setConversations] = useState<ChatConversation[]>([])
   const [searchQuery, setSearchQuery] = useState('')
   const [filterBy, setFilterBy] = useState<'all' | 'note-related' | 'general'>('all')
   const [sortBy, setSortBy] = useState<'recent' | 'oldest' | 'most-messages'>('recent')

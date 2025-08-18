@@ -18,7 +18,7 @@ import {
 } from '@phosphor-icons/react'
 import { useOfflineNotes } from '@/contexts/OfflineNotesContext'
 import { offlineStorage, VoiceRecording } from '@/lib/offline-storage'
-import { useKV } from '@github/spark/hooks'
+import { useAuthProfile } from '@/hooks'
 import { v4 as uuidv4 } from 'uuid'
 import { toast } from 'sonner'
 
@@ -28,7 +28,7 @@ interface VoiceNoteRecorderProps {
 
 export function VoiceNoteRecorder({ onBack }: VoiceNoteRecorderProps) {
   const { createNote } = useOfflineNotes()
-  const [user] = useKV('current-user', null)
+  const { data: user } = useAuthProfile()
   
   const [isRecording, setIsRecording] = useState(false)
   const [isPaused, setIsPaused] = useState(false)

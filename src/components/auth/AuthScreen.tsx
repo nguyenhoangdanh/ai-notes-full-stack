@@ -12,17 +12,20 @@ import {
   EyeSlash,
   Sparkle
 } from '@phosphor-icons/react'
-import { useKV } from '@github/spark/hooks'
+import { useLogin, useRegister } from '@/hooks'
 import { toast } from 'sonner'
 
 export function AuthScreen() {
-  const [, setUser] = useKV('current-user', null)
   const [isLogin, setIsLogin] = useState(true)
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [name, setName] = useState('')
   const [showPassword, setShowPassword] = useState(false)
-  const [isLoading, setIsLoading] = useState(false)
+
+  const loginMutation = useLogin()
+  const registerMutation = useRegister()
+
+  const isLoading = loginMutation.isPending || registerMutation.isPending
 
   const handleAuth = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -32,49 +35,27 @@ export function AuthScreen() {
       return
     }
 
-    setIsLoading(true)
-    
     try {
-      // Simulate authentication for demo
-      await new Promise(resolve => setTimeout(resolve, 1000))
-      
-      const user = {
-        id: 'demo-user-' + Date.now(),
-        email,
-        name: name || email.split('@')[0],
-        image: null
+      if (isLogin) {
+        await loginMutation.mutateAsync({ email, password })
+      } else {
+        await registerMutation.mutateAsync({ email, password, name })
       }
-      
-      setUser(user)
-      toast.success(isLogin ? 'Welcome back!' : 'Account created successfully!')
     } catch (error) {
+      // Error handling is done in the mutation hooks
       console.error('Auth failed:', error)
-      toast.error('Authentication failed')
-    } finally {
-      setIsLoading(false)
     }
   }
 
   const handleDemoLogin = async () => {
-    setIsLoading(true)
-    
     try {
-      await new Promise(resolve => setTimeout(resolve, 500))
-      
-      const demoUser = {
-        id: 'demo-user',
-        email: 'demo@example.com',
-        name: 'Demo User',
-        image: null
-      }
-      
-      setUser(demoUser)
-      toast.success('Welcome to the demo!')
+      await loginMutation.mutateAsync({ 
+        email: 'demo@example.com', 
+        password: 'demo-password' 
+      })
     } catch (error) {
       console.error('Demo login failed:', error)
       toast.error('Demo login failed')
-    } finally {
-      setIsLoading(false)
     }
   }
 
