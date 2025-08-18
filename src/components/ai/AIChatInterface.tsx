@@ -14,7 +14,7 @@ import {
   MagicWand,
   FileText,
   X,
-  SparkleIcon,
+  Sparkle,
   ArrowClockwise
 } from '@phosphor-icons/react'
 import { useAI } from '../../contexts/AIContext'
@@ -45,7 +45,7 @@ const QUICK_PROMPTS = [
   { icon: Lightning, text: "Summarize this note", prompt: "Please provide a concise summary of this note" },
   { icon: MagicWand, text: "Improve writing", prompt: "Please help improve the writing style and clarity of this note" },
   { icon: FileText, text: "Create outline", prompt: "Create a structured outline based on this note's content" },
-  { icon: SparkleIcon, text: "Generate ideas", prompt: "Generate related ideas and concepts based on this note" }
+  { icon: Sparkle, text: "Generate ideas", prompt: "Generate related ideas and concepts based on this note" }
 ]
 
 export function AIChatInterface({ 
@@ -60,6 +60,7 @@ export function AIChatInterface({
     activeConversation: currentConversation, 
     sendMessage: askAI, 
     createConversation, 
+    deleteConversation,
     isProcessing: isLoading,
     startNewChat
   } = useAI()
@@ -262,7 +263,7 @@ export function AIChatInterface({
                   message.role === 'user' ? 'justify-end' : ''
                 )}>
                   <span>
-                    {message.timestamp.toLocaleTimeString([], { 
+                    {new Date(message.timestamp).toLocaleTimeString([], { 
                       hour: '2-digit', 
                       minute: '2-digit' 
                     })}

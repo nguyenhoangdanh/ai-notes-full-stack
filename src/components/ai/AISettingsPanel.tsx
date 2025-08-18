@@ -16,7 +16,7 @@ import {
   Shield,
   ChartBar,
   Robot,
-  ChatSquare
+  ChatCircle
 } from '@phosphor-icons/react'
 import { useAI } from '../../contexts/AIContext'
 import { cn } from '../../lib/utils'
@@ -332,7 +332,7 @@ export function AISettingsPanel({ className }: AISettingsPanelProps) {
         <CardContent>
           <div className="grid grid-cols-2 gap-3">
             <Button variant="outline" size="sm" className="justify-start">
-              <ChatSquare className="h-4 w-4 mr-2" />
+              <ChatCircle className="h-4 w-4 mr-2" />
               New Chat
             </Button>
             <Button variant="outline" size="sm" className="justify-start">

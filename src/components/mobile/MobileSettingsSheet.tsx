@@ -8,18 +8,18 @@ import { Progress } from '@/components/ui/progress'
 import { 
   ArrowLeft, 
   User, 
-  Sync, 
+  ArrowsClockwise, 
   Download, 
   Upload, 
-  Trash2,
+  Trash,
   Shield,
   Database,
-  Wifi,
-  WifiOff,
+  WifiHigh,
+  WifiSlash,
   Cloud,
   HardDrive,
   Info,
-  ExternalLink,
+  ArrowSquareOut,
   Moon,
   Sun
 } from '@phosphor-icons/react'
@@ -208,9 +208,9 @@ export function MobileSettingsSheet({ isOpen, onClose }: MobileSettingsSheetProp
           <Card className="p-4">
             <div className="flex items-center gap-3 mb-4">
               {syncStatus.isOnline ? (
-                <Wifi className="h-5 w-5 text-green-600" />
+                <WifiHigh className="h-5 w-5 text-green-600" />
               ) : (
-                <WifiOff className="h-5 w-5 text-red-600" />
+                <WifiSlash className="h-5 w-5 text-red-600" />
               )}
               <div>
                 <h3 className="font-medium">Sync Status</h3>
@@ -241,7 +241,7 @@ export function MobileSettingsSheet({ isOpen, onClose }: MobileSettingsSheetProp
               disabled={syncStatus.isSyncing || !syncStatus.isOnline}
               className="w-full"
             >
-              <Sync className={`h-4 w-4 mr-2 ${syncStatus.isSyncing ? 'animate-spin' : ''}`} />
+              <ArrowsClockwise className={`h-4 w-4 mr-2 ${syncStatus.isSyncing ? 'animate-spin' : ''}`} />
               {syncStatus.isSyncing ? 'Syncing...' : 'Sync Now'}
             </Button>
           </Card>
@@ -297,7 +297,7 @@ export function MobileSettingsSheet({ isOpen, onClose }: MobileSettingsSheetProp
                 {/* Sync on WiFi Only */}
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
-                    <Wifi className="h-5 w-5" />
+                    <WifiHigh className="h-5 w-5" />
                     <div>
                       <p className="font-medium">WiFi Only Sync</p>
                       <p className="text-sm text-muted-foreground">Save mobile data</p>
@@ -385,7 +385,7 @@ export function MobileSettingsSheet({ isOpen, onClose }: MobileSettingsSheetProp
                 onClick={handleClearData}
                 className="w-full justify-start"
               >
-                <Trash2 className="h-4 w-4 mr-3" />
+                <Trash className="h-4 w-4 mr-3" />
                 Clear All Data
               </Button>
             </div>
@@ -429,7 +429,7 @@ export function MobileSettingsSheet({ isOpen, onClose }: MobileSettingsSheetProp
                 size="sm"
                 className="w-full"
               >
-                <ExternalLink className="h-4 w-4 mr-2" />
+                <ArrowSquareOut className="h-4 w-4 mr-2" />
                 View on GitHub
               </Button>
             </div>

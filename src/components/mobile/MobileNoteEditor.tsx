@@ -8,11 +8,11 @@ import {
   ArrowLeft, 
   Check, 
   Share, 
-  Trash2, 
+  Trash, 
   Tag, 
-  Mic, 
-  Bold, 
-  Italic, 
+  Microphone, 
+  TextB, 
+  TextItalic, 
   List,
   Camera,
   MapPin,
@@ -265,7 +265,7 @@ export function MobileNoteEditor({ note, onBack, onUpdate }: MobileNoteEditorPro
             onClick={() => formatText('bold')}
             className="h-8 px-3 flex-shrink-0"
           >
-            <Bold className="h-4 w-4" />
+            <TextB className="h-4 w-4" />
           </Button>
           
           <Button
@@ -274,7 +274,7 @@ export function MobileNoteEditor({ note, onBack, onUpdate }: MobileNoteEditorPro
             onClick={() => formatText('italic')}
             className="h-8 px-3 flex-shrink-0"
           >
-            <Italic className="h-4 w-4" />
+            <TextItalic className="h-4 w-4" />
           </Button>
           
           <Button
@@ -295,7 +295,7 @@ export function MobileNoteEditor({ note, onBack, onUpdate }: MobileNoteEditorPro
             disabled={isRecording}
             className="h-8 px-3 flex-shrink-0"
           >
-            <Mic className={`h-4 w-4 ${isRecording ? 'text-red-500' : ''}`} />
+            <Microphone className={`h-4 w-4 ${isRecording ? 'text-red-500' : ''}`} />
           </Button>
           
           <Button

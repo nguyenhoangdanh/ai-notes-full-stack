@@ -17,9 +17,14 @@ export interface AIConversation {
 }
 
 export interface AIMessage {
+  id: string;
   role: 'user' | 'assistant' | 'system';
   content: string;
   timestamp: string;
+  noteContext?: {
+    id: string;
+    title: string;
+  };
 }
 
 // Alias for backward compatibility

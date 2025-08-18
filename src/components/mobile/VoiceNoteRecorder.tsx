@@ -6,11 +6,11 @@ import { Badge } from '@/components/ui/badge'
 import { Progress } from '@/components/ui/progress'
 import { 
   ArrowLeft, 
-  Mic, 
+  Microphone, 
   Square, 
   Play, 
   Pause, 
-  Trash2, 
+  Trash, 
   FileText, 
   Download,
   Check,
@@ -328,7 +328,7 @@ export function VoiceNoteRecorder({ onBack }: VoiceNoteRecorderProps) {
                   transition={{ repeat: Infinity, duration: 1 }}
                   className="inline-flex items-center justify-center w-20 h-20 bg-red-500 rounded-full"
                 >
-                  <Mic className="h-8 w-8 text-white" />
+                  <Microphone className="h-8 w-8 text-white" />
                 </motion.div>
                 
                 <div>
@@ -351,7 +351,7 @@ export function VoiceNoteRecorder({ onBack }: VoiceNoteRecorderProps) {
             ) : (
               <div className="space-y-4">
                 <div className="inline-flex items-center justify-center w-20 h-20 bg-primary rounded-full">
-                  <Mic className="h-8 w-8 text-primary-foreground" />
+                  <Microphone className="h-8 w-8 text-primary-foreground" />
                 </div>
                 <p className="text-muted-foreground">Tap to start recording</p>
               </div>
@@ -386,7 +386,7 @@ export function VoiceNoteRecorder({ onBack }: VoiceNoteRecorderProps) {
                 onClick={startRecording}
                 className="rounded-full px-8"
               >
-                <Mic className="h-6 w-6 mr-2" />
+                <Microphone className="h-6 w-6 mr-2" />
                 Record
               </Button>
             )}
@@ -429,7 +429,7 @@ export function VoiceNoteRecorder({ onBack }: VoiceNoteRecorderProps) {
                         onClick={() => deleteRecording(recording.id)}
                         className="h-8 w-8 p-0"
                       >
-                        <Trash2 className="h-4 w-4" />
+                        <Trash className="h-4 w-4" />
                       </Button>
                     </div>
                   </div>

@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useCallback } from 'react'
-import { useConversations, useCreateConversation, useSendMessage, useSemanticSearch } from '../hooks/useAI'
+import { useConversations, useCreateConversation, useSendMessage, useDeleteConversation, useSemanticSearch } from '../hooks/useAI'
 import { CreateConversationDto, SendMessageDto, SemanticSearchDto, AIConversation, SemanticSearchResult } from '../types/ai.types'
 import { toast } from 'sonner'
 
@@ -16,6 +16,7 @@ interface AIContextType {
   
   // Conversation operations
   createConversation: (data: CreateConversationDto) => Promise<AIConversation | undefined>
+  deleteConversation: (conversationId: string) => Promise<void>
   selectConversation: (conversation: AIConversation | null) => void
   sendMessage: (message: string, context?: string[]) => Promise<void>
   
@@ -35,6 +36,7 @@ export function AIProvider({ children }: { children: React.ReactNode }) {
   // Use the AI hooks
   const { data: conversations = [], isLoading: isLoadingConversations } = useConversations()
   const createConversationMutation = useCreateConversation()
+  const deleteConversationMutation = useDeleteConversation()
   const sendMessageMutation = useSendMessage()
   const semanticSearchMutation = useSemanticSearch()
 
@@ -51,6 +53,23 @@ export function AIProvider({ children }: { children: React.ReactNode }) {
       setIsProcessing(false)
     }
   }, [createConversationMutation])
+
+  const deleteConversation = useCallback(async (conversationId: string): Promise<void> => {
+    try {
+      setIsProcessing(true)
+      await deleteConversationMutation.mutateAsync(conversationId)
+      
+      // If we're deleting the active conversation, clear it
+      if (activeConversation?.id === conversationId) {
+        setActiveConversation(null)
+      }
+    } catch (error) {
+      console.error('Failed to delete conversation:', error)
+      throw error
+    } finally {
+      setIsProcessing(false)
+    }
+  }, [deleteConversationMutation, activeConversation])
 
   const selectConversation = useCallback((conversation: AIConversation | null) => {
     setActiveConversation(conversation)
@@ -120,6 +139,7 @@ export function AIProvider({ children }: { children: React.ReactNode }) {
     isSending: sendMessageMutation.isPending,
     isSearching: semanticSearchMutation.isPending,
     createConversation,
+    deleteConversation,
     selectConversation,
     sendMessage,
     performSemanticSearch,
