@@ -1,52 +1,50 @@
-import { getApiClient } from '../lib/api-client'
-import type {
-  RegisterDto,
-  LoginDto,
-  AuthResponse,
-  AuthVerifyResponse,
-  User,
-  UserSettings,
-  Usage,
-} from '../types'
+/**
+ * Authentication API Service
+ */
+
+import { apiClient } from '../lib/api-client';
+import { 
+  AuthResponseDto, 
+  LoginDto, 
+  RegisterDto, 
+  TokenVerificationResponse, 
+  User 
+} from '../types/auth.types';
 
 export const authService = {
-  // Authentication endpoints
-  async register(data: RegisterDto): Promise<AuthResponse> {
-    return getApiClient().post<AuthResponse>('/auth/register', { body: data })
+  /**
+   * Register a new user with email and password
+   */
+  async register(data: RegisterDto): Promise<AuthResponseDto> {
+    return apiClient.post<AuthResponseDto>('/auth/register', { body: data });
   },
 
-  async login(data: LoginDto): Promise<AuthResponse> {
-    return getApiClient().post<AuthResponse>('/auth/login', { body: data })
+  /**
+   * Login with email and password
+   */
+  async login(data: LoginDto): Promise<AuthResponseDto> {
+    return apiClient.post<AuthResponseDto>('/auth/login', { body: data });
   },
 
-  async verify(): Promise<AuthVerifyResponse> {
-    return getApiClient().get<AuthVerifyResponse>('/auth/verify')
+  /**
+   * Initiate Google OAuth login
+   */
+  async googleLogin(): Promise<void> {
+    // This will redirect to Google OAuth
+    window.location.href = `${import.meta.env.VITE_API_BASE_URL || 'http://localhost:3001'}/auth/google`;
   },
 
+  /**
+   * Verify current JWT token
+   */
+  async verifyToken(): Promise<TokenVerificationResponse> {
+    return apiClient.get<TokenVerificationResponse>('/auth/verify');
+  },
+
+  /**
+   * Get current user profile
+   */
   async getProfile(): Promise<User> {
-    return getApiClient().get<User>('/auth/me')
-  },
-
-  // OAuth endpoints (these return redirects, handled by browser)
-  getGoogleAuthUrl(): string {
-    return `${getApiClient()['config'].baseURL}/auth/google`
-  },
-
-  // Settings endpoints
-  async getSettings(): Promise<UserSettings> {
-    return getApiClient().get<UserSettings>('/settings')
-  },
-
-  async updateSettings(data: Partial<UserSettings>): Promise<UserSettings> {
-    return getApiClient().patch<UserSettings>('/settings', { body: data })
-  },
-
-  async resetSettings(): Promise<UserSettings> {
-    return getApiClient().post<UserSettings>('/settings/reset')
-  },
-
-  // Usage tracking
-  async getUsage(): Promise<Usage[]> {
-    return getApiClient().get<Usage[]>('/settings/usage')
-  },
-}
+    return apiClient.get<User>('/auth/me');
+  }
+};

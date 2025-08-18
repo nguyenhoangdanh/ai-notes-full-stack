@@ -1,6 +1,8 @@
 import React, { createContext, useContext, useEffect, useState, useCallback } from 'react'
 import { offlineStorage, OfflineNote, OfflineWorkspace } from '@/lib/offline-storage'
 import { syncService, SyncStatus } from '@/lib/sync-service'
+import { useAuth } from './AuthContext'
+import { useNotes, useWorkspaces, useCreateNote, useUpdateNote, useDeleteNote, useCreateWorkspace } from '../hooks'
 import { v4 as uuidv4 } from 'uuid'
 import { toast } from 'sonner'
 
@@ -47,8 +49,18 @@ interface OfflineNotesContextType {
 const OfflineNotesContext = createContext<OfflineNotesContextType | undefined>(undefined)
 
 export function OfflineNotesProvider({ children }: { children: React.ReactNode }) {
-  // For now, use a mock user ID. In production, this would come from AuthContext
-  const userId = 'mock-user-1'
+  const { user } = useAuth()
+  const userId = user?.id
+  
+  // Use the new hooks for API calls
+  const { data: serverNotes, isLoading: notesLoading } = useNotes()
+  const { data: serverWorkspaces, isLoading: workspacesLoading } = useWorkspaces()
+  const createNoteMutation = useCreateNote()
+  const updateNoteMutation = useUpdateNote()
+  const deleteNoteMutation = useDeleteNote()
+  const createWorkspaceMutation = useCreateWorkspace()
+  
+  // Local state for offline functionality
   const [notes, setNotes] = useState<OfflineNote[]>([])
   const [workspaces, setWorkspaces] = useState<OfflineWorkspace[]>([])
   const [currentNote, setCurrentNote] = useState<OfflineNote | null>(null)
@@ -63,8 +75,10 @@ export function OfflineNotesProvider({ children }: { children: React.ReactNode }
 
   // Initialize data on mount
   useEffect(() => {
-    initializeData()
-  }, [userId])
+    if (userId && !notesLoading && !workspacesLoading) {
+      initializeData()
+    }
+  }, [userId, notesLoading, workspacesLoading])
 
   // Setup sync listener
   useEffect(() => {
@@ -78,23 +92,50 @@ export function OfflineNotesProvider({ children }: { children: React.ReactNode }
     try {
       setIsLoading(true)
       
-      // Load workspaces
-      const userWorkspaces = await offlineStorage.getWorkspaces(userId)
-      setWorkspaces(userWorkspaces)
-      
-      // Set default workspace
-      let defaultWorkspace = await offlineStorage.getDefaultWorkspace(userId)
-      if (!defaultWorkspace && userWorkspaces.length === 0) {
-        defaultWorkspace = await createDefaultWorkspace(userId)
-      } else if (!defaultWorkspace) {
-        defaultWorkspace = userWorkspaces[0]
-      }
-      setCurrentWorkspace(defaultWorkspace)
-      
-      // Load notes for current workspace
-      if (defaultWorkspace) {
-        const workspaceNotes = await offlineStorage.getNotes(defaultWorkspace.id)
-        setNotes(workspaceNotes)
+      // Try to load from server first if online, fallback to offline storage
+      if (navigator.onLine && serverWorkspaces && serverNotes) {
+        // Convert server data to offline format
+        const offlineWorkspaces: OfflineWorkspace[] = serverWorkspaces.map(ws => ({
+          ...ws,
+          createdAt: new Date(ws.createdAt),
+          updatedAt: new Date(ws.updatedAt),
+          syncStatus: 'synced' as const
+        }))
+        
+        const offlineNotes: OfflineNote[] = serverNotes.map(note => ({
+          ...note,
+          createdAt: new Date(note.createdAt),
+          updatedAt: new Date(note.updatedAt),
+          syncStatus: 'synced' as const
+        }))
+        
+        setWorkspaces(offlineWorkspaces)
+        setNotes(offlineNotes)
+        
+        // Set default workspace
+        const defaultWs = offlineWorkspaces.find(ws => ws.isDefault) || offlineWorkspaces[0]
+        if (defaultWs) {
+          setCurrentWorkspace(defaultWs)
+        }
+      } else {
+        // Load from offline storage
+        const userWorkspaces = await offlineStorage.getWorkspaces(userId)
+        setWorkspaces(userWorkspaces)
+        
+        // Set default workspace
+        let defaultWorkspace = await offlineStorage.getDefaultWorkspace(userId)
+        if (!defaultWorkspace && userWorkspaces.length === 0) {
+          defaultWorkspace = await createDefaultWorkspace(userId)
+        } else if (!defaultWorkspace) {
+          defaultWorkspace = userWorkspaces[0]
+        }
+        setCurrentWorkspace(defaultWorkspace)
+        
+        // Load notes for current workspace
+        if (defaultWorkspace) {
+          const workspaceNotes = await offlineStorage.getNotes(defaultWorkspace.id)
+          setNotes(workspaceNotes)
+        }
       }
       
       // Initialize sync status
@@ -120,6 +161,26 @@ export function OfflineNotesProvider({ children }: { children: React.ReactNode }
       syncStatus: 'pending'
     }
     
+    // Try to create on server first if online
+    if (navigator.onLine) {
+      try {
+        const serverWorkspace = await createWorkspaceMutation.mutateAsync({
+          name: workspace.name,
+          isDefault: true
+        })
+        
+        return {
+          ...serverWorkspace,
+          createdAt: new Date(serverWorkspace.createdAt),
+          updatedAt: new Date(serverWorkspace.updatedAt),
+          syncStatus: 'synced'
+        }
+      } catch (error) {
+        console.warn('Failed to create workspace on server, saving offline:', error)
+      }
+    }
+    
+    // Fallback to offline storage
     await offlineStorage.saveWorkspace(workspace)
     await offlineStorage.addToSyncQueue('create', 'workspace', workspace.id, workspace)
     
@@ -132,12 +193,36 @@ export function OfflineNotesProvider({ children }: { children: React.ReactNode }
       throw new Error('User or workspace not available')
     }
 
-    const note: OfflineNote = {
-      id: uuidv4(),
+    const noteData = {
       title: title || 'Untitled',
       content,
       tags: [],
       workspaceId: currentWorkspace.id,
+    }
+
+    // Try to create on server first if online
+    if (navigator.onLine) {
+      try {
+        const serverNote = await createNoteMutation.mutateAsync(noteData)
+        
+        const offlineNote: OfflineNote = {
+          ...serverNote,
+          createdAt: new Date(serverNote.createdAt),
+          updatedAt: new Date(serverNote.updatedAt),
+          syncStatus: 'synced'
+        }
+        
+        setNotes(prev => [offlineNote, ...prev])
+        return offlineNote
+      } catch (error) {
+        console.warn('Failed to create note on server, saving offline:', error)
+      }
+    }
+
+    // Fallback to offline storage
+    const note: OfflineNote = {
+      id: uuidv4(),
+      ...noteData,
       ownerId: userId,
       isDeleted: false,
       createdAt: new Date(),
@@ -158,10 +243,43 @@ export function OfflineNotesProvider({ children }: { children: React.ReactNode }
       toast.error('Failed to create note')
       throw error
     }
-  }, [userId, currentWorkspace])
+  }, [userId, currentWorkspace, createNoteMutation])
 
   const updateNote = useCallback(async (id: string, updates: Partial<OfflineNote>): Promise<void> => {
     try {
+      // Try to update on server first if online
+      if (navigator.onLine) {
+        try {
+          const serverNote = await updateNoteMutation.mutateAsync({
+            id,
+            data: {
+              title: updates.title,
+              content: updates.content,
+              tags: updates.tags,
+              workspaceId: updates.workspaceId
+            }
+          })
+          
+          const updatedNote: OfflineNote = {
+            ...serverNote,
+            createdAt: new Date(serverNote.createdAt),
+            updatedAt: new Date(serverNote.updatedAt),
+            syncStatus: 'synced'
+          }
+          
+          setNotes(prev => prev.map(note => note.id === id ? updatedNote : note))
+          
+          if (currentNote?.id === id) {
+            setCurrentNote(updatedNote)
+          }
+          
+          return
+        } catch (error) {
+          console.warn('Failed to update note on server, saving offline:', error)
+        }
+      }
+
+      // Fallback to offline storage
       const existingNote = await offlineStorage.getNote(id)
       if (!existingNote) {
         throw new Error('Note not found')
@@ -188,10 +306,28 @@ export function OfflineNotesProvider({ children }: { children: React.ReactNode }
       toast.error('Failed to update note')
       throw error
     }
-  }, [currentNote])
+  }, [currentNote, updateNoteMutation])
 
   const deleteNote = useCallback(async (id: string): Promise<void> => {
     try {
+      // Try to delete on server first if online
+      if (navigator.onLine) {
+        try {
+          await deleteNoteMutation.mutateAsync(id)
+          
+          setNotes(prev => prev.filter(note => note.id !== id))
+          
+          if (currentNote?.id === id) {
+            setCurrentNote(null)
+          }
+          
+          return
+        } catch (error) {
+          console.warn('Failed to delete note on server, saving offline:', error)
+        }
+      }
+
+      // Fallback to offline storage
       await offlineStorage.deleteNote(id)
       await offlineStorage.addToSyncQueue('delete', 'note', id, { id })
       
@@ -207,7 +343,7 @@ export function OfflineNotesProvider({ children }: { children: React.ReactNode }
       toast.error('Failed to delete note')
       throw error
     }
-  }, [currentNote])
+  }, [currentNote, deleteNoteMutation])
 
   const duplicateNote = useCallback(async (id: string): Promise<OfflineNote> => {
     const originalNote = await offlineStorage.getNote(id)
@@ -333,7 +469,7 @@ export function OfflineNotesProvider({ children }: { children: React.ReactNode }
       
       // Import notes
       for (const note of parsedData.notes || []) {
-        if (note.ownerId === user?.id) {
+        if (note.ownerId === userId) {
           note.syncStatus = 'pending'
           await offlineStorage.saveNote(note)
           await offlineStorage.addToSyncQueue('create', 'note', note.id, note)
@@ -348,7 +484,7 @@ export function OfflineNotesProvider({ children }: { children: React.ReactNode }
       toast.error('Failed to import notes')
       throw error
     }
-  }, [user])
+  }, [userId])
 
   const value: OfflineNotesContextType = {
     notes,

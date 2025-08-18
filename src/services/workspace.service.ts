@@ -1,38 +1,55 @@
-import { getApiClient } from '../lib/api-client'
-import type {
-  Workspace,
-  CreateWorkspaceDto,
-  UpdateWorkspaceDto,
-} from '../types'
+/**
+ * Workspace API Service
+ */
+
+import { apiClient } from '../lib/api-client';
+import { 
+  Workspace, 
+  CreateWorkspaceDto, 
+  UpdateWorkspaceDto, 
+  WorkspaceWithStats 
+} from '../types/workspace.types';
 
 export const workspaceService = {
-  // Get all workspaces for current user
-  async getWorkspaces(): Promise<Workspace[]> {
-    return getApiClient().get<Workspace[]>('/workspaces')
+  /**
+   * Get all workspaces for current user
+   */
+  async getAll(): Promise<WorkspaceWithStats[]> {
+    return apiClient.get<WorkspaceWithStats[]>('/workspaces');
   },
 
-  // Get default workspace
-  async getDefaultWorkspace(): Promise<Workspace> {
-    return getApiClient().get<Workspace>('/workspaces/default')
+  /**
+   * Get workspace by ID
+   */
+  async getById(id: string): Promise<Workspace> {
+    return apiClient.get<Workspace>(`/workspaces/${id}`);
   },
 
-  // Create new workspace
-  async createWorkspace(data: CreateWorkspaceDto): Promise<Workspace> {
-    return getApiClient().post<Workspace>('/workspaces', { body: data })
+  /**
+   * Create new workspace
+   */
+  async create(data: CreateWorkspaceDto): Promise<Workspace> {
+    return apiClient.post<Workspace>('/workspaces', { body: data });
   },
 
-  // Update workspace
-  async updateWorkspace(id: string, data: UpdateWorkspaceDto): Promise<Workspace> {
-    return getApiClient().patch<Workspace>(`/workspaces/${id}`, { body: data })
+  /**
+   * Update workspace
+   */
+  async update(id: string, data: UpdateWorkspaceDto): Promise<Workspace> {
+    return apiClient.patch<Workspace>(`/workspaces/${id}`, { body: data });
   },
 
-  // Delete workspace
-  async deleteWorkspace(id: string): Promise<void> {
-    return getApiClient().delete<void>(`/workspaces/${id}`)
+  /**
+   * Delete workspace
+   */
+  async delete(id: string): Promise<void> {
+    return apiClient.delete<void>(`/workspaces/${id}`);
   },
 
-  // Get workspace by ID
-  async getWorkspace(id: string): Promise<Workspace> {
-    return getApiClient().get<Workspace>(`/workspaces/${id}`)
-  },
-}
+  /**
+   * Set default workspace
+   */
+  async setDefault(id: string): Promise<Workspace> {
+    return apiClient.patch<Workspace>(`/workspaces/${id}/default`);
+  }
+};

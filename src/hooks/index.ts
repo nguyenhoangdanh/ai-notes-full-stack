@@ -1,9 +1,18 @@
-// Export all hooks for easy importing
-export * from './use-workspaces'
-export * from './use-notes'
-export * from './use-ai'
-export * from './use-features'
-export * from './query-keys'
+/**
+ * Barrel export for all React Query hooks
+ */
 
-// Note: useAuth is exported from AuthContext, not from use-auth.ts
-// This prevents conflicts between the context-based auth and service-based auth hooks
+// Authentication hooks
+export * from './useAuth';
+
+// Notes hooks
+export * from './useNotes';
+
+// AI & Chat hooks
+export * from './useAI';
+
+// Workspace hooks
+export * from './useWorkspaces';
+
+// Query keys
+export { queryKeys } from './query-keys';

@@ -1,16 +1,20 @@
-import React, { createContext, useContext, useState, useEffect } from 'react'
+import React, { createContext, useContext, useEffect } from 'react'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
-import { useKV } from '@github/spark/hooks'
-import { tokenUtils } from '../lib/api-config'
-import type { User } from '../types'
+import { getAuthToken, setAuthToken, clearAuthToken } from '../lib/api-config'
+import { authService } from '../services/auth.service'
+import { useAuth as useAuthHook } from '../hooks/useAuth'
+import type { User, LoginDto, RegisterDto } from '../types/auth.types'
 
 interface AuthContextType {
   user: User | null
   isLoading: boolean
-  login: (email: string, password: string) => Promise<void>
-  register: (email: string, password: string, name: string) => Promise<void>
-  logout: () => Promise<void>
+  login: (data: LoginDto) => void
+  register: (data: RegisterDto) => void
+  logout: () => void
+  googleLogin: () => void
+  isRegistering: boolean
+  isLoggingIn: boolean
 }
 
 const AuthContext = createContext<AuthContextType | null>(null)
@@ -37,77 +41,39 @@ const queryClient = new QueryClient({
 
 // Auth provider component that uses React Query
 function AuthProviderContent({ children }: { children: React.ReactNode }) {
-  const [token, setToken] = useKV('auth-token', null)
-  const [user, setUser] = useKV('current-user', null)
-  const [isInitialized, setIsInitialized] = useState(false)
+  const auth = useAuthHook()
 
-  // Sync token with API client
+  // Check for existing token on mount
   useEffect(() => {
-    try {
-      if (token) {
-        tokenUtils.setToken(token)
-      } else {
-        tokenUtils.removeToken()
-      }
-    } catch (error) {
-      console.error('Error syncing token:', error)
+    const token = getAuthToken()
+    if (token && !auth.user) {
+      // Verify the token
+      auth.verifyToken()
     }
-    setIsInitialized(true)
-  }, [token])
+  }, [])
 
-  const login = async (email: string, password: string) => {
-    try {
-      // TODO: Implement actual login with backend
-      const mockUser: User = { 
-        id: '1', 
-        email, 
-        name: email.split('@')[0],
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString()
-      }
-      setToken('mock-token')
-      setUser(mockUser)
-    } catch (error) {
-      console.error('Login error:', error)
-      throw error
+  // Handle OAuth callback
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search)
+    const token = urlParams.get('token')
+    
+    if (token) {
+      setAuthToken(token)
+      auth.verifyToken()
+      // Clean up URL
+      window.history.replaceState({}, document.title, window.location.pathname)
     }
-  }
-
-  const register = async (email: string, password: string, name: string) => {
-    try {
-      // TODO: Implement actual register with backend
-      const mockUser: User = { 
-        id: '1', 
-        email, 
-        name,
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString()
-      }
-      setToken('mock-token')
-      setUser(mockUser)
-    } catch (error) {
-      console.error('Register error:', error)
-      throw error
-    }
-  }
-
-  const logout = async () => {
-    try {
-      setToken(null)
-      setUser(null)
-    } catch (error) {
-      console.error('Logout error:', error)
-    }
-  }
-
-  const isLoading = !isInitialized
+  }, [])
 
   const value: AuthContextType = {
-    user: user || null,
-    isLoading,
-    login,
-    register,
-    logout
+    user: auth.user || null,
+    isLoading: auth.isLoading,
+    login: auth.login,
+    register: auth.register,
+    logout: auth.logout,
+    googleLogin: auth.googleLogin,
+    isRegistering: auth.isRegistering,
+    isLoggingIn: auth.isLoggingIn,
   }
 
   return (

@@ -1,17 +1,33 @@
-import { BaseEntity } from './common.types'
+/**
+ * Workspace Types
+ */
 
-// Workspace entity
-export interface Workspace extends BaseEntity {
-  name: string
-  ownerId: string
-  isDefault: boolean
+export interface Workspace {
+  id: string;
+  name: string;
+  ownerId: string;
+  isDefault: boolean;
+  createdAt: string;
+  updatedAt: string;
 }
 
-// Workspace DTOs
 export interface CreateWorkspaceDto {
-  name: string
+  name: string;
+  isDefault?: boolean;
 }
 
 export interface UpdateWorkspaceDto {
-  name?: string
+  name?: string;
+  isDefault?: boolean;
+}
+
+export interface WorkspaceWithStats {
+  id: string;
+  name: string;
+  ownerId: string;
+  isDefault: boolean;
+  createdAt: string;
+  updatedAt: string;
+  noteCount: number;
+  lastActivity?: string;
 }

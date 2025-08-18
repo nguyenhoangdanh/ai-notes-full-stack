@@ -1,302 +1,187 @@
-import { ErrorResponse } from '../types'
+/**
+ * Lightweight fetch-based API client for AI Notes Backend
+ * Provides typed HTTP operations with authentication and error handling
+ */
 
-// Configuration for the API client
-export interface ApiClientConfig {
-  baseURL: string
-  timeout?: number
-  getToken?: () => string | null
-  onError?: (error: HTTPError) => void
+export interface ApiResponse<T = any> {
+  success: boolean;
+  data?: T;
+  message?: string;
+  timestamp: string;
+  pagination?: {
+    page: number;
+    limit: number;
+    total: number;
+    pages: number;
+    hasNext: boolean;
+    hasPrev: boolean;
+  };
 }
 
-// HTTP Error class with detailed information
+export interface ApiError {
+  success: false;
+  message: string;
+  error: string;
+  statusCode: number;
+  timestamp: string;
+  path?: string;
+}
+
 export class HTTPError extends Error {
-  public readonly status: number
-  public readonly statusText: string
-  public readonly response?: ErrorResponse
-  public readonly url: string
-
   constructor(
-    status: number, 
-    statusText: string, 
-    url: string, 
-    response?: ErrorResponse
+    public status: number,
+    public response: ApiError,
+    public url: string
   ) {
-    const message = response?.message || statusText || `HTTP ${status} Error`
-    super(message)
-    
-    this.name = 'HTTPError'
-    this.status = status
-    this.statusText = statusText
-    this.url = url
-    this.response = response
-  }
-
-  get isClientError(): boolean {
-    return this.status >= 400 && this.status < 500
-  }
-
-  get isServerError(): boolean {
-    return this.status >= 500
-  }
-
-  get isNetworkError(): boolean {
-    return this.status === 0
+    super(response.message || `HTTP ${status} Error`);
+    this.name = 'HTTPError';
   }
 }
 
-// Request options interface
 export interface RequestOptions {
-  headers?: Record<string, string>
-  signal?: AbortSignal
-  timeout?: number
+  query?: Record<string, any>;
+  headers?: Record<string, string>;
+  signal?: AbortSignal;
 }
 
-export interface RequestOptionsWithBody extends RequestOptions {
-  body?: any
-}
+class ApiClient {
+  private baseURL: string;
+  private tokenGetter?: () => string | null;
 
-export interface RequestOptionsWithQuery extends RequestOptions {
-  query?: Record<string, any>
-}
-
-// API Client class
-export class ApiClient {
-  private config: Required<ApiClientConfig>
-
-  constructor(config: ApiClientConfig) {
-    this.config = {
-      baseURL: config.baseURL.replace(/\/$/, ''), // Remove trailing slash
-      timeout: config.timeout || 30000,
-      getToken: config.getToken || (() => null),
-      onError: config.onError || (() => {}),
-    }
+  constructor(baseURL: string) {
+    this.baseURL = baseURL.replace(/\/$/, ''); // Remove trailing slash
   }
 
-  // Serialize query parameters
+  setTokenGetter(getter: () => string | null) {
+    this.tokenGetter = getter;
+  }
+
   private serializeQuery(query: Record<string, any>): string {
-    const params = new URLSearchParams()
+    const params = new URLSearchParams();
     
-    Object.entries(query).forEach(([key, value]) => {
+    for (const [key, value] of Object.entries(query)) {
       if (value !== undefined && value !== null) {
         if (Array.isArray(value)) {
-          value.forEach(v => params.append(key, String(v)))
+          value.forEach(item => params.append(key, String(item)));
         } else {
-          params.append(key, String(value))
+          params.append(key, String(value));
         }
       }
-    })
-    
-    const queryString = params.toString()
-    return queryString ? `?${queryString}` : ''
-  }
-
-  // Build full URL with query parameters
-  private buildUrl(path: string, query?: Record<string, any>): string {
-    const cleanPath = path.startsWith('/') ? path.slice(1) : path
-    const baseUrl = `${this.config.baseURL}/${cleanPath}`
-    
-    if (query && Object.keys(query).length > 0) {
-      return baseUrl + this.serializeQuery(query)
     }
     
-    return baseUrl
+    return params.toString();
   }
 
-  // Prepare request headers
-  private prepareHeaders(customHeaders: Record<string, string> = {}): Record<string, string> {
+  private buildHeaders(customHeaders?: Record<string, string>): HeadersInit {
     const headers: Record<string, string> = {
       'Content-Type': 'application/json',
       ...customHeaders,
-    }
+    };
 
-    // Add authentication if token is available
-    const token = this.config.getToken()
+    const token = this.tokenGetter?.();
     if (token) {
-      headers.Authorization = `Bearer ${token}`
+      headers.Authorization = `Bearer ${token}`;
     }
 
-    return headers
+    return headers;
   }
 
-  // Handle fetch response
   private async handleResponse<T>(response: Response, url: string): Promise<T> {
-    let responseData: any
-
-    // Try to parse response as JSON
+    let data: any;
+    
     try {
-      const text = await response.text()
-      responseData = text ? JSON.parse(text) : null
+      const text = await response.text();
+      data = text ? JSON.parse(text) : null;
     } catch {
-      responseData = null
+      data = null;
     }
 
     if (!response.ok) {
-      const error = new HTTPError(
-        response.status,
-        response.statusText,
-        url,
-        responseData
-      )
+      const error: ApiError = data || {
+        success: false,
+        message: response.statusText || 'Unknown error',
+        error: response.statusText || 'Unknown error',
+        statusCode: response.status,
+        timestamp: new Date().toISOString(),
+      };
       
-      this.config.onError(error)
-      throw error
+      throw new HTTPError(response.status, error, url);
     }
 
-    return responseData
+    return data;
   }
 
-  // Make HTTP request
-  private async request<T>(
-    method: string,
-    path: string,
-    options: RequestOptionsWithBody & RequestOptionsWithQuery = {}
-  ): Promise<T> {
-    const { body, query, headers = {}, signal, timeout } = options
-    
-    const url = this.buildUrl(path, query)
-    const requestHeaders = this.prepareHeaders(headers)
+  async get<T>(endpoint: string, options: RequestOptions = {}): Promise<T> {
+    const { query, headers, signal } = options;
+    const queryString = query ? this.serializeQuery(query) : '';
+    const url = `${this.baseURL}${endpoint}${queryString ? `?${queryString}` : ''}`;
 
-    // Create abort controller for timeout
-    const controller = new AbortController()
-    const timeoutId = setTimeout(() => controller.abort(), timeout || this.config.timeout)
+    const response = await fetch(url, {
+      method: 'GET',
+      headers: this.buildHeaders(headers),
+      signal,
+    });
 
-    // Use provided signal or timeout signal
-    const requestSignal = signal || controller.signal
-
-    try {
-      const fetchOptions: RequestInit = {
-        method,
-        headers: requestHeaders,
-        signal: requestSignal,
-      }
-
-      // Add body for non-GET requests
-      if (body !== undefined && method !== 'GET') {
-        if (body instanceof FormData) {
-          // Remove Content-Type for FormData (browser will set it with boundary)
-          delete requestHeaders['Content-Type']
-          fetchOptions.body = body
-        } else {
-          fetchOptions.body = JSON.stringify(body)
-        }
-      }
-
-      const response = await fetch(url, fetchOptions)
-      
-      clearTimeout(timeoutId)
-      return await this.handleResponse<T>(response, url)
-    } catch (error) {
-      clearTimeout(timeoutId)
-      
-      if (error instanceof TypeError && error.message.includes('fetch')) {
-        // Network error
-        const networkError = new HTTPError(0, 'Network Error', url)
-        this.config.onError(networkError)
-        throw networkError
-      }
-      
-      if (error instanceof HTTPError) {
-        throw error
-      }
-      
-      // AbortError or other errors
-      const unknownError = new HTTPError(0, error instanceof Error ? error.message : 'Unknown Error', url)
-      this.config.onError(unknownError)
-      throw unknownError
-    }
+    return this.handleResponse<T>(response, url);
   }
 
-  // HTTP methods
-  public async get<T>(path: string, options: RequestOptionsWithQuery = {}): Promise<T> {
-    return this.request<T>('GET', path, options)
+  async post<T>(endpoint: string, options: RequestOptions & { body?: any } = {}): Promise<T> {
+    const { body, headers, signal } = options;
+    const url = `${this.baseURL}${endpoint}`;
+
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: this.buildHeaders(headers),
+      body: body instanceof FormData ? body : JSON.stringify(body),
+      signal,
+    });
+
+    return this.handleResponse<T>(response, url);
   }
 
-  public async post<T>(path: string, options: RequestOptionsWithBody = {}): Promise<T> {
-    return this.request<T>('POST', path, options)
+  async put<T>(endpoint: string, options: RequestOptions & { body?: any } = {}): Promise<T> {
+    const { body, headers, signal } = options;
+    const url = `${this.baseURL}${endpoint}`;
+
+    const response = await fetch(url, {
+      method: 'PUT',
+      headers: this.buildHeaders(headers),
+      body: body instanceof FormData ? body : JSON.stringify(body),
+      signal,
+    });
+
+    return this.handleResponse<T>(response, url);
   }
 
-  public async put<T>(path: string, options: RequestOptionsWithBody = {}): Promise<T> {
-    return this.request<T>('PUT', path, options)
+  async patch<T>(endpoint: string, options: RequestOptions & { body?: any } = {}): Promise<T> {
+    const { body, headers, signal } = options;
+    const url = `${this.baseURL}${endpoint}`;
+
+    const response = await fetch(url, {
+      method: 'PATCH',
+      headers: this.buildHeaders(headers),
+      body: body instanceof FormData ? body : JSON.stringify(body),
+      signal,
+    });
+
+    return this.handleResponse<T>(response, url);
   }
 
-  public async patch<T>(path: string, options: RequestOptionsWithBody = {}): Promise<T> {
-    return this.request<T>('PATCH', path, options)
-  }
+  async delete<T>(endpoint: string, options: RequestOptions = {}): Promise<T> {
+    const { headers, signal } = options;
+    const url = `${this.baseURL}${endpoint}`;
 
-  public async delete<T>(path: string, options: RequestOptions = {}): Promise<T> {
-    return this.request<T>('DELETE', path, options)
-  }
+    const response = await fetch(url, {
+      method: 'DELETE',
+      headers: this.buildHeaders(headers),
+      signal,
+    });
 
-  // Special method for streaming responses
-  public async stream(
-    path: string, 
-    options: RequestOptionsWithBody = {}
-  ): Promise<ReadableStream<Uint8Array> | null> {
-    const { body, headers = {}, signal, timeout } = options
-    
-    const url = this.buildUrl(path)
-    const requestHeaders = this.prepareHeaders(headers)
-
-    const controller = new AbortController()
-    const timeoutId = setTimeout(() => controller.abort(), timeout || this.config.timeout)
-    const requestSignal = signal || controller.signal
-
-    try {
-      const response = await fetch(url, {
-        method: 'POST',
-        headers: requestHeaders,
-        body: body ? JSON.stringify(body) : undefined,
-        signal: requestSignal,
-      })
-
-      clearTimeout(timeoutId)
-
-      if (!response.ok) {
-        let responseData: any
-        try {
-          responseData = await response.json()
-        } catch {
-          responseData = null
-        }
-        
-        const error = new HTTPError(response.status, response.statusText, url, responseData)
-        this.config.onError(error)
-        throw error
-      }
-
-      return response.body
-    } catch (error) {
-      clearTimeout(timeoutId)
-      
-      if (error instanceof HTTPError) {
-        throw error
-      }
-      
-      const unknownError = new HTTPError(0, error instanceof Error ? error.message : 'Unknown Error', url)
-      this.config.onError(unknownError)
-      throw unknownError
-    }
-  }
-
-  // Update configuration
-  public updateConfig(updates: Partial<ApiClientConfig>): void {
-    this.config = { ...this.config, ...updates }
+    return this.handleResponse<T>(response, url);
   }
 }
 
-// Create and export default API client instance
-let apiClient: ApiClient
-
-export function createApiClient(config: ApiClientConfig): ApiClient {
-  apiClient = new ApiClient(config)
-  return apiClient
-}
-
-export function getApiClient(): ApiClient {
-  if (!apiClient) {
-    throw new Error('API client not initialized. Call createApiClient() first.')
-  }
-  return apiClient
-}
-
-export { apiClient }
+// Create singleton instance
+export const apiClient = new ApiClient(
+  import.meta.env.VITE_API_BASE_URL || 'http://localhost:3001'
+);
