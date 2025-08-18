@@ -102,6 +102,15 @@ export class SyncService {
   private async startBackgroundSync(): Promise<void> {
     if (!navigator.onLine || this.syncInProgress) return
 
+    // Check if backend is available before attempting sync
+    if (!this.backendAvailable) {
+      this.backendAvailable = await this.checkBackendAvailability()
+      if (!this.backendAvailable) {
+        console.info('Backend not available, skipping sync')
+        return
+      }
+    }
+
     this.syncInProgress = true
     await this.notifyListeners()
 
@@ -111,6 +120,10 @@ export class SyncService {
       this.setLastSyncTime()
     } catch (error) {
       console.error('Background sync failed:', error)
+      // Mark backend as unavailable on persistent failures
+      if (error instanceof TypeError && error.message.includes('Failed to fetch')) {
+        this.backendAvailable = false
+      }
       this.scheduleRetry()
     } finally {
       this.syncInProgress = false
