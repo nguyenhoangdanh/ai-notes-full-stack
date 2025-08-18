@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Sun, Moon, Monitor } from 'lucide-react';
 import { Button } from '../ui/button';
 import {
@@ -9,8 +9,48 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '../ui/dropdown-menu';
+import { cn } from '../../lib/utils';
 
 type Theme = 'light' | 'dark' | 'system';
+
+// Add smooth transition styles
+const addTransitionStyles = () => {
+  if (typeof document !== 'undefined') {
+    const style = document.createElement('style');
+    style.textContent = `
+      :root {
+        color-scheme: light;
+        transition: background-color 0.3s ease, color 0.3s ease;
+      }
+
+      :root.dark {
+        color-scheme: dark;
+      }
+
+      * {
+        transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
+      }
+
+      .theme-transition-disable * {
+        transition: none !important;
+      }
+    `;
+    document.head.appendChild(style);
+  }
+};
+
+// Temporarily disable transitions during theme change to prevent flash
+const withTransition = (callback: () => void) => {
+  if (typeof document !== 'undefined') {
+    document.documentElement.classList.add('theme-transition-disable');
+    callback();
+    setTimeout(() => {
+      document.documentElement.classList.remove('theme-transition-disable');
+    }, 100);
+  } else {
+    callback();
+  }
+};
 
 export function ThemeToggle() {
   const [theme, setTheme] = useState<Theme>('system');
@@ -22,51 +62,53 @@ export function ThemeToggle() {
     }
   }, []);
 
-  useEffect(() => {
-    const root = document.documentElement;
-    const sparkApp = document.getElementById('spark-app');
+  const applyTheme = useCallback((themeToApply: Theme) => {
+    withTransition(() => {
+      const root = document.documentElement;
+      const sparkApp = document.getElementById('spark-app');
 
-    if (theme === 'dark') {
-      root.classList.add('dark');
-      sparkApp?.classList.add('dark-theme');
-    } else if (theme === 'light') {
-      root.classList.remove('dark');
-      sparkApp?.classList.remove('dark-theme');
-    } else {
-      // System theme
-      const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-      if (isDark) {
+      if (themeToApply === 'dark') {
         root.classList.add('dark');
         sparkApp?.classList.add('dark-theme');
-      } else {
+        root.style.colorScheme = 'dark';
+      } else if (themeToApply === 'light') {
         root.classList.remove('dark');
         sparkApp?.classList.remove('dark-theme');
+        root.style.colorScheme = 'light';
+      } else {
+        // System theme
+        const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        if (isDark) {
+          root.classList.add('dark');
+          sparkApp?.classList.add('dark-theme');
+          root.style.colorScheme = 'dark';
+        } else {
+          root.classList.remove('dark');
+          sparkApp?.classList.remove('dark-theme');
+          root.style.colorScheme = 'light';
+        }
       }
-    }
+    });
 
-    localStorage.setItem('theme', theme);
-  }, [theme]);
+    localStorage.setItem('theme', themeToApply);
+  }, []);
+
+  useEffect(() => {
+    addTransitionStyles();
+    applyTheme(theme);
+  }, [theme, applyTheme]);
 
   useEffect(() => {
     const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
     const handleChange = () => {
       if (theme === 'system') {
-        const root = document.documentElement;
-        const sparkApp = document.getElementById('spark-app');
-        
-        if (mediaQuery.matches) {
-          root.classList.add('dark');
-          sparkApp?.classList.add('dark-theme');
-        } else {
-          root.classList.remove('dark');
-          sparkApp?.classList.remove('dark-theme');
-        }
+        applyTheme('system');
       }
     };
 
     mediaQuery.addEventListener('change', handleChange);
     return () => mediaQuery.removeEventListener('change', handleChange);
-  }, [theme]);
+  }, [theme, applyTheme]);
 
   const getIcon = () => {
     switch (theme) {
@@ -84,36 +126,51 @@ export function ThemeToggle() {
         <Button
           variant="ghost"
           size="sm"
-          className="h-9 w-9 rounded-md"
-          aria-label="Toggle theme"
+          className="h-9 w-9 rounded-xl hover:bg-accent/80 transition-all duration-200 group"
+          aria-label={`Current theme: ${theme}. Click to change theme`}
         >
-          <Icon className="h-4 w-4" />
+          <Icon className="h-4 w-4 transition-transform duration-200 group-hover:scale-110" />
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="w-48">
-        <DropdownMenuItem 
+      <DropdownMenuContent align="end" className="w-48 p-2 bg-background/95 backdrop-blur-md border-border/60">
+        <DropdownMenuItem
           onClick={() => setTheme('light')}
-          className="gap-2"
+          className={cn(
+            "gap-3 rounded-lg px-3 py-2 cursor-pointer transition-all duration-200",
+            theme === 'light' && "bg-primary/10 text-primary"
+          )}
         >
           <Sun className="h-4 w-4" />
-          Light
-          {theme === 'light' && <span className="ml-auto">✓</span>}
+          <span className="flex-1">Light</span>
+          {theme === 'light' && (
+            <div className="w-2 h-2 bg-primary rounded-full animate-pulse" />
+          )}
         </DropdownMenuItem>
-        <DropdownMenuItem 
+        <DropdownMenuItem
           onClick={() => setTheme('dark')}
-          className="gap-2"
+          className={cn(
+            "gap-3 rounded-lg px-3 py-2 cursor-pointer transition-all duration-200",
+            theme === 'dark' && "bg-primary/10 text-primary"
+          )}
         >
           <Moon className="h-4 w-4" />
-          Dark
-          {theme === 'dark' && <span className="ml-auto">✓</span>}
+          <span className="flex-1">Dark</span>
+          {theme === 'dark' && (
+            <div className="w-2 h-2 bg-primary rounded-full animate-pulse" />
+          )}
         </DropdownMenuItem>
-        <DropdownMenuItem 
+        <DropdownMenuItem
           onClick={() => setTheme('system')}
-          className="gap-2"
+          className={cn(
+            "gap-3 rounded-lg px-3 py-2 cursor-pointer transition-all duration-200",
+            theme === 'system' && "bg-primary/10 text-primary"
+          )}
         >
           <Monitor className="h-4 w-4" />
-          System
-          {theme === 'system' && <span className="ml-auto">✓</span>}
+          <span className="flex-1">System</span>
+          {theme === 'system' && (
+            <div className="w-2 h-2 bg-primary rounded-full animate-pulse" />
+          )}
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
