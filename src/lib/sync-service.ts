@@ -290,11 +290,11 @@ export class SyncService {
 
   // Utility Methods
   private getApiBase(): string {
-    return import.meta.env.VITE_API_BASE || 'http://localhost:3000/api'
+    return import.meta.env.VITE_API_BASE_URL || import.meta.env.VITE_API_BASE || 'http://localhost:3001'
   }
 
   private getHeaders(): Record<string, string> {
-    const token = localStorage.getItem('auth-token')
+    const token = localStorage.getItem('ai-notes-token') || localStorage.getItem('auth-token')
     return {
       'Content-Type': 'application/json',
       ...(token && { Authorization: `Bearer ${token}` })
