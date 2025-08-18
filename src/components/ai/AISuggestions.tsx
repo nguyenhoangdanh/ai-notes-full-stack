@@ -15,7 +15,7 @@ import {
   Brain,
   Tag as TagIcon
 } from 'lucide-react'
-import { useAIFeatures } from '../../hooks/useAIFeatures'
+import { useGenerateSuggestion } from '../../hooks/use-ai'
 import { cn } from '../../lib/utils'
 import { toast } from 'sonner'
 
