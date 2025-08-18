@@ -16,6 +16,7 @@ import type {
   AutoSummary,
   SemanticSearchDto,
   SemanticSearchResult,
+  SendMessageDto,
 } from '../types'
 
 // AI Chat hooks
@@ -86,10 +87,7 @@ export function useApplySuggestion() {
 export function useAIConversations(noteId?: string) {
   return useQuery({
     queryKey: queryKeys.ai.conversations(noteId),
-    queryFn: ({ queryKey }) => {
-      const [, , { noteId: queryNoteId }] = queryKey as readonly ["ai", "conversations", { noteId: string | undefined }]
-      return aiService.getConversations(queryNoteId)
-    },
+    queryFn: () => aiService.getConversations(noteId),
     staleTime: 2 * 60 * 1000, // 2 minutes
   })
 }
@@ -182,50 +180,14 @@ export function useDeleteAIConversation() {
   })
 }
 
-// Smart Features - Categories
-export function useCategories() {
-  return useQuery({
-    queryKey: queryKeys.ai.categories(),
-    queryFn: () => aiService.getCategories(),
-    staleTime: 5 * 60 * 1000, // 5 minutes
-  })
-}
-
-export function useCreateCategory() {
-  const queryClient = useQueryClient()
-
-  return useMutation({
-    mutationFn: (data: { 
-      name: string
-      description?: string
-      color?: string
-      keywords?: string[]
-    }) => aiService.createCategory(data),
-    onSuccess: (newCategory) => {
-      // Add to categories list
-      queryClient.setQueryData(
-        queryKeys.ai.categories(),
-        (old: any[] = []) => [...old, newCategory]
-      )
-      
-      toast.success(`Category "${newCategory.name}" created`)
-    },
-    onError: (error: any) => {
-      const message = error.response?.message || 'Failed to create category'
-      toast.error(message)
-    },
-  })
-}
-
 export function useAutoCategorizeNotes() {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: aiService.autoCategorizeNotes,
-    onSuccess: (result) => {
-      // Invalidate notes and categories to refresh data
+    mutationFn: aiService.categorizeNotes,
+    onSuccess: (result: any) => {
+      // Invalidate notes to refresh data
       queryClient.invalidateQueries({ queryKey: queryKeys.notes.all() })
-      queryClient.invalidateQueries({ queryKey: queryKeys.ai.categories() })
       
       toast.success(`Categorized ${result.categorized} of ${result.processed} notes`)
     },
@@ -356,7 +318,7 @@ export function useGenerateSummary() {
 // Semantic Search
 export function useSemanticSearch() {
   return useMutation({
-    mutationFn: (request: SemanticSearchRequest) => aiService.semanticSearch(request),
+    mutationFn: (request: SemanticSearchDto) => aiService.semanticSearch(request),
     onError: (error: any) => {
       const message = error.response?.message || 'Failed to perform semantic search'
       toast.error(message)
@@ -369,6 +331,59 @@ export function useAdvancedSearch() {
     mutationFn: (query: any) => aiService.advancedSearch(query),
     onError: (error: any) => {
       const message = error.response?.message || 'Failed to perform advanced search'
+      toast.error(message)
+    },
+  })
+}
+
+// Send AI message function - was missing
+export function useSendAIMessage() {
+  const queryClient = useQueryClient()
+  
+  return useMutation({
+    mutationFn: ({ conversationId, data }: { conversationId: string; data: SendMessageDto }) => 
+      aiService.sendMessage(conversationId, data),
+    onSuccess: (response: ChatResponse) => {
+      // Update the conversation with new message
+      queryClient.setQueryData(
+        queryKeys.ai.conversation(response.conversation.id),
+        response.conversation
+      )
+      
+      // Refresh conversations list
+      queryClient.invalidateQueries({ 
+        queryKey: queryKeys.ai.conversations() 
+      })
+    },
+    onError: (error: any) => {
+      const message = error.response?.message || 'Failed to send message'
+      toast.error(message)
+    },
+  })
+}
+
+// Delete conversation function
+export function useDeleteAIConversation() {
+  const queryClient = useQueryClient()
+  
+  return useMutation({
+    mutationFn: (conversationId: string) => aiService.deleteConversation(conversationId),
+    onSuccess: (_, conversationId) => {
+      // Remove from conversations list
+      queryClient.setQueryData(
+        queryKeys.ai.conversations(),
+        (old: AIConversation[] = []) => old.filter(conv => conv.id !== conversationId)
+      )
+      
+      // Remove individual conversation cache
+      queryClient.removeQueries({ 
+        queryKey: queryKeys.ai.conversation(conversationId) 
+      })
+      
+      toast.success('Conversation deleted')
+    },
+    onError: (error: any) => {
+      const message = error.response?.message || 'Failed to delete conversation'
       toast.error(message)
     },
   })

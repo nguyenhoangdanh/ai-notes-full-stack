@@ -9,7 +9,7 @@ import { Badge } from '../ui/badge'
 import { Separator } from '../ui/separator'
 import { 
   Brain, 
-  Sparkle, 
+  Sparkles, 
   Settings, 
   Zap,
   Clock,
@@ -222,7 +222,7 @@ export function AISettingsPanel({ className }: AISettingsPanelProps) {
       <Card>
         <CardHeader>
           <CardTitle className="text-sm flex items-center space-x-2">
-            <Sparkle className="h-4 w-4" />
+            <Sparkles className="h-4 w-4" />
             <span>AI Personality</span>
           </CardTitle>
         </CardHeader>

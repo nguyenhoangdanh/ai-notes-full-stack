@@ -18,7 +18,7 @@ import {
 } from 'lucide-react'
 import { useOfflineNotes } from '@/contexts/OfflineNotesContext'
 import { offlineStorage, VoiceRecording } from '@/lib/offline-storage'
-import { useProfile } from '@/hooks'
+import { useAuthProfile as useProfile } from '@/hooks'
 import { v4 as uuidv4 } from 'uuid'
 import { toast } from 'sonner'
 
