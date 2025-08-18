@@ -1,7 +1,7 @@
 'use client'
 
 import Head from 'next/head'
-import { useRouter } from 'next/navigation'
+import { useRouter, usePathname } from 'next/navigation'
 
 interface PageMetaProps {
   title?: string
@@ -33,7 +33,8 @@ export function PageMeta({
   canonical
 }: PageMetaProps) {
   const router = useRouter()
-  const currentUrl = `${process.env.NEXT_PUBLIC_APP_URL || 'https://localhost:5000'}${router.asPath || ''}`
+  const pathname = usePathname()
+  const currentUrl = `${process.env.NEXT_PUBLIC_APP_URL || 'https://localhost:5000'}${pathname || ''}`
   
   const fullTitle = title 
     ? `${title} | AI Notes - Intelligent Note Taking Platform`
