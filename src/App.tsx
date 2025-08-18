@@ -46,6 +46,18 @@ function App() {
   useEffect(() => {
     // Initialize the API client
     initializeApiClient()
+
+    // Show offline mode notification if no backend is configured
+    const hasBackend = import.meta.env.VITE_API_BASE_URL
+    if (!hasBackend && import.meta.env.DEV) {
+      setTimeout(() => {
+        toast.info('Running in offline mode - all data is stored locally', {
+          duration: 5000,
+          description: 'Connect a backend server to enable sync across devices'
+        })
+      }, 2000)
+    }
+
     setIsApiInitialized(true)
   }, [])
 
