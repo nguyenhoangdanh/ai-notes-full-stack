@@ -141,6 +141,12 @@ export class SyncService {
       throw new Error('Cannot sync while offline')
     }
 
+    // Check backend availability for forced sync
+    this.backendAvailable = await this.checkBackendAvailability()
+    if (!this.backendAvailable) {
+      throw new Error('Backend server is not available')
+    }
+
     await this.startBackgroundSync()
   }
 
