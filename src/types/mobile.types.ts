@@ -98,3 +98,27 @@ export interface CreateExportDto {
   workspaceId?: string
   settings?: Record<string, any>
 }
+
+// Additional mobile types
+export interface VoiceRecording extends BaseEntity {
+  noteId?: string
+  userId: string
+  filename: string
+  filepath: string
+  duration: number
+  transcription?: string
+  status: TranscriptionStatus
+}
+
+export interface OfflineAction extends BaseEntity {
+  userId: string
+  action: SyncAction
+  entityType: 'note' | 'voice' | 'location'
+  entityId: string
+  data: Record<string, any>
+  synced: boolean
+}
+
+export interface ExportRecord extends ExportHistory {
+  // Alias for ExportHistory
+}

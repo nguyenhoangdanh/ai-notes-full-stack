@@ -9,14 +9,29 @@ export * from './ai.types'
 export type { 
   Task, 
   PomodoroSession, 
-  CalendarEvent 
+  CalendarEvent,
+  ReviewPrompt,
+  CreatePomodoroSessionDto,
+  UpdatePomodoroSessionDto,
+  CreateTaskDto,
+  UpdateTaskDto,
+  CreateCalendarEventDto,
+  UpdateCalendarEventDto
 } from './productivity.types'
 
 export type { 
   VoiceRecording, 
   OfflineAction, 
   LocationNote, 
-  ExportRecord 
+  ExportRecord,
+  VoiceNote,
+  CreateVoiceNoteDto,
+  CreateLocationNoteDto,
+  SyncOperationDto,
+  ConflictResolutionDto,
+  OfflineSync,
+  ExportHistory,
+  CreateExportDto
 } from './mobile.types'
 
 export type { 
@@ -25,6 +40,15 @@ export type {
   SavedSearch, 
   Template, 
   Tag, 
-  Analytics, 
-  Activity 
+  CreateNotificationDto,
+  CreateReminderDto,
+  CreateSavedSearchDto,
+  CreateTemplateDto,
+  UpdateTemplateDto,
+  SearchHistory,
+  UserActivity
 } from './misc.types'
+
+// Type aliases for backward compatibility
+export type Activity = UserActivity
+export type Analytics = any // TODO: Define proper Analytics interface

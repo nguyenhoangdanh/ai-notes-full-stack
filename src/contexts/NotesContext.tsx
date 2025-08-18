@@ -49,8 +49,7 @@ export function NotesProvider({ children }: { children: ReactNode }) {
     return notes.filter(note =>
       note.title.toLowerCase().includes(searchTerm) ||
       note.content.toLowerCase().includes(searchTerm) ||
-      note.tags?.some(tag => tag.toLowerCase().includes(searchTerm)) ||
-      note.category?.toLowerCase().includes(searchTerm)
+      note.tags?.some(tag => tag.toLowerCase().includes(searchTerm))
     )
   }
 
@@ -61,7 +60,6 @@ export function NotesProvider({ children }: { children: ReactNode }) {
     return notes
       .filter(note => note.id !== noteId)
       .filter(note => 
-        note.category === currentNote.category ||
         note.tags?.some(tag => currentNote.tags?.includes(tag))
       )
       .slice(0, 3)

@@ -39,7 +39,7 @@ export function MobileNoteEditor({ note, onBack, onUpdate }: MobileNoteEditorPro
   
   const contentRef = useRef<HTMLTextAreaElement>(null)
   const titleRef = useRef<HTMLInputElement>(null)
-  const [autoSaveTimeout, setAutoSaveTimeout] = useState<number>()
+  const [autoSaveTimeout, setAutoSaveTimeout] = useState<NodeJS.Timeout>()
 
   // Load note data
   useEffect(() => {
