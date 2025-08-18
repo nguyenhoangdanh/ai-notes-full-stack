@@ -1,12 +1,7 @@
 @import 'tailwindcss';
-
 @import '../theme.css';
 @import '../index.css';
 @import "tw-animate-css";
-/*
-  ---break---
-*/
-@custom-variant dark (&:is(.dark *));
 
 @config '../tailwind.config.js';
 
@@ -19,7 +14,6 @@
   color utility to any element that depends on these defaults.
 */
 @layer base {
-
   *,
   ::after,
   ::before,
@@ -29,9 +23,7 @@
   }
 }
 
-/*
-  ---break---
-*/
+/* Fix: Change ::root to :root */
 :root {
   --radius: 0.625rem;
   --background: oklch(1 0 0);
@@ -67,9 +59,6 @@
   --sidebar-ring: oklch(0.708 0 0);
 }
 
-/*
-  ---break---
-*/
 .dark {
   --background: oklch(0.11 0 0);
   --foreground: oklch(0.98 0 0);
@@ -102,7 +91,7 @@
   --sidebar-accent-foreground: oklch(0.98 0 0);
   --sidebar-border: oklch(0.25 0 0);
   --sidebar-ring: oklch(0.75 0.15 260);
-
+  
   /* Enhanced dark mode specific adjustments */
   color-scheme: dark;
 }
@@ -121,9 +110,6 @@
   }
 }
 
-/*
-  ---break---
-*/
 @theme inline {
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
@@ -163,36 +149,25 @@
   --animate-accordion-down: accordion-down 0.2s ease-out;
   --animate-accordion-up: accordion-up 0.2s ease-out;
 
-  /*
-  ---break---
-*/
   @keyframes accordion-down {
     from {
       height: 0;
     }
-
     to {
       height: var(--radix-accordion-content-height);
     }
   }
 
-  /*
-  ---break---
-*/
   @keyframes accordion-up {
     from {
       height: var(--radix-accordion-content-height);
     }
-
     to {
       height: 0;
     }
   }
 }
 
-/*
-  ---break---
-*/
 @layer base {
   * {
     @apply border-border outline-ring/50;
