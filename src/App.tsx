@@ -1,9 +1,12 @@
 import { useState, useEffect } from 'react'
 import { AuthProvider, useAuth } from './contexts/AuthContext'
+import { NotesProvider } from './contexts/NotesContext'
 import { OfflineNotesProvider } from './contexts/OfflineNotesContext'
 import { AIProvider } from './contexts/AIContext'
 import { AuthScreen } from './components/auth/AuthScreen'
+import { Dashboard } from './components/dashboard/Dashboard'
 import { MobileDashboard } from './components/mobile/MobileDashboard'
+import { useIsMobile } from './hooks/use-mobile'
 import { Toaster } from 'sonner'
 import { initializeApiClient } from './lib/api-config'
 
