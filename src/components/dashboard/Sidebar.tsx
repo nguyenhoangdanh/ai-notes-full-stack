@@ -51,12 +51,15 @@ export function Sidebar({ onClose, searchQuery, onSearchChange }: SidebarProps) 
             </div>
             <span className="font-semibold text-foreground">AI Notes</span>
           </div>
-          
-          {isMobile && onClose && (
-            <Button variant="ghost" size="sm" onClick={onClose}>
-              <X className="h-4 w-4" />
-            </Button>
-          )}
+
+          <div className="flex items-center gap-1">
+            <ThemeToggle />
+            {isMobile && onClose && (
+              <Button variant="ghost" size="sm" onClick={onClose}>
+                <X className="h-4 w-4" />
+              </Button>
+            )}
+          </div>
         </div>
 
         {isMobile && (
