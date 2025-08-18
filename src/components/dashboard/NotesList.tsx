@@ -94,15 +94,25 @@ export function NotesList({ searchQuery, selectedNoteId, onSelectNote }: NotesLi
         role="list"
         aria-labelledby="notes-list-title"
       >
-        {sortedNotes.map((note) => (
+        {sortedNotes.map((note, index) => (
           <Card
             key={note.id}
-            className={`cursor-pointer transition-all duration-200 hover:shadow-md ${
-              selectedNoteId === note.id 
-                ? 'ring-2 ring-primary shadow-md' 
+            className={`cursor-pointer transition-all duration-200 hover:shadow-md focus-within:ring-2 focus-within:ring-primary ${
+              selectedNoteId === note.id
+                ? 'ring-2 ring-primary shadow-md'
                 : 'hover:bg-card/80'
             }`}
+            role="listitem"
+            tabIndex={0}
             onClick={() => onSelectNote(note.id)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                onSelectNote(note.id);
+              }
+            }}
+            aria-label={`Note: ${note.title || 'Untitled'}`}
+            aria-describedby={`note-content-${note.id} note-metadata-${note.id}`}
           >
             <CardContent className="p-4">
               {/* Note Header */}
