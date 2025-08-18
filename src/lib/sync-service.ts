@@ -66,6 +66,26 @@ export class SyncService {
     return lastSync ? new Date(lastSync) : undefined
   }
 
+  private async checkBackendAvailability(): Promise<boolean> {
+    try {
+      const apiBase = this.getApiBase()
+      const controller = new AbortController()
+      const timeoutId = setTimeout(() => controller.abort(), 5000) // 5 second timeout
+
+      const response = await fetch(`${apiBase}/health`, {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' },
+        signal: controller.signal
+      })
+
+      clearTimeout(timeoutId)
+      return response.ok
+    } catch (error) {
+      console.info('Backend not available, running in offline mode:', error)
+      return false
+    }
+  }
+
   private setLastSyncTime(): void {
     localStorage.setItem('ai-notes-last-sync', new Date().toISOString())
   }
