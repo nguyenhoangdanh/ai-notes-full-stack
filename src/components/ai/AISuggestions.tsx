@@ -46,7 +46,8 @@ export function AISuggestions({
   onApplySuggestion,
   className
 }: AISuggestionsProps) {
-  const { quickSuggest, isProcessing } = useAIFeatures()
+  const generateSuggestionMutation = useGenerateSuggestion()
+  const isProcessing = generateSuggestionMutation.isPending
   const [suggestions, setSuggestions] = useState<SmartSuggestion[]>([])
   const [isVisible, setIsVisible] = useState(false)
   const [lastAnalyzedContent, setLastAnalyzedContent] = useState('')
