@@ -145,7 +145,7 @@ export function CompactUserMenu() {
           Settings
         </DropdownMenuItem>
         <DropdownMenuItem 
-          onClick={logout}
+          onClick={() => logout()}
           className="gap-2 text-sm text-destructive focus:text-destructive"
         >
           <LogOut className="h-3 w-3" />

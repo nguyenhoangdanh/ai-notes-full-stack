@@ -9,7 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '.
 import { Separator } from '../ui/separator';
 import { Badge } from '../ui/badge';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '../ui/alert-dialog';
-import { useWorkspaces } from '../../hooks/use-workspaces';
+import { useWorkspaces, useUpdateWorkspace, useDeleteWorkspace } from '../../hooks/use-workspaces';
 import { toast } from 'sonner';
 
 interface WorkspaceSettingsPanelProps {
@@ -18,14 +18,12 @@ interface WorkspaceSettingsPanelProps {
 }
 
 export function WorkspaceSettingsPanel({ workspaceId, onClose }: WorkspaceSettingsPanelProps) {
-  const { 
-    data: workspace, 
-    useUpdateWorkspace, 
-    useDeleteWorkspace 
-  } = useWorkspaces();
-  
+  const { data: workspaces } = useWorkspaces();
   const updateWorkspace = useUpdateWorkspace();
   const deleteWorkspace = useDeleteWorkspace();
+  
+  // Find the specific workspace from the list
+  const workspace = workspaces?.find(w => w.id === workspaceId);
   
   const [formData, setFormData] = useState({
     name: workspace?.name || '',

@@ -1,5 +1,4 @@
 import { ReactNode } from 'react';
-import { useFeatures } from '../../hooks/use-features';
 
 interface FeatureGateProps {
   feature: string;

@@ -7,6 +7,8 @@ export interface User {
   email: string;
   name?: string;
   image?: string;
+  avatar?: string; // Add avatar alias for image
+  role?: string; // Add role property
   createdAt: string;
   updatedAt: string;
 }

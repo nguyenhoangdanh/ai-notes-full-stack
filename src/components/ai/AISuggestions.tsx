@@ -70,6 +70,7 @@ export function AISuggestions({
 
     try {
       const result = await generateSuggestionMutation.mutateAsync({
+        noteId,
         content: noteContent,
         context: {
           noteId,

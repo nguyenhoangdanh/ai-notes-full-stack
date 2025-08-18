@@ -53,7 +53,7 @@ export function useRegister() {
 
   return useMutation({
     mutationFn: (data: RegisterDto) => authService.register(data),
-    onSuccess: (response: AuthResponse) => {
+    onSuccess: (response: AuthResponseDto) => {
       // Update auth cache
       queryClient.setQueryData(queryKeys.auth.profile(), response.user)
       toast.success('Account created successfully!')
@@ -70,7 +70,7 @@ export function useLogin() {
 
   return useMutation({
     mutationFn: (data: LoginDto) => authService.login(data),
-    onSuccess: (response: AuthResponse) => {
+    onSuccess: (response: AuthResponseDto) => {
       // Update auth cache
       queryClient.setQueryData(queryKeys.auth.profile(), response.user)
       toast.success('Logged in successfully!')

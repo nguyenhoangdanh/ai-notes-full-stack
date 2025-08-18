@@ -47,6 +47,11 @@ export interface ContentSuggestionRequest {
   noteId: string;
   content: string;
   type?: SuggestionType;
+  context?: {
+    noteId: string;
+    title: string;
+    tags: string[];
+  };
 }
 
 export interface ContentSuggestionResponse {

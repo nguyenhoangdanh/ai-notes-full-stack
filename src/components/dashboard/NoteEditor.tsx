@@ -192,7 +192,7 @@ export function NoteEditor({ noteId, onClose }: NoteEditorProps) {
               </div>
               
               <div className="flex items-center space-x-1 text-sm text-muted-foreground">
-                <Sparkle className="h-4 w-4 text-accent" weight="fill" />
+                <Sparkle className="h-4 w-4 text-accent" />
                 <span>AI-Enhanced</span>
               </div>
             </div>
@@ -272,7 +272,7 @@ export function NoteEditor({ noteId, onClose }: NoteEditorProps) {
                 <Card>
                   <CardHeader className="pb-3">
                     <CardTitle className="text-sm flex items-center space-x-2">
-                      <Sparkle className="h-4 w-4 text-accent" weight="fill" />
+                      <Sparkle className="h-4 w-4 text-accent" />
                       <span>Related Notes</span>
                     </CardTitle>
                   </CardHeader>
