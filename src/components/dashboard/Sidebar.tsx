@@ -186,14 +186,11 @@ export function Sidebar({ onClose, searchQuery, onSearchChange }: SidebarProps) 
 
       {/* Footer */}
       <div className="p-6 border-t border-border">
-        <Button
-          variant="ghost"
-          onClick={logout}
-          className="w-full justify-start text-destructive hover:text-destructive hover:bg-destructive/10"
-        >
-          <LogOut className="h-4 w-4 mr-2" />
-          Sign out
-        </Button>
+        <div className="text-center">
+          <p className="text-xs text-muted-foreground">
+            AI Notes v1.0
+          </p>
+        </div>
       </div>
     </div>
   )
