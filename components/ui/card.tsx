@@ -1,19 +1,43 @@
-import { ComponentProps } from "react"
+import { ComponentProps, forwardRef } from "react"
 
 import { cn } from "../../lib/utils"
 
-function Card({ className, ...props }: ComponentProps<"div">) {
-  return (
-    <div
-      data-slot="card"
-      className={cn(
-        "bg-card text-card-foreground flex flex-col gap-6 rounded-xl border py-6 shadow-sm",
-        className
-      )}
-      {...props}
-    />
-  )
+interface CardProps extends ComponentProps<"div"> {
+  variant?: "default" | "elevated" | "outlined" | "ghost"
+  padding?: "none" | "sm" | "md" | "lg"
 }
+
+const Card = forwardRef<HTMLDivElement, CardProps>(
+  ({ className, variant = "default", padding = "md", ...props }, ref) => {
+    return (
+      <div
+        ref={ref}
+        data-slot="card"
+        className={cn(
+          "flex flex-col rounded-xl border transition-all duration-200",
+          {
+            // Variants
+            "bg-card/50 backdrop-blur-sm border-border/60 shadow-sm hover:shadow-md hover:border-border/80": variant === "default",
+            "bg-card/80 backdrop-blur-md border-border/40 shadow-lg hover:shadow-xl hover:-translate-y-1": variant === "elevated",
+            "bg-transparent border-border hover:bg-card/30 hover:backdrop-blur-sm": variant === "outlined",
+            "bg-transparent border-transparent hover:bg-card/20": variant === "ghost",
+
+            // Padding
+            "p-0": padding === "none",
+            "p-4": padding === "sm",
+            "p-6": padding === "md",
+            "p-8": padding === "lg",
+          },
+          "text-card-foreground",
+          className
+        )}
+        {...props}
+      />
+    )
+  }
+)
+
+Card.displayName = "Card"
 
 function CardHeader({ className, ...props }: ComponentProps<"div">) {
   return (
