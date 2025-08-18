@@ -3,7 +3,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import { getAuthToken, setAuthToken, clearAuthToken } from '../lib/api-config'
 import { authService } from '../services/auth.service'
-import { useAuth as useAuthHook } from '../hooks/useAuth'
+import { useAuth as useAuthHook } from '../hooks/use-auth'
 import type { User, LoginDto, RegisterDto } from '../types/auth.types'
 
 interface AuthContextType {

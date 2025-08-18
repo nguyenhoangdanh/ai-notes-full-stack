@@ -18,7 +18,7 @@ import {
   RotateCcw
 } from 'lucide-react'
 import { useAI } from '../../contexts/AIContext'
-import { useAuth } from '../../hooks/useAuth'
+import { useAuth } from '../../hooks/use-auth'
 import { useNotes } from '../../contexts/NotesContext'
 import { cn } from '../../lib/utils'
 import { toast } from 'sonner'
