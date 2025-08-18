@@ -26,11 +26,14 @@ export class SyncService {
     // Listen for online/offline events
     window.addEventListener('online', () => this.handleOnlineStatus(true))
     window.addEventListener('offline', () => this.handleOnlineStatus(false))
-    
-    // Start background sync when online
-    if (navigator.onLine) {
-      this.startBackgroundSync()
-    }
+
+    // Check backend availability and start sync if available
+    this.checkBackendAvailability().then(available => {
+      this.backendAvailable = available
+      if (available && navigator.onLine) {
+        this.startBackgroundSync()
+      }
+    })
   }
 
   // Sync Status Management
