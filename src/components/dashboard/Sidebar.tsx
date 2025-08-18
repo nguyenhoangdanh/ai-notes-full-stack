@@ -68,21 +68,24 @@ export function Sidebar({ onClose, searchQuery, onSearchChange }: SidebarProps) 
         )}
 
         {/* User Profile */}
-        <div className="flex items-center space-x-3">
-          <Avatar className="h-10 w-10">
-            <AvatarImage src={user?.image} alt={user?.name} />
-            <AvatarFallback>
-              {user?.name?.split(' ').map(n => n[0]).join('').toUpperCase()}
-            </AvatarFallback>
-          </Avatar>
-          <div className="flex-1 min-w-0">
-            <p className="text-sm font-medium text-foreground truncate">
-              {user?.name}
-            </p>
-            <p className="text-xs text-muted-foreground truncate">
-              {user?.email}
-            </p>
+        <div className="flex items-center justify-between">
+          <div className="flex items-center space-x-3 flex-1 min-w-0">
+            <Avatar className="h-10 w-10">
+              <AvatarImage src={user?.image} alt={user?.name} />
+              <AvatarFallback>
+                {user?.name?.split(' ').map(n => n[0]).join('').toUpperCase()}
+              </AvatarFallback>
+            </Avatar>
+            <div className="flex-1 min-w-0">
+              <p className="text-sm font-medium text-foreground truncate">
+                {user?.name}
+              </p>
+              <p className="text-xs text-muted-foreground truncate">
+                {user?.email}
+              </p>
+            </div>
           </div>
+          <UserMenu />
         </div>
       </div>
 
