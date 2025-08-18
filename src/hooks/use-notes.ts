@@ -20,7 +20,7 @@ import type {
 export function useNotes(workspaceId?: string, limit?: number) {
   return useQuery({
     queryKey: queryKeys.notes.list(workspaceId, limit),
-    queryFn: () => noteService.getNotes(workspaceId, limit),
+    queryFn: () => noteService.getAll(workspaceId, limit),
     staleTime: 2 * 60 * 1000, // 2 minutes
   })
 }
@@ -36,8 +36,8 @@ export function useNote(id: string) {
 
 export function useSearchNotes(params: SearchNotesDto) {
   return useQuery({
-    queryKey: queryKeys.notes.search(params.q, params),
-    queryFn: () => noteService.searchNotes(params),
+    queryKey: queryKeys.notes.search(params),
+    queryFn: () => noteService.search(params),
     enabled: !!params.q && params.q.length > 0,
     staleTime: 30 * 1000, // 30 seconds
   })

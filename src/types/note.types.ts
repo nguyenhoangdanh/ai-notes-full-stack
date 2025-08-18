@@ -10,7 +10,6 @@ export interface Note {
   workspaceId: string;
   ownerId: string;
   isDeleted: boolean;
-  category?: string;
   createdAt: string;
   updatedAt: string;
 }
@@ -20,7 +19,6 @@ export interface CreateNoteDto {
   content: string;
   tags: string[];
   workspaceId: string;
-  category?: string;
 }
 
 export interface UpdateNoteDto {
