@@ -137,6 +137,19 @@ export function Dashboard() {
 
       {/* AI Assistant Toggle */}
       <AIAssistantToggle selectedNoteId={selectedNoteId} />
+
+      {/* Bulk Actions Bar */}
+      <BulkActionsBar
+        selectedCount={selectedNoteIds.length}
+        selectedNoteIds={selectedNoteIds}
+        onDelete={handleBulkDelete}
+        onExport={handleBulkExport}
+        onShare={handleBulkShare}
+        onClear={() => setSelectedNoteIds([])}
+      />
+
+      {/* PWA Install Prompt */}
+      <InstallPWAButton />
     </div>
   )
 }
