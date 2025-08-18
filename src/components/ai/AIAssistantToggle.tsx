@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Button } from '../ui/button'
 import { Badge } from '../ui/badge'
-import { Robot, X, ChatCircle } from '@phosphor-icons/react'
+import { Bot, X, MessageCircle } from 'lucide-react'
 import { AIChatInterface } from './AIChatInterface'
 import { cn } from '../../lib/utils'
 
@@ -72,7 +72,7 @@ export function AIAssistantToggle({ selectedNoteId, className }: AIAssistantTogg
                   transition={{ duration: 0.2 }}
                   className="relative"
                 >
-                  <Robot className="h-6 w-6 text-primary-foreground group-hover:scale-110 transition-transform" />
+                  <Bot className="h-6 w-6 text-primary-foreground group-hover:scale-110 transition-transform" />
                   {hasNewMessage && (
                     <motion.div
                       initial={{ scale: 0 }}

@@ -8,10 +8,10 @@ import { Progress } from '@/components/ui/progress'
 import { 
   ArrowLeft, 
   User, 
-  Sync, 
+  RefreshCw, 
   Download, 
   Upload, 
-  Trash2,
+  Trash,
   Shield,
   Database,
   Wifi,
@@ -22,10 +22,10 @@ import {
   ExternalLink,
   Moon,
   Sun
-} from '@phosphor-icons/react'
+} from 'lucide-react'
 import { useOfflineNotes } from '@/contexts/OfflineNotesContext'
 import { offlineStorage, AppSettings } from '@/lib/offline-storage'
-import { useAuthProfile, useUserSettings, useUpdateSettings } from '@/hooks'
+import { useProfile, useSettings, useUpdateSettings } from '@/hooks'
 import { toast } from 'sonner'
 
 interface MobileSettingsSheetProps {
@@ -41,8 +41,8 @@ export function MobileSettingsSheet({ isOpen, onClose }: MobileSettingsSheetProp
     importNotes 
   } = useOfflineNotes()
   
-  const { data: user } = useAuthProfile()
-  const { data: settings } = useUserSettings()
+  const { data: user } = useProfile()
+  const { data: settings } = useSettings()
   const updateSettingsMutation = useUpdateSettings()
   const [storageUsage, setStorageUsage] = useState({ notes: 0, attachments: 0, total: 0 })
   const [isExporting, setIsExporting] = useState(false)
@@ -241,7 +241,7 @@ export function MobileSettingsSheet({ isOpen, onClose }: MobileSettingsSheetProp
               disabled={syncStatus.isSyncing || !syncStatus.isOnline}
               className="w-full"
             >
-              <Sync className={`h-4 w-4 mr-2 ${syncStatus.isSyncing ? 'animate-spin' : ''}`} />
+              <RefreshCw className={`h-4 w-4 mr-2 ${syncStatus.isSyncing ? 'animate-spin' : ''}`} />
               {syncStatus.isSyncing ? 'Syncing...' : 'Sync Now'}
             </Button>
           </Card>
@@ -385,7 +385,7 @@ export function MobileSettingsSheet({ isOpen, onClose }: MobileSettingsSheetProp
                 onClick={handleClearData}
                 className="w-full justify-start"
               >
-                <Trash2 className="h-4 w-4 mr-3" />
+                <Trash className="h-4 w-4 mr-3" />
                 Clear All Data
               </Button>
             </div>

@@ -5,19 +5,19 @@ import { Card } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { 
   Plus, 
-  MagnifyingGlass, 
-  Gear, 
-  WifiHigh, 
-  WifiSlash, 
-  ArrowsClockwise, 
-  House,
+  Search, 
+  Settings, 
+  Wifi, 
+  WifiOff, 
+  RefreshCw, 
+  Home,
   FileText,
-  Microphone,
-  List,
-  NotePencil,
+  Mic,
+  Menu,
+  Edit3,
   Trash,
   Copy
-} from '@phosphor-icons/react'
+} from 'lucide-react'
 import { useOfflineNotes } from '@/contexts/OfflineNotesContext'
 import { MobileNoteEditor } from './MobileNoteEditor'
 import { VoiceNoteRecorder } from './VoiceNoteRecorder'
@@ -132,11 +132,11 @@ export function MobileDashboard() {
               className="h-8 w-8 p-0"
             >
               {syncStatus.isSyncing ? (
-                <ArrowsClockwise className="h-4 w-4 animate-spin" />
+                <RefreshCw className="h-4 w-4 animate-spin" />
               ) : syncStatus.isOnline ? (
-                <WifiHigh className="h-4 w-4 text-green-600" />
+                <Wifi className="h-4 w-4 text-green-600" />
               ) : (
-                <WifiSlash className="h-4 w-4 text-red-600" />
+                <WifiOff className="h-4 w-4 text-red-600" />
               )}
             </Button>
             
@@ -147,7 +147,7 @@ export function MobileDashboard() {
               onClick={() => setCurrentView('settings')}
               className="h-8 w-8 p-0"
             >
-              <Gear className="h-4 w-4" />
+              <Settings className="h-4 w-4" />
             </Button>
           </div>
         </div>
@@ -282,7 +282,7 @@ export function MobileDashboard() {
           onClick={() => setCurrentView('notes')}
           className="flex-col h-auto py-2 px-3"
         >
-          <House className="h-5 w-5 mb-1" />
+          <Home className="h-5 w-5 mb-1" />
           <span className="text-xs">Notes</span>
         </Button>
         
@@ -292,7 +292,7 @@ export function MobileDashboard() {
           onClick={() => setCurrentView('search')}
           className="flex-col h-auto py-2 px-3"
         >
-          <MagnifyingGlass className="h-5 w-5 mb-1" />
+          <Search className="h-5 w-5 mb-1" />
           <span className="text-xs">Search</span>
         </Button>
         
@@ -310,7 +310,7 @@ export function MobileDashboard() {
           onClick={() => setCurrentView('voice')}
           className="flex-col h-auto py-2 px-3"
         >
-          <Microphone className="h-5 w-5 mb-1" />
+          <Mic className="h-5 w-5 mb-1" />
           <span className="text-xs">Voice</span>
         </Button>
         
@@ -320,7 +320,7 @@ export function MobileDashboard() {
           onClick={() => setCurrentView('settings')}
           className="flex-col h-auto py-2 px-3"
         >
-          <List className="h-5 w-5 mb-1" />
+          <Menu className="h-5 w-5 mb-1" />
           <span className="text-xs">More</span>
         </Button>
       </div>

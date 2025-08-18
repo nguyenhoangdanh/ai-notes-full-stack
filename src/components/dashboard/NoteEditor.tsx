@@ -13,10 +13,10 @@ import {
   Calendar,
   ArrowLeft,
   Sparkle,
-  Robot,
+  Bot,
   Clock,
   Brain
-} from '@phosphor-icons/react'
+} from 'lucide-react'
 import { formatDistanceToNow } from 'date-fns'
 import { useIsMobile } from '../../hooks/use-mobile'
 import { toast } from 'sonner'
@@ -132,7 +132,7 @@ export function NoteEditor({ noteId, onClose }: NoteEditorProps) {
               </Button>
             )}
             <div className="flex items-center space-x-2">
-              <Robot className="h-5 w-5 text-primary" weight="duotone" />
+              <Bot className="h-5 w-5 text-primary" />
               <span className="text-sm font-medium text-foreground">AI Note Editor</span>
             </div>
           </div>

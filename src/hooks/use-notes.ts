@@ -1,7 +1,7 @@
 import { useMutation, useQuery, useQueryClient, useInfiniteQuery } from '@tanstack/react-query'
 import { toast } from 'sonner'
 import { noteService } from '../services'
-import { queryKeys } from './query-keys'
+import { queryKeys, invalidationHelpers } from './query-keys'
 import type {
   Note,
   NoteWithRelations,
@@ -251,7 +251,8 @@ export function useRestoreNoteVersion() {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: (versionId: string) => noteService.restoreVersion(versionId),
+    mutationFn: ({ noteId, version }: { noteId: string; version: number }) => 
+      noteService.restoreVersion(noteId, version),
     onSuccess: (restoredNote: Note) => {
       // Update note cache
       queryClient.setQueryData(queryKeys.notes.detail(restoredNote.id), restoredNote)

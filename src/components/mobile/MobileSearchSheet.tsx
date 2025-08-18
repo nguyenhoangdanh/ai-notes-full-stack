@@ -12,9 +12,9 @@ import {
   FileText, 
   Tag,
   Filter,
-  SortAscending,
+  ArrowUpDown,
   Star
-} from '@phosphor-icons/react'
+} from 'lucide-react'
 import { useOfflineNotes } from '@/contexts/OfflineNotesContext'
 import { OfflineNote } from '@/lib/offline-storage'
 import Fuse from 'fuse.js'

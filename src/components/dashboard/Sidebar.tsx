@@ -7,13 +7,13 @@ import { Badge } from '../ui/badge'
 import { Separator } from '../ui/separator'
 import { 
   Brain, 
-  SignOut, 
+  LogOut, 
   Tag, 
   Calendar,
   FolderOpen,
   Sparkle,
   X
-} from '@phosphor-icons/react'
+} from 'lucide-react'
 import { useIsMobile } from '../../hooks/use-mobile'
 
 interface SidebarProps {
@@ -30,10 +30,10 @@ export function Sidebar({ onClose, searchQuery, onSearchChange }: SidebarProps) 
   // Get unique tags from all notes
   const primaryTags = Array.from(new Set(notes.map(note => note.tags[0]).filter(Boolean)))
   const allTags = Array.from(new Set(notes.flatMap(note => note.tags)))
+  const categories = allTags // Categories are represented by tags
 
   const getTagCount = (tag: string) => {
     return notes.filter(note => note.tags.includes(tag)).length
-  }
   }
 
   return (
@@ -186,7 +186,7 @@ export function Sidebar({ onClose, searchQuery, onSearchChange }: SidebarProps) 
           onClick={logout}
           className="w-full justify-start text-destructive hover:text-destructive hover:bg-destructive/10"
         >
-          <SignOut className="h-4 w-4 mr-2" />
+          <LogOut className="h-4 w-4 mr-2" />
           Sign out
         </Button>
       </div>

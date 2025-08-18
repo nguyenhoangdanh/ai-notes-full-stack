@@ -1,10 +1,4 @@
-import { PomodoroType, SessionStatus, TaskStatus, TaskPriority, ReviewType } from './common.types'
-
-interface BaseEntity {
-  id: string;
-  createdAt: string;
-  updatedAt: string;
-}
+import { BaseEntity, PomodoroType, SessionStatus, TaskStatus, TaskPriority, ReviewType } from './common.types'
 
 // Productivity features
 export interface PomodoroSession extends BaseEntity {

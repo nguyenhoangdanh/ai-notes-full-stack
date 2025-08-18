@@ -216,6 +216,10 @@ export class OfflineStorageService {
     return await db.voiceRecordings.toArray()
   }
 
+  async deleteVoiceRecording(id: string): Promise<void> {
+    await db.voiceRecordings.delete(id)
+  }
+
   // Settings Operations
   async saveSettings(settings: AppSettings): Promise<void> {
     await db.settings.put(settings)

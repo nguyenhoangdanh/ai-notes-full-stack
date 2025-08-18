@@ -8,7 +8,7 @@ import {
   ArrowLeft, 
   Check, 
   Share, 
-  Trash2, 
+  Trash, 
   Tag, 
   Mic, 
   Bold, 
@@ -17,7 +17,7 @@ import {
   Camera,
   MapPin,
   Clock
-} from '@phosphor-icons/react'
+} from 'lucide-react'
 import { OfflineNote } from '@/lib/offline-storage'
 import { toast } from 'sonner'
 
@@ -39,7 +39,7 @@ export function MobileNoteEditor({ note, onBack, onUpdate }: MobileNoteEditorPro
   
   const contentRef = useRef<HTMLTextAreaElement>(null)
   const titleRef = useRef<HTMLInputElement>(null)
-  const [autoSaveTimeout, setAutoSaveTimeout] = useState<number>()
+  const [autoSaveTimeout, setAutoSaveTimeout] = useState<number | null>(null)
 
   // Load note data
   useEffect(() => {

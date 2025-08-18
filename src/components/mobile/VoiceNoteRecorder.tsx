@@ -10,15 +10,15 @@ import {
   Square, 
   Play, 
   Pause, 
-  Trash2, 
+  Trash, 
   FileText, 
   Download,
   Check,
-  Waveform
-} from '@phosphor-icons/react'
+  Activity
+} from 'lucide-react'
 import { useOfflineNotes } from '@/contexts/OfflineNotesContext'
 import { offlineStorage, VoiceRecording } from '@/lib/offline-storage'
-import { useAuthProfile } from '@/hooks'
+import { useProfile } from '@/hooks'
 import { v4 as uuidv4 } from 'uuid'
 import { toast } from 'sonner'
 
@@ -28,7 +28,7 @@ interface VoiceNoteRecorderProps {
 
 export function VoiceNoteRecorder({ onBack }: VoiceNoteRecorderProps) {
   const { createNote } = useOfflineNotes()
-  const { data: user } = useAuthProfile()
+  const { data: user } = useProfile()
   
   const [isRecording, setIsRecording] = useState(false)
   const [isPaused, setIsPaused] = useState(false)
@@ -47,7 +47,6 @@ export function VoiceNoteRecorder({ onBack }: VoiceNoteRecorderProps) {
   const audioChunksRef = useRef<Blob[]>([])
   const recordingIntervalRef = useRef<number | null>(null)
   const audioLevelIntervalRef = useRef<number | null>(null)
-  const audioElementRef = useRef<HTMLAudioElement | null>(null)
   const audioElementRef = useRef<HTMLAudioElement | null>(null)
 
   // Load existing recordings
@@ -253,7 +252,7 @@ export function VoiceNoteRecorder({ onBack }: VoiceNoteRecorderProps) {
 
   const deleteRecording = async (recordingId: string) => {
     try {
-      await offlineStorage.voiceRecordings.delete(recordingId)
+      await offlineStorage.deleteVoiceRecording(recordingId)
       await loadRecordings()
       
       if (selectedRecording?.id === recordingId) {
@@ -402,7 +401,7 @@ export function VoiceNoteRecorder({ onBack }: VoiceNoteRecorderProps) {
           
           {recordings.length === 0 ? (
             <div className="text-center py-8">
-              <Waveform className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
+              <Activity className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
               <p className="text-muted-foreground">No recordings yet</p>
             </div>
           ) : (
@@ -430,7 +429,7 @@ export function VoiceNoteRecorder({ onBack }: VoiceNoteRecorderProps) {
                         onClick={() => deleteRecording(recording.id)}
                         className="h-8 w-8 p-0"
                       >
-                        <Trash2 className="h-4 w-4" />
+                        <Trash className="h-4 w-4" />
                       </Button>
                     </div>
                   </div>

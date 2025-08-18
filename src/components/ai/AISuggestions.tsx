@@ -6,7 +6,7 @@ import { Badge } from '../ui/badge'
 import { Separator } from '../ui/separator'
 import { 
   Lightbulb, 
-  MagicWand, 
+  Wand2, 
   FileText,
   Check,
   X,
@@ -14,7 +14,7 @@ import {
   ArrowRight,
   Brain,
   Tag as TagIcon
-} from '@phosphor-icons/react'
+} from 'lucide-react'
 import { useAIFeatures } from '../../hooks/useAIFeatures'
 import { cn } from '../../lib/utils'
 import { toast } from 'sonner'
@@ -113,7 +113,7 @@ export function AISuggestions({
   const getSuggestionIcon = (type: string) => {
     switch (type) {
       case 'title': return FileText
-      case 'content': return MagicWand
+      case 'content': return Wand2
       case 'tags': return TagIcon
       case 'structure': return Brain
       case 'related': return Lightbulb
