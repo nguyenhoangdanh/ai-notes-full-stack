@@ -23,6 +23,13 @@ export default defineConfig({
   define: {
     // Explicitly define process.env as an empty object for client-side compatibility
     'process.env': JSON.stringify({}),
+    // Define process for other usages that might occur in dependencies
+    'process': JSON.stringify({
+      env: {},
+      browser: true,
+      version: '',
+      versions: { node: '' }
+    }),
     // Ensure global is defined for browser compatibility
     'global': 'globalThis',
   },
