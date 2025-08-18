@@ -13,6 +13,11 @@ dist-ssr
 *-dist
 *.local
 
+# Next.js
+.next/
+out/
+build/
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
@@ -25,9 +30,17 @@ dist-ssr
 *.sw?
 
 .env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
 **/agent-eval-report*
 packages
 .file-manifest
 .devcontainer/
 
 .spark-workbench-id
+
+# Migration backup
+migration-backup/
