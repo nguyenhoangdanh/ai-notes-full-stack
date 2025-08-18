@@ -51,5 +51,47 @@ export const workspaceService = {
    */
   async setDefault(id: string): Promise<Workspace> {
     return apiClient.patch<Workspace>(`/workspaces/${id}/default`);
+  },
+
+  /**
+   * Get all workspaces (alias for getAll)
+   */
+  async getWorkspaces(): Promise<WorkspaceWithStats[]> {
+    return this.getAll();
+  },
+
+  /**
+   * Get workspace by ID (alias for getById)
+   */
+  async getWorkspace(id: string): Promise<Workspace> {
+    return this.getById(id);
+  },
+
+  /**
+   * Get default workspace
+   */
+  async getDefaultWorkspace(): Promise<Workspace> {
+    return apiClient.get<Workspace>('/workspaces/default');
+  },
+
+  /**
+   * Create workspace (alias for create)
+   */
+  async createWorkspace(data: CreateWorkspaceDto): Promise<Workspace> {
+    return this.create(data);
+  },
+
+  /**
+   * Update workspace (alias for update)
+   */
+  async updateWorkspace(id: string, data: UpdateWorkspaceDto): Promise<Workspace> {
+    return this.update(id, data);
+  },
+
+  /**
+   * Delete workspace (alias for delete)
+   */
+  async deleteWorkspace(id: string): Promise<void> {
+    return this.delete(id);
   }
 };

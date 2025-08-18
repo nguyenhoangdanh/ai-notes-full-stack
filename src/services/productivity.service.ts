@@ -1,4 +1,4 @@
-import { getApiClient } from '../lib/api-client'
+import { apiClient } from '../lib/api-client'
 import type {
   PomodoroSession,
   CreatePomodoroSessionDto,
@@ -15,40 +15,40 @@ import type {
 export const productivityService = {
   // Pomodoro sessions
   async getPomodoroSessions(): Promise<PomodoroSession[]> {
-    return getApiClient().get<PomodoroSession[]>('/productivity/pomodoro/sessions')
+    return apiClient.get<PomodoroSession[]>('/productivity/pomodoro/sessions')
   },
 
   async createPomodoroSession(data: CreatePomodoroSessionDto): Promise<PomodoroSession> {
-    return getApiClient().post<PomodoroSession>('/productivity/pomodoro/sessions', { body: data })
+    return apiClient.post<PomodoroSession>('/productivity/pomodoro/sessions', { body: data })
   },
 
   async updatePomodoroSession(sessionId: string, data: UpdatePomodoroSessionDto): Promise<PomodoroSession> {
-    return getApiClient().patch<PomodoroSession>(`/productivity/pomodoro/sessions/${sessionId}`, { body: data })
+    return apiClient.patch<PomodoroSession>(`/productivity/pomodoro/sessions/${sessionId}`, { body: data })
   },
 
   async cancelPomodoroSession(sessionId: string): Promise<void> {
-    return getApiClient().delete<void>(`/productivity/pomodoro/sessions/${sessionId}`)
+    return apiClient.delete<void>(`/productivity/pomodoro/sessions/${sessionId}`)
   },
 
   // Tasks
   async getTasks(filters?: { status?: string; priority?: string; noteId?: string }): Promise<Task[]> {
-    return getApiClient().get<Task[]>('/productivity/tasks', { query: filters })
+    return apiClient.get<Task[]>('/productivity/tasks', { query: filters })
   },
 
   async getTask(taskId: string): Promise<Task> {
-    return getApiClient().get<Task>(`/productivity/tasks/${taskId}`)
+    return apiClient.get<Task>(`/productivity/tasks/${taskId}`)
   },
 
   async createTask(data: CreateTaskDto): Promise<Task> {
-    return getApiClient().post<Task>('/productivity/tasks', { body: data })
+    return apiClient.post<Task>('/productivity/tasks', { body: data })
   },
 
   async updateTask(taskId: string, data: UpdateTaskDto): Promise<Task> {
-    return getApiClient().patch<Task>(`/productivity/tasks/${taskId}`, { body: data })
+    return apiClient.patch<Task>(`/productivity/tasks/${taskId}`, { body: data })
   },
 
   async deleteTask(taskId: string): Promise<void> {
-    return getApiClient().delete<void>(`/productivity/tasks/${taskId}`)
+    return apiClient.delete<void>(`/productivity/tasks/${taskId}`)
   },
 
   // Calendar events
@@ -57,28 +57,28 @@ export const productivityService = {
     end?: string
     noteId?: string 
   }): Promise<CalendarEvent[]> {
-    return getApiClient().get<CalendarEvent[]>('/productivity/calendar/events', { query: filters })
+    return apiClient.get<CalendarEvent[]>('/productivity/calendar/events', { query: filters })
   },
 
   async getCalendarEvent(eventId: string): Promise<CalendarEvent> {
-    return getApiClient().get<CalendarEvent>(`/productivity/calendar/events/${eventId}`)
+    return apiClient.get<CalendarEvent>(`/productivity/calendar/events/${eventId}`)
   },
 
   async createCalendarEvent(data: CreateCalendarEventDto): Promise<CalendarEvent> {
-    return getApiClient().post<CalendarEvent>('/productivity/calendar/events', { body: data })
+    return apiClient.post<CalendarEvent>('/productivity/calendar/events', { body: data })
   },
 
   async updateCalendarEvent(eventId: string, data: UpdateCalendarEventDto): Promise<CalendarEvent> {
-    return getApiClient().patch<CalendarEvent>(`/productivity/calendar/events/${eventId}`, { body: data })
+    return apiClient.patch<CalendarEvent>(`/productivity/calendar/events/${eventId}`, { body: data })
   },
 
   async deleteCalendarEvent(eventId: string): Promise<void> {
-    return getApiClient().delete<void>(`/productivity/calendar/events/${eventId}`)
+    return apiClient.delete<void>(`/productivity/calendar/events/${eventId}`)
   },
 
   // Review prompts
   async getReviewPrompts(): Promise<ReviewPrompt[]> {
-    return getApiClient().get<ReviewPrompt[]>('/productivity/review-prompts')
+    return apiClient.get<ReviewPrompt[]>('/productivity/review-prompts')
   },
 
   async createReviewPrompt(data: {
@@ -87,18 +87,18 @@ export const productivityService = {
     questions: string[]
     frequency: string
   }): Promise<ReviewPrompt> {
-    return getApiClient().post<ReviewPrompt>('/productivity/review-prompts', { body: data })
+    return apiClient.post<ReviewPrompt>('/productivity/review-prompts', { body: data })
   },
 
   async updateReviewPrompt(promptId: string, data: Partial<ReviewPrompt>): Promise<ReviewPrompt> {
-    return getApiClient().patch<ReviewPrompt>(`/productivity/review-prompts/${promptId}`, { body: data })
+    return apiClient.patch<ReviewPrompt>(`/productivity/review-prompts/${promptId}`, { body: data })
   },
 
   async deleteReviewPrompt(promptId: string): Promise<void> {
-    return getApiClient().delete<void>(`/productivity/review-prompts/${promptId}`)
+    return apiClient.delete<void>(`/productivity/review-prompts/${promptId}`)
   },
 
   async markReviewPromptCompleted(promptId: string): Promise<ReviewPrompt> {
-    return getApiClient().post<ReviewPrompt>(`/productivity/review-prompts/${promptId}/complete`)
+    return apiClient.post<ReviewPrompt>(`/productivity/review-prompts/${promptId}/complete`)
   },
 }

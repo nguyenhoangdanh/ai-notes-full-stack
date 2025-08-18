@@ -144,3 +144,10 @@ export enum ReviewType {
   MONTHLY = 'MONTHLY',
   CUSTOM = 'CUSTOM'
 }
+
+// Base entity interface for common fields
+export interface BaseEntity {
+  id: string;
+  createdAt: string;
+  updatedAt: string;
+}

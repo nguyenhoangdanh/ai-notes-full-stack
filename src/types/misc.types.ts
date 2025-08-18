@@ -1,4 +1,4 @@
-import { BaseEntity } from './common.types'
+import { BaseEntity, NotificationType } from './common.types'
 
 // Notifications
 export interface Notification extends BaseEntity {
@@ -8,13 +8,6 @@ export interface Notification extends BaseEntity {
   type: NotificationType
   isRead: boolean
   noteId?: string
-}
-
-export enum NotificationType {
-  REMINDER = 'REMINDER',
-  COLLABORATION = 'COLLABORATION',
-  SYSTEM = 'SYSTEM',
-  AI_SUGGESTION = 'AI_SUGGESTION'
 }
 
 export interface Reminder extends BaseEntity {
@@ -67,6 +60,14 @@ export interface Template extends BaseEntity {
   isPublic: boolean
   ownerId: string
   metadata?: Record<string, any>
+}
+
+// Tags
+export interface Tag extends BaseEntity {
+  name: string
+  color?: string
+  description?: string
+  ownerId: string
 }
 
 // DTOs

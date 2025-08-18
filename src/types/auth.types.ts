@@ -41,7 +41,30 @@ export interface AuthResponseDto {
   };
 }
 
+// Alias for compatibility
+export interface AuthResponse extends AuthResponseDto {}
+
 export interface TokenVerificationResponse {
   valid: boolean;
   user: User;
+}
+
+export interface UserSettings {
+  id: string;
+  ownerId: string;
+  model: string;
+  maxTokens: number;
+  autoReembed: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface Usage {
+  id: string;
+  ownerId: string;
+  date: string;
+  embeddingTokens: number;
+  chatTokens: number;
+  createdAt: string;
+  updatedAt: string;
 }

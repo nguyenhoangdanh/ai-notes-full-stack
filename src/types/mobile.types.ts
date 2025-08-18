@@ -1,4 +1,4 @@
-import { BaseEntity } from './common.types'
+import { BaseEntity, TranscriptionStatus, SyncAction, ExportType, ExportFormat, ExportStatus } from './common.types'
 
 // Mobile-specific features
 export interface VoiceNote extends BaseEntity {
@@ -12,12 +12,6 @@ export interface VoiceNote extends BaseEntity {
   quality?: number // Transcription quality score
   status: TranscriptionStatus
   processedAt?: string
-}
-
-export enum TranscriptionStatus {
-  PROCESSING = 'PROCESSING',
-  COMPLETED = 'COMPLETED',
-  FAILED = 'FAILED'
 }
 
 export interface LocationNote extends BaseEntity {
@@ -40,12 +34,6 @@ export interface OfflineSync extends BaseEntity {
   synced: boolean
   syncedAt?: string
   conflictId?: string
-}
-
-export enum SyncAction {
-  CREATE = 'CREATE',
-  UPDATE = 'UPDATE',
-  DELETE = 'DELETE'
 }
 
 // DTOs for mobile features
@@ -95,29 +83,6 @@ export interface ExportHistory extends BaseEntity {
   downloadUrl?: string
   expiresAt?: string
   completedAt?: string
-}
-
-export enum ExportType {
-  SINGLE_NOTE = 'SINGLE_NOTE',
-  MULTIPLE_NOTES = 'MULTIPLE_NOTES',
-  WORKSPACE = 'WORKSPACE',
-  FULL_BACKUP = 'FULL_BACKUP'
-}
-
-export enum ExportFormat {
-  MARKDOWN = 'MARKDOWN',
-  PDF = 'PDF',
-  EPUB = 'EPUB',
-  HTML = 'HTML',
-  DOCX = 'DOCX',
-  NOTION = 'NOTION',
-  OBSIDIAN = 'OBSIDIAN'
-}
-
-export enum ExportStatus {
-  PROCESSING = 'PROCESSING',
-  COMPLETED = 'COMPLETED',
-  FAILED = 'FAILED'
 }
 
 export interface CreateExportDto {

@@ -119,7 +119,7 @@ export class OfflineStorageService {
   }
 
   async getNotes(workspaceId?: string): Promise<OfflineNote[]> {
-    let collection = db.notes.where('isDeleted').equals(false)
+    let collection = db.notes.where('isDeleted').equals(0)
     
     if (workspaceId) {
       collection = collection.and(note => note.workspaceId === workspaceId)

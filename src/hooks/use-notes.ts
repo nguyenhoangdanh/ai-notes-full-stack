@@ -1,7 +1,7 @@
 import { useMutation, useQuery, useQueryClient, useInfiniteQuery } from '@tanstack/react-query'
 import { toast } from 'sonner'
 import { noteService } from '../services'
-import { queryKeys, invalidationHelpers } from './query-keys'
+import { queryKeys } from './query-keys'
 import type {
   Note,
   NoteWithRelations,
@@ -49,8 +49,9 @@ export function useInfiniteNotes(workspaceId?: string, limit = 20) {
     queryKey: ['notes', 'infinite', { workspaceId, limit }],
     queryFn: ({ pageParam = 0 }) => 
       noteService.getNotes(workspaceId, limit),
+    initialPageParam: 0,
     getNextPageParam: (lastPage, pages) => {
-      if (lastPage.length < limit) return undefined
+      if ((lastPage as any[]).length < limit) return undefined
       return pages.length
     },
     staleTime: 2 * 60 * 1000,

@@ -136,15 +136,15 @@ export class ExportService {
           fileExtension = '.html';
           break;
         case ExportFormat.PDF:
-          exportContent = await this.generatePDF(notes, exportRecord.settings);
+          exportContent = await this.generatePDF(notes, exportRecord.settings) as Buffer;
           fileExtension = '.pdf';
           break;
         case ExportFormat.EPUB:
-          exportContent = await this.generateEPUB(notes, exportRecord.settings);
+          exportContent = await this.generateEPUB(notes, exportRecord.settings) as Buffer;
           fileExtension = '.epub';
           break;
         case ExportFormat.DOCX:
-          exportContent = await this.generateDOCX(notes, exportRecord.settings);
+          exportContent = await this.generateDOCX(notes, exportRecord.settings) as Buffer;
           fileExtension = '.docx';
           break;
         case ExportFormat.NOTION:

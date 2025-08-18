@@ -1,5 +1,5 @@
 /**
- * AI and Chat API Service
+ * AI and Smart Features API Service
  */
 
 import { apiClient } from '../lib/api-client';
@@ -87,5 +87,76 @@ export const aiService = {
    */
   async semanticSearch(data: SemanticSearchDto): Promise<SemanticSearchResult[]> {
     return apiClient.post<SemanticSearchResult[]>('/search/semantic', { body: data });
+  },
+
+  /**
+   * Auto-categorize notes with AI
+   */
+  async categorizeNotes(noteId?: string): Promise<any> {
+    return apiClient.post('/categories/auto-categorize' + (noteId ? `/${noteId}` : ''), {
+      body: { threshold: 0.7 }
+    });
+  },
+
+  /**
+   * Get duplicate detection reports
+   */
+  async getDuplicateReports(): Promise<any[]> {
+    return apiClient.get('/duplicates/reports');
+  },
+
+  /**
+   * Detect duplicates
+   */
+  async detectDuplicates(noteId?: string): Promise<any> {
+    return apiClient.get('/duplicates/detect', {
+      query: noteId ? { noteId, threshold: 0.7 } : { threshold: 0.7 }
+    });
+  },
+
+  /**
+   * Resolve duplicate report
+   */
+  async resolveDuplicate(reportId: string, status: 'CONFIRMED' | 'DISMISSED' | 'MERGED'): Promise<any> {
+    return apiClient.patch(`/duplicates/reports/${reportId}`, {
+      body: { status }
+    });
+  },
+
+  /**
+   * Get related notes
+   */
+  async getRelatedNotes(noteId: string): Promise<any[]> {
+    return apiClient.get(`/relations/notes/${noteId}`);
+  },
+
+  /**
+   * Discover note relations
+   */
+  async discoverRelations(noteId?: string): Promise<any> {
+    return apiClient.post('/relations/discover', {
+      body: noteId ? { noteId } : {}
+    });
+  },
+
+  /**
+   * Get note summary
+   */
+  async getNoteSummary(noteId: string): Promise<any> {
+    return apiClient.get(`/summaries/notes/${noteId}`);
+  },
+
+  /**
+   * Generate summary for note
+   */
+  async generateSummary(noteId: string, options: any = {}): Promise<any> {
+    return apiClient.post(`/summaries/notes/${noteId}`, { body: options });
+  },
+
+  /**
+   * Advanced search with AI
+   */
+  async advancedSearch(query: any): Promise<any> {
+    return apiClient.post('/search/advanced', { body: query });
   }
 };

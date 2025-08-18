@@ -1,4 +1,4 @@
-import { BaseEntity } from './common.types'
+import { BaseEntity, PomodoroType, SessionStatus, TaskStatus, TaskPriority, ReviewType } from './common.types'
 
 // Productivity features
 export interface PomodoroSession extends BaseEntity {
@@ -11,19 +11,6 @@ export interface PomodoroSession extends BaseEntity {
   completedAt?: string
 }
 
-export enum PomodoroType {
-  WORK = 'WORK',
-  SHORT_BREAK = 'SHORT_BREAK',
-  LONG_BREAK = 'LONG_BREAK'
-}
-
-export enum SessionStatus {
-  ACTIVE = 'ACTIVE',
-  PAUSED = 'PAUSED',
-  COMPLETED = 'COMPLETED',
-  CANCELLED = 'CANCELLED'
-}
-
 export interface Task extends BaseEntity {
   noteId?: string
   title: string
@@ -34,20 +21,6 @@ export interface Task extends BaseEntity {
   completedAt?: string
   ownerId: string
   tags: string[]
-}
-
-export enum TaskStatus {
-  TODO = 'TODO',
-  IN_PROGRESS = 'IN_PROGRESS',
-  COMPLETED = 'COMPLETED',
-  CANCELLED = 'CANCELLED'
-}
-
-export enum TaskPriority {
-  LOW = 'LOW',
-  MEDIUM = 'MEDIUM',
-  HIGH = 'HIGH',
-  URGENT = 'URGENT'
 }
 
 export interface CalendarEvent extends BaseEntity {
@@ -71,13 +44,6 @@ export interface ReviewPrompt extends BaseEntity {
   nextDue: string
   lastAnswered?: string
   isActive: boolean
-}
-
-export enum ReviewType {
-  DAILY = 'DAILY',
-  WEEKLY = 'WEEKLY',
-  MONTHLY = 'MONTHLY',
-  CUSTOM = 'CUSTOM'
 }
 
 // DTOs for productivity features

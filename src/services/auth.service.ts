@@ -46,5 +46,40 @@ export const authService = {
    */
   async getProfile(): Promise<User> {
     return apiClient.get<User>('/auth/me');
+  },
+
+  /**
+   * Verify current JWT token
+   */
+  async verify(): Promise<TokenVerificationResponse> {
+    return apiClient.get<TokenVerificationResponse>('/auth/verify');
+  },
+
+  /**
+   * Get user settings
+   */
+  async getSettings(): Promise<any> {
+    return apiClient.get('/settings');
+  },
+
+  /**
+   * Update user settings
+   */
+  async updateSettings(data: any): Promise<any> {
+    return apiClient.patch('/settings', { body: data });
+  },
+
+  /**
+   * Reset user settings to defaults
+   */
+  async resetSettings(): Promise<any> {
+    return apiClient.patch('/settings', { body: { model: 'gemini-1.5-flash', maxTokens: 4000, autoReembed: true } });
+  },
+
+  /**
+   * Get usage statistics
+   */
+  async getUsage(days: number = 30): Promise<any> {
+    return apiClient.get('/settings/usage', { query: { days: days.toString() } });
   }
 };

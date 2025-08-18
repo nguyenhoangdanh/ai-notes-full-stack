@@ -83,3 +83,46 @@ export interface SearchResult {
 export interface ProcessRAGResponse {
   message: string;
 }
+
+// Additional note types needed for collaboration and sharing
+export interface NoteWithRelations extends Note {
+  collaborations?: Collaboration[];
+  shareLinks?: ShareLink[];
+  attachments?: Attachment[];
+  versions?: NoteVersion[];
+}
+
+export interface Collaboration {
+  id: string;
+  noteId: string;
+  userId: string;
+  permission: 'READ' | 'WRITE' | 'ADMIN';
+  invitedBy: string;
+  createdAt: string;
+}
+
+export interface ShareLink {
+  id: string;
+  noteId: string;
+  token: string;
+  isPublic: boolean;
+  expiresAt?: string;
+  allowComments: boolean;
+  requireAuth: boolean;
+  maxViews?: number;
+  passwordHash?: string;
+  settings?: Record<string, any>;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface Attachment {
+  id: string;
+  noteId: string;
+  filename: string;
+  filepath: string;
+  fileType: string;
+  fileSize: number;
+  uploadedBy: string;
+  createdAt: string;
+}

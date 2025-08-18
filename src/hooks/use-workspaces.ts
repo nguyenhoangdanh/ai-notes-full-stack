@@ -1,7 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { toast } from 'sonner'
 import { workspaceService } from '../services'
-import { queryKeys, invalidationHelpers } from './query-keys'
+import { queryKeys } from './query-keys'
 import type { Workspace, CreateWorkspaceDto, UpdateWorkspaceDto } from '../types'
 
 // Workspace queries
