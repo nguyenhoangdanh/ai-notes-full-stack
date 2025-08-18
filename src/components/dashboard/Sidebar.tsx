@@ -1,4 +1,4 @@
-import { useAuth } from '../../hooks/useAuth'
+import { useAuth } from '../../hooks/use-auth'
 import { useNotes } from '../../contexts/NotesContext'
 import { SearchBar } from './SearchBar'
 import { Button } from '../ui/button'

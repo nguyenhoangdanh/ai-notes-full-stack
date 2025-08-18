@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { useAuth } from '../../hooks/useAuth'
+import { useAuth } from '../../hooks/use-auth'
 import { useNotes } from '../../contexts/NotesContext'
 import { Sidebar } from './Sidebar'
 import { NotesList } from './NotesList'
