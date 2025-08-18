@@ -1,18 +1,20 @@
 import { useAuth } from '../../hooks/use-auth'
 import { useNotes } from '../../contexts/NotesContext'
 import { SearchBar } from './SearchBar'
+import { UserMenu } from '../header/UserMenu'
 import { Button } from '../ui/button'
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar'
 import { Badge } from '../ui/badge'
 import { Separator } from '../ui/separator'
-import { 
-  Brain, 
-  LogOut, 
-  Tag, 
+import {
+  Brain,
+  LogOut,
+  Tag,
   Calendar,
   FolderOpen,
   Sparkle,
-  X
+  X,
+  Settings
 } from 'lucide-react'
 import { useIsMobile } from '../../hooks/use-mobile'
 
