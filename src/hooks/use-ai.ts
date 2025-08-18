@@ -154,32 +154,6 @@ export function useUpdateAIConversation() {
   })
 }
 
-export function useDeleteAIConversation() {
-  const queryClient = useQueryClient()
-
-  return useMutation({
-    mutationFn: (conversationId: string) => aiService.deleteConversation(conversationId),
-    onSuccess: (_, deletedId) => {
-      // Remove from conversations list
-      queryClient.setQueryData(
-        queryKeys.ai.conversations(),
-        (old: AIConversation[] = []) => old.filter(conv => conv.id !== deletedId)
-      )
-      
-      // Remove individual conversation cache
-      queryClient.removeQueries({ 
-        queryKey: queryKeys.ai.conversation(deletedId) 
-      })
-      
-      toast.success('Conversation deleted')
-    },
-    onError: (error: any) => {
-      const message = error.response?.message || 'Failed to delete conversation'
-      toast.error(message)
-    },
-  })
-}
-
 export function useAutoCategorizeNotes() {
   const queryClient = useQueryClient()
 
