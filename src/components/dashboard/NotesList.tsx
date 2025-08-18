@@ -6,7 +6,7 @@ import { Separator } from '../ui/separator'
 import { 
   Calendar, 
   Tag, 
-  MoreHorizontal,
+  DotsThree,
   Clock
 } from '@phosphor-icons/react'
 import { formatDistanceToNow } from 'date-fns'
@@ -35,8 +35,8 @@ export function NotesList({ searchQuery, selectedNoteId, onSelectNote }: NotesLi
     }
   }
 
-  const getCategoryColor = (category?: string) => {
-    switch (category) {
+  const getTagColor = (tag?: string) => {
+    switch (tag) {
       case 'meetings': return 'bg-blue-100 text-blue-800'
       case 'ideas': return 'bg-purple-100 text-purple-800'
       case 'tasks': return 'bg-green-100 text-green-800'
@@ -109,7 +109,7 @@ export function NotesList({ searchQuery, selectedNoteId, onSelectNote }: NotesLi
                   onClick={(e) => handleDeleteNote(e, note.id)}
                   className="opacity-0 group-hover:opacity-100 h-6 w-6 p-0"
                 >
-                  <MoreHorizontal className="h-3 w-3" />
+                  <DotsThree className="h-3 w-3" />
                 </Button>
               </div>
 
@@ -121,15 +121,15 @@ export function NotesList({ searchQuery, selectedNoteId, onSelectNote }: NotesLi
               {/* Note Metadata */}
               <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-2">
-                  {note.category && (
+                  {note.tags.length > 0 && (
                     <Badge 
                       variant="secondary"
-                      className={`text-xs ${getCategoryColor(note.category)}`}
+                      className={`text-xs ${getTagColor(note.tags[0])}`}
                     >
-                      {note.category}
+                      {note.tags[0]}
                     </Badge>
                   )}
-                  {note.tags.length > 0 && (
+                  {note.tags.length > 1 && (
                     <div className="flex items-center space-x-1">
                       <Tag className="h-3 w-3 text-muted-foreground" />
                       <span className="text-xs text-muted-foreground">

@@ -17,7 +17,7 @@ import {
   SparkleIcon,
   ArrowClockwise
 } from '@phosphor-icons/react'
-import { useAIFeatures } from '../../hooks/useAIFeatures'
+import { useAI } from '../../contexts/AIContext'
 import { useAuth } from '../../hooks/useAuth'
 import { useNotes } from '../../contexts/NotesContext'
 import { cn } from '../../lib/utils'
@@ -57,12 +57,12 @@ export function AIChatInterface({
   const { user } = useAuth()
   const { notes, getNote } = useNotes()
   const { 
-    currentConversation, 
-    askAI, 
+    activeConversation: currentConversation, 
+    sendMessage: askAI, 
     createConversation, 
-    isLoading,
-    deleteConversation 
-  } = useAIFeatures()
+    isProcessing: isLoading,
+    startNewChat
+  } = useAI()
   
   const [input, setInput] = useState('')
   const messagesEndRef = useRef<HTMLDivElement>(null)
@@ -89,19 +89,17 @@ export function AIChatInterface({
 
     // Ensure we have a conversation
     if (!currentConversation) {
-      createConversation(
-        currentNote?.id, 
-        currentNote ? `Chat about: ${currentNote.title}` : 'General Chat'
-      )
+      await createConversation({
+        title: currentNote ? `Chat about: ${currentNote.title}` : 'General Chat',
+        noteId: currentNote?.id,
+        context: currentNote ? [currentNote.id] : []
+      })
     }
 
     setInput('')
     
     // Send message through AI context
-    await askAI(content, currentNote ? {
-      id: currentNote.id,
-      title: currentNote.title
-    } : undefined)
+    await askAI(content, currentNote ? [currentNote.id] : undefined)
   }
 
   const handleQuickPrompt = (prompt: string) => {

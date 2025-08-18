@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Button } from '../ui/button'
 import { Badge } from '../ui/badge'
-import { Robot, X, MessageCircle } from '@phosphor-icons/react'
+import { Robot, X, ChatCircle } from '@phosphor-icons/react'
 import { AIChatInterface } from './AIChatInterface'
 import { cn } from '../../lib/utils'
 

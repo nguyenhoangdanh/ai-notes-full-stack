@@ -2,7 +2,7 @@
  * AI and Chat Types
  */
 
-import { SuggestionType } from './common.types';
+import { SuggestionType, DuplicateStatus } from './common.types';
 
 export interface AIConversation {
   id: string;
@@ -22,10 +22,77 @@ export interface AIMessage {
   timestamp: string;
 }
 
+// Alias for backward compatibility
+export interface ChatMessage extends AIMessage {}
+
 export interface CreateConversationDto {
   title: string;
   noteId?: string;
   context?: string[];
+}
+
+// Chat related types
+export interface ChatRequest {
+  conversationId: string;
+  message: string;
+  context?: string[];
+}
+
+export interface ContentSuggestionRequest {
+  noteId: string;
+  content: string;
+  type?: SuggestionType;
+}
+
+export interface ContentSuggestionResponse {
+  suggestions: AISuggestion[];
+  metadata?: any;
+}
+
+export interface ApplySuggestionRequest {
+  suggestionId: string;
+  noteId: string;
+}
+
+// Duplicates
+export interface DuplicateReport {
+  id: string;
+  noteId: string;
+  duplicateNoteId: string;
+  similarity: number;
+  status: DuplicateStatus;
+  type: 'CONTENT' | 'TITLE' | 'SEMANTIC';
+  createdAt: string;
+}
+
+// Relations
+export interface RelatedNote {
+  noteId: string;
+  similarity: number;
+  type: 'SEMANTIC' | 'CONTEXTUAL' | 'TEMPORAL' | 'REFERENCE';
+  note: {
+    id: string;
+    title: string;
+    content: string;
+    tags: string[];
+  };
+}
+
+// Summaries
+export interface AutoSummary {
+  id: string;
+  noteId: string;
+  summary: string;
+  keyPoints: string[];
+  generatedAt: string;
+}
+
+// Search
+export interface SemanticSearchRequest {
+  query: string;
+  limit?: number;
+  threshold?: number;
+  noteIds?: string[];
 }
 
 export interface SendMessageDto {

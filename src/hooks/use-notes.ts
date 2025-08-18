@@ -48,7 +48,7 @@ export function useInfiniteNotes(workspaceId?: string, limit = 20) {
   return useInfiniteQuery({
     queryKey: ['notes', 'infinite', { workspaceId, limit }],
     queryFn: ({ pageParam = 0 }) => 
-      noteService.getNotes(workspaceId, limit),
+      noteService.getAll(workspaceId, limit),
     initialPageParam: 0,
     getNextPageParam: (lastPage, pages) => {
       if ((lastPage as any[]).length < limit) return undefined

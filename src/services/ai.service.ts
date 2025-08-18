@@ -158,5 +158,62 @@ export const aiService = {
    */
   async advancedSearch(query: any): Promise<any> {
     return apiClient.post('/search/advanced', { body: query });
+  },
+
+  /**
+   * Stream chat response
+   */
+  async streamChat(request: any): Promise<ReadableStream> {
+    // This would return a ReadableStream for streaming responses
+    throw new Error('Streaming not implemented in this demo');
+  },
+
+  /**
+   * Complete chat (non-streaming)
+   */
+  async completeChat(request: any): Promise<any> {
+    return apiClient.post('/chat/complete', { body: request });
+  },
+
+  /**
+   * Generate single suggestion
+   */
+  async generateSuggestion(request: any): Promise<any> {
+    return this.generateSuggestions(request.noteId, request);
+  },
+
+  /**
+   * Apply AI suggestion
+   */
+  async applySuggestion(request: any): Promise<any> {
+    return apiClient.post('/suggestions/apply', { body: request });
+  },
+
+  /**
+   * Update conversation
+   */
+  async updateConversation(conversationId: string, data: any): Promise<any> {
+    return apiClient.patch(`/conversations/${conversationId}`, { body: data });
+  },
+
+  /**
+   * Get categories for auto-categorization
+   */
+  async getCategories(): Promise<any[]> {
+    return apiClient.get('/categories');
+  },
+
+  /**
+   * Create new category
+   */
+  async createCategory(data: any): Promise<any> {
+    return apiClient.post('/categories', { body: data });
+  },
+
+  /**
+   * Auto-categorize notes (alias for categorizeNotes)
+   */
+  async autoCategorizeNotes(noteId?: string): Promise<any> {
+    return this.categorizeNotes(noteId);
   }
 };

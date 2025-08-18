@@ -11,7 +11,7 @@ import {
   Tag, 
   Calendar,
   FolderOpen,
-  Sparkles,
+  Sparkle,
   X
 } from '@phosphor-icons/react'
 import { useIsMobile } from '../../hooks/use-mobile'
@@ -27,15 +27,13 @@ export function Sidebar({ onClose, searchQuery, onSearchChange }: SidebarProps) 
   const { notes } = useNotes()
   const isMobile = useIsMobile()
 
-  const categories = Array.from(new Set(notes.map(note => note.category).filter(Boolean)))
+  // Get unique tags from all notes
+  const primaryTags = Array.from(new Set(notes.map(note => note.tags[0]).filter(Boolean)))
   const allTags = Array.from(new Set(notes.flatMap(note => note.tags)))
-
-  const getCategoryCount = (category: string) => {
-    return notes.filter(note => note.category === category).length
-  }
 
   const getTagCount = (tag: string) => {
     return notes.filter(note => note.tags.includes(tag)).length
+  }
   }
 
   return (
@@ -46,7 +44,7 @@ export function Sidebar({ onClose, searchQuery, onSearchChange }: SidebarProps) 
           <div className="flex items-center space-x-2">
             <div className="relative">
               <Brain className="h-6 w-6 text-primary" weight="duotone" />
-              <Sparkles className="h-3 w-3 text-accent absolute -top-0.5 -right-0.5" weight="fill" />
+              <Sparkle className="h-3 w-3 text-accent absolute -top-0.5 -right-0.5" weight="fill" />
             </div>
             <span className="font-semibold text-foreground">AI Notes</span>
           </div>
@@ -70,7 +68,7 @@ export function Sidebar({ onClose, searchQuery, onSearchChange }: SidebarProps) 
         {/* User Profile */}
         <div className="flex items-center space-x-3">
           <Avatar className="h-10 w-10">
-            <AvatarImage src={user?.avatarUrl} alt={user?.name} />
+            <AvatarImage src={user?.image} alt={user?.name} />
             <AvatarFallback>
               {user?.name?.split(' ').map(n => n[0]).join('').toUpperCase()}
             </AvatarFallback>
@@ -109,20 +107,20 @@ export function Sidebar({ onClose, searchQuery, onSearchChange }: SidebarProps) 
             <h3 className="text-sm font-medium text-foreground">Categories</h3>
           </div>
           <div className="space-y-2">
-            {categories.length > 0 ? (
-              categories.map(category => (
+            {primaryTags.length > 0 ? (
+              primaryTags.map(tag => (
                 <div
-                  key={category}
+                  key={tag}
                   className="flex items-center justify-between p-2 rounded-md hover:bg-secondary/50 cursor-pointer transition-colors"
                 >
-                  <span className="text-sm text-foreground capitalize">{category}</span>
+                  <span className="text-sm text-foreground capitalize">{tag}</span>
                   <Badge variant="secondary" className="text-xs">
-                    {getCategoryCount(category)}
+                    {getTagCount(tag)}
                   </Badge>
                 </div>
               ))
             ) : (
-              <p className="text-sm text-muted-foreground">No categories yet</p>
+              <p className="text-sm text-muted-foreground">No tags yet</p>
             )}
           </div>
         </div>

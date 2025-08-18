@@ -182,8 +182,8 @@ export function useDeleteAIConversation() {
 // Smart Features - Categories
 export function useCategories() {
   return useQuery({
-    queryKey: queryKeys.ai.categories(),
-    queryFn: aiService.getCategories,
+    queryKey: queryKeys.categories.all(),
+    queryFn: () => aiService.getCategories(),
     staleTime: 5 * 60 * 1000, // 5 minutes
   })
 }

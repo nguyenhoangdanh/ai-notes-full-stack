@@ -9,14 +9,14 @@ import { Badge } from '../ui/badge'
 import { Separator } from '../ui/separator'
 import { 
   Brain, 
-  Sparkles, 
-  Settings, 
-  Zap,
+  Sparkle, 
+  Gear, 
+  Lightning,
   Clock,
   Shield,
-  BarChart3,
-  Bot,
-  MessageSquare
+  ChartBar,
+  Robot,
+  ChatSquare
 } from '@phosphor-icons/react'
 import { useAI } from '../../contexts/AIContext'
 import { cn } from '../../lib/utils'
@@ -28,13 +28,11 @@ interface AISettingsPanelProps {
 
 export function AISettingsPanel({ className }: AISettingsPanelProps) {
   const { 
-    aiModel, 
-    setAIModel, 
-    autoSuggest, 
-    setAutoSuggest,
     conversations 
   } = useAI()
   
+  const [aiModel, setAIModel] = useState('gpt-4-turbo')
+  const [autoSuggest, setAutoSuggest] = useState(true)
   const [responsiveness, setResponsiveness] = useState(3) // 1-5 scale
   const [creativity, setCreativity] = useState(3) // 1-5 scale
   const [autoSummarize, setAutoSummarize] = useState(true)
@@ -88,7 +86,7 @@ export function AISettingsPanel({ className }: AISettingsPanelProps) {
       <Card>
         <CardHeader>
           <CardTitle className="text-sm flex items-center space-x-2">
-            <BarChart3 className="h-4 w-4" />
+            <ChartBar className="h-4 w-4" />
             <span>Usage Statistics</span>
           </CardTitle>
         </CardHeader>
@@ -114,7 +112,7 @@ export function AISettingsPanel({ className }: AISettingsPanelProps) {
       <Card>
         <CardHeader>
           <CardTitle className="text-sm flex items-center space-x-2">
-            <Bot className="h-4 w-4" />
+            <Robot className="h-4 w-4" />
             <span>AI Model</span>
           </CardTitle>
         </CardHeader>
@@ -151,7 +149,7 @@ export function AISettingsPanel({ className }: AISettingsPanelProps) {
       <Card>
         <CardHeader>
           <CardTitle className="text-sm flex items-center space-x-2">
-            <Settings className="h-4 w-4" />
+            <Gear className="h-4 w-4" />
             <span>AI Behavior</span>
           </CardTitle>
         </CardHeader>
@@ -224,7 +222,7 @@ export function AISettingsPanel({ className }: AISettingsPanelProps) {
       <Card>
         <CardHeader>
           <CardTitle className="text-sm flex items-center space-x-2">
-            <Sparkles className="h-4 w-4" />
+            <Sparkle className="h-4 w-4" />
             <span>AI Personality</span>
           </CardTitle>
         </CardHeader>
@@ -327,14 +325,14 @@ export function AISettingsPanel({ className }: AISettingsPanelProps) {
       <Card>
         <CardHeader>
           <CardTitle className="text-sm flex items-center space-x-2">
-            <Zap className="h-4 w-4" />
+            <Lightning className="h-4 w-4" />
             <span>Quick Actions</span>
           </CardTitle>
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-2 gap-3">
             <Button variant="outline" size="sm" className="justify-start">
-              <MessageSquare className="h-4 w-4 mr-2" />
+              <ChatSquare className="h-4 w-4 mr-2" />
               New Chat
             </Button>
             <Button variant="outline" size="sm" className="justify-start">

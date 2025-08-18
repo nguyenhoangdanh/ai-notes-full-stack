@@ -1,5 +1,5 @@
 import { Input } from '../ui/input'
-import { MagnifyingGlass, Sparkles } from '@phosphor-icons/react'
+import { MagnifyingGlass, Sparkle } from '@phosphor-icons/react'
 import { cn } from '../../lib/utils'
 
 interface SearchBarProps {
@@ -20,7 +20,7 @@ export function SearchBar({ value, onChange, placeholder = "Search with AI...", 
         onChange={(e) => onChange(e.target.value)}
         className="pl-10 pr-10 bg-background"
       />
-      <Sparkles className="absolute right-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-accent" weight="fill" />
+      <Sparkle className="absolute right-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-accent" weight="fill" />
     </div>
   )
 }

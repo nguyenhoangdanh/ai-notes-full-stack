@@ -8,11 +8,11 @@ import { Input } from '../ui/input'
 import { Separator } from '../ui/separator'
 import { 
   Clock, 
-  MessageCircle, 
-  Search,
-  Trash2,
+  ChatCircle, 
+  MagnifyingGlass,
+  Trash,
   FileText,
-  Filter,
+  Funnel,
   Calendar,
   Robot,
   User
@@ -146,7 +146,7 @@ export function AIChatHistory({
       <div className="p-4 border-b border-border">
         <div className="flex items-center space-x-2 mb-4">
           <div className="w-8 h-8 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center">
-            <MessageCircle className="h-4 w-4 text-primary-foreground" />
+            <ChatCircle className="h-4 w-4 text-primary-foreground" />
           </div>
           <h3 className="font-semibold text-foreground">Chat History</h3>
           <Badge variant="secondary" className="text-xs">
@@ -156,7 +156,7 @@ export function AIChatHistory({
 
         {/* Search */}
         <div className="relative mb-3">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+          <MagnifyingGlass className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <Input
             placeholder="Search conversations..."
             value={searchQuery}
@@ -227,7 +227,7 @@ export function AIChatHistory({
                 className="text-center py-8 space-y-3"
               >
                 <div className="w-16 h-16 mx-auto rounded-full bg-muted flex items-center justify-center">
-                  <MessageCircle className="h-8 w-8 text-muted-foreground" />
+                  <ChatCircle className="h-8 w-8 text-muted-foreground" />
                 </div>
                 <div>
                   <h4 className="font-medium text-foreground mb-1">No conversations found</h4>
@@ -276,7 +276,7 @@ export function AIChatHistory({
                             onClick={(e) => deleteConversation(conversation.id, e)}
                             className="opacity-0 group-hover:opacity-100 text-muted-foreground hover:text-destructive p-1 h-auto transition-opacity"
                           >
-                            <Trash2 className="h-3 w-3" />
+                            <Trash className="h-3 w-3" />
                           </Button>
                         </div>
 
@@ -295,7 +295,7 @@ export function AIChatHistory({
                         <div className="flex items-center justify-between text-xs text-muted-foreground">
                           <div className="flex items-center space-x-3">
                             <div className="flex items-center space-x-1">
-                              <MessageCircle className="h-3 w-3" />
+                              <ChatCircle className="h-3 w-3" />
                               <span>{conversation.messageCount}</span>
                             </div>
                             <div className="flex items-center space-x-1">
@@ -340,7 +340,7 @@ export function AIChatHistory({
             size="sm"
             className="text-xs text-muted-foreground hover:text-foreground"
           >
-            <Trash2 className="h-3 w-3 mr-1" />
+            <Trash className="h-3 w-3 mr-1" />
             Clear all history
           </Button>
         </div>

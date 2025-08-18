@@ -95,7 +95,7 @@ export const queryKeys = {
   productivity: {
     pomodoro: () => ['productivity', 'pomodoro'] as const,
     pomodoroSessions: () => ['productivity', 'pomodoro', 'sessions'] as const,
-    tasks: (filters?: any) => ['productivity', 'tasks', filters] as const,
+    tasks: () => ['productivity', 'tasks'] as const,
     task: (taskId: string) => ['productivity', 'task', taskId] as const,
     calendar: () => ['productivity', 'calendar'] as const,
     calendarEvents: (filters?: any) => ['productivity', 'calendar', 'events', filters] as const,
@@ -132,5 +132,25 @@ export const queryKeys = {
     tags: () => ['misc', 'tags'] as const,
     analytics: () => ['misc', 'analytics'] as const,
     activity: (filters?: any) => ['misc', 'activity', filters] as const,
+  }
+};
+
+// Invalidation helpers for complex cache management
+export const invalidationHelpers = {
+  invalidateNotes: (queryClient: any) => {
+    queryClient.invalidateQueries({ queryKey: ['notes'] });
+  },
+  
+  invalidateNote: (queryClient: any, noteId: string) => {
+    queryClient.invalidateQueries({ queryKey: ['notes', 'detail', noteId] });
+    queryClient.invalidateQueries({ queryKey: ['notes'] });
+  },
+
+  invalidateWorkspaces: (queryClient: any) => {
+    queryClient.invalidateQueries({ queryKey: ['workspaces'] });
+  },
+
+  invalidateAI: (queryClient: any) => {
+    queryClient.invalidateQueries({ queryKey: ['ai'] });
   }
 };

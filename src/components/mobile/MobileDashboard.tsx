@@ -5,17 +5,17 @@ import { Card } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { 
   Plus, 
-  Search, 
-  Settings, 
-  Wifi, 
-  WifiOff, 
-  Sync, 
-  Home,
+  MagnifyingGlass, 
+  Gear, 
+  WifiHigh, 
+  WifiSlash, 
+  ArrowsClockwise, 
+  House,
   FileText,
-  Mic,
-  Menu,
-  Edit3,
-  Trash2,
+  Microphone,
+  List,
+  NotePencil,
+  Trash,
   Copy
 } from '@phosphor-icons/react'
 import { useOfflineNotes } from '@/contexts/OfflineNotesContext'
@@ -132,11 +132,11 @@ export function MobileDashboard() {
               className="h-8 w-8 p-0"
             >
               {syncStatus.isSyncing ? (
-                <Sync className="h-4 w-4 animate-spin" />
+                <ArrowsClockwise className="h-4 w-4 animate-spin" />
               ) : syncStatus.isOnline ? (
-                <Wifi className="h-4 w-4 text-green-600" />
+                <WifiHigh className="h-4 w-4 text-green-600" />
               ) : (
-                <WifiOff className="h-4 w-4 text-red-600" />
+                <WifiSlash className="h-4 w-4 text-red-600" />
               )}
             </Button>
             
@@ -147,7 +147,7 @@ export function MobileDashboard() {
               onClick={() => setCurrentView('settings')}
               className="h-8 w-8 p-0"
             >
-              <Settings className="h-4 w-4" />
+              <Gear className="h-4 w-4" />
             </Button>
           </div>
         </div>
@@ -241,7 +241,7 @@ export function MobileDashboard() {
             onClick={onDelete}
             className="h-6 w-6 p-0 opacity-0 group-hover:opacity-100"
           >
-            <Trash2 className="h-3 w-3" />
+            <Trash className="h-3 w-3" />
           </Button>
         </div>
       </div>
@@ -282,7 +282,7 @@ export function MobileDashboard() {
           onClick={() => setCurrentView('notes')}
           className="flex-col h-auto py-2 px-3"
         >
-          <Home className="h-5 w-5 mb-1" />
+          <House className="h-5 w-5 mb-1" />
           <span className="text-xs">Notes</span>
         </Button>
         
@@ -292,7 +292,7 @@ export function MobileDashboard() {
           onClick={() => setCurrentView('search')}
           className="flex-col h-auto py-2 px-3"
         >
-          <Search className="h-5 w-5 mb-1" />
+          <MagnifyingGlass className="h-5 w-5 mb-1" />
           <span className="text-xs">Search</span>
         </Button>
         
@@ -310,7 +310,7 @@ export function MobileDashboard() {
           onClick={() => setCurrentView('voice')}
           className="flex-col h-auto py-2 px-3"
         >
-          <Mic className="h-5 w-5 mb-1" />
+          <Microphone className="h-5 w-5 mb-1" />
           <span className="text-xs">Voice</span>
         </Button>
         
@@ -320,7 +320,7 @@ export function MobileDashboard() {
           onClick={() => setCurrentView('settings')}
           className="flex-col h-auto py-2 px-3"
         >
-          <Menu className="h-5 w-5 mb-1" />
+          <List className="h-5 w-5 mb-1" />
           <span className="text-xs">More</span>
         </Button>
       </div>

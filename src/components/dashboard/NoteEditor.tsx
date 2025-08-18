@@ -12,7 +12,7 @@ import {
   Tag as TagIcon, 
   Calendar,
   ArrowLeft,
-  Sparkles,
+  Sparkle,
   Robot,
   Clock,
   Brain
@@ -177,12 +177,12 @@ export function NoteEditor({ noteId, onClose }: NoteEditorProps) {
 
             <Separator />
 
-            {/* Category & Metadata */}
+            {/* Tags & Metadata */}
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-2">
-                {note.category && (
+                {note.tags.length > 0 && (
                   <Badge variant="secondary" className="capitalize">
-                    {note.category}
+                    {note.tags[0]}
                   </Badge>
                 )}
                 <Badge variant="outline" className="text-xs">
@@ -192,7 +192,7 @@ export function NoteEditor({ noteId, onClose }: NoteEditorProps) {
               </div>
               
               <div className="flex items-center space-x-1 text-sm text-muted-foreground">
-                <Sparkles className="h-4 w-4 text-accent" weight="fill" />
+                <Sparkle className="h-4 w-4 text-accent" weight="fill" />
                 <span>AI-Enhanced</span>
               </div>
             </div>
@@ -272,7 +272,7 @@ export function NoteEditor({ noteId, onClose }: NoteEditorProps) {
                 <Card>
                   <CardHeader className="pb-3">
                     <CardTitle className="text-sm flex items-center space-x-2">
-                      <Sparkles className="h-4 w-4 text-accent" weight="fill" />
+                      <Sparkle className="h-4 w-4 text-accent" weight="fill" />
                       <span>Related Notes</span>
                     </CardTitle>
                   </CardHeader>
@@ -289,9 +289,9 @@ export function NoteEditor({ noteId, onClose }: NoteEditorProps) {
                           {relatedNote.content}
                         </p>
                         <div className="flex items-center justify-between mt-2">
-                          {relatedNote.category && (
+                          {relatedNote.tags.length > 0 && (
                             <Badge variant="secondary" className="text-xs capitalize">
-                              {relatedNote.category}
+                              {relatedNote.tags[0]}
                             </Badge>
                           )}
                           <span className="text-xs text-muted-foreground">

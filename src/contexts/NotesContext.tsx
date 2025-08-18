@@ -1,5 +1,5 @@
 import { createContext, useContext, ReactNode, useMemo } from 'react'
-import { useNotes, useCreateNote, useUpdateNote, useDeleteNote, useSearchNotes } from '../hooks'
+import { useNotes as useNotesQuery, useCreateNote, useUpdateNote, useDeleteNote, useSearchNotes } from '../hooks'
 import { Note } from '../types'
 
 // Re-export Note type for backward compatibility
@@ -19,23 +19,22 @@ interface NotesContextType {
 const NotesContext = createContext<NotesContextType | undefined>(undefined)
 
 export function NotesProvider({ children }: { children: ReactNode }) {
-  const { data: notes = [], isLoading } = useNotes()
+  const { data: notes = [], isLoading } = useNotesQuery()
   const createNoteMutation = useCreateNote()
   const updateNoteMutation = useUpdateNote()
   const deleteNoteMutation = useDeleteNote()
 
-  const createNote = async (noteData: { title: string; content: string; tags?: string[]; category?: string }): Promise<Note> => {
+  const createNote = async (noteData: { title: string; content: string; tags?: string[] }): Promise<Note> => {
     const result = await createNoteMutation.mutateAsync({
       title: noteData.title,
       content: noteData.content,
       tags: noteData.tags || [],
-      category: noteData.category,
       workspaceId: 'default' // Use default workspace for now
     })
     return result
   }
 
-  const updateNote = async (id: string, updates: { title?: string; content?: string; tags?: string[]; category?: string }) => {
+  const updateNote = async (id: string, updates: { title?: string; content?: string; tags?: string[] }) => {
     await updateNoteMutation.mutateAsync({ id, data: updates })
   }
 

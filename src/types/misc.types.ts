@@ -1,4 +1,10 @@
-import { BaseEntity, NotificationType } from './common.types'
+import { NotificationType } from './common.types'
+
+interface BaseEntity {
+  id: string;
+  createdAt: string;
+  updatedAt: string;
+}
 
 // Notifications
 export interface Notification extends BaseEntity {
@@ -108,4 +114,18 @@ export interface UpdateTemplateDto {
   tags?: string[]
   isPublic?: boolean
   metadata?: Record<string, any>
+}
+
+// Tags
+export interface Tag extends BaseEntity {
+  name: string
+  color?: string
+  description?: string
+  noteCount: number
+}
+
+export interface CreateTagDto {
+  name: string
+  color?: string
+  description?: string
 }

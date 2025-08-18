@@ -5,7 +5,7 @@ import { queryKeys } from './query-keys'
 import type {
   RegisterDto,
   LoginDto,
-  AuthResponse,
+  AuthResponseDto as AuthResponse,
   User,
   UserSettings,
   Usage,
@@ -24,7 +24,7 @@ export function useAuthProfile() {
 export function useAuthVerify() {
   return useQuery({
     queryKey: queryKeys.auth.verify(),
-    queryFn: authService.verify,
+    queryFn: () => authService.verify(),
     staleTime: 1 * 60 * 1000, // 1 minute
     retry: false,
   })
@@ -33,7 +33,7 @@ export function useAuthVerify() {
 export function useUserSettings() {
   return useQuery({
     queryKey: queryKeys.auth.settings(),
-    queryFn: authService.getSettings,
+    queryFn: () => authService.getSettings(),
     staleTime: 10 * 60 * 1000, // 10 minutes
   })
 }
@@ -41,7 +41,7 @@ export function useUserSettings() {
 export function useUsage() {
   return useQuery({
     queryKey: queryKeys.auth.usage(),
-    queryFn: authService.getUsage,
+    queryFn: () => authService.getUsage(),
     staleTime: 5 * 60 * 1000, // 5 minutes
   })
 }
