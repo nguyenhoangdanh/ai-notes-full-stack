@@ -91,9 +91,13 @@ export class SyncService {
   }
 
   // Online/Offline Handling
-  private handleOnlineStatus(isOnline: boolean): void {
+  private async handleOnlineStatus(isOnline: boolean): Promise<void> {
     if (isOnline && !this.syncInProgress) {
-      this.startBackgroundSync()
+      // Re-check backend availability when coming online
+      this.backendAvailable = await this.checkBackendAvailability()
+      if (this.backendAvailable) {
+        this.startBackgroundSync()
+      }
     }
     this.notifyListeners()
   }
