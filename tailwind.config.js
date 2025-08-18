@@ -19,9 +19,24 @@ const defaultTheme = {
   },
   extend: {
     screens: {
+      xs: '375px',
+      sm: '640px',
+      md: '768px',
+      lg: '1024px',
+      xl: '1280px',
+      '2xl': '1536px',
+      '3xl': '1920px',
+      // Interaction-based breakpoints
       coarse: { raw: "(pointer: coarse)" },
       fine: { raw: "(pointer: fine)" },
+      touch: { raw: "(hover: none) and (pointer: coarse)" },
+      'no-touch': { raw: "(hover: hover) and (pointer: fine)" },
+      // PWA and device specific
       pwa: { raw: "(display-mode: standalone)" },
+      'safe-area': { raw: "(display-mode: standalone)" },
+      // Orientation
+      portrait: { raw: "(orientation: portrait)" },
+      landscape: { raw: "(orientation: landscape)" },
     },
     colors: {
       neutral: {

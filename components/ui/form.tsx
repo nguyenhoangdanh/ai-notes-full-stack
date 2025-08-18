@@ -78,7 +78,7 @@ function FormItem({ className, ...props }: ComponentProps<"div">) {
     <FormItemContext.Provider value={{ id }}>
       <div
         data-slot="form-item"
-        className={cn("grid gap-2", className)}
+        className={cn("space-y-3", className)}
         {...props}
       />
     </FormItemContext.Provider>
@@ -95,7 +95,11 @@ function FormLabel({
     <Label
       data-slot="form-label"
       data-error={!!error}
-      className={cn("data-[error=true]:text-destructive", className)}
+      className={cn(
+        "text-sm font-medium leading-none transition-colors",
+        "data-[error=true]:text-destructive",
+        className
+      )}
       htmlFor={formItemId}
       {...props}
     />
@@ -127,7 +131,10 @@ function FormDescription({ className, ...props }: ComponentProps<"p">) {
     <p
       data-slot="form-description"
       id={formDescriptionId}
-      className={cn("text-muted-foreground text-sm", className)}
+      className={cn(
+        "text-sm text-muted-foreground leading-relaxed",
+        className
+      )}
       {...props}
     />
   )
@@ -145,9 +152,14 @@ function FormMessage({ className, ...props }: ComponentProps<"p">) {
     <p
       data-slot="form-message"
       id={formMessageId}
-      className={cn("text-destructive text-sm", className)}
+      className={cn(
+        "text-sm font-medium text-destructive flex items-center gap-2",
+        "animate-in fade-in-0 slide-in-from-left-1 duration-150",
+        className
+      )}
       {...props}
     >
+      <span className="w-1 h-1 bg-destructive rounded-full flex-shrink-0" />
       {body}
     </p>
   )

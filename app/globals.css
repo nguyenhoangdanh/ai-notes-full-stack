@@ -71,37 +71,54 @@
   ---break---
 */
 .dark {
-  --background: oklch(0.145 0 0);
-  --foreground: oklch(0.985 0 0);
-  --card: oklch(0.205 0 0);
-  --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.205 0 0);
-  --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.922 0 0);
-  --primary-foreground: oklch(0.205 0 0);
-  --secondary: oklch(0.269 0 0);
-  --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.269 0 0);
-  --muted-foreground: oklch(0.708 0 0);
-  --accent: oklch(0.269 0 0);
-  --accent-foreground: oklch(0.985 0 0);
-  --destructive: oklch(0.704 0.191 22.216);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.556 0 0);
-  --chart-1: oklch(0.488 0.243 264.376);
-  --chart-2: oklch(0.696 0.17 162.48);
-  --chart-3: oklch(0.769 0.188 70.08);
-  --chart-4: oklch(0.627 0.265 303.9);
-  --chart-5: oklch(0.645 0.246 16.439);
-  --sidebar: oklch(0.205 0 0);
-  --sidebar-foreground: oklch(0.985 0 0);
-  --sidebar-primary: oklch(0.488 0.243 264.376);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.269 0 0);
-  --sidebar-accent-foreground: oklch(0.985 0 0);
-  --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.556 0 0);
+  --background: oklch(0.11 0 0);
+  --foreground: oklch(0.98 0 0);
+  --card: oklch(0.15 0 0);
+  --card-foreground: oklch(0.98 0 0);
+  --popover: oklch(0.15 0 0);
+  --popover-foreground: oklch(0.98 0 0);
+  --primary: oklch(0.75 0.15 260);
+  --primary-foreground: oklch(0.98 0 0);
+  --secondary: oklch(0.2 0 0);
+  --secondary-foreground: oklch(0.98 0 0);
+  --muted: oklch(0.18 0 0);
+  --muted-foreground: oklch(0.65 0 0);
+  --accent: oklch(0.2 0 0);
+  --accent-foreground: oklch(0.98 0 0);
+  --destructive: oklch(0.65 0.15 25);
+  --border: oklch(0.25 0 0);
+  --input: oklch(0.22 0 0);
+  --ring: oklch(0.75 0.15 260);
+  --chart-1: oklch(0.55 0.2 260);
+  --chart-2: oklch(0.6 0.15 160);
+  --chart-3: oklch(0.65 0.15 80);
+  --chart-4: oklch(0.6 0.2 300);
+  --chart-5: oklch(0.65 0.2 20);
+  --sidebar: oklch(0.13 0 0);
+  --sidebar-foreground: oklch(0.98 0 0);
+  --sidebar-primary: oklch(0.75 0.15 260);
+  --sidebar-primary-foreground: oklch(0.98 0 0);
+  --sidebar-accent: oklch(0.2 0 0);
+  --sidebar-accent-foreground: oklch(0.98 0 0);
+  --sidebar-border: oklch(0.25 0 0);
+  --sidebar-ring: oklch(0.75 0.15 260);
+
+  /* Enhanced dark mode specific adjustments */
+  color-scheme: dark;
+}
+
+/* Enhanced dark mode transitions */
+.dark * {
+  transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+}
+
+/* Improved dark mode support for webkit */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme]) {
+    --background: oklch(0.11 0 0);
+    --foreground: oklch(0.98 0 0);
+    color-scheme: dark;
+  }
 }
 
 /*
@@ -183,5 +200,184 @@
 
   body {
     @apply bg-background text-foreground;
+    /* Improve text rendering */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    /* Prevent horizontal scroll on mobile */
+    overflow-x: hidden;
+  }
+
+  /* Responsive typography */
+  html {
+    font-size: 16px;
+  }
+
+  @media (max-width: 768px) {
+    html {
+      font-size: 14px;
+    }
+  }
+
+  /* Better mobile interactions */
+  @media (hover: none) and (pointer: coarse) {
+    button:hover {
+      transform: none;
+    }
+
+    /* Disable hover effects on touch devices */
+    .hover\:bg-accent:hover {
+      background-color: inherit;
+    }
+
+    .hover\:shadow-md:hover {
+      box-shadow: inherit;
+    }
+  }
+
+  /* Enhanced focus styles for dark mode */
+  .dark *:focus-visible {
+    outline: 2px solid oklch(0.75 0.15 260);
+    outline-offset: 2px;
+  }
+
+  /* High contrast mode support */
+  .high-contrast {
+    --background: #000000;
+    --foreground: #ffffff;
+    --primary: #0066cc;
+    --border: #ffffff;
+    --muted-foreground: #cccccc;
+  }
+
+  .high-contrast.dark {
+    --background: #ffffff;
+    --foreground: #000000;
+    --primary: #0066cc;
+    --border: #000000;
+    --muted-foreground: #333333;
+  }
+
+  /* Reduced motion support */
+  .reduce-motion *,
+  .reduce-motion *::before,
+  .reduce-motion *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  /* Screen reader only utility */
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  .sr-only.focus-within:not-sr-only {
+    position: static;
+    width: auto;
+    height: auto;
+    padding: inherit;
+    margin: inherit;
+    overflow: visible;
+    clip: auto;
+    white-space: normal;
+  }
+
+  /* Enhanced keyboard navigation */
+  *:focus-visible {
+    outline: 2px solid var(--ring);
+    outline-offset: 2px;
+    z-index: 10;
+  }
+
+  /* Skip links styling */
+  .skip-link {
+    position: absolute;
+    left: -9999px;
+    z-index: 999;
+    padding: 8px;
+    background-color: var(--primary);
+    color: var(--primary-foreground);
+    text-decoration: none;
+  }
+
+  .skip-link:focus {
+    left: 6px;
+    top: 7px;
+  }
+
+  /* Improve contrast for form elements */
+  input:focus,
+  textarea:focus,
+  select:focus {
+    box-shadow: 0 0 0 2px var(--ring);
+  }
+
+  /* Better button accessibility */
+  button:disabled,
+  input:disabled,
+  textarea:disabled,
+  select:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+
+  /* Ensure minimum touch target size for mobile */
+  @media (pointer: coarse) {
+    button,
+    input[type="button"],
+    input[type="submit"],
+    input[type="reset"],
+    [role="button"] {
+      min-height: 44px;
+      min-width: 44px;
+    }
+  }
+
+  /* Improve focus visibility on touch devices */
+  @media (hover: none) {
+    button:focus-visible,
+    input:focus-visible,
+    textarea:focus-visible,
+    select:focus-visible {
+      @apply ring-2 ring-primary ring-offset-2;
+    }
+  }
+
+  /* Smooth scrolling */
+  html {
+    scroll-behavior: smooth;
+  }
+
+  /* Hide scrollbars but keep functionality */
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Mobile safe areas */
+  .safe-area-inset {
+    padding-top: env(safe-area-inset-top);
+    padding-bottom: env(safe-area-inset-bottom);
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
+  }
+
+  /* Better mobile tap targets */
+  .mobile-tap-target {
+    min-height: 44px;
+    min-width: 44px;
   }
 }

@@ -19,10 +19,16 @@ function AppContent() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <div className="text-center space-y-4">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto"></div>
-          <p className="text-muted-foreground">Loading AI Notes...</p>
+      <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/20 flex items-center justify-center">
+        <div className="text-center space-y-6">
+          <div className="relative">
+            <div className="animate-spin rounded-full h-16 w-16 border-4 border-primary/20 border-t-primary mx-auto"></div>
+            <div className="absolute inset-0 rounded-full h-16 w-16 border-4 border-transparent border-t-primary/60 animate-pulse mx-auto"></div>
+          </div>
+          <div className="space-y-2">
+            <p className="text-lg font-medium text-foreground">Loading AI Notes...</p>
+            <p className="text-sm text-muted-foreground">Preparing your intelligent workspace</p>
+          </div>
         </div>
       </div>
     )
@@ -59,17 +65,23 @@ export default function HomePage() {
 
   if (!isApiInitialized) {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <div className="text-center space-y-4">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto"></div>
-          <p className="text-muted-foreground">Initializing AI Notes...</p>
+      <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/20 flex items-center justify-center">
+        <div className="text-center space-y-6">
+          <div className="relative">
+            <div className="animate-spin rounded-full h-16 w-16 border-4 border-primary/20 border-t-primary mx-auto"></div>
+            <div className="absolute inset-0 rounded-full h-16 w-16 border-4 border-transparent border-t-primary/60 animate-pulse mx-auto"></div>
+          </div>
+          <div className="space-y-2">
+            <p className="text-lg font-medium text-foreground">Initializing AI Notes...</p>
+            <p className="text-sm text-muted-foreground">Setting up your workspace</p>
+          </div>
         </div>
       </div>
     )
   }
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/20">
       <AppContent />
     </div>
   )
