@@ -69,27 +69,35 @@ export function AISuggestions({
     setLastAnalyzedContent(noteContent)
 
     try {
-      const result = await quickSuggest(noteId, noteContent)
-      
-      if (result && result.length > 0) {
-        const newSuggestions: SmartSuggestion[] = result.map((s: any, index: number) => ({
+      const result = await generateSuggestionMutation.mutateAsync({
+        content: noteContent,
+        context: {
+          noteId,
+          title: noteTitle,
+          tags: noteTags
+        }
+      })
+
+      if (result && result.suggestions && result.suggestions.length > 0) {
+        const newSuggestions: SmartSuggestion[] = result.suggestions.map((s: any, index: number) => ({
           id: `suggestion-${Date.now()}-${index}`,
-          type: s.type,
-          title: s.title,
-          description: s.description,
+          type: s.type || 'content',
+          title: s.title || 'Improvement suggestion',
+          description: s.description || s.suggestion,
           suggestion: s.suggestion,
-          confidence: s.confidence,
+          confidence: s.confidence || 0.7,
           preview: s.preview
         }))
 
         setSuggestions(newSuggestions)
-        
+
         if (newSuggestions.length > 0) {
           setIsVisible(true)
         }
       }
     } catch (error) {
       console.error('Error generating suggestions:', error)
+      toast.error('Failed to generate suggestions')
     }
   }
 
