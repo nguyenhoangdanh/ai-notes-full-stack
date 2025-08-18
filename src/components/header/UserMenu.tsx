@@ -40,9 +40,15 @@ export function UserMenu({ onProfileClick, onSettingsClick, onHelpClick }: UserM
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" className="relative h-10 w-10 rounded-full">
+        <Button
+          variant="ghost"
+          className="relative h-10 w-10 rounded-full focus:ring-2 focus:ring-primary focus:ring-offset-2"
+          aria-label={`User menu for ${user.name || user.email}`}
+          aria-haspopup="menu"
+          aria-expanded={false}
+        >
           <Avatar className="h-10 w-10">
-            <AvatarImage src={user.avatar} alt={user.name || user.email} />
+            <AvatarImage src={user.avatar} alt="" />
             <AvatarFallback className="bg-primary text-primary-foreground">
               {userInitials}
             </AvatarFallback>
