@@ -52,11 +52,23 @@ export function Dashboard() {
   }
 
   return (
-    <div className="flex h-screen bg-background">
+    <div className="flex h-screen bg-background overflow-hidden">
+      {/* Mobile Sidebar Overlay */}
+      {isMobile && sidebarOpen && (
+        <div
+          className="fixed inset-0 z-40 bg-black/50 transition-opacity"
+          onClick={() => setSidebarOpen(false)}
+        />
+      )}
+
       {/* Sidebar */}
       {(!isMobile || sidebarOpen) && (
-        <div className={`${isMobile ? 'fixed inset-0 z-50' : 'relative'} w-80 border-r border-border bg-card`}>
-          <Sidebar 
+        <div className={`${
+          isMobile
+            ? 'fixed inset-y-0 left-0 z-50 w-80 transform transition-transform duration-300 ease-in-out'
+            : 'relative w-80 flex-shrink-0'
+        } border-r border-border bg-card`}>
+          <Sidebar
             onClose={() => setSidebarOpen(false)}
             searchQuery={searchQuery}
             onSearchChange={setSearchQuery}
