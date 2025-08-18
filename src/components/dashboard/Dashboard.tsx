@@ -181,6 +181,9 @@ export function Dashboard() {
 
       {/* PWA Install Prompt */}
       <InstallPWAButton />
+
+      {/* Development: Sync Status Indicator */}
+      {import.meta.env.DEV && <SyncStatusIndicator />}
     </div>
   )
 }
