@@ -25,7 +25,7 @@ import {
 } from 'lucide-react'
 import { useOfflineNotes } from '@/contexts/OfflineNotesContext'
 import { offlineStorage, AppSettings } from '@/lib/offline-storage'
-import { useProfile, useSettings, useUpdateSettings } from '@/hooks'
+import { useAuthProfile as useProfile, useUserSettings as useSettings, useUpdateSettings } from '@/hooks'
 import { toast } from 'sonner'
 
 interface MobileSettingsSheetProps {
