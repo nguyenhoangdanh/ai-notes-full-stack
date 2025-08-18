@@ -27,13 +27,19 @@ export class SyncService {
     window.addEventListener('online', () => this.handleOnlineStatus(true))
     window.addEventListener('offline', () => this.handleOnlineStatus(false))
 
-    // Check backend availability and start sync if available
-    this.checkBackendAvailability().then(available => {
-      this.backendAvailable = available
-      if (available && navigator.onLine) {
-        this.startBackgroundSync()
-      }
-    })
+    // Only attempt sync if enabled in environment
+    const syncEnabled = import.meta.env.VITE_ENABLE_SYNC !== 'false'
+    if (syncEnabled) {
+      // Check backend availability and start sync if available
+      this.checkBackendAvailability().then(available => {
+        this.backendAvailable = available
+        if (available && navigator.onLine) {
+          this.startBackgroundSync()
+        }
+      })
+    } else {
+      console.info('Sync disabled by environment configuration')
+    }
   }
 
   // Sync Status Management
