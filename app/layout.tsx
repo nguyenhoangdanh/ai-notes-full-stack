@@ -2,6 +2,13 @@ import type { Metadata } from 'next'
 import './globals.css'
 import { Providers } from './providers'
 
+export const viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  userScalable: false,
+  themeColor: '#7c3aed',
+}
+
 export const metadata: Metadata = {
   title: {
     default: 'AI Notes - Intelligent Note Taking',
@@ -50,15 +57,7 @@ export const metadata: Metadata = {
     apple: '/apple-touch-icon.png',
   },
   
-  // Theme
-  themeColor: '#7c3aed',
-  
-  // Viewport
-  viewport: {
-    width: 'device-width',
-    initialScale: 1,
-    userScalable: false,
-  },
+
   
   // Other
   robots: {
