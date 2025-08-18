@@ -1,19 +1,21 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { useRouter } from 'next/navigation'
 import { useAuth } from '../contexts/AuthContext'
-import { NotesProvider } from '../contexts/NotesContext'
-import { OfflineNotesProvider } from '../contexts/OfflineNotesContext'
 import { AuthScreen } from '../components/auth/AuthScreen'
-import { Dashboard } from '../components/dashboard/Dashboard'
-import { MobileDashboard } from '../components/mobile/MobileDashboard'
-import { useIsMobile } from '../hooks/use-mobile'
 import { toast } from 'sonner'
 import { initializeApiClient } from '../lib/api-config'
 
 function AppContent() {
   const { user, isLoading } = useAuth()
-  const isMobile = useIsMobile()
+  const router = useRouter()
+
+  useEffect(() => {
+    if (user && !isLoading) {
+      router.push('/dashboard')
+    }
+  }, [user, isLoading, router])
 
   if (isLoading) {
     return (
@@ -30,13 +32,8 @@ function AppContent() {
     return <AuthScreen />
   }
 
-  return (
-    <NotesProvider>
-      <OfflineNotesProvider>
-        {isMobile ? <MobileDashboard /> : <Dashboard />}
-      </OfflineNotesProvider>
-    </NotesProvider>
-  )
+  // Will redirect to dashboard
+  return null
 }
 
 export default function HomePage() {
