@@ -5,6 +5,7 @@ import { useAuth } from '../../contexts/AuthContext'
 import { Sidebar } from './Sidebar'
 import { Header } from './Header'
 import { cn } from '../../lib/utils'
+import { useHighContrastMode, useReducedMotion } from '../accessibility/A11y'
 
 interface AppLayoutProps {
   children: React.ReactNode
@@ -14,6 +15,10 @@ export function AppLayout({ children }: AppLayoutProps) {
   const [sidebarOpen, setSidebarOpen] = useState(false) // Start collapsed on mobile
   const [isMobile, setIsMobile] = useState(false)
   const { user } = useAuth()
+
+  // Initialize accessibility features
+  useHighContrastMode()
+  useReducedMotion()
 
   // Handle responsive sidebar state
   useEffect(() => {
@@ -56,7 +61,7 @@ export function AppLayout({ children }: AppLayoutProps) {
   }
 
   return (
-    <div className="h-screen flex bg-background relative">
+    <div className="h-screen flex bg-background relative" role="application" aria-label="AI Notes Application">
       {/* Mobile overlay */}
       {isMobile && sidebarOpen && (
         <div
@@ -68,7 +73,7 @@ export function AppLayout({ children }: AppLayoutProps) {
 
       {/* Sidebar */}
       <aside
-        id="app-sidebar"
+        id="navigation"
         className={cn(
           "relative z-50 transition-all duration-300 ease-in-out",
           // Desktop behavior
@@ -81,6 +86,8 @@ export function AppLayout({ children }: AppLayoutProps) {
         )}
         role="navigation"
         aria-label="Main navigation"
+        aria-expanded={sidebarOpen}
+        aria-hidden={!sidebarOpen && isMobile}
       >
         <Sidebar
           collapsed={!sidebarOpen || (isMobile && !sidebarOpen)}
@@ -97,6 +104,7 @@ export function AppLayout({ children }: AppLayoutProps) {
           isMobile={isMobile}
         />
         <main
+          id="main-content"
           className="flex-1 overflow-auto focus:outline-none safe-area-inset"
           role="main"
           aria-label="Main content"
