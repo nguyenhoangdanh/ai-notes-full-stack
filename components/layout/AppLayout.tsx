@@ -97,12 +97,12 @@ export function AppLayout({ children }: AppLayoutProps) {
           isMobile={isMobile}
         />
         <main
-          className="flex-1 overflow-auto focus:outline-none"
+          className="flex-1 overflow-auto focus:outline-none safe-area-inset"
           role="main"
           aria-label="Main content"
           tabIndex={-1}
         >
-          <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-6 max-w-7xl">
+          <div className="w-full mx-auto px-4 xs:px-3 sm:px-6 lg:px-8 py-4 xs:py-3 sm:py-6 max-w-7xl min-h-full">
             {children}
           </div>
         </main>
