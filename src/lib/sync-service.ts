@@ -255,10 +255,10 @@ export class SyncService {
       if (!response.ok) return
 
       const serverNotes = await response.json()
-      
+
       for (const serverNote of serverNotes) {
         const localNote = await offlineStorage.getNote(serverNote.id)
-        
+
         if (!localNote || new Date(serverNote.updatedAt) > new Date(localNote.updatedAt)) {
           const offlineNote: OfflineNote = {
             ...serverNote,
@@ -269,7 +269,11 @@ export class SyncService {
         }
       }
     } catch (error) {
-      console.error('Failed to sync notes from server:', error)
+      // Only log if it's not a network connectivity issue
+      if (!(error instanceof TypeError && error.message.includes('Failed to fetch'))) {
+        console.error('Failed to sync notes from server:', error)
+      }
+      throw error
     }
   }
 
