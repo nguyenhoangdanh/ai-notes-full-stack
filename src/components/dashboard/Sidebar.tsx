@@ -43,8 +43,8 @@ export function Sidebar({ onClose, searchQuery, onSearchChange }: SidebarProps) 
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center space-x-2">
             <div className="relative">
-              <Brain className="h-6 w-6 text-primary" weight="duotone" />
-              <Sparkle className="h-3 w-3 text-accent absolute -top-0.5 -right-0.5" weight="fill" />
+              <Brain className="h-6 w-6 text-primary" />
+              <Sparkle className="h-3 w-3 text-accent absolute -top-0.5 -right-0.5" />
             </div>
             <span className="font-semibold text-foreground">AI Notes</span>
           </div>
