@@ -12,6 +12,7 @@ import { initializeApiClient } from './lib/api-config'
 
 function AppContent() {
   const { user, isLoading } = useAuth()
+  const isMobile = useIsMobile()
 
   if (isLoading) {
     return (
@@ -29,11 +30,13 @@ function AppContent() {
   }
 
   return (
-    <OfflineNotesProvider>
-      <AIProvider>
-        <MobileDashboard />
-      </AIProvider>
-    </OfflineNotesProvider>
+    <NotesProvider>
+      <OfflineNotesProvider>
+        <AIProvider>
+          {isMobile ? <MobileDashboard /> : <Dashboard />}
+        </AIProvider>
+      </OfflineNotesProvider>
+    </NotesProvider>
   )
 }
 
