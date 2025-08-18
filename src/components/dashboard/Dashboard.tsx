@@ -124,29 +124,37 @@ export function Dashboard() {
         </header>
 
         {/* Content Area */}
-        <div className="flex-1 flex">
+        <div className="flex-1 flex overflow-hidden">
           {/* Notes List */}
-          <div className={`${selectedNoteId ? 'hidden lg:block' : 'flex-1'} lg:w-80 border-r border-border bg-background`}>
-            <NotesList 
-              searchQuery={searchQuery}
-              selectedNoteId={selectedNoteId}
-              onSelectNote={setSelectedNoteId}
-            />
+          <div className={`${
+            selectedNoteId && isMobile
+              ? 'hidden'
+              : selectedNoteId && !isMobile
+                ? 'w-80 flex-shrink-0'
+                : 'flex-1'
+          } ${!isMobile ? 'border-r border-border' : ''} bg-background overflow-hidden`}>
+            <div className="h-full overflow-y-auto">
+              <NotesList
+                searchQuery={searchQuery}
+                selectedNoteId={selectedNoteId}
+                onSelectNote={setSelectedNoteId}
+              />
+            </div>
           </div>
 
           {/* Note Editor */}
           {selectedNoteId && (
-            <div className="flex-1">
-              <NoteEditor 
+            <div className={`${isMobile ? 'flex-1' : 'flex-1 min-w-0'} overflow-hidden`}>
+              <NoteEditor
                 noteId={selectedNoteId}
                 onClose={() => setSelectedNoteId(null)}
               />
             </div>
           )}
 
-          {/* Empty State */}
-          {!selectedNoteId && (
-            <div className="hidden lg:flex flex-1 items-center justify-center p-8">
+          {/* Empty State - Desktop Only */}
+          {!selectedNoteId && !isMobile && (
+            <div className="flex-1 flex items-center justify-center p-8">
               <EmptyState
                 type={notes.length === 0 ? 'notes' : 'search'}
                 onAction={handleCreateNote}
