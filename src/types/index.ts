@@ -4,8 +4,9 @@ export * from './auth.types'
 export * from './workspace.types'
 export * from './note.types'
 export * from './ai.types'
+export * from './user.types'
 
-// Export specific items from productivity and mobile to avoid conflicts
+// Export specific items from productivity to avoid conflicts
 export type { 
   Task, 
   PomodoroSession, 
@@ -19,6 +20,7 @@ export type {
   UpdateCalendarEventDto
 } from './productivity.types'
 
+// Export specific items from mobile to avoid conflicts  
 export type { 
   VoiceRecording, 
   OfflineAction, 
@@ -34,6 +36,7 @@ export type {
   CreateExportDto
 } from './mobile.types'
 
+// Export specific items from misc to avoid conflicts
 export type { 
   Notification, 
   Reminder, 
@@ -46,8 +49,6 @@ export type {
   CreateTemplateDto,
   UpdateTemplateDto,
   SearchHistory,
-  UserActivity
+  Analytics,
+  Activity
 } from './misc.types'
-
-// Type aliases for backward compatibility
-export type { UserActivity as Activity } from './misc.types'

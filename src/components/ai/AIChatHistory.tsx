@@ -8,15 +8,15 @@ import { Input } from '../ui/input'
 import { Separator } from '../ui/separator'
 import { 
   Clock, 
-  ChatCircle, 
-  MagnifyingGlass,
+  MessageCircle, 
+  Search,
   Trash,
   FileText,
-  Funnel,
+  Filter,
   Calendar,
-  Robot,
+  Bot,
   User
-} from '@phosphor-icons/react'
+} from 'lucide-react'
 import { cn } from '../../lib/utils'
 import { toast } from 'sonner'
 
@@ -146,7 +146,7 @@ export function AIChatHistory({
       <div className="p-4 border-b border-border">
         <div className="flex items-center space-x-2 mb-4">
           <div className="w-8 h-8 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center">
-            <ChatCircle className="h-4 w-4 text-primary-foreground" />
+            <MessageCircle className="h-4 w-4 text-primary-foreground" />
           </div>
           <h3 className="font-semibold text-foreground">Chat History</h3>
           <Badge variant="secondary" className="text-xs">
@@ -156,7 +156,7 @@ export function AIChatHistory({
 
         {/* Search */}
         <div className="relative mb-3">
-          <MagnifyingGlass className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <Input
             placeholder="Search conversations..."
             value={searchQuery}
@@ -227,7 +227,7 @@ export function AIChatHistory({
                 className="text-center py-8 space-y-3"
               >
                 <div className="w-16 h-16 mx-auto rounded-full bg-muted flex items-center justify-center">
-                  <ChatCircle className="h-8 w-8 text-muted-foreground" />
+                  <MessageCircle className="h-8 w-8 text-muted-foreground" />
                 </div>
                 <div>
                   <h4 className="font-medium text-foreground mb-1">No conversations found</h4>
@@ -261,7 +261,7 @@ export function AIChatHistory({
                         {conversation.noteContext ? (
                           <FileText className="h-4 w-4 text-primary" />
                         ) : (
-                          <Robot className="h-4 w-4 text-primary" />
+                          <Bot className="h-4 w-4 text-primary" />
                         )}
                       </div>
 
@@ -295,7 +295,7 @@ export function AIChatHistory({
                         <div className="flex items-center justify-between text-xs text-muted-foreground">
                           <div className="flex items-center space-x-3">
                             <div className="flex items-center space-x-1">
-                              <ChatCircle className="h-3 w-3" />
+                              <MessageCircle className="h-3 w-3" />
                               <span>{conversation.messageCount}</span>
                             </div>
                             <div className="flex items-center space-x-1">

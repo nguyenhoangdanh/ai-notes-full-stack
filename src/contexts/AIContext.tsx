@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, useCallback } from 'react'
-import { useConversations, useCreateConversation, useSendMessage, useDeleteConversation, useSemanticSearch } from '../hooks/useAI'
-import { CreateConversationDto, SendMessageDto, SemanticSearchDto, AIConversation, SemanticSearchResult } from '../types/ai.types'
+import { useAIConversations, useCreateAIConversation, useSendAIMessage, useDeleteAIConversation, useSemanticSearch } from '../hooks/use-ai'
+import { CreateConversationDto, SendMessageDto, SemanticSearchDto, AIConversation, SemanticSearchResult } from '../types'
 import { toast } from 'sonner'
 
 interface AIContextType {
@@ -25,6 +25,11 @@ interface AIContextType {
   
   // Helper functions
   startNewChat: (noteId?: string) => Promise<void>
+  
+  // Aliases for backward compatibility
+  currentConversation?: AIConversation | null
+  askAI?: (message: string, context?: string[]) => Promise<void>
+  isLoading?: boolean
 }
 
 const AIContext = createContext<AIContextType | undefined>(undefined)
@@ -34,10 +39,10 @@ export function AIProvider({ children }: { children: React.ReactNode }) {
   const [isProcessing, setIsProcessing] = useState(false)
   
   // Use the AI hooks
-  const { data: conversations = [], isLoading: isLoadingConversations } = useConversations()
-  const createConversationMutation = useCreateConversation()
-  const deleteConversationMutation = useDeleteConversation()
-  const sendMessageMutation = useSendMessage()
+  const { data: conversations = [], isLoading: isLoadingConversations } = useAIConversations()
+  const createConversationMutation = useCreateAIConversation()
+  const deleteConversationMutation = useDeleteAIConversation()
+  const sendMessageMutation = useSendAIMessage()
   const semanticSearchMutation = useSemanticSearch()
 
   const createConversation = useCallback(async (data: CreateConversationDto): Promise<AIConversation | undefined> => {
@@ -143,7 +148,11 @@ export function AIProvider({ children }: { children: React.ReactNode }) {
     selectConversation,
     sendMessage,
     performSemanticSearch,
-    startNewChat
+    startNewChat,
+    // Aliases for backward compatibility
+    currentConversation: activeConversation,
+    askAI: sendMessage,
+    isLoading: isProcessing
   }
 
   return (

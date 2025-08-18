@@ -6,12 +6,12 @@ import { Card } from '@/components/ui/card'
 import { Label } from '@/components/ui/label'
 import { 
   Brain, 
-  Envelope, 
+  Mail, 
   Lock, 
   Eye, 
-  EyeSlash,
+  EyeOff,
   Sparkle
-} from '@phosphor-icons/react'
+} from 'lucide-react'
 import { useLogin, useRegister } from '@/hooks'
 import { toast } from 'sonner'
 
@@ -118,7 +118,7 @@ export function AuthScreen() {
             <div className="space-y-2">
               <Label htmlFor="email">Email</Label>
               <div className="relative">
-                <Envelope className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                 <Input
                   id="email"
                   type="email"
@@ -151,7 +151,7 @@ export function AuthScreen() {
                   className="absolute right-1 top-1/2 transform -translate-y-1/2 h-8 w-8 p-0"
                 >
                   {showPassword ? (
-                    <EyeSlash className="h-4 w-4" />
+                    <EyeOff className="h-4 w-4" />
                   ) : (
                     <Eye className="h-4 w-4" />
                   )}

@@ -92,7 +92,7 @@ export interface AutoSummary {
   generatedAt: string;
 }
 
-// Search
+// Search - add the missing alias
 export interface SemanticSearchRequest {
   query: string;
   limit?: number;

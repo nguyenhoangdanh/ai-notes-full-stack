@@ -9,12 +9,12 @@ import type {
   ContentSuggestionResponse,
   ApplySuggestionRequest,
   AIConversation,
-  ChatMessage,
+  AIMessage,
   DuplicateReport,
   DuplicateStatus,
   RelatedNote,
   AutoSummary,
-  SemanticSearchRequest,
+  SemanticSearchDto,
   SemanticSearchResult,
 } from '../types'
 
@@ -185,7 +185,7 @@ export function useDeleteAIConversation() {
 // Smart Features - Categories
 export function useCategories() {
   return useQuery({
-    queryKey: queryKeys.categories.all(),
+    queryKey: queryKeys.ai.categories(),
     queryFn: () => aiService.getCategories(),
     staleTime: 5 * 60 * 1000, // 5 minutes
   })
@@ -204,7 +204,7 @@ export function useCreateCategory() {
     onSuccess: (newCategory) => {
       // Add to categories list
       queryClient.setQueryData(
-        queryKeys.categories.all(),
+        queryKeys.ai.categories(),
         (old: any[] = []) => [...old, newCategory]
       )
       
@@ -225,7 +225,7 @@ export function useAutoCategorizeNotes() {
     onSuccess: (result) => {
       // Invalidate notes and categories to refresh data
       queryClient.invalidateQueries({ queryKey: queryKeys.notes.all() })
-      queryClient.invalidateQueries({ queryKey: queryKeys.categories.all() })
+      queryClient.invalidateQueries({ queryKey: queryKeys.ai.categories() })
       
       toast.success(`Categorized ${result.categorized} of ${result.processed} notes`)
     },

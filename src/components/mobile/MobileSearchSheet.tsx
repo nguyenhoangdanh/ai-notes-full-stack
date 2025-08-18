@@ -6,15 +6,15 @@ import { Card } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { 
   ArrowLeft, 
-  MagnifyingGlass, 
+  Search, 
   X, 
   Clock, 
   FileText, 
   Tag,
-  Funnel,
-  SortAscending,
+  Filter,
+  ArrowUpDown,
   Star
-} from '@phosphor-icons/react'
+} from 'lucide-react'
 import { useOfflineNotes } from '@/contexts/OfflineNotesContext'
 import { OfflineNote } from '@/lib/offline-storage'
 import Fuse from 'fuse.js'
@@ -234,7 +234,7 @@ export function MobileSearchSheet({
             </Button>
             
             <div className="flex-1 relative">
-              <MagnifyingGlass className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
               <Input
                 value={searchQuery}
                 onChange={(e) => onSearchChange(e.target.value)}
@@ -260,7 +260,7 @@ export function MobileSearchSheet({
               onClick={() => setShowFilters(!showFilters)}
               className="h-8 w-8 p-0"
             >
-              <Funnel className="h-4 w-4" />
+              <Filter className="h-4 w-4" />
             </Button>
           </div>
 
@@ -387,7 +387,7 @@ export function MobileSearchSheet({
                 </div>
               ) : searchResults.length === 0 ? (
                 <div className="text-center py-8">
-                  <MagnifyingGlass className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
+                  <Search className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
                   <h3 className="text-lg font-medium mb-2">No results found</h3>
                   <p className="text-muted-foreground">
                     Try adjusting your search terms or filters

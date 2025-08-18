@@ -6,7 +6,7 @@ import { Badge } from '@/components/ui/badge'
 import { Progress } from '@/components/ui/progress'
 import { 
   ArrowLeft, 
-  Microphone, 
+  Mic, 
   Square, 
   Play, 
   Pause, 
@@ -14,11 +14,11 @@ import {
   FileText, 
   Download,
   Check,
-  Waveform
-} from '@phosphor-icons/react'
+  Activity
+} from 'lucide-react'
 import { useOfflineNotes } from '@/contexts/OfflineNotesContext'
 import { offlineStorage, VoiceRecording } from '@/lib/offline-storage'
-import { useAuthProfile } from '@/hooks'
+import { useProfile } from '@/hooks'
 import { v4 as uuidv4 } from 'uuid'
 import { toast } from 'sonner'
 
@@ -28,7 +28,7 @@ interface VoiceNoteRecorderProps {
 
 export function VoiceNoteRecorder({ onBack }: VoiceNoteRecorderProps) {
   const { createNote } = useOfflineNotes()
-  const { data: user } = useAuthProfile()
+  const { data: user } = useProfile()
   
   const [isRecording, setIsRecording] = useState(false)
   const [isPaused, setIsPaused] = useState(false)
@@ -45,8 +45,8 @@ export function VoiceNoteRecorder({ onBack }: VoiceNoteRecorderProps) {
   const audioContextRef = useRef<AudioContext | null>(null)
   const analyserRef = useRef<AnalyserNode | null>(null)
   const audioChunksRef = useRef<Blob[]>([])
-  const recordingIntervalRef = useRef<NodeJS.Timeout | null>(null)
-  const audioLevelIntervalRef = useRef<NodeJS.Timeout | null>(null)
+  const recordingIntervalRef = useRef<number | null>(null)
+  const audioLevelIntervalRef = useRef<number | null>(null)
   const audioElementRef = useRef<HTMLAudioElement | null>(null)
 
   // Load existing recordings
@@ -328,7 +328,7 @@ export function VoiceNoteRecorder({ onBack }: VoiceNoteRecorderProps) {
                   transition={{ repeat: Infinity, duration: 1 }}
                   className="inline-flex items-center justify-center w-20 h-20 bg-red-500 rounded-full"
                 >
-                  <Microphone className="h-8 w-8 text-white" />
+                  <Mic className="h-8 w-8 text-white" />
                 </motion.div>
                 
                 <div>
@@ -351,7 +351,7 @@ export function VoiceNoteRecorder({ onBack }: VoiceNoteRecorderProps) {
             ) : (
               <div className="space-y-4">
                 <div className="inline-flex items-center justify-center w-20 h-20 bg-primary rounded-full">
-                  <Microphone className="h-8 w-8 text-primary-foreground" />
+                  <Mic className="h-8 w-8 text-primary-foreground" />
                 </div>
                 <p className="text-muted-foreground">Tap to start recording</p>
               </div>
@@ -386,7 +386,7 @@ export function VoiceNoteRecorder({ onBack }: VoiceNoteRecorderProps) {
                 onClick={startRecording}
                 className="rounded-full px-8"
               >
-                <Microphone className="h-6 w-6 mr-2" />
+                <Mic className="h-6 w-6 mr-2" />
                 Record
               </Button>
             )}
@@ -401,7 +401,7 @@ export function VoiceNoteRecorder({ onBack }: VoiceNoteRecorderProps) {
           
           {recordings.length === 0 ? (
             <div className="text-center py-8">
-              <Waveform className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
+              <Activity className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
               <p className="text-muted-foreground">No recordings yet</p>
             </div>
           ) : (

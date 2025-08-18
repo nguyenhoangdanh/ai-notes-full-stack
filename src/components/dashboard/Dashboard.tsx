@@ -7,7 +7,7 @@ import { NoteEditor } from './NoteEditor'
 import { SearchBar } from './SearchBar'
 import { AIAssistantToggle } from '../ai/AIAssistantToggle'
 import { Button } from '../ui/button'
-import { Plus, SidebarSimple } from '@phosphor-icons/react'
+import { Plus, Sidebar as SidebarIcon } from 'lucide-react'
 import { useIsMobile } from '../../hooks/use-mobile'
 
 export function Dashboard() {
@@ -52,7 +52,7 @@ export function Dashboard() {
                   size="sm"
                   onClick={() => setSidebarOpen(true)}
                 >
-                  <SidebarSimple className="h-5 w-5" />
+                  <SidebarIcon className="h-5 w-5" />
                 </Button>
               )}
               

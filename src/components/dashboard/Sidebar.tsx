@@ -7,13 +7,13 @@ import { Badge } from '../ui/badge'
 import { Separator } from '../ui/separator'
 import { 
   Brain, 
-  SignOut, 
+  LogOut, 
   Tag, 
   Calendar,
   FolderOpen,
   Sparkle,
   X
-} from '@phosphor-icons/react'
+} from 'lucide-react'
 import { useIsMobile } from '../../hooks/use-mobile'
 
 interface SidebarProps {
@@ -186,7 +186,7 @@ export function Sidebar({ onClose, searchQuery, onSearchChange }: SidebarProps) 
           onClick={logout}
           className="w-full justify-start text-destructive hover:text-destructive hover:bg-destructive/10"
         >
-          <SignOut className="h-4 w-4 mr-2" />
+          <LogOut className="h-4 w-4 mr-2" />
           Sign out
         </Button>
       </div>

@@ -1,5 +1,5 @@
 import { Input } from '../ui/input'
-import { MagnifyingGlass, Sparkle } from '@phosphor-icons/react'
+import { Search, Sparkle } from 'lucide-react'
 import { cn } from '../../lib/utils'
 
 interface SearchBarProps {
@@ -12,7 +12,7 @@ interface SearchBarProps {
 export function SearchBar({ value, onChange, placeholder = "Search with AI...", className }: SearchBarProps) {
   return (
     <div className={cn("relative", className)}>
-      <MagnifyingGlass className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+      <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
       <Input
         type="text"
         placeholder={placeholder}

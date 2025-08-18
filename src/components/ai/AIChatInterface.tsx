@@ -7,16 +7,16 @@ import { Card } from '../ui/card'
 import { Badge } from '../ui/badge'
 import { Separator } from '../ui/separator'
 import { 
-  PaperPlaneRight, 
-  Robot, 
+  Send, 
+  Bot, 
   User, 
-  Lightning, 
-  MagicWand,
+  Zap, 
+  Wand2,
   FileText,
   X,
   Sparkle,
-  ArrowClockwise
-} from '@phosphor-icons/react'
+  RotateCcw
+} from 'lucide-react'
 import { useAI } from '../../contexts/AIContext'
 import { useAuth } from '../../hooks/useAuth'
 import { useNotes } from '../../contexts/NotesContext'
@@ -42,8 +42,8 @@ interface AIChatInterfaceProps {
 }
 
 const QUICK_PROMPTS = [
-  { icon: Lightning, text: "Summarize this note", prompt: "Please provide a concise summary of this note" },
-  { icon: MagicWand, text: "Improve writing", prompt: "Please help improve the writing style and clarity of this note" },
+  { icon: Zap, text: "Summarize this note", prompt: "Please provide a concise summary of this note" },
+  { icon: Wand2, text: "Improve writing", prompt: "Please help improve the writing style and clarity of this note" },
   { icon: FileText, text: "Create outline", prompt: "Create a structured outline based on this note's content" },
   { icon: Sparkle, text: "Generate ideas", prompt: "Generate related ideas and concepts based on this note" }
 ]
@@ -137,7 +137,7 @@ export function AIChatInterface({
       <div className="flex items-center justify-between p-4 border-b border-border bg-card/50 backdrop-blur-sm">
         <div className="flex items-center space-x-3">
           <div className="w-8 h-8 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center">
-            <Robot className="h-4 w-4 text-primary-foreground" />
+            <Bot className="h-4 w-4 text-primary-foreground" />
           </div>
           <div>
             <h3 className="font-semibold text-foreground">AI Assistant</h3>
@@ -157,7 +157,7 @@ export function AIChatInterface({
               onClick={clearConversation}
               className="text-muted-foreground hover:text-foreground"
             >
-              <ArrowClockwise className="h-4 w-4" />
+              <RotateCcw className="h-4 w-4" />
             </Button>
           )}
           {onClose && (
@@ -183,7 +183,7 @@ export function AIChatInterface({
               className="text-center space-y-4 py-8"
             >
               <div className="w-16 h-16 mx-auto rounded-full bg-gradient-to-br from-primary/10 to-accent/10 flex items-center justify-center">
-                <Robot className="h-8 w-8 text-primary" />
+                <Bot className="h-8 w-8 text-primary" />
               </div>
               <div>
                 <h4 className="font-medium text-foreground mb-2">AI Assistant Ready</h4>
@@ -241,7 +241,7 @@ export function AIChatInterface({
                 {message.role === 'user' ? (
                   <User className="h-4 w-4" />
                 ) : (
-                  <Robot className="h-4 w-4" />
+                  <Bot className="h-4 w-4" />
                 )}
               </div>
               
@@ -288,7 +288,7 @@ export function AIChatInterface({
               className="flex items-start space-x-3"
             >
               <div className="w-8 h-8 rounded-full bg-gradient-to-br from-accent/20 to-primary/20 text-primary flex items-center justify-center">
-                <Robot className="h-4 w-4" />
+                <Bot className="h-4 w-4" />
               </div>
               <Card className="p-3 bg-muted">
                 <div className="flex items-center space-x-2">
@@ -327,7 +327,7 @@ export function AIChatInterface({
             size="sm"
             className="px-3"
           >
-            <PaperPlaneRight className="h-4 w-4" />
+            <Send className="h-4 w-4" />
           </Button>
         </div>
         

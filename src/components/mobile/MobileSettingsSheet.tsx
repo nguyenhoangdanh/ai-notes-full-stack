@@ -8,24 +8,24 @@ import { Progress } from '@/components/ui/progress'
 import { 
   ArrowLeft, 
   User, 
-  ArrowsClockwise, 
+  RefreshCw, 
   Download, 
   Upload, 
   Trash,
   Shield,
   Database,
-  WifiHigh,
-  WifiSlash,
+  Wifi,
+  WifiOff,
   Cloud,
   HardDrive,
   Info,
-  ArrowSquareOut,
+  ExternalLink,
   Moon,
   Sun
-} from '@phosphor-icons/react'
+} from 'lucide-react'
 import { useOfflineNotes } from '@/contexts/OfflineNotesContext'
 import { offlineStorage, AppSettings } from '@/lib/offline-storage'
-import { useAuthProfile, useUserSettings, useUpdateSettings } from '@/hooks'
+import { useProfile, useSettings, useUpdateSettings } from '@/hooks'
 import { toast } from 'sonner'
 
 interface MobileSettingsSheetProps {
@@ -41,8 +41,8 @@ export function MobileSettingsSheet({ isOpen, onClose }: MobileSettingsSheetProp
     importNotes 
   } = useOfflineNotes()
   
-  const { data: user } = useAuthProfile()
-  const { data: settings } = useUserSettings()
+  const { data: user } = useProfile()
+  const { data: settings } = useSettings()
   const updateSettingsMutation = useUpdateSettings()
   const [storageUsage, setStorageUsage] = useState({ notes: 0, attachments: 0, total: 0 })
   const [isExporting, setIsExporting] = useState(false)
@@ -208,9 +208,9 @@ export function MobileSettingsSheet({ isOpen, onClose }: MobileSettingsSheetProp
           <Card className="p-4">
             <div className="flex items-center gap-3 mb-4">
               {syncStatus.isOnline ? (
-                <WifiHigh className="h-5 w-5 text-green-600" />
+                <Wifi className="h-5 w-5 text-green-600" />
               ) : (
-                <WifiSlash className="h-5 w-5 text-red-600" />
+                <WifiOff className="h-5 w-5 text-red-600" />
               )}
               <div>
                 <h3 className="font-medium">Sync Status</h3>
@@ -241,7 +241,7 @@ export function MobileSettingsSheet({ isOpen, onClose }: MobileSettingsSheetProp
               disabled={syncStatus.isSyncing || !syncStatus.isOnline}
               className="w-full"
             >
-              <ArrowsClockwise className={`h-4 w-4 mr-2 ${syncStatus.isSyncing ? 'animate-spin' : ''}`} />
+              <RefreshCw className={`h-4 w-4 mr-2 ${syncStatus.isSyncing ? 'animate-spin' : ''}`} />
               {syncStatus.isSyncing ? 'Syncing...' : 'Sync Now'}
             </Button>
           </Card>
@@ -297,7 +297,7 @@ export function MobileSettingsSheet({ isOpen, onClose }: MobileSettingsSheetProp
                 {/* Sync on WiFi Only */}
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
-                    <WifiHigh className="h-5 w-5" />
+                    <Wifi className="h-5 w-5" />
                     <div>
                       <p className="font-medium">WiFi Only Sync</p>
                       <p className="text-sm text-muted-foreground">Save mobile data</p>
@@ -429,7 +429,7 @@ export function MobileSettingsSheet({ isOpen, onClose }: MobileSettingsSheetProp
                 size="sm"
                 className="w-full"
               >
-                <ArrowSquareOut className="h-4 w-4 mr-2" />
+                <ExternalLink className="h-4 w-4 mr-2" />
                 View on GitHub
               </Button>
             </div>

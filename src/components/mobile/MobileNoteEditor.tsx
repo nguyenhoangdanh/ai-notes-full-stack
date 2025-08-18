@@ -10,14 +10,14 @@ import {
   Share, 
   Trash, 
   Tag, 
-  Microphone, 
-  TextB, 
-  TextItalic, 
+  Mic, 
+  Bold, 
+  Italic, 
   List,
   Camera,
   MapPin,
   Clock
-} from '@phosphor-icons/react'
+} from 'lucide-react'
 import { OfflineNote } from '@/lib/offline-storage'
 import { toast } from 'sonner'
 
@@ -39,7 +39,7 @@ export function MobileNoteEditor({ note, onBack, onUpdate }: MobileNoteEditorPro
   
   const contentRef = useRef<HTMLTextAreaElement>(null)
   const titleRef = useRef<HTMLInputElement>(null)
-  const [autoSaveTimeout, setAutoSaveTimeout] = useState<NodeJS.Timeout>()
+  const [autoSaveTimeout, setAutoSaveTimeout] = useState<number | null>(null)
 
   // Load note data
   useEffect(() => {
@@ -265,7 +265,7 @@ export function MobileNoteEditor({ note, onBack, onUpdate }: MobileNoteEditorPro
             onClick={() => formatText('bold')}
             className="h-8 px-3 flex-shrink-0"
           >
-            <TextB className="h-4 w-4" />
+            <Bold className="h-4 w-4" />
           </Button>
           
           <Button
@@ -274,7 +274,7 @@ export function MobileNoteEditor({ note, onBack, onUpdate }: MobileNoteEditorPro
             onClick={() => formatText('italic')}
             className="h-8 px-3 flex-shrink-0"
           >
-            <TextItalic className="h-4 w-4" />
+            <Italic className="h-4 w-4" />
           </Button>
           
           <Button
@@ -295,7 +295,7 @@ export function MobileNoteEditor({ note, onBack, onUpdate }: MobileNoteEditorPro
             disabled={isRecording}
             className="h-8 px-3 flex-shrink-0"
           >
-            <Microphone className={`h-4 w-4 ${isRecording ? 'text-red-500' : ''}`} />
+            <Mic className={`h-4 w-4 ${isRecording ? 'text-red-500' : ''}`} />
           </Button>
           
           <Button

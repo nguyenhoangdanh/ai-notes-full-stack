@@ -10,14 +10,14 @@ import { Separator } from '../ui/separator'
 import { 
   Brain, 
   Sparkle, 
-  Gear, 
-  Lightning,
+  Settings, 
+  Zap,
   Clock,
   Shield,
-  ChartBar,
-  Robot,
-  ChatCircle
-} from '@phosphor-icons/react'
+  BarChart3,
+  Bot,
+  MessageSquare
+} from 'lucide-react'
 import { useAI } from '../../contexts/AIContext'
 import { cn } from '../../lib/utils'
 import { toast } from 'sonner'
@@ -86,7 +86,7 @@ export function AISettingsPanel({ className }: AISettingsPanelProps) {
       <Card>
         <CardHeader>
           <CardTitle className="text-sm flex items-center space-x-2">
-            <ChartBar className="h-4 w-4" />
+            <BarChart3 className="h-4 w-4" />
             <span>Usage Statistics</span>
           </CardTitle>
         </CardHeader>
@@ -112,7 +112,7 @@ export function AISettingsPanel({ className }: AISettingsPanelProps) {
       <Card>
         <CardHeader>
           <CardTitle className="text-sm flex items-center space-x-2">
-            <Robot className="h-4 w-4" />
+            <Bot className="h-4 w-4" />
             <span>AI Model</span>
           </CardTitle>
         </CardHeader>
@@ -149,7 +149,7 @@ export function AISettingsPanel({ className }: AISettingsPanelProps) {
       <Card>
         <CardHeader>
           <CardTitle className="text-sm flex items-center space-x-2">
-            <Gear className="h-4 w-4" />
+            <Settings className="h-4 w-4" />
             <span>AI Behavior</span>
           </CardTitle>
         </CardHeader>
@@ -325,14 +325,14 @@ export function AISettingsPanel({ className }: AISettingsPanelProps) {
       <Card>
         <CardHeader>
           <CardTitle className="text-sm flex items-center space-x-2">
-            <Lightning className="h-4 w-4" />
+            <Zap className="h-4 w-4" />
             <span>Quick Actions</span>
           </CardTitle>
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-2 gap-3">
             <Button variant="outline" size="sm" className="justify-start">
-              <ChatCircle className="h-4 w-4 mr-2" />
+              <MessageSquare className="h-4 w-4 mr-2" />
               New Chat
             </Button>
             <Button variant="outline" size="sm" className="justify-start">

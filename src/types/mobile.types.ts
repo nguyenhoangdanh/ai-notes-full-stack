@@ -1,10 +1,4 @@
-import { TranscriptionStatus, SyncAction, ExportType, ExportFormat, ExportStatus } from './common.types'
-
-interface BaseEntity {
-  id: string;
-  createdAt: string;
-  updatedAt: string;
-}
+import { BaseEntity, TranscriptionStatus, SyncAction, ExportType, ExportFormat, ExportStatus } from './common.types'
 
 // Mobile-specific features
 export interface VoiceNote extends BaseEntity {

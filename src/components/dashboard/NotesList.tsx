@@ -6,9 +6,9 @@ import { Separator } from '../ui/separator'
 import { 
   Calendar, 
   Tag, 
-  DotsThree,
+  MoreHorizontal,
   Clock
-} from '@phosphor-icons/react'
+} from 'lucide-react'
 import { formatDistanceToNow } from 'date-fns'
 
 interface NotesListProps {
@@ -109,7 +109,7 @@ export function NotesList({ searchQuery, selectedNoteId, onSelectNote }: NotesLi
                   onClick={(e) => handleDeleteNote(e, note.id)}
                   className="opacity-0 group-hover:opacity-100 h-6 w-6 p-0"
                 >
-                  <DotsThree className="h-3 w-3" />
+                  <MoreHorizontal className="h-3 w-3" />
                 </Button>
               </div>
 

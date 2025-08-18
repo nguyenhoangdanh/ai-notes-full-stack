@@ -7,7 +7,7 @@ import type {
   SearchHistory,
   SavedSearch,
   CreateSavedSearchDto,
-  UserActivity,
+  Activity,
   Template,
   CreateTemplateDto,
   UpdateTemplateDto,
@@ -75,8 +75,8 @@ export const miscService = {
   },
 
   // User activity
-  async getUserActivity(filters?: { action?: string; noteId?: string; limit?: number }): Promise<UserActivity[]> {
-    return apiClient.get<UserActivity[]>('/analytics/activity', { query: filters })
+  async getUserActivity(filters?: { action?: string; noteId?: string; limit?: number }): Promise<Activity[]> {
+    return apiClient.get<Activity[]>('/analytics/activity', { query: filters })
   },
 
   // Templates
