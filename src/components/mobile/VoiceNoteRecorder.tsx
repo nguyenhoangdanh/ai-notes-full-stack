@@ -48,7 +48,6 @@ export function VoiceNoteRecorder({ onBack }: VoiceNoteRecorderProps) {
   const recordingIntervalRef = useRef<number | null>(null)
   const audioLevelIntervalRef = useRef<number | null>(null)
   const audioElementRef = useRef<HTMLAudioElement | null>(null)
-  const audioElementRef = useRef<HTMLAudioElement | null>(null)
 
   // Load existing recordings
   useEffect(() => {

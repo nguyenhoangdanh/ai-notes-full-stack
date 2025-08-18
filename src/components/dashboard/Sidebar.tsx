@@ -34,7 +34,6 @@ export function Sidebar({ onClose, searchQuery, onSearchChange }: SidebarProps) 
   const getTagCount = (tag: string) => {
     return notes.filter(note => note.tags.includes(tag)).length
   }
-  }
 
   return (
     <div className="h-full flex flex-col bg-card">

@@ -36,6 +36,7 @@ export function AuthScreen() {
     }
 
     try {
+      console.log('Submitting auth:', { email, password, name, isLogin })
       if (isLogin) {
         await loginMutation.mutateAsync({ email, password })
       } else {
