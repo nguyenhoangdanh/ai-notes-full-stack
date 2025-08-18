@@ -83,10 +83,13 @@ export function useApplySuggestion() {
 }
 
 // AI Conversations
-export function useAIConversations() {
+export function useAIConversations(noteId?: string) {
   return useQuery({
-    queryKey: queryKeys.ai.conversations(),
-    queryFn: aiService.getConversations,
+    queryKey: queryKeys.ai.conversations(noteId),
+    queryFn: ({ queryKey }) => {
+      const [, , { noteId: queryNoteId }] = queryKey as readonly ["ai", "conversations", { noteId: string | undefined }]
+      return aiService.getConversations(queryNoteId)
+    },
     staleTime: 2 * 60 * 1000, // 2 minutes
   })
 }
@@ -105,7 +108,7 @@ export function useCreateAIConversation() {
 
   return useMutation({
     mutationFn: ({ title, noteId }: { title: string; noteId?: string }) =>
-      aiService.createConversation(title, noteId),
+      aiService.createConversation({ title, noteId }),
     onSuccess: (newConversation: AIConversation) => {
       // Add to conversations list
       queryClient.setQueryData(
@@ -201,7 +204,7 @@ export function useCreateCategory() {
     onSuccess: (newCategory) => {
       // Add to categories list
       queryClient.setQueryData(
-        queryKeys.ai.categories(),
+        queryKeys.categories.all(),
         (old: any[] = []) => [...old, newCategory]
       )
       
@@ -222,7 +225,7 @@ export function useAutoCategorizeNotes() {
     onSuccess: (result) => {
       // Invalidate notes and categories to refresh data
       queryClient.invalidateQueries({ queryKey: queryKeys.notes.all() })
-      queryClient.invalidateQueries({ queryKey: queryKeys.ai.categories() })
+      queryClient.invalidateQueries({ queryKey: queryKeys.categories.all() })
       
       toast.success(`Categorized ${result.categorized} of ${result.processed} notes`)
     },
@@ -267,7 +270,7 @@ export function useResolveDuplicate() {
     mutationFn: ({ reportId, status }: { 
       reportId: string
       status: DuplicateStatus 
-    }) => aiService.resolveDuplicate(reportId, status),
+    }) => aiService.resolveDuplicate(reportId, status as "CONFIRMED" | "DISMISSED" | "MERGED"),
     onSuccess: (updatedReport: DuplicateReport) => {
       // Update in duplicates list
       queryClient.setQueryData(

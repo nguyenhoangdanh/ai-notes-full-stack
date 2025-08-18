@@ -85,7 +85,7 @@ export function useUpdatePomodoroSession() {
 // Tasks
 export function useTasks(filters?: any) {
   return useQuery({
-    queryKey: queryKeys.productivity.tasks(filters),
+    queryKey: queryKeys.productivity.tasks(),
     queryFn: () => productivityService.getTasks(filters),
     staleTime: 2 * 60 * 1000, // 2 minutes
   })

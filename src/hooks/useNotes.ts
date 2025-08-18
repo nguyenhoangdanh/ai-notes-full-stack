@@ -56,7 +56,7 @@ export function useSearchNotes() {
     onSuccess: (data, variables) => {
       // Cache search results
       queryClient.setQueryData(
-        queryKeys.notes.search(variables),
+        queryKeys.notes.search(variables.q, variables),
         data
       );
     },

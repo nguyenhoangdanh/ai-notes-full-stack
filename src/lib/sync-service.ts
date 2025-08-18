@@ -12,7 +12,7 @@ export class SyncService {
   private static instance: SyncService
   private syncInProgress = false
   private syncListeners: Set<(status: SyncStatus) => void> = new Set()
-  private retryTimeout?: number
+  private retryTimeout?: NodeJS.Timeout
 
   static getInstance(): SyncService {
     if (!SyncService.instance) {

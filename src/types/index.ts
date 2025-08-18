@@ -50,5 +50,4 @@ export type {
 } from './misc.types'
 
 // Type aliases for backward compatibility
-export type Activity = UserActivity
-export type Analytics = any // TODO: Define proper Analytics interface
+export type { UserActivity as Activity } from './misc.types'
