@@ -1,14 +1,18 @@
 import { useState, useEffect } from 'react'
 import { AuthProvider, useAuth } from './contexts/AuthContext'
+import { NotesProvider } from './contexts/NotesContext'
 import { OfflineNotesProvider } from './contexts/OfflineNotesContext'
 import { AIProvider } from './contexts/AIContext'
 import { AuthScreen } from './components/auth/AuthScreen'
+import { Dashboard } from './components/dashboard/Dashboard'
 import { MobileDashboard } from './components/mobile/MobileDashboard'
-import { Toaster } from 'sonner'
+import { useIsMobile } from './hooks/use-mobile'
+import { Toaster, toast } from 'sonner'
 import { initializeApiClient } from './lib/api-config'
 
 function AppContent() {
   const { user, isLoading } = useAuth()
+  const isMobile = useIsMobile()
 
   if (isLoading) {
     return (
@@ -26,11 +30,13 @@ function AppContent() {
   }
 
   return (
-    <OfflineNotesProvider>
-      <AIProvider>
-        <MobileDashboard />
-      </AIProvider>
-    </OfflineNotesProvider>
+    <NotesProvider>
+      <OfflineNotesProvider>
+        <AIProvider>
+          {isMobile ? <MobileDashboard /> : <Dashboard />}
+        </AIProvider>
+      </OfflineNotesProvider>
+    </NotesProvider>
   )
 }
 
@@ -40,6 +46,18 @@ function App() {
   useEffect(() => {
     // Initialize the API client
     initializeApiClient()
+
+    // Show offline mode notification if no backend is configured
+    const hasBackend = import.meta.env.VITE_API_BASE_URL
+    if (!hasBackend && import.meta.env.DEV) {
+      setTimeout(() => {
+        toast.info('Running in offline mode - all data is stored locally', {
+          duration: 5000,
+          description: 'Connect a backend server to enable sync across devices'
+        })
+      }, 2000)
+    }
+
     setIsApiInitialized(true)
   }, [])
 

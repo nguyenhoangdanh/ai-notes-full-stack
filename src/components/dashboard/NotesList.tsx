@@ -73,7 +73,10 @@ export function NotesList({ searchQuery, selectedNoteId, onSelectNote }: NotesLi
     <div className="p-4 space-y-3">
       {/* Results Header */}
       <div className="flex items-center justify-between px-2">
-        <h2 className="text-sm font-medium text-muted-foreground">
+        <h2
+          className="text-sm font-medium text-muted-foreground"
+          id="notes-list-title"
+        >
           {searchQuery ? `${sortedNotes.length} results` : `${sortedNotes.length} notes`}
         </h2>
         {searchQuery && (
@@ -86,18 +89,32 @@ export function NotesList({ searchQuery, selectedNoteId, onSelectNote }: NotesLi
       <Separator />
 
       {/* Notes List */}
-      <div className="space-y-3">
-        {sortedNotes.map((note) => (
+      <div
+        className="space-y-3"
+        role="list"
+        aria-labelledby="notes-list-title"
+      >
+        {sortedNotes.map((note, index) => (
           <Card
             key={note.id}
-            className={`cursor-pointer transition-all duration-200 hover:shadow-md ${
-              selectedNoteId === note.id 
-                ? 'ring-2 ring-primary shadow-md' 
+            className={`cursor-pointer transition-all duration-200 hover:shadow-md focus-within:ring-2 focus-within:ring-primary ${
+              selectedNoteId === note.id
+                ? 'ring-2 ring-primary shadow-md'
                 : 'hover:bg-card/80'
             }`}
+            role="listitem"
+            tabIndex={0}
             onClick={() => onSelectNote(note.id)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                onSelectNote(note.id);
+              }
+            }}
+            aria-label={`Note: ${note.title || 'Untitled'}`}
+            aria-describedby={`note-content-${note.id} note-metadata-${note.id}`}
           >
-            <CardContent className="p-4">
+            <CardContent className="p-4 group">
               {/* Note Header */}
               <div className="flex items-start justify-between mb-2">
                 <h3 className="font-medium text-foreground line-clamp-1 flex-1">
@@ -107,20 +124,27 @@ export function NotesList({ searchQuery, selectedNoteId, onSelectNote }: NotesLi
                   variant="ghost"
                   size="sm"
                   onClick={(e) => handleDeleteNote(e, note.id)}
-                  className="opacity-0 group-hover:opacity-100 h-6 w-6 p-0"
+                  className="opacity-0 group-hover:opacity-100 focus:opacity-100 h-6 w-6 p-0"
+                  aria-label={`More options for ${note.title || 'untitled note'}`}
                 >
                   <MoreHorizontal className="h-3 w-3" />
                 </Button>
               </div>
 
               {/* Note Content Preview */}
-              <p className="text-sm text-muted-foreground line-clamp-2 mb-3">
+              <p
+                className="text-sm text-muted-foreground line-clamp-2 mb-3"
+                id={`note-content-${note.id}`}
+              >
                 {note.content || 'No content'}
               </p>
 
               {/* Note Metadata */}
-              <div className="flex items-center justify-between">
-                <div className="flex items-center space-x-2">
+              <div
+                className="flex items-center justify-between"
+                id={`note-metadata-${note.id}`}
+              >
+                <div className="flex items-center space-x-2" aria-label="Note tags">
                   {note.tags.length > 0 && (
                     <Badge 
                       variant="secondary"
@@ -140,10 +164,13 @@ export function NotesList({ searchQuery, selectedNoteId, onSelectNote }: NotesLi
                 </div>
 
                 <div className="flex items-center space-x-1 text-xs text-muted-foreground">
-                  <Clock className="h-3 w-3" />
-                  <span>
+                  <Clock className="h-3 w-3" aria-hidden="true" />
+                  <time
+                    dateTime={note.updatedAt}
+                    title={new Date(note.updatedAt).toLocaleString()}
+                  >
                     {formatDistanceToNow(new Date(note.updatedAt), { addSuffix: true })}
-                  </span>
+                  </time>
                 </div>
               </div>
 

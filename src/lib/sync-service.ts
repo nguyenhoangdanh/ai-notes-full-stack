@@ -13,6 +13,7 @@ export class SyncService {
   private syncInProgress = false
   private syncListeners: Set<(status: SyncStatus) => void> = new Set()
   private retryTimeout?: number
+  private backendAvailable = false
 
   static getInstance(): SyncService {
     if (!SyncService.instance) {
@@ -25,10 +26,19 @@ export class SyncService {
     // Listen for online/offline events
     window.addEventListener('online', () => this.handleOnlineStatus(true))
     window.addEventListener('offline', () => this.handleOnlineStatus(false))
-    
-    // Start background sync when online
-    if (navigator.onLine) {
-      this.startBackgroundSync()
+
+    // Only attempt sync if enabled in environment
+    const syncEnabled = import.meta.env.VITE_ENABLE_SYNC !== 'false'
+    if (syncEnabled) {
+      // Check backend availability and start sync if available
+      this.checkBackendAvailability().then(available => {
+        this.backendAvailable = available
+        if (available && navigator.onLine) {
+          this.startBackgroundSync()
+        }
+      })
+    } else {
+      console.info('Sync disabled by environment configuration')
     }
   }
 
@@ -62,14 +72,38 @@ export class SyncService {
     return lastSync ? new Date(lastSync) : undefined
   }
 
+  private async checkBackendAvailability(): Promise<boolean> {
+    try {
+      const apiBase = this.getApiBase()
+      const controller = new AbortController()
+      const timeoutId = setTimeout(() => controller.abort(), 5000) // 5 second timeout
+
+      const response = await fetch(`${apiBase}/health`, {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' },
+        signal: controller.signal
+      })
+
+      clearTimeout(timeoutId)
+      return response.ok
+    } catch (error) {
+      console.info('Backend not available, running in offline mode:', error)
+      return false
+    }
+  }
+
   private setLastSyncTime(): void {
     localStorage.setItem('ai-notes-last-sync', new Date().toISOString())
   }
 
   // Online/Offline Handling
-  private handleOnlineStatus(isOnline: boolean): void {
+  private async handleOnlineStatus(isOnline: boolean): Promise<void> {
     if (isOnline && !this.syncInProgress) {
-      this.startBackgroundSync()
+      // Re-check backend availability when coming online
+      this.backendAvailable = await this.checkBackendAvailability()
+      if (this.backendAvailable) {
+        this.startBackgroundSync()
+      }
     }
     this.notifyListeners()
   }
@@ -77,6 +111,15 @@ export class SyncService {
   // Background Sync
   private async startBackgroundSync(): Promise<void> {
     if (!navigator.onLine || this.syncInProgress) return
+
+    // Check if backend is available before attempting sync
+    if (!this.backendAvailable) {
+      this.backendAvailable = await this.checkBackendAvailability()
+      if (!this.backendAvailable) {
+        console.info('Backend not available, skipping sync')
+        return
+      }
+    }
 
     this.syncInProgress = true
     await this.notifyListeners()
@@ -87,6 +130,10 @@ export class SyncService {
       this.setLastSyncTime()
     } catch (error) {
       console.error('Background sync failed:', error)
+      // Mark backend as unavailable on persistent failures
+      if (error instanceof TypeError && error.message.includes('Failed to fetch')) {
+        this.backendAvailable = false
+      }
       this.scheduleRetry()
     } finally {
       this.syncInProgress = false
@@ -98,6 +145,12 @@ export class SyncService {
   async forcSync(): Promise<void> {
     if (!navigator.onLine) {
       throw new Error('Cannot sync while offline')
+    }
+
+    // Check backend availability for forced sync
+    this.backendAvailable = await this.checkBackendAvailability()
+    if (!this.backendAvailable) {
+      throw new Error('Backend server is not available')
     }
 
     await this.startBackgroundSync()
@@ -208,10 +261,10 @@ export class SyncService {
       if (!response.ok) return
 
       const serverNotes = await response.json()
-      
+
       for (const serverNote of serverNotes) {
         const localNote = await offlineStorage.getNote(serverNote.id)
-        
+
         if (!localNote || new Date(serverNote.updatedAt) > new Date(localNote.updatedAt)) {
           const offlineNote: OfflineNote = {
             ...serverNote,
@@ -222,7 +275,11 @@ export class SyncService {
         }
       }
     } catch (error) {
-      console.error('Failed to sync notes from server:', error)
+      // Only log if it's not a network connectivity issue
+      if (!(error instanceof TypeError && error.message.includes('Failed to fetch'))) {
+        console.error('Failed to sync notes from server:', error)
+      }
+      throw error
     }
   }
 
@@ -236,7 +293,7 @@ export class SyncService {
       if (!response.ok) return
 
       const serverWorkspaces = await response.json()
-      
+
       for (const serverWorkspace of serverWorkspaces) {
         const offlineWorkspace: OfflineWorkspace = {
           ...serverWorkspace,
@@ -246,7 +303,11 @@ export class SyncService {
         await offlineStorage.saveWorkspace(offlineWorkspace)
       }
     } catch (error) {
-      console.error('Failed to sync workspaces from server:', error)
+      // Only log if it's not a network connectivity issue
+      if (!(error instanceof TypeError && error.message.includes('Failed to fetch'))) {
+        console.error('Failed to sync workspaces from server:', error)
+      }
+      throw error
     }
   }
 
@@ -290,11 +351,11 @@ export class SyncService {
 
   // Utility Methods
   private getApiBase(): string {
-    return import.meta.env.VITE_API_BASE || 'http://localhost:3000/api'
+    return import.meta.env.VITE_API_BASE_URL || import.meta.env.VITE_API_BASE || 'http://localhost:3001'
   }
 
   private getHeaders(): Record<string, string> {
-    const token = localStorage.getItem('auth-token')
+    const token = localStorage.getItem('ai-notes-token') || localStorage.getItem('auth-token')
     return {
       'Content-Type': 'application/json',
       ...(token && { Authorization: `Bearer ${token}` })

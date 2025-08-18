@@ -5,15 +5,20 @@ import { Sidebar } from './Sidebar'
 import { NotesList } from './NotesList'
 import { NoteEditor } from './NoteEditor'
 import { SearchBar } from './SearchBar'
+import { EmptyState } from './EmptyState'
+import { BulkActionsBar } from './BulkActionsBar'
 import { AIAssistantToggle } from '../ai/AIAssistantToggle'
+import { InstallPWAButton } from '../common/InstallPWAButton'
+import { SyncStatusIndicator } from '../dev/SyncStatusIndicator'
 import { Button } from '../ui/button'
 import { Plus, Sidebar as SidebarIcon } from 'lucide-react'
 import { useIsMobile } from '../../hooks/use-mobile'
 
 export function Dashboard() {
   const { user } = useAuth()
-  const { createNote } = useNotes()
+  const { createNote, deleteNote, notes } = useNotes()
   const [selectedNoteId, setSelectedNoteId] = useState<string | null>(null)
+  const [selectedNoteIds, setSelectedNoteIds] = useState<string[]>([])
   const [searchQuery, setSearchQuery] = useState('')
   const [sidebarOpen, setSidebarOpen] = useState(true)
   const isMobile = useIsMobile()
@@ -27,12 +32,44 @@ export function Dashboard() {
     setSelectedNoteId(newNote.id)
   }
 
+  const handleBulkDelete = async (noteIds: string[]) => {
+    for (const id of noteIds) {
+      await deleteNote(id)
+    }
+    setSelectedNoteIds([])
+    if (selectedNoteId && noteIds.includes(selectedNoteId)) {
+      setSelectedNoteId(null)
+    }
+  }
+
+  const handleBulkExport = async (noteIds: string[]) => {
+    // This would integrate with export hooks when available
+    console.log('Exporting notes:', noteIds)
+  }
+
+  const handleBulkShare = async (noteIds: string[]) => {
+    // This would integrate with sharing hooks when available
+    console.log('Sharing notes:', noteIds)
+  }
+
   return (
-    <div className="flex h-screen bg-background">
+    <div className="flex h-screen bg-background overflow-hidden">
+      {/* Mobile Sidebar Overlay */}
+      {isMobile && sidebarOpen && (
+        <div
+          className="fixed inset-0 z-40 bg-black/50 transition-opacity"
+          onClick={() => setSidebarOpen(false)}
+        />
+      )}
+
       {/* Sidebar */}
       {(!isMobile || sidebarOpen) && (
-        <div className={`${isMobile ? 'fixed inset-0 z-50' : 'relative'} w-80 border-r border-border bg-card`}>
-          <Sidebar 
+        <div className={`${
+          isMobile
+            ? 'fixed inset-y-0 left-0 z-50 w-80 transform transition-transform duration-300 ease-in-out'
+            : 'relative w-80 flex-shrink-0'
+        } border-r border-border bg-card`}>
+          <Sidebar
             onClose={() => setSidebarOpen(false)}
             searchQuery={searchQuery}
             onSearchChange={setSearchQuery}
@@ -41,80 +78,89 @@ export function Dashboard() {
       )}
 
       {/* Main Content */}
-      <div className="flex-1 flex flex-col">
+      <div className="flex-1 flex flex-col min-w-0">
         {/* Header */}
-        <header className="border-b border-border bg-card/50 backdrop-blur-sm px-6 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-4">
+        <header className="flex-shrink-0 border-b border-border bg-card/50 backdrop-blur-sm px-4 sm:px-6 py-3 sm:py-4">
+          <div className="flex items-center justify-between gap-4">
+            <div className="flex items-center space-x-3 flex-1 min-w-0">
               {isMobile && (
                 <Button
                   variant="ghost"
                   size="sm"
                   onClick={() => setSidebarOpen(true)}
+                  aria-label="Open sidebar"
                 >
                   <SidebarIcon className="h-5 w-5" />
                 </Button>
               )}
-              
+
               {!isMobile && (
-                <SearchBar 
-                  value={searchQuery}
-                  onChange={setSearchQuery}
-                  placeholder="Search your notes..."
-                />
+                <div className="flex-1 max-w-md">
+                  <SearchBar
+                    value={searchQuery}
+                    onChange={setSearchQuery}
+                    placeholder="Search your notes..."
+                  />
+                </div>
+              )}
+
+              {isMobile && (
+                <h1 className="text-lg font-semibold text-foreground truncate">
+                  AI Notes
+                </h1>
               )}
             </div>
 
-            <div className="flex items-center space-x-3">
+            <div className="flex items-center space-x-2 flex-shrink-0">
               <Button
                 onClick={handleCreateNote}
-                className="flex items-center space-x-2"
+                size={isMobile ? "sm" : "default"}
+                className="gap-2"
               >
                 <Plus className="h-4 w-4" />
-                <span>New Note</span>
+                <span className="hidden sm:inline">New Note</span>
               </Button>
             </div>
           </div>
         </header>
 
         {/* Content Area */}
-        <div className="flex-1 flex">
+        <div className="flex-1 flex overflow-hidden">
           {/* Notes List */}
-          <div className={`${selectedNoteId ? 'hidden lg:block' : 'flex-1'} lg:w-80 border-r border-border bg-background`}>
-            <NotesList 
-              searchQuery={searchQuery}
-              selectedNoteId={selectedNoteId}
-              onSelectNote={setSelectedNoteId}
-            />
+          <div className={`${
+            selectedNoteId && isMobile
+              ? 'hidden'
+              : selectedNoteId && !isMobile
+                ? 'w-80 flex-shrink-0'
+                : 'flex-1'
+          } ${!isMobile ? 'border-r border-border' : ''} bg-background overflow-hidden`}>
+            <div className="h-full overflow-y-auto">
+              <NotesList
+                searchQuery={searchQuery}
+                selectedNoteId={selectedNoteId}
+                onSelectNote={setSelectedNoteId}
+              />
+            </div>
           </div>
 
           {/* Note Editor */}
           {selectedNoteId && (
-            <div className="flex-1">
-              <NoteEditor 
+            <div className={`${isMobile ? 'flex-1' : 'flex-1 min-w-0'} overflow-hidden`}>
+              <NoteEditor
                 noteId={selectedNoteId}
                 onClose={() => setSelectedNoteId(null)}
               />
             </div>
           )}
 
-          {/* Empty State */}
-          {!selectedNoteId && (
-            <div className="hidden lg:flex flex-1 items-center justify-center">
-              <div className="text-center space-y-4 max-w-md">
-                <div className="w-24 h-24 mx-auto bg-secondary rounded-full flex items-center justify-center">
-                  <Plus className="h-12 w-12 text-muted-foreground" />
-                </div>
-                <h3 className="text-xl font-semibold text-foreground">
-                  Start writing your first note
-                </h3>
-                <p className="text-muted-foreground">
-                  Create a new note to begin capturing your thoughts and ideas. Our AI will help organize and make them searchable.
-                </p>
-                <Button onClick={handleCreateNote} className="mt-4">
-                  Create your first note
-                </Button>
-              </div>
+          {/* Empty State - Desktop Only */}
+          {!selectedNoteId && !isMobile && (
+            <div className="flex-1 flex items-center justify-center p-8">
+              <EmptyState
+                type={notes.length === 0 ? 'notes' : 'search'}
+                onAction={handleCreateNote}
+                actionLabel="Create Note"
+              />
             </div>
           )}
         </div>
@@ -122,6 +168,22 @@ export function Dashboard() {
 
       {/* AI Assistant Toggle */}
       <AIAssistantToggle selectedNoteId={selectedNoteId} />
+
+      {/* Bulk Actions Bar */}
+      <BulkActionsBar
+        selectedCount={selectedNoteIds.length}
+        selectedNoteIds={selectedNoteIds}
+        onDelete={handleBulkDelete}
+        onExport={handleBulkExport}
+        onShare={handleBulkShare}
+        onClear={() => setSelectedNoteIds([])}
+      />
+
+      {/* PWA Install Prompt */}
+      <InstallPWAButton />
+
+      {/* Development: Sync Status Indicator */}
+      {import.meta.env.DEV && <SyncStatusIndicator />}
     </div>
   )
 }

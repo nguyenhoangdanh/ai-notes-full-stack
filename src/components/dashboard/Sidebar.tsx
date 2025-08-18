@@ -1,18 +1,21 @@
 import { useAuth } from '../../hooks/use-auth'
 import { useNotes } from '../../contexts/NotesContext'
 import { SearchBar } from './SearchBar'
+import { UserMenu } from '../header/UserMenu'
+import { ThemeToggle } from '../common/ThemeToggle'
 import { Button } from '../ui/button'
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar'
 import { Badge } from '../ui/badge'
 import { Separator } from '../ui/separator'
-import { 
-  Brain, 
-  LogOut, 
-  Tag, 
+import {
+  Brain,
+  LogOut,
+  Tag,
   Calendar,
   FolderOpen,
   Sparkle,
-  X
+  X,
+  Settings
 } from 'lucide-react'
 import { useIsMobile } from '../../hooks/use-mobile'
 
@@ -43,17 +46,20 @@ export function Sidebar({ onClose, searchQuery, onSearchChange }: SidebarProps) 
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center space-x-2">
             <div className="relative">
-              <Brain className="h-6 w-6 text-primary" weight="duotone" />
-              <Sparkle className="h-3 w-3 text-accent absolute -top-0.5 -right-0.5" weight="fill" />
+              <Brain className="h-6 w-6 text-primary" />
+              <Sparkle className="h-3 w-3 text-accent absolute -top-0.5 -right-0.5" />
             </div>
             <span className="font-semibold text-foreground">AI Notes</span>
           </div>
-          
-          {isMobile && onClose && (
-            <Button variant="ghost" size="sm" onClick={onClose}>
-              <X className="h-4 w-4" />
-            </Button>
-          )}
+
+          <div className="flex items-center gap-1">
+            <ThemeToggle />
+            {isMobile && onClose && (
+              <Button variant="ghost" size="sm" onClick={onClose}>
+                <X className="h-4 w-4" />
+              </Button>
+            )}
+          </div>
         </div>
 
         {isMobile && (
@@ -66,21 +72,24 @@ export function Sidebar({ onClose, searchQuery, onSearchChange }: SidebarProps) 
         )}
 
         {/* User Profile */}
-        <div className="flex items-center space-x-3">
-          <Avatar className="h-10 w-10">
-            <AvatarImage src={user?.image} alt={user?.name} />
-            <AvatarFallback>
-              {user?.name?.split(' ').map(n => n[0]).join('').toUpperCase()}
-            </AvatarFallback>
-          </Avatar>
-          <div className="flex-1 min-w-0">
-            <p className="text-sm font-medium text-foreground truncate">
-              {user?.name}
-            </p>
-            <p className="text-xs text-muted-foreground truncate">
-              {user?.email}
-            </p>
+        <div className="flex items-center justify-between">
+          <div className="flex items-center space-x-3 flex-1 min-w-0">
+            <Avatar className="h-10 w-10">
+              <AvatarImage src={user?.image} alt={user?.name} />
+              <AvatarFallback>
+                {user?.name?.split(' ').map(n => n[0]).join('').toUpperCase()}
+              </AvatarFallback>
+            </Avatar>
+            <div className="flex-1 min-w-0">
+              <p className="text-sm font-medium text-foreground truncate">
+                {user?.name}
+              </p>
+              <p className="text-xs text-muted-foreground truncate">
+                {user?.email}
+              </p>
+            </div>
           </div>
+          <UserMenu />
         </div>
       </div>
 
@@ -181,14 +190,11 @@ export function Sidebar({ onClose, searchQuery, onSearchChange }: SidebarProps) 
 
       {/* Footer */}
       <div className="p-6 border-t border-border">
-        <Button
-          variant="ghost"
-          onClick={logout}
-          className="w-full justify-start text-destructive hover:text-destructive hover:bg-destructive/10"
-        >
-          <LogOut className="h-4 w-4 mr-2" />
-          Sign out
-        </Button>
+        <div className="text-center">
+          <p className="text-xs text-muted-foreground">
+            AI Notes v1.0
+          </p>
+        </div>
       </div>
     </div>
   )
