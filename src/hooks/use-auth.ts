@@ -2,10 +2,11 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { toast } from 'sonner'
 import { authService } from '../services'
 import { queryKeys } from './query-keys'
+import { setAuthToken, clearAuthToken } from '../lib/api-config'
 import type {
   RegisterDto,
   LoginDto,
-  AuthResponseDto as AuthResponse,
+  AuthResponseDto,
   User,
   UserSettings,
   Usage,
@@ -24,7 +25,7 @@ export function useAuthProfile() {
 export function useAuthVerify() {
   return useQuery({
     queryKey: queryKeys.auth.verify(),
-    queryFn: () => authService.verify(),
+    queryFn: authService.verify,
     staleTime: 1 * 60 * 1000, // 1 minute
     retry: false,
   })
@@ -33,7 +34,7 @@ export function useAuthVerify() {
 export function useUserSettings() {
   return useQuery({
     queryKey: queryKeys.auth.settings(),
-    queryFn: () => authService.getSettings(),
+    queryFn: authService.getSettings,
     staleTime: 10 * 60 * 1000, // 10 minutes
   })
 }
@@ -129,4 +130,84 @@ export function useResetSettings() {
       toast.error(message)
     },
   })
+}
+
+// Main useAuth hook that combines all auth functionality
+export function useAuth() {
+  const queryClient = useQueryClient()
+  
+  // Get current user from profile query
+  const profileQuery = useAuthProfile()
+  
+  // Login mutation
+  const loginMutation = useMutation({
+    mutationFn: (data: LoginDto) => authService.login(data),
+    onSuccess: (response: AuthResponseDto) => {
+      setAuthToken(response.access_token)
+      queryClient.setQueryData(queryKeys.auth.profile(), response.user)
+      toast.success('Logged in successfully!')
+    },
+    onError: (error: any) => {
+      const message = error?.response?.message || 'Login failed'
+      toast.error(message)
+    },
+  })
+
+  // Register mutation
+  const registerMutation = useMutation({
+    mutationFn: (data: RegisterDto) => authService.register(data),
+    onSuccess: (response: AuthResponseDto) => {
+      setAuthToken(response.access_token)
+      queryClient.setQueryData(queryKeys.auth.profile(), response.user)
+      toast.success('Account created successfully!')
+    },
+    onError: (error: any) => {
+      const message = error?.response?.message || 'Registration failed'
+      toast.error(message)
+    },
+  })
+
+  // Logout mutation
+  const logoutMutation = useMutation({
+    mutationFn: async () => {
+      clearAuthToken()
+      return Promise.resolve()
+    },
+    onSuccess: () => {
+      queryClient.clear()
+      toast.success('Logged out successfully')
+    },
+  })
+
+  // Verify token mutation
+  const verifyMutation = useMutation({
+    mutationFn: authService.verify,
+    onSuccess: (response) => {
+      if (response.valid) {
+        queryClient.setQueryData(queryKeys.auth.profile(), response.user)
+      } else {
+        clearAuthToken()
+        queryClient.clear()
+      }
+    },
+    onError: () => {
+      clearAuthToken()
+      queryClient.clear()
+    },
+  })
+
+  return {
+    // State
+    user: profileQuery.data || null,
+    isLoading: profileQuery.isLoading || verifyMutation.isPending,
+    isRegistering: registerMutation.isPending,
+    isLoggingIn: loginMutation.isPending,
+    
+    // Actions
+    login: loginMutation.mutate,
+    register: registerMutation.mutate,
+    logout: logoutMutation.mutate,
+    verifyToken: verifyMutation.mutate,
+    googleLogin: authService.googleLogin,
+  }
 }

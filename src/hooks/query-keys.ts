@@ -96,7 +96,8 @@ export const queryKeys = {
   productivity: {
     pomodoro: () => ['productivity', 'pomodoro'] as const,
     pomodoroSessions: () => ['productivity', 'pomodoro', 'sessions'] as const,
-    tasks: (filters?: any) => ['productivity', 'tasks', filters] as const,
+    tasks: () => ['productivity', 'tasks'] as const,
+    tasksWithFilters: (filters?: any) => ['productivity', 'tasks', filters] as const,
     task: (taskId: string) => ['productivity', 'task', taskId] as const,
     calendar: () => ['productivity', 'calendar'] as const,
     calendarEvents: (filters?: any) => ['productivity', 'calendar', 'events', filters] as const,

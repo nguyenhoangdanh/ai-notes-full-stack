@@ -8,8 +8,8 @@ export type { Note }
 interface NotesContextType {
   notes: Note[]
   isLoading: boolean
-  createNote: (note: { title: string; content: string; tags?: string[]; category?: string }) => Promise<Note>
-  updateNote: (id: string, updates: { title?: string; content?: string; tags?: string[]; category?: string }) => Promise<void>
+  createNote: (note: { title: string; content: string; tags?: string[] }) => Promise<Note>
+  updateNote: (id: string, updates: { title?: string; content?: string; tags?: string[] }) => Promise<void>
   deleteNote: (id: string) => Promise<void>
   searchNotes: (query: string) => Note[]
   getRelatedNotes: (noteId: string) => Note[]
