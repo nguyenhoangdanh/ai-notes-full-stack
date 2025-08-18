@@ -124,21 +124,12 @@ export function Dashboard() {
 
           {/* Empty State */}
           {!selectedNoteId && (
-            <div className="hidden lg:flex flex-1 items-center justify-center">
-              <div className="text-center space-y-4 max-w-md">
-                <div className="w-24 h-24 mx-auto bg-secondary rounded-full flex items-center justify-center">
-                  <Plus className="h-12 w-12 text-muted-foreground" />
-                </div>
-                <h3 className="text-xl font-semibold text-foreground">
-                  Start writing your first note
-                </h3>
-                <p className="text-muted-foreground">
-                  Create a new note to begin capturing your thoughts and ideas. Our AI will help organize and make them searchable.
-                </p>
-                <Button onClick={handleCreateNote} className="mt-4">
-                  Create your first note
-                </Button>
-              </div>
+            <div className="hidden lg:flex flex-1 items-center justify-center p-8">
+              <EmptyState
+                type={notes.length === 0 ? 'notes' : 'search'}
+                onAction={handleCreateNote}
+                actionLabel="Create Note"
+              />
             </div>
           )}
         </div>
