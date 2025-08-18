@@ -77,37 +77,47 @@ export function Dashboard() {
       )}
 
       {/* Main Content */}
-      <div className="flex-1 flex flex-col">
+      <div className="flex-1 flex flex-col min-w-0">
         {/* Header */}
-        <header className="border-b border-border bg-card/50 backdrop-blur-sm px-6 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-4">
+        <header className="flex-shrink-0 border-b border-border bg-card/50 backdrop-blur-sm px-4 sm:px-6 py-3 sm:py-4">
+          <div className="flex items-center justify-between gap-4">
+            <div className="flex items-center space-x-3 flex-1 min-w-0">
               {isMobile && (
                 <Button
                   variant="ghost"
                   size="sm"
                   onClick={() => setSidebarOpen(true)}
+                  aria-label="Open sidebar"
                 >
                   <SidebarIcon className="h-5 w-5" />
                 </Button>
               )}
-              
+
               {!isMobile && (
-                <SearchBar 
-                  value={searchQuery}
-                  onChange={setSearchQuery}
-                  placeholder="Search your notes..."
-                />
+                <div className="flex-1 max-w-md">
+                  <SearchBar
+                    value={searchQuery}
+                    onChange={setSearchQuery}
+                    placeholder="Search your notes..."
+                  />
+                </div>
+              )}
+
+              {isMobile && (
+                <h1 className="text-lg font-semibold text-foreground truncate">
+                  AI Notes
+                </h1>
               )}
             </div>
 
-            <div className="flex items-center space-x-3">
+            <div className="flex items-center space-x-2 flex-shrink-0">
               <Button
                 onClick={handleCreateNote}
-                className="flex items-center space-x-2"
+                size={isMobile ? "sm" : "default"}
+                className="gap-2"
               >
                 <Plus className="h-4 w-4" />
-                <span>New Note</span>
+                <span className="hidden sm:inline">New Note</span>
               </Button>
             </div>
           </div>
