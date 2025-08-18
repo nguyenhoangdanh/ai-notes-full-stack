@@ -164,10 +164,13 @@ export function NotesList({ searchQuery, selectedNoteId, onSelectNote }: NotesLi
                 </div>
 
                 <div className="flex items-center space-x-1 text-xs text-muted-foreground">
-                  <Clock className="h-3 w-3" />
-                  <span>
+                  <Clock className="h-3 w-3" aria-hidden="true" />
+                  <time
+                    dateTime={note.updatedAt}
+                    title={new Date(note.updatedAt).toLocaleString()}
+                  >
                     {formatDistanceToNow(new Date(note.updatedAt), { addSuffix: true })}
-                  </span>
+                  </time>
                 </div>
               </div>
 
