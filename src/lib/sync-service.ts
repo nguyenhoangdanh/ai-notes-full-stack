@@ -13,6 +13,7 @@ export class SyncService {
   private syncInProgress = false
   private syncListeners: Set<(status: SyncStatus) => void> = new Set()
   private retryTimeout?: number
+  private backendAvailable = false
 
   static getInstance(): SyncService {
     if (!SyncService.instance) {
