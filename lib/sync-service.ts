@@ -14,6 +14,7 @@ export class SyncService {
   private syncListeners: Set<(status: SyncStatus) => void> = new Set()
   private retryTimeout?: NodeJS.Timeout
   private backendAvailable = false
+  private initialized = false
 
   static getInstance(): SyncService {
     if (!SyncService.instance) {
@@ -23,6 +24,16 @@ export class SyncService {
   }
 
   constructor() {
+    // Only initialize on client side
+    if (typeof window !== 'undefined') {
+      this.initialize()
+    }
+  }
+
+  private initialize() {
+    if (this.initialized) return
+    this.initialized = true
+
     // Listen for online/offline events
     window.addEventListener('online', () => this.handleOnlineStatus(true))
     window.addEventListener('offline', () => this.handleOnlineStatus(false))

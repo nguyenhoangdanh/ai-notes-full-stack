@@ -7,12 +7,13 @@ import { apiClient } from './api-client';
 let isInitialized = false;
 
 export function initializeApiClient() {
-  if (isInitialized) {
+  if (isInitialized || typeof window === 'undefined') {
     return;
   }
 
   // Configure token getter - this will be called on each request
   apiClient.setTokenGetter(() => {
+    if (typeof window === 'undefined') return null;
     return localStorage.getItem('ai-notes-token');
   });
 
@@ -20,6 +21,8 @@ export function initializeApiClient() {
 }
 
 export function setAuthToken(token: string | null) {
+  if (typeof window === 'undefined') return;
+  
   if (token) {
     localStorage.setItem('ai-notes-token', token);
   } else {
@@ -28,9 +31,11 @@ export function setAuthToken(token: string | null) {
 }
 
 export function getAuthToken(): string | null {
+  if (typeof window === 'undefined') return null;
   return localStorage.getItem('ai-notes-token');
 }
 
 export function clearAuthToken() {
+  if (typeof window === 'undefined') return;
   localStorage.removeItem('ai-notes-token');
 }

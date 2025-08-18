@@ -54,6 +54,9 @@ function AuthProviderContent({ children }: { children: React.ReactNode }) {
 
   // Handle OAuth callback
   useEffect(() => {
+    // Only run on client side
+    if (typeof window === 'undefined') return
+
     const urlParams = new URLSearchParams(window.location.search)
     const token = urlParams.get('token')
     
