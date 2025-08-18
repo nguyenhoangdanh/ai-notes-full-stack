@@ -15,8 +15,9 @@ import { useIsMobile } from '../../hooks/use-mobile'
 
 export function Dashboard() {
   const { user } = useAuth()
-  const { createNote } = useNotes()
+  const { createNote, deleteNote, notes } = useNotes()
   const [selectedNoteId, setSelectedNoteId] = useState<string | null>(null)
+  const [selectedNoteIds, setSelectedNoteIds] = useState<string[]>([])
   const [searchQuery, setSearchQuery] = useState('')
   const [sidebarOpen, setSidebarOpen] = useState(true)
   const isMobile = useIsMobile()
