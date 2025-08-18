@@ -6,8 +6,6 @@ import sparkPlugin from "@github/spark/spark-vite-plugin";
 import createIconImportProxy from "@github/spark/vitePhosphorIconProxyPlugin";
 import { resolve } from 'path'
 
-const projectRoot = process.env.PROJECT_ROOT || import.meta.dirname
-
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [
@@ -19,7 +17,21 @@ export default defineConfig({
   ],
   resolve: {
     alias: {
-      '@': resolve(projectRoot, 'src')
+      '@': resolve(import.meta.dirname, 'src')
     }
   },
+  define: {
+    // Explicitly define process.env as an empty object for client-side compatibility
+    'process.env': JSON.stringify({}),
+    // Ensure global is defined for browser compatibility
+    'global': 'globalThis',
+  },
+  server: {
+    port: 5173,
+    host: true
+  },
+  build: {
+    target: 'esnext',
+    sourcemap: true
+  }
 });
