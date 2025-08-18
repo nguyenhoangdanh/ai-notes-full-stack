@@ -114,7 +114,7 @@ export function NotesList({ searchQuery, selectedNoteId, onSelectNote }: NotesLi
             aria-label={`Note: ${note.title || 'Untitled'}`}
             aria-describedby={`note-content-${note.id} note-metadata-${note.id}`}
           >
-            <CardContent className="p-4">
+            <CardContent className="p-4 group">
               {/* Note Header */}
               <div className="flex items-start justify-between mb-2">
                 <h3 className="font-medium text-foreground line-clamp-1 flex-1">
@@ -124,20 +124,27 @@ export function NotesList({ searchQuery, selectedNoteId, onSelectNote }: NotesLi
                   variant="ghost"
                   size="sm"
                   onClick={(e) => handleDeleteNote(e, note.id)}
-                  className="opacity-0 group-hover:opacity-100 h-6 w-6 p-0"
+                  className="opacity-0 group-hover:opacity-100 focus:opacity-100 h-6 w-6 p-0"
+                  aria-label={`More options for ${note.title || 'untitled note'}`}
                 >
                   <MoreHorizontal className="h-3 w-3" />
                 </Button>
               </div>
 
               {/* Note Content Preview */}
-              <p className="text-sm text-muted-foreground line-clamp-2 mb-3">
+              <p
+                className="text-sm text-muted-foreground line-clamp-2 mb-3"
+                id={`note-content-${note.id}`}
+              >
                 {note.content || 'No content'}
               </p>
 
               {/* Note Metadata */}
-              <div className="flex items-center justify-between">
-                <div className="flex items-center space-x-2">
+              <div
+                className="flex items-center justify-between"
+                id={`note-metadata-${note.id}`}
+              >
+                <div className="flex items-center space-x-2" aria-label="Note tags">
                   {note.tags.length > 0 && (
                     <Badge 
                       variant="secondary"
