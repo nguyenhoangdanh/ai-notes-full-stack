@@ -31,6 +31,26 @@ export function Dashboard() {
     setSelectedNoteId(newNote.id)
   }
 
+  const handleBulkDelete = async (noteIds: string[]) => {
+    for (const id of noteIds) {
+      await deleteNote(id)
+    }
+    setSelectedNoteIds([])
+    if (selectedNoteId && noteIds.includes(selectedNoteId)) {
+      setSelectedNoteId(null)
+    }
+  }
+
+  const handleBulkExport = async (noteIds: string[]) => {
+    // This would integrate with export hooks when available
+    console.log('Exporting notes:', noteIds)
+  }
+
+  const handleBulkShare = async (noteIds: string[]) => {
+    // This would integrate with sharing hooks when available
+    console.log('Sharing notes:', noteIds)
+  }
+
   return (
     <div className="flex h-screen bg-background">
       {/* Sidebar */}
