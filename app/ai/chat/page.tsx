@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useRef, useEffect } from 'react'
-import { PaperAirplaneIcon, SparklesIcon } from '@heroicons/react/24/outline'
+import { Send, Sparkles } from 'lucide-react'
 import { Button } from '../../../components/ui/button'
 import { Input } from '../../../components/ui/input'
 import { Card, CardContent, CardHeader, CardTitle } from '../../../components/ui/card'
@@ -102,7 +102,7 @@ export default function AIChatPage() {
       <div className="flex flex-col h-[calc(100vh-8rem)]">
         {/* Header */}
         <div className="flex items-center space-x-3 mb-6">
-          <SparklesIcon className="h-8 w-8 text-primary" />
+          <Sparkles className="h-8 w-8 text-primary" />
           <div>
             <h1 className="text-2xl font-bold">AI Chat</h1>
             <p className="text-muted-foreground">Ask questions about your notes or get writing help</p>
@@ -193,7 +193,7 @@ export default function AIChatPage() {
                 disabled={!input.trim() || isLoading}
                 size="sm"
               >
-                <PaperAirplaneIcon className="h-4 w-4" />
+                <Send className="h-4 w-4" />
               </Button>
             </div>
             <div className="text-xs text-muted-foreground mt-2">

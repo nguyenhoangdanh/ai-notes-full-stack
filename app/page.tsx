@@ -6,7 +6,7 @@ import { useAuth } from '../contexts/AuthContext'
 import { AuthScreen } from '../components/auth/AuthScreen'
 import { toast } from 'sonner'
 import { initializeApiClient } from '../lib/api-config'
-import { SparklesIcon, ArrowRightIcon } from '@heroicons/react/24/outline'
+import { Sparkles, ArrowRight } from 'lucide-react'
 import { Button } from '../components/ui/button'
 
 function LoadingScreen({ title, description, progress }: { 
@@ -31,7 +31,7 @@ function LoadingScreen({ title, description, progress }: {
             <div className="absolute inset-0 rounded-full border-4 border-transparent border-t-accent animate-spin"></div>
             <div className="absolute inset-2 rounded-full border-2 border-transparent border-t-accent-secondary/60 animate-spin animation-delay-300"></div>
             <div className="absolute inset-0 flex items-center justify-center">
-              <SparklesIcon className="w-8 h-8 text-accent animate-pulse" />
+              <Sparkles className="w-8 h-8 text-accent animate-pulse" />
             </div>
           </div>
         </div>

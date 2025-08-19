@@ -4,33 +4,31 @@ import { useState, useRef, useCallback, useMemo } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import {
-  BookOpenIcon,
-  ChatBubbleLeftIcon,
-  Cog6ToothIcon,
-  DocumentDuplicateIcon,
-  FolderIcon,
-  HomeIcon,
-  MagnifyingGlassIcon,
-  PlusIcon,
-  ClockIcon,
-  CalendarIcon,
-  CheckCircleIcon,
-  MicrophoneIcon,
-  MapPinIcon,
-  CloudArrowUpIcon,
-  UserGroupIcon,
-  DocumentTextIcon,
-  ChartBarIcon,
-  ArrowUpTrayIcon,
-  SparklesIcon,
-  ChevronRightIcon,
-  CommandLineIcon
-} from '@heroicons/react/24/outline'
+  Home,
+  MessageSquare,
+  Settings,
+  Copy,
+  Folder,
+  Search,
+  Plus,
+  Clock,
+  Calendar,
+  CheckCircle,
+  Mic,
+  MapPin,
+  FileText,
+  BarChart3,
+  Sparkles,
+  ChevronRight,
+  Terminal,
+  Users,
+  CloudUpload,
+  Upload
+} from 'lucide-react'
 import { cn } from '../../lib/utils'
 import { Button } from '../ui/button'
 import { Badge } from '../ui/badge'
 import { Separator } from '../ui/separator'
-
 interface NavigationItem {
   name: string
   href: string
@@ -40,100 +38,96 @@ interface NavigationItem {
   children?: NavigationItem[]
   shortcut?: string
 }
-
 const navigation: NavigationItem[] = [
   {
     name: 'Dashboard',
     href: '/dashboard',
-    icon: HomeIcon,
+    icon: Home,
     description: 'Overview and insights',
     shortcut: '⌘1'
   },
   {
     name: 'Notes',
     href: '/notes',
-    icon: DocumentTextIcon,
+    icon: FileText,
     description: 'All your notes',
     children: [
-      { name: 'All Notes', href: '/notes', icon: DocumentTextIcon },
-      { name: 'Create Note', href: '/notes/create', icon: PlusIcon },
+      { name: 'All Notes', href: '/notes', icon: FileText },
+      { name: 'Create Note', href: '/notes/create', icon: Plus },
     ]
   },
   {
     name: 'Workspaces',
     href: '/workspaces',
-    icon: FolderIcon,
+    icon: Folder,
     description: 'Organize projects',
     children: [
-      { name: 'All Workspaces', href: '/workspaces', icon: FolderIcon },
-      { name: 'Create Workspace', href: '/workspaces/create', icon: PlusIcon },
+      { name: 'All Workspaces', href: '/workspaces', icon: Folder },
+      { name: 'Create Workspace', href: '/workspaces/create', icon: Plus },
     ]
   },
   {
     name: 'AI Assistant',
     href: '/ai',
-    icon: SparklesIcon,
+    icon: Sparkles,
     description: 'AI-powered features',
     badge: 'New',
     children: [
-      { name: 'AI Chat', href: '/ai/chat', icon: ChatBubbleLeftIcon },
+      { name: 'AI Chat', href: '/ai/chat', icon: MessageSquare },
     ]
   },
   {
     name: 'Productivity',
     href: '/productivity',
-    icon: CheckCircleIcon,
+    icon: CheckCircle,
     description: 'Tasks and time',
     children: [
-      { name: 'Tasks', href: '/productivity/tasks', icon: CheckCircleIcon },
-      { name: 'Pomodoro', href: '/productivity/pomodoro', icon: ClockIcon },
+      { name: 'Tasks', href: '/productivity/tasks', icon: CheckCircle },
+      { name: 'Pomodoro', href: '/productivity/pomodoro', icon: Clock },
     ]
   },
   {
     name: 'Voice Notes',
     href: '/voice-notes',
-    icon: MicrophoneIcon,
+    icon: Mic,
     description: 'Record and transcribe',
   },
   {
     name: 'Templates',
     href: '/templates',
-    icon: DocumentDuplicateIcon,
+    icon: Copy,
     description: 'Note templates',
   },
   {
     name: 'Search',
     href: '/search',
-    icon: MagnifyingGlassIcon,
+    icon: Search,
     description: 'Find anything',
     shortcut: '⌘K'
   },
   {
     name: 'Analytics',
     href: '/analytics',
-    icon: ChartBarIcon,
+    icon: BarChart3,
     description: 'Usage insights'
   },
   {
     name: 'Settings',
     href: '/settings',
-    icon: Cog6ToothIcon,
+    icon: Settings,
     description: 'Preferences',
     shortcut: '⌘,'
   },
 ]
-
 interface SidebarProps {
   collapsed: boolean
   onToggle: () => void
   isMobile?: boolean
 }
-
 export function Sidebar({ collapsed, onToggle, isMobile = false }: SidebarProps) {
   const pathname = usePathname()
   const [expandedItems, setExpandedItems] = useState<string[]>([])
   const sidebarRef = useRef<HTMLDivElement>(null)
-
   const toggleExpanded = useCallback((href: string) => {
     setExpandedItems(prev => 
       prev.includes(href) 
@@ -141,21 +135,17 @@ export function Sidebar({ collapsed, onToggle, isMobile = false }: SidebarProps)
         : [...prev, href]
     )
   }, [])
-
   const isActive = useCallback((href: string) => {
     return pathname === href || (href !== '/dashboard' && pathname.startsWith(href))
   }, [pathname])
-
   const isExpanded = useCallback((href: string) => {
     return expandedItems.includes(href)
   }, [expandedItems])
-
   // Superhuman navigation renderer
   const renderNavItem = useCallback((item: NavigationItem, isSubItem = false) => {
     const active = isActive(item.href)
     const expanded = isExpanded(item.href)
     const hasChildren = item.children && item.children.length > 0
-
     if (collapsed && !isSubItem) {
       return (
         <div key={item.href} className="relative group">
@@ -171,12 +161,10 @@ export function Sidebar({ collapsed, onToggle, isMobile = false }: SidebarProps)
             aria-label={item.name}
           >
             <item.icon className="h-4 w-4" aria-hidden="true" />
-            
             {/* Active pulse */}
             {active && (
               <div className="absolute -right-0.5 -top-0.5 w-2.5 h-2.5 bg-accent rounded-full animate-pulse" />
             )}
-            
             {/* New badge */}
             {item.badge && (
               <div className="absolute -top-1 -right-1 min-w-4 h-4 bg-gradient-to-r from-accent to-primary text-white text-xs rounded-full flex items-center justify-center px-1 shadow-md">
@@ -184,7 +172,6 @@ export function Sidebar({ collapsed, onToggle, isMobile = false }: SidebarProps)
               </div>
             )}
           </Link>
-          
           {/* Superhuman tooltip */}
           <div className="absolute left-full top-1/2 -translate-y-1/2 ml-3 px-3 py-2 bg-popover/95 text-popover-foreground text-sm rounded-xl opacity-0 group-hover:opacity-100 superhuman-transition pointer-events-none z-50 whitespace-nowrap shadow-xl backdrop-blur-sm border border-border/30">
             <div className="font-medium">{item.name}</div>
@@ -200,7 +187,6 @@ export function Sidebar({ collapsed, onToggle, isMobile = false }: SidebarProps)
         </div>
       )
     }
-
     return (
       <li key={item.href} className={cn(isSubItem && "ml-4")}>
         <div
@@ -240,7 +226,6 @@ export function Sidebar({ collapsed, onToggle, isMobile = false }: SidebarProps)
               )}
             </div>
           </Link>
-
           {/* Right side indicators */}
           <div className="flex items-center gap-2 flex-shrink-0">
             {item.badge && (
@@ -248,13 +233,11 @@ export function Sidebar({ collapsed, onToggle, isMobile = false }: SidebarProps)
                 {item.badge}
               </Badge>
             )}
-            
             {item.shortcut && !isSubItem && (
               <kbd className="hidden group-hover:flex px-1.5 py-0.5 bg-muted/30 rounded text-xs font-mono items-center superhuman-transition">
                 {item.shortcut}
               </kbd>
             )}
-
             {hasChildren && !isSubItem && (
               <Button
                 variant="ghost"
@@ -266,7 +249,7 @@ export function Sidebar({ collapsed, onToggle, isMobile = false }: SidebarProps)
                 }}
                 aria-label={`${expanded ? 'Collapse' : 'Expand'} ${item.name} submenu`}
               >
-                <ChevronRightIcon
+                <ChevronRight
                   className={cn(
                     "h-3 w-3 superhuman-transition",
                     expanded ? "rotate-90" : ""
@@ -275,13 +258,11 @@ export function Sidebar({ collapsed, onToggle, isMobile = false }: SidebarProps)
                 />
               </Button>
             )}
-
             {active && (
               <div className="w-1.5 h-1.5 bg-primary rounded-full animate-pulse" />
             )}
           </div>
         </div>
-
         {/* Sub-navigation */}
         {hasChildren && expanded && !collapsed && (
           <ul className="mt-1 space-y-0.5 border-l border-border/30 pl-3 ml-6">
@@ -309,7 +290,6 @@ export function Sidebar({ collapsed, onToggle, isMobile = false }: SidebarProps)
       </li>
     )
   }, [collapsed, isActive, isExpanded, toggleExpanded])
-
   return (
     <div
       ref={sidebarRef}
@@ -317,7 +297,6 @@ export function Sidebar({ collapsed, onToggle, isMobile = false }: SidebarProps)
     >
       {/* Superhuman gradient background */}
       <div className="absolute inset-0 bg-gradient-to-b from-background/95 via-background/98 to-background pointer-events-none" />
-      
       {/* Header */}
       <div className="relative z-10 p-4 border-b border-border/30">
         <div className="flex items-center justify-between">
@@ -328,7 +307,7 @@ export function Sidebar({ collapsed, onToggle, isMobile = false }: SidebarProps)
               aria-label="AI Notes - Go to dashboard"
             >
               <div className="relative p-2 bg-gradient-to-br from-primary/20 to-accent/10 rounded-xl group-hover:from-primary/30 group-hover:to-accent/20 superhuman-transition shadow-sm superhuman-glow">
-                <SparklesIcon className="h-5 w-5 text-primary" aria-hidden="true" />
+                <Sparkles className="h-5 w-5 text-primary" aria-hidden="true" />
               </div>
               <div className="flex flex-col">
                 <span className="font-bold text-lg leading-none bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
@@ -341,7 +320,6 @@ export function Sidebar({ collapsed, onToggle, isMobile = false }: SidebarProps)
             </Link>
           )}
         </div>
-
         {/* Quick actions for collapsed state */}
         {collapsed && (
           <div className="mt-4 space-y-2">
@@ -351,19 +329,17 @@ export function Sidebar({ collapsed, onToggle, isMobile = false }: SidebarProps)
               className="w-full h-8 rounded-full superhuman-transition superhuman-hover hover:bg-primary/10"
               aria-label="Create new note"
             >
-              <PlusIcon className="h-4 w-4" />
+              <Plus className="h-4 w-4" />
             </Button>
           </div>
         )}
       </div>
-
       {/* Navigation */}
       <nav className="relative z-10 flex-1 overflow-y-auto p-4 superhuman-scrollbar" role="navigation" aria-label="Main navigation">
         <ul className="space-y-1">
           {navigation.map((item) => renderNavItem(item))}
         </ul>
       </nav>
-
       {/* Footer */}
       {!collapsed && (
         <div className="relative z-10 p-4 border-t border-border/30 bg-gradient-to-r from-primary/5 via-transparent to-accent/5">
@@ -378,10 +354,9 @@ export function Sidebar({ collapsed, onToggle, isMobile = false }: SidebarProps)
               Beta
             </Badge>
           </div>
-          
           {/* Keyboard hint */}
           <div className="mt-2 text-xs text-muted-foreground/50 flex items-center gap-1">
-            <CommandLineIcon className="h-3 w-3" />
+            <Terminal className="h-3 w-3" />
             <span>Press ⌘\ to toggle</span>
           </div>
         </div>

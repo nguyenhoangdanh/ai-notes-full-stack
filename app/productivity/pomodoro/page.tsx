@@ -1,7 +1,8 @@
 'use client'
+import { Play, Pause, Square } from 'lucide-react'
 
 import { useState, useEffect } from 'react'
-import { PlayIcon, PauseIcon, StopIcon } from '@heroicons/react/24/outline'
+
 import { Card, CardContent, CardHeader, CardTitle } from '../../../components/ui/card'
 import { Button } from '../../../components/ui/button'
 import { Progress } from '../../../components/ui/progress'
@@ -78,17 +79,17 @@ export default function PomodoroPage() {
             <div className="flex justify-center space-x-2">
               {!isRunning ? (
                 <Button onClick={handleStart} size="lg">
-                  <PlayIcon className="h-5 w-5 mr-2" />
+                  <Play className="h-5 w-5 mr-2" />
                   Start
                 </Button>
               ) : (
                 <Button onClick={handlePause} size="lg" variant="outline">
-                  <PauseIcon className="h-5 w-5 mr-2" />
+                  <Pause className="h-5 w-5 mr-2" />
                   Pause
                 </Button>
               )}
               <Button onClick={handleReset} size="lg" variant="outline">
-                <StopIcon className="h-5 w-5 mr-2" />
+                <Square className="h-5 w-5 mr-2" />
                 Reset
               </Button>
             </div>

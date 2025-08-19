@@ -1,7 +1,7 @@
 'use client'
 
+import { Bell } from "lucide-react"
 import { useState } from 'react'
-import { BellIcon } from '@heroicons/react/24/outline'
 import { Button } from '../ui/button'
 import { Badge } from '../ui/badge'
 import {
@@ -11,35 +11,29 @@ import {
 } from '../ui/popover'
 import { ScrollArea } from '../ui/scroll-area'
 import { useNotifications, useMarkNotificationAsRead, useMarkAllNotificationsAsRead } from '../../hooks/use-features'
-
 export function NotificationBell() {
   const [open, setOpen] = useState(false)
   const { data: notifications = [] } = useNotifications()
   const markAsRead = useMarkNotificationAsRead()
   const markAllAsRead = useMarkAllNotificationsAsRead()
-
   const unreadCount = notifications.filter(n => !n.isRead).length
-
   const handleMarkAsRead = (id: string) => {
     markAsRead.mutate(id)
   }
-
   const formatTimeAgo = (date: string) => {
     const now = new Date()
     const notificationDate = new Date(date)
     const diffInMinutes = Math.floor((now.getTime() - notificationDate.getTime()) / (1000 * 60))
-    
     if (diffInMinutes < 1) return 'Just now'
     if (diffInMinutes < 60) return `${diffInMinutes}m ago`
     if (diffInMinutes < 1440) return `${Math.floor(diffInMinutes / 60)}h ago`
     return `${Math.floor(diffInMinutes / 1440)}d ago`
   }
-
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
         <Button variant="ghost" size="sm" className="relative h-8 w-8 p-0">
-          <BellIcon className="h-4 w-4" />
+          <Bell className="h-4 w-4" />
           {unreadCount > 0 && (
             <Badge 
               variant="destructive" 
@@ -65,11 +59,10 @@ export function NotificationBell() {
             </Button>
           )}
         </div>
-        
         <ScrollArea className="h-[300px]">
           {notifications.length === 0 ? (
             <div className="text-center py-8 text-muted-foreground">
-              <BellIcon className="h-8 w-8 mx-auto mb-2 opacity-50" />
+              <Bell className="h-8 w-8 mx-auto mb-2 opacity-50" />
               <p>No notifications</p>
             </div>
           ) : (

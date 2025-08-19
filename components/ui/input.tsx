@@ -1,7 +1,6 @@
+import { Plus, BookOpen, Folder, Sparkles, ArrowRight, CheckCircle, Bell, Eye, EyeOff } from "lucide-react"
 import { ComponentProps, forwardRef, useState } from "react"
 import { cn } from "../../lib/utils"
-import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/outline"
-
 interface InputProps extends ComponentProps<"input"> {
   error?: boolean
   success?: boolean
@@ -11,7 +10,6 @@ interface InputProps extends ComponentProps<"input"> {
   clearable?: boolean
   onClear?: () => void
 }
-
 const Input = forwardRef<HTMLInputElement, InputProps>(
   ({ 
     className, 
@@ -28,16 +26,13 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
   }, ref) => {
     const [showPassword, setShowPassword] = useState(false)
     const [isFocused, setIsFocused] = useState(false)
-
     const isPassword = type === "password"
     const inputType = isPassword ? (showPassword ? "text" : "password") : type
-
     const handleClear = () => {
       if (onClear) {
         onClear()
       }
     }
-
     return (
       <div className="w-full">
         <div className="relative group">
@@ -49,7 +44,6 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
               </span>
             </div>
           )}
-
           <input
             type={inputType}
             ref={ref}
@@ -60,44 +54,36 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
               "flex h-12 w-full min-w-0 rounded-full border bg-background/50 text-sm superhuman-transition outline-none relative z-0",
               "placeholder:text-muted-foreground/50 selection:bg-primary/20 selection:text-primary",
               "backdrop-blur-sm",
-              
               // Padding adjustments for icons
               leftIcon ? "pl-12" : "pl-6",
               rightIcon || clearable || isPassword ? "pr-12" : "pr-6",
               "py-3",
-
               // File input styles
               "file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground",
               "file:mr-4 file:py-1.5 file:px-4 file:rounded-full file:bg-muted/30",
               "hover:file:bg-muted/50 file:superhuman-transition",
-
               // Normal state - Superhuman glass effect
               "border-border/30 shadow-sm superhuman-glass",
               "hover:border-border/50 hover:shadow-md hover:bg-background/70",
-
               // Focus state - enhanced Superhuman glow
               "focus:border-primary/50 focus:ring-4 focus:ring-primary/10",
               "focus:bg-background/80 focus:shadow-lg focus:backdrop-blur-md",
               "focus:superhuman-glow",
-
               // Error state
               error && [
                 "border-red-400/60 bg-red-50/20 dark:bg-red-950/10",
                 "focus:border-red-500 focus:ring-red-500/10",
                 "shadow-sm shadow-red-500/10",
               ],
-
               // Success state
               success && [
                 "border-emerald-400/60 bg-emerald-50/20 dark:bg-emerald-950/10",
                 "focus:border-emerald-500 focus:ring-emerald-500/10",
                 "shadow-sm shadow-emerald-500/10",
               ],
-
               // Disabled state
               "disabled:cursor-not-allowed disabled:opacity-50 disabled:bg-muted/20",
               "disabled:border-border/20 disabled:shadow-none",
-
               className
             )}
             aria-invalid={error}
@@ -112,7 +98,6 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
             }}
             {...props}
           />
-
           {/* Right side icons/actions */}
           <div className="absolute right-4 top-1/2 -translate-y-1/2 z-10 flex items-center gap-1">
             {/* Clear button */}
@@ -128,7 +113,6 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
                 </svg>
               </button>
             )}
-
             {/* Password toggle */}
             {isPassword && (
               <button
@@ -138,13 +122,12 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
                 aria-label={showPassword ? "Hide password" : "Show password"}
               >
                 {showPassword ? (
-                  <EyeSlashIcon className="size-4" />
+                  <EyeOff className="size-4" />
                 ) : (
-                  <EyeIcon className="size-4" />
+                  <Eye className="size-4" />
                 )}
               </button>
             )}
-
             {/* Custom right icon */}
             {rightIcon && !isPassword && (
               <div className="text-muted-foreground group-focus-within:text-primary superhuman-transition">
@@ -154,14 +137,12 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
               </div>
             )}
           </div>
-
           {/* Enhanced focus ring animation */}
           <div className={cn(
             "absolute inset-0 rounded-full border-2 border-primary/30 opacity-0 scale-95 superhuman-transition pointer-events-none",
             isFocused && "opacity-100 scale-100"
           )} />
         </div>
-
         {/* Helper text */}
         {helperText && (
           <p
@@ -180,9 +161,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
     )
   }
 )
-
 Input.displayName = "Input"
-
 // Enhanced Textarea with Superhuman styling
 const Textarea = forwardRef<
   HTMLTextAreaElement,
@@ -193,7 +172,6 @@ const Textarea = forwardRef<
   }
 >(({ className, error, success, helperText, placeholder, ...props }, ref) => {
   const [isFocused, setIsFocused] = useState(false)
-
   return (
     <div className="w-full">
       <div className="relative group">
@@ -206,31 +184,25 @@ const Textarea = forwardRef<
             "flex min-h-[120px] w-full rounded-2xl border bg-background/50 px-6 py-4 text-sm superhuman-transition outline-none resize-y",
             "placeholder:text-muted-foreground/50 selection:bg-primary/20 selection:text-primary",
             "backdrop-blur-sm",
-
             // Normal state
             "border-border/30 shadow-sm superhuman-glass",
             "hover:border-border/50 hover:shadow-md hover:bg-background/70",
-
             // Focus state
             "focus:border-primary/50 focus:ring-4 focus:ring-primary/10",
             "focus:bg-background/80 focus:shadow-lg focus:backdrop-blur-md",
             "focus:superhuman-glow",
-
             // Error state
             error && [
               "border-red-400/60 bg-red-50/20 dark:bg-red-950/10",
               "focus:border-red-500 focus:ring-red-500/10",
             ],
-
             // Success state
             success && [
               "border-emerald-400/60 bg-emerald-50/20 dark:bg-emerald-950/10",
               "focus:border-emerald-500 focus:ring-emerald-500/10",
             ],
-
             // Disabled state
             "disabled:cursor-not-allowed disabled:opacity-50 disabled:bg-muted/20",
-
             className
           )}
           aria-invalid={error}
@@ -245,14 +217,12 @@ const Textarea = forwardRef<
           }}
           {...props}
         />
-
         {/* Focus ring animation */}
         <div className={cn(
           "absolute inset-0 rounded-2xl border-2 border-primary/30 opacity-0 scale-95 superhuman-transition pointer-events-none",
           isFocused && "opacity-100 scale-100"
         )} />
       </div>
-
       {/* Helper text */}
       {helperText && (
         <p
@@ -270,7 +240,5 @@ const Textarea = forwardRef<
     </div>
   )
 })
-
 Textarea.displayName = "Textarea"
-
 export { Input, Textarea, type InputProps }

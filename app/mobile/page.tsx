@@ -1,6 +1,6 @@
 'use client'
 
-import { MicrophoneIcon, MapPinIcon, CloudArrowUpIcon } from '@heroicons/react/24/outline'
+import { Mic, MapPin, CloudUpload } from 'lucide-react'
 import { Card, CardContent, CardHeader, CardTitle } from '../../components/ui/card'
 import { Button } from '../../components/ui/button'
 import Link from 'next/link'
@@ -10,21 +10,21 @@ export default function MobilePage() {
     {
       title: 'Voice Notes',
       description: 'Record voice notes and convert them to text automatically',
-      icon: MicrophoneIcon,
+      icon: Mic,
       href: '/mobile/voice-notes',
       color: 'bg-red-500'
     },
     {
       title: 'Location Notes',
       description: 'Add location context to your notes with GPS tagging',
-      icon: MapPinIcon,
+      icon: MapPin,
       href: '/mobile/location-notes',
       color: 'bg-green-500'
     },
     {
       title: 'Offline Sync',
       description: 'Work offline and sync when connection is restored',
-      icon: CloudArrowUpIcon,
+      icon: CloudUpload,
       href: '/mobile/sync',
       color: 'bg-blue-500'
     }
