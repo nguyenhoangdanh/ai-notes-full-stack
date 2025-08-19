@@ -26,10 +26,10 @@ export function Header({ onMenuClick, sidebarOpen, isMobile }: HeaderProps) {
   const [isScrolled, setIsScrolled] = useState(false)
   const headerRef = useRef<HTMLElement>(null)
 
-  // Handle scroll detection for dynamic styling
+  // Superhuman-style scroll detection
   useEffect(() => {
     const handleScroll = () => {
-      const scrolled = window.scrollY > 20
+      const scrolled = window.scrollY > 10
       setIsScrolled(scrolled)
     }
 
@@ -58,12 +58,12 @@ export function Header({ onMenuClick, sidebarOpen, isMobile }: HeaderProps) {
     <header
       ref={headerRef}
       className={cn(
-        "h-16 sticky top-0 z-40 border-b transition-all duration-300 ease-out",
-        // Dynamic background based on scroll
+        "h-14 sticky top-0 z-40 border-b superhuman-transition",
+        // Superhuman dynamic glass effect
         isScrolled 
-          ? "glass-effect-strong border-border/80 shadow-lg" 
-          : "glass-effect border-border/40 shadow-sm",
-        // Enhanced mobile styling
+          ? "bg-background/80 border-border/60 shadow-lg backdrop-blur-2xl" 
+          : "bg-background/60 border-border/30 shadow-sm backdrop-blur-xl",
+        "superhuman-glass",
         isMobile && "safe-area-inset-top"
       )}
       role="banner"
@@ -72,67 +72,55 @@ export function Header({ onMenuClick, sidebarOpen, isMobile }: HeaderProps) {
       <div className="flex items-center justify-between h-full px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
         {/* Left section - Menu and Search */}
         <div className="flex items-center gap-3 min-w-0 flex-1">
-          {/* Menu toggle button */}
+          {/* Superhuman menu toggle */}
           <Button
             variant="ghost"
-            size="sm"
+            size="icon-sm"
             onClick={onMenuClick}
             className={cn(
-              "h-10 w-10 p-0 rounded-xl transition-all duration-200 group",
-              "hover:bg-accent/80 hover:scale-105 active:scale-95",
-              "focus-visible:ring-2 focus-visible:ring-accent/30",
-              "shadow-sm hover:shadow-md"
+              "rounded-full superhuman-transition superhuman-hover",
+              "hover:bg-primary/10 hover:text-primary active:scale-95",
+              "focus-visible:ring-2 focus-visible:ring-primary/30"
             )}
             aria-label={sidebarOpen ? "Close sidebar" : "Open sidebar"}
             aria-expanded={sidebarOpen}
             aria-controls="app-sidebar"
           >
-            <div className="relative">
-              {isMobile && sidebarOpen ? (
-                <XMarkIcon 
-                  className="h-5 w-5 transition-transform duration-200 group-hover:rotate-90" 
-                  aria-hidden="true" 
-                />
-              ) : (
-                <Bars3Icon 
-                  className="h-5 w-5 transition-transform duration-200 group-hover:scale-110" 
-                  aria-hidden="true" 
-                />
-              )}
-              
-              {/* Visual indicator for keyboard shortcut */}
-              <div className="absolute -bottom-1 -right-1 w-2 h-2 bg-accent/30 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-200" />
-            </div>
+            {isMobile && sidebarOpen ? (
+              <XMarkIcon className="h-4 w-4 superhuman-transition" aria-hidden="true" />
+            ) : (
+              <Bars3Icon className="h-4 w-4 superhuman-transition" aria-hidden="true" />
+            )}
           </Button>
 
-          {/* Search section */}
+          {/* Superhuman search */}
           <div className={cn(
-            "flex-1 max-w-md transition-all duration-300 ease-out",
+            "flex-1 max-w-md superhuman-transition",
             isSearchFocused && "max-w-lg"
           )}>
             <div className="relative">
               <GlobalSearch 
                 onFocusChange={setIsSearchFocused}
                 className={cn(
-                  "w-full transition-all duration-200",
-                  isSearchFocused && "ring-2 ring-accent/30"
+                  "w-full superhuman-transition",
+                  isSearchFocused && "ring-2 ring-primary/20"
                 )}
               />
               
-              {/* Search keyboard shortcut hint */}
+              {/* Superhuman keyboard shortcut hint */}
               {!isMobile && !isSearchFocused && (
-                <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-1 text-xs text-muted-foreground">
-                  <kbd className="px-1.5 py-0.5 bg-muted/50 rounded text-xs font-mono">
+                <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-1 text-xs text-muted-foreground/60">
+                  <kbd className="px-1.5 py-0.5 bg-muted/30 rounded-md text-xs font-mono border border-border/30">
                     {navigator.platform.includes('Mac') ? '⌘' : 'Ctrl'}
                   </kbd>
-                  <kbd className="px-1.5 py-0.5 bg-muted/50 rounded text-xs font-mono">K</kbd>
+                  <kbd className="px-1.5 py-0.5 bg-muted/30 rounded-md text-xs font-mono border border-border/30">K</kbd>
                 </div>
               )}
             </div>
           </div>
         </div>
 
-        {/* Right section - Actions and User Menu */}
+        {/* Right section - Superhuman actions */}
         <nav 
           className="flex items-center gap-1" 
           role="navigation" 
@@ -142,43 +130,19 @@ export function Header({ onMenuClick, sidebarOpen, isMobile }: HeaderProps) {
           {!isMobile && (
             <div className="flex items-center gap-1">
               {/* Theme toggle */}
-              <div className="relative group">
-                <ThemeToggle />
-                
-                {/* Enhanced tooltip on hover */}
-                <div className="absolute top-full left-1/2 -translate-x-1/2 mt-2 px-2 py-1 bg-popover text-popover-foreground text-xs rounded-md opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none z-50 whitespace-nowrap">
-                  Toggle theme
-                </div>
-              </div>
+              <ThemeToggle />
 
               {/* Notifications */}
-              <div className="relative group">
-                <NotificationBell />
-                
-                <div className="absolute top-full left-1/2 -translate-x-1/2 mt-2 px-2 py-1 bg-popover text-popover-foreground text-xs rounded-md opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none z-50 whitespace-nowrap">
-                  Notifications
-                </div>
-              </div>
+              <NotificationBell />
 
-              {/* Quick settings shortcut */}
+              {/* Quick settings */}
               <Button
                 variant="ghost"
-                size="sm"
-                className={cn(
-                  "h-10 w-10 p-0 rounded-xl transition-all duration-200 group",
-                  "hover:bg-accent/80 hover:scale-105 active:scale-95",
-                  "focus-visible:ring-2 focus-visible:ring-accent/30"
-                )}
+                size="icon-sm"
+                className="rounded-full superhuman-transition superhuman-hover hover:bg-primary/10 hover:text-primary"
                 aria-label="Quick settings"
               >
-                <Cog6ToothIcon 
-                  className="h-5 w-5 transition-transform duration-200 group-hover:rotate-45" 
-                  aria-hidden="true" 
-                />
-                
-                <div className="absolute top-full left-1/2 -translate-x-1/2 mt-2 px-2 py-1 bg-popover text-popover-foreground text-xs rounded-md opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none z-50 whitespace-nowrap">
-                  Settings
-                </div>
+                <Cog6ToothIcon className="h-4 w-4" aria-hidden="true" />
               </Button>
             </div>
           )}
@@ -188,43 +152,43 @@ export function Header({ onMenuClick, sidebarOpen, isMobile }: HeaderProps) {
             <div className="flex items-center gap-1">
               <Button
                 variant="ghost"
-                size="sm"
-                className="h-10 w-10 p-0 rounded-xl"
+                size="icon-sm"
+                className="rounded-full superhuman-transition superhuman-hover hover:bg-primary/10"
                 aria-label="Search"
               >
-                <MagnifyingGlassIcon className="h-5 w-5" aria-hidden="true" />
+                <MagnifyingGlassIcon className="h-4 w-4" aria-hidden="true" />
               </Button>
               
               <Button
                 variant="ghost"
-                size="sm"
-                className="h-10 w-10 p-0 rounded-xl relative"
+                size="icon-sm"
+                className="rounded-full superhuman-transition superhuman-hover hover:bg-primary/10 relative"
                 aria-label="Notifications"
               >
-                <BellIcon className="h-5 w-5" aria-hidden="true" />
-                {/* Notification badge */}
-                <div className="absolute -top-1 -right-1 w-3 h-3 bg-accent rounded-full border-2 border-background" />
+                <BellIcon className="h-4 w-4" aria-hidden="true" />
+                {/* Superhuman notification badge */}
+                <div className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-gradient-to-r from-primary to-accent rounded-full border border-background" />
               </Button>
             </div>
           )}
 
-          {/* Separator */}
-          <div className="w-px h-6 bg-border/60 mx-2" />
+          {/* Superhuman separator */}
+          <div className="w-px h-5 bg-border/40 mx-2" />
 
           {/* User menu */}
-          <div className="ml-2">
+          <div className="ml-1">
             <UserMenu />
           </div>
         </nav>
       </div>
 
-      {/* Progress bar for loading states */}
-      <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-accent/50 via-accent to-accent-secondary/50 scale-x-0 origin-left transition-transform duration-300 ease-out" 
+      {/* Superhuman progress indicator */}
+      <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-primary/50 via-primary to-accent/50 scale-x-0 origin-left superhuman-transition" 
            data-loading-bar />
 
       {/* Mobile search overlay */}
       {isMobile && isSearchFocused && (
-        <div className="absolute top-full left-0 right-0 bg-background/95 backdrop-blur-lg border-b border-border/60 p-4 z-50">
+        <div className="absolute top-full left-0 right-0 bg-background/95 backdrop-blur-xl border-b border-border/30 p-4 z-50 superhuman-glass">
           <GlobalSearch 
             onFocusChange={setIsSearchFocused}
             autoFocus

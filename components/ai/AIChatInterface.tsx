@@ -16,8 +16,9 @@ import {
   Wand2,
   FileText,
   X,
-  Sparkle,
-  RotateCcw
+  Sparkles,
+  RotateCcw,
+  ArrowUp
 } from 'lucide-react'
 import { useAI } from '../../contexts/AIContext'
 import { useAuth } from '../../hooks/use-auth'
@@ -47,7 +48,7 @@ const QUICK_PROMPTS = [
   { icon: Zap, text: "Summarize this note", prompt: "Please provide a concise summary of this note" },
   { icon: Wand2, text: "Improve writing", prompt: "Please help improve the writing style and clarity of this note" },
   { icon: FileText, text: "Create outline", prompt: "Create a structured outline based on this note's content" },
-  { icon: Sparkle, text: "Generate ideas", prompt: "Generate related ideas and concepts based on this note" }
+  { icon: Sparkles, text: "Generate ideas", prompt: "Generate related ideas and concepts based on this note" }
 ]
 
 export function AIChatInterface({ 
@@ -131,14 +132,14 @@ export function AIChatInterface({
       exit={{ opacity: 0, x: 300 }}
       transition={{ type: "spring", damping: 25, stiffness: 200 }}
       className={cn(
-        "flex flex-col h-full bg-card border-l border-border",
+        "flex flex-col h-full bg-background/95 border-l border-border/30 superhuman-glass backdrop-blur-2xl",
         className
       )}
     >
-      {/* Header */}
-      <div className="flex items-center justify-between p-4 border-b border-border bg-card/50 backdrop-blur-sm">
+      {/* Superhuman Header */}
+      <div className="flex items-center justify-between p-4 border-b border-border/30 bg-background/60 backdrop-blur-xl">
         <div className="flex items-center space-x-3">
-          <div className="w-8 h-8 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center">
+          <div className="w-8 h-8 rounded-full superhuman-gradient superhuman-glow flex items-center justify-center">
             <Bot className="h-4 w-4 text-primary-foreground" />
           </div>
           <div>
@@ -149,15 +150,18 @@ export function AIChatInterface({
               </p>
             )}
           </div>
+          <Badge variant="secondary" className="text-xs px-2 py-1 superhuman-gradient-subtle rounded-full">
+            Live
+          </Badge>
         </div>
         
         <div className="flex items-center space-x-2">
           {currentConversation && currentConversation.messages.length > 0 && (
             <Button
               variant="ghost"
-              size="sm"
+              size="icon-sm"
               onClick={clearConversation}
-              className="text-muted-foreground hover:text-foreground"
+              className="text-muted-foreground hover:text-foreground rounded-full superhuman-hover"
             >
               <RotateCcw className="h-4 w-4" />
             </Button>
@@ -165,9 +169,9 @@ export function AIChatInterface({
           {onClose && (
             <Button
               variant="ghost"
-              size="sm"
+              size="icon-sm"
               onClick={onClose}
-              className="text-muted-foreground hover:text-foreground"
+              className="text-muted-foreground hover:text-foreground rounded-full superhuman-hover"
             >
               <X className="h-4 w-4" />
             </Button>
@@ -176,20 +180,20 @@ export function AIChatInterface({
       </div>
 
       {/* Messages */}
-      <ScrollArea className="flex-1 p-4">
+      <ScrollArea className="flex-1 p-4 superhuman-scrollbar">
         <div className="space-y-4">
           {(!currentConversation || currentConversation.messages.length === 0) && (
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              className="text-center space-y-4 py-8"
+              className="text-center space-y-6 py-8"
             >
-              <div className="w-16 h-16 mx-auto rounded-full bg-gradient-to-br from-primary/10 to-accent/10 flex items-center justify-center">
+              <div className="w-16 h-16 mx-auto rounded-2xl superhuman-gradient-subtle superhuman-glow flex items-center justify-center">
                 <Bot className="h-8 w-8 text-primary" />
               </div>
               <div>
-                <h4 className="font-medium text-foreground mb-2">AI Assistant Ready</h4>
-                <p className="text-sm text-muted-foreground mb-4">
+                <h4 className="font-semibold text-foreground mb-2">AI Assistant Ready</h4>
+                <p className="text-sm text-muted-foreground mb-6 leading-relaxed">
                   {currentNote 
                     ? "Ask me anything about your current note or try a quick action below."
                     : "I'm here to help with your notes and productivity. What can I assist you with?"
@@ -197,9 +201,9 @@ export function AIChatInterface({
                 </p>
               </div>
               
-              {/* Quick Actions */}
+              {/* Superhuman Quick Actions */}
               {currentNote && (
-                <div className="space-y-2">
+                <div className="space-y-3">
                   <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
                     Quick Actions
                   </p>
@@ -211,9 +215,9 @@ export function AIChatInterface({
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: index * 0.1 }}
                         onClick={() => handleQuickPrompt(prompt.prompt)}
-                        className="p-3 text-left rounded-lg border border-border bg-background hover:bg-muted transition-colors group"
+                        className="p-3 text-left rounded-xl border border-border/30 bg-background/50 hover:bg-primary/5 superhuman-transition superhuman-hover group"
                       >
-                        <prompt.icon className="h-4 w-4 text-primary mb-2 group-hover:scale-110 transition-transform" />
+                        <prompt.icon className="h-4 w-4 text-primary mb-2 group-hover:scale-110 superhuman-transition" />
                         <p className="text-xs font-medium text-foreground">{prompt.text}</p>
                       </motion.button>
                     ))}
@@ -228,7 +232,7 @@ export function AIChatInterface({
               key={message.id || `message-${index}`}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: index * 0.05 }}
+              transition={{ delay: index * 0.05, duration: 0.15 }}
               className={cn(
                 "flex items-start space-x-3",
                 message.role === 'user' ? 'flex-row-reverse space-x-reverse' : ''
@@ -237,8 +241,8 @@ export function AIChatInterface({
               <div className={cn(
                 "w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0",
                 message.role === 'user' 
-                  ? 'bg-primary text-primary-foreground'
-                  : 'bg-gradient-to-br from-accent/20 to-primary/20 text-primary'
+                  ? 'bg-primary text-primary-foreground superhuman-glow'
+                  : 'superhuman-gradient-subtle text-primary'
               )}>
                 {message.role === 'user' ? (
                   <User className="h-4 w-4" />
@@ -251,13 +255,13 @@ export function AIChatInterface({
                 "flex-1 space-y-2",
                 message.role === 'user' ? 'text-right' : ''
               )}>
-                <Card className={cn(
-                  "p-3 max-w-[85%] inline-block",
+                <Card variant="glass" className={cn(
+                  "p-3 max-w-[85%] inline-block superhuman-transition",
                   message.role === 'user' 
-                    ? 'bg-primary text-primary-foreground ml-auto' 
-                    : 'bg-muted'
+                    ? 'bg-primary/10 text-foreground ml-auto border-primary/20' 
+                    : 'bg-background/50 border-border/30'
                 )}>
-                  <p className="text-sm whitespace-pre-wrap">{message.content}</p>
+                  <p className="text-sm whitespace-pre-wrap leading-relaxed">{message.content}</p>
                 </Card>
                 
                 <div className={cn(
@@ -273,7 +277,7 @@ export function AIChatInterface({
                   {message.noteContext && (
                     <>
                       <span>•</span>
-                      <Badge variant="outline" className="text-xs">
+                      <Badge variant="outline" className="text-xs rounded-full">
                         {message.noteContext.title}
                       </Badge>
                     </>
@@ -289,10 +293,10 @@ export function AIChatInterface({
               animate={{ opacity: 1, y: 0 }}
               className="flex items-start space-x-3"
             >
-              <div className="w-8 h-8 rounded-full bg-gradient-to-br from-accent/20 to-primary/20 text-primary flex items-center justify-center">
+              <div className="w-8 h-8 rounded-full superhuman-gradient-subtle text-primary flex items-center justify-center">
                 <Bot className="h-4 w-4" />
               </div>
-              <Card className="p-3 bg-muted">
+              <Card variant="glass" className="p-3 bg-background/50 border-border/30">
                 <div className="flex items-center space-x-2">
                   <div className="flex space-x-1">
                     <div className="w-2 h-2 bg-primary rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
@@ -309,8 +313,8 @@ export function AIChatInterface({
         </div>
       </ScrollArea>
 
-      {/* Input */}
-      <div className="p-4 border-t border-border bg-card/50 backdrop-blur-sm">
+      {/* Superhuman Input */}
+      <div className="p-4 border-t border-border/30 bg-background/60 backdrop-blur-xl">
         <div className="flex items-end space-x-2">
           <div className="flex-1 relative">
             <Input
@@ -326,10 +330,10 @@ export function AIChatInterface({
           <Button
             onClick={() => handleSendMessage(input)}
             disabled={!input.trim() || isLoading}
-            size="sm"
-            className="px-3"
+            size="icon-sm"
+            className="rounded-full superhuman-gradient superhuman-glow"
           >
-            <Send className="h-4 w-4" />
+            <ArrowUp className="h-4 w-4" />
           </Button>
         </div>
         

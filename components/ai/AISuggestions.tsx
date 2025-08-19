@@ -10,10 +10,11 @@ import {
   FileText,
   Check,
   X,
-  Sparkle,
+  Sparkles,
   ArrowRight,
   Brain,
-  Tag as TagIcon
+  Tag as TagIcon,
+  RefreshCcw
 } from 'lucide-react'
 import { useGenerateSuggestion } from '../../hooks/use-ai'
 import { cn } from '../../lib/utils'
@@ -127,14 +128,14 @@ export function AISuggestions({
       case 'tags': return TagIcon
       case 'structure': return Brain
       case 'related': return Lightbulb
-      default: return Sparkle
+      default: return Sparkles
     }
   }
 
   const getSuggestionColor = (confidence: number) => {
-    if (confidence >= 0.8) return 'text-green-600 bg-green-50 border-green-200'
-    if (confidence >= 0.6) return 'text-blue-600 bg-blue-50 border-blue-200'
-    return 'text-amber-600 bg-amber-50 border-amber-200'
+    if (confidence >= 0.8) return 'text-emerald-600 bg-emerald-50 dark:bg-emerald-950/20 border-emerald-200 dark:border-emerald-800'
+    if (confidence >= 0.6) return 'text-primary bg-primary/10 border-primary/20'
+    return 'text-amber-600 bg-amber-50 dark:bg-amber-950/20 border-amber-200 dark:border-amber-800'
   }
 
   if (!isVisible || suggestions.length === 0) {
@@ -144,26 +145,26 @@ export function AISuggestions({
           variant="outline"
           onClick={generateSuggestions}
           disabled={isProcessing || !noteContent.trim()}
-          className="w-full text-left justify-start h-auto p-3 hover:bg-muted/50"
+          className="w-full text-left justify-start h-auto p-4 superhuman-glass border-border/30 superhuman-hover rounded-xl"
         >
           <div className="flex items-center space-x-3">
-            <div className="w-8 h-8 rounded-full bg-gradient-to-br from-primary/10 to-accent/10 flex items-center justify-center">
+            <div className="w-10 h-10 rounded-xl superhuman-gradient-subtle superhuman-glow flex items-center justify-center">
               {isProcessing ? (
                 <motion.div
                   animate={{ rotate: 360 }}
                   transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
                 >
-                  <Sparkle className="h-4 w-4 text-primary" />
+                  <Sparkles className="h-5 w-5 text-primary" />
                 </motion.div>
               ) : (
-                <Brain className="h-4 w-4 text-primary" />
+                <Brain className="h-5 w-5 text-primary" />
               )}
             </div>
-            <div className="flex-1 text-left">
+            <div className="flex-1 text-left space-y-1">
               <p className="font-medium text-sm">
                 {isProcessing ? 'Analyzing your note...' : 'Get AI suggestions'}
               </p>
-              <p className="text-xs text-muted-foreground">
+              <p className="text-xs text-muted-foreground leading-relaxed">
                 {isProcessing 
                   ? 'AI is reviewing your content for improvements'
                   : 'Let AI analyze your note and suggest improvements'
@@ -183,23 +184,26 @@ export function AISuggestions({
       exit={{ opacity: 0, y: -20 }}
       className={cn("space-y-4", className)}
     >
-      <Card className="p-4 border-2 border-primary/20 bg-gradient-to-br from-primary/5 to-accent/5">
-        <div className="flex items-center justify-between mb-3">
-          <div className="flex items-center space-x-2">
-            <div className="w-6 h-6 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center">
-              <Sparkle className="h-3 w-3 text-primary-foreground" />
+      <Card variant="glass" className="p-4 border border-primary/20 superhuman-gradient-subtle superhuman-glow">
+        <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center space-x-3">
+            <div className="w-8 h-8 rounded-full superhuman-gradient superhuman-glow flex items-center justify-center">
+              <Sparkles className="h-4 w-4 text-primary-foreground" />
             </div>
-            <h4 className="font-semibold text-sm">AI Suggestions</h4>
-            <Badge variant="secondary" className="text-xs">
+            <div>
+              <h4 className="font-semibold text-sm">AI Suggestions</h4>
+              <p className="text-xs text-muted-foreground">Smart improvements for your note</p>
+            </div>
+            <Badge variant="secondary" className="text-xs px-2 py-1 rounded-full superhuman-gradient-subtle">
               {suggestions.length}
             </Badge>
           </div>
           
           <Button
             variant="ghost"
-            size="sm"
+            size="icon-sm"
             onClick={dismissAllSuggestions}
-            className="text-muted-foreground hover:text-foreground p-1 h-auto"
+            className="text-muted-foreground hover:text-foreground rounded-full superhuman-hover"
           >
             <X className="h-4 w-4" />
           </Button>
@@ -216,45 +220,45 @@ export function AISuggestions({
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
                   exit={{ opacity: 0, x: 20 }}
-                  transition={{ delay: index * 0.1 }}
+                  transition={{ delay: index * 0.1, duration: 0.15 }}
                   className="group"
                 >
-                  <Card className="p-3 hover:shadow-sm transition-shadow border border-border/50">
+                  <Card variant="glass" className="p-3 superhuman-hover border-border/30 superhuman-transition">
                     <div className="flex items-start space-x-3">
                       <div className={cn(
-                        "w-8 h-8 rounded-full flex items-center justify-center border text-xs font-medium",
+                        "w-8 h-8 rounded-full flex items-center justify-center border text-xs font-medium superhuman-transition",
                         getSuggestionColor(suggestion.confidence)
                       )}>
                         <IconComponent className="h-4 w-4" />
                       </div>
                       
-                      <div className="flex-1 space-y-1">
+                      <div className="flex-1 space-y-2">
                         <div className="flex items-center space-x-2">
                           <h5 className="font-medium text-sm text-foreground">
                             {suggestion.title}
                           </h5>
-                          <Badge variant="outline" className="text-xs capitalize">
+                          <Badge variant="outline" className="text-xs capitalize rounded-full">
                             {suggestion.type}
                           </Badge>
                           <Badge 
                             variant="secondary" 
                             className={cn(
-                              "text-xs",
-                              suggestion.confidence >= 0.8 ? "bg-green-100 text-green-700" :
-                              suggestion.confidence >= 0.6 ? "bg-blue-100 text-blue-700" :
-                              "bg-amber-100 text-amber-700"
+                              "text-xs rounded-full",
+                              suggestion.confidence >= 0.8 ? "bg-emerald-100 text-emerald-700 dark:bg-emerald-950/20 dark:text-emerald-400" :
+                              suggestion.confidence >= 0.6 ? "bg-primary/10 text-primary" :
+                              "bg-amber-100 text-amber-700 dark:bg-amber-950/20 dark:text-amber-400"
                             )}
                           >
                             {Math.round(suggestion.confidence * 100)}%
                           </Badge>
                         </div>
                         
-                        <p className="text-xs text-muted-foreground">
+                        <p className="text-xs text-muted-foreground leading-relaxed">
                           {suggestion.description}
                         </p>
                         
                         {suggestion.preview && (
-                          <div className="bg-muted/50 rounded p-2 mt-2">
+                          <div className="bg-muted/30 rounded-lg p-2 mt-2 border border-border/30">
                             <p className="text-xs font-mono text-foreground">
                               {suggestion.preview}
                             </p>
@@ -262,22 +266,22 @@ export function AISuggestions({
                         )}
                       </div>
                       
-                      <div className="flex items-center space-x-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                      <div className="flex items-center space-x-1 opacity-0 group-hover:opacity-100 superhuman-transition">
                         <Button
                           variant="ghost"
-                          size="sm"
+                          size="icon-xs"
                           onClick={() => applySuggestion(suggestion)}
-                          className="text-green-600 hover:text-green-700 hover:bg-green-50 p-1 h-auto"
+                          className="text-emerald-600 hover:text-emerald-700 hover:bg-emerald-50 dark:hover:bg-emerald-950/20 rounded-full superhuman-hover"
                         >
-                          <Check className="h-4 w-4" />
+                          <Check className="h-3 w-3" />
                         </Button>
                         <Button
                           variant="ghost"
-                          size="sm"
+                          size="icon-xs"
                           onClick={() => dismissSuggestion(suggestion.id)}
-                          className="text-muted-foreground hover:text-foreground p-1 h-auto"
+                          className="text-muted-foreground hover:text-foreground rounded-full superhuman-hover"
                         >
-                          <X className="h-4 w-4" />
+                          <X className="h-3 w-3" />
                         </Button>
                       </div>
                     </div>
@@ -288,7 +292,7 @@ export function AISuggestions({
           </AnimatePresence>
         </div>
 
-        <Separator className="my-3" />
+        <Separator className="my-4 opacity-60" />
         
         <div className="flex items-center justify-between">
           <Button
@@ -296,20 +300,21 @@ export function AISuggestions({
             size="sm"
             onClick={generateSuggestions}
             disabled={isProcessing}
-            className="text-xs text-muted-foreground hover:text-foreground"
+            className="text-xs text-muted-foreground hover:text-foreground superhuman-transition rounded-full"
           >
             <motion.div
               animate={isProcessing ? { rotate: 360 } : {}}
               transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
             >
-              <ArrowRight className="h-3 w-3 mr-1" />
+              <RefreshCcw className="h-3 w-3 mr-1" />
             </motion.div>
             Refresh suggestions
           </Button>
           
-          <p className="text-xs text-muted-foreground">
-            AI-powered insights
-          </p>
+          <div className="flex items-center text-xs text-muted-foreground">
+            <Sparkles className="h-3 w-3 mr-1" />
+            <span>AI-powered insights</span>
+          </div>
         </div>
       </Card>
     </motion.div>
