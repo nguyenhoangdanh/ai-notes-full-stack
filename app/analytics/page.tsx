@@ -15,12 +15,17 @@ import {
   Activity,
   Calendar
 } from 'lucide-react'
-import { useAnalyticsOverview, useWorkspaceAnalytics, useContentAnalytics } from '@/hooks/use-tags-analytics'
+import { useDashboardAnalytics, useUserActivity } from '@/hooks/use-features'
 
 export default function AnalyticsPage() {
-  const { data: overview, isLoading: overviewLoading } = useAnalyticsOverview()
-  const { data: workspaceStats, isLoading: workspaceLoading } = useWorkspaceAnalytics()
-  const { data: contentStats, isLoading: contentLoading } = useContentAnalytics()
+  const { data: overview, isLoading: overviewLoading } = useDashboardAnalytics()
+  const { data: userActivity, isLoading: activityLoading } = useUserActivity()
+  
+  // TODO: Add proper analytics hooks to use-features.ts
+  const workspaceStats = null
+  const workspaceLoading = false
+  const contentStats = null
+  const contentLoading = false
 
   const formatBytes = (bytes: number) => {
     if (bytes === 0) return '0 Bytes'
@@ -149,40 +154,12 @@ export default function AnalyticsPage() {
                     </div>
                   ))}
                 </div>
-              ) : workspaceStats && workspaceStats.length > 0 ? (
-                <div className="space-y-4">
-                  {workspaceStats.map((workspace) => (
-                    <div key={workspace.id} className="flex items-center justify-between p-4 border rounded-lg">
-                      <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
-                          <FolderOpen className="w-4 h-4 text-blue-600" />
-                        </div>
-                        <div>
-                          <h3 className="font-medium">{workspace.name}</h3>
-                          <p className="text-sm text-muted-foreground">
-                            {workspace.noteCount} notes • {workspace.collaboratorCount} collaborators
-                          </p>
-                        </div>
-                      </div>
-                      <div className="text-right">
-                        <div className="flex items-center gap-2">
-                          <Badge variant={workspace.growth > 0 ? "default" : "secondary"}>
-                            {workspace.growth > 0 ? '+' : ''}{workspace.growth}%
-                          </Badge>
-                        </div>
-                        <p className="text-xs text-muted-foreground mt-1">
-                          {formatBytes(workspace.storageUsed)}
-                        </p>
-                      </div>
-                    </div>
-                  ))}
-                </div>
               ) : (
                 <div className="text-center py-8">
                   <FolderOpen className="w-12 h-12 mx-auto text-muted-foreground mb-4" />
                   <h3 className="text-lg font-semibold mb-2">No workspace data</h3>
                   <p className="text-muted-foreground">
-                    Create some workspaces to see analytics here
+                    Workspace analytics will be available once backend is connected
                   </p>
                 </div>
               )}
@@ -204,28 +181,21 @@ export default function AnalyticsPage() {
                     <div className="h-3 bg-gray-200 rounded w-1/2"></div>
                     <div className="h-3 bg-gray-200 rounded w-2/3"></div>
                   </div>
-                ) : contentStats ? (
+                ) : (
                   <div className="space-y-4">
                     <div className="flex justify-between">
                       <span className="text-sm font-medium">Total Words</span>
-                      <span className="text-sm">{formatNumber(contentStats.wordCount)}</span>
+                      <span className="text-sm">Connect backend for data</span>
                     </div>
                     <div className="flex justify-between">
                       <span className="text-sm font-medium">Avg. Note Length</span>
-                      <span className="text-sm">{Math.round(contentStats.averageNoteLength)} words</span>
+                      <span className="text-sm">Content analytics coming soon</span>
                     </div>
                     <div className="space-y-2">
                       <span className="text-sm font-medium">Top Categories</span>
-                      {contentStats.mostActiveCategories.slice(0, 3).map((category) => (
-                        <div key={category.category} className="flex justify-between text-sm">
-                          <span className="text-muted-foreground">{category.category}</span>
-                          <span>{category.count} notes</span>
-                        </div>
-                      ))}
+                      <div className="text-sm text-muted-foreground">No data available yet</div>
                     </div>
                   </div>
-                ) : (
-                  <p className="text-muted-foreground">No content data available</p>
                 )}
               </CardContent>
             </Card>
@@ -245,41 +215,30 @@ export default function AnalyticsPage() {
                       </div>
                     ))}
                   </div>
-                ) : contentStats?.languageDistribution ? (
-                  <div className="space-y-2">
-                    {contentStats.languageDistribution.map((lang) => (
-                      <div key={lang.language} className="flex justify-between text-sm">
-                        <span className="capitalize">{lang.language}</span>
-                        <span>{lang.percentage}%</span>
-                      </div>
-                    ))}
-                  </div>
                 ) : (
-                  <p className="text-muted-foreground">No language data available</p>
+                  <div className="space-y-2">
+                    <div className="flex justify-between text-sm">
+                      <span className="capitalize">English</span>
+                      <span>Coming soon</span>
+                    </div>
+                  </div>
                 )}
               </CardContent>
             </Card>
           </div>
 
-          {/* Growth Chart */}
-          {contentStats?.contentGrowth && (
-            <Card>
-              <CardHeader>
-                <CardTitle>Content Growth</CardTitle>
-                <CardDescription>Your writing activity over time</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-2">
-                  {contentStats.contentGrowth.slice(-7).map((point) => (
-                    <div key={point.date} className="flex justify-between text-sm">
-                      <span>{formatDate(point.date)}</span>
-                      <span>{point.notes} notes, {formatNumber(point.words)} words</span>
-                    </div>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
-          )}
+          {/* Growth Chart - Placeholder */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Content Growth</CardTitle>
+              <CardDescription>Your writing activity over time</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="text-center py-8 text-muted-foreground">
+                Growth analytics will be available when backend is connected
+              </div>
+            </CardContent>
+          </Card>
         </TabsContent>
 
         <TabsContent value="activity" className="space-y-4">

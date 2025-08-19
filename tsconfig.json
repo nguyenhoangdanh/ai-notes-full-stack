@@ -24,7 +24,7 @@
     "baseUrl": ".",
     "paths": {
       "@/*": [
-        "./src/*"
+        "./*"
       ],
       "@/components/*": [
         "./components/*"
@@ -34,6 +34,15 @@
       ],
       "@/app/*": [
         "./app/*"
+      ],
+      "@/hooks/*": [
+        "./hooks/*"
+      ],
+      "@/services/*": [
+        "./services/*"
+      ],
+      "@/types/*": [
+        "./types/*"
       ]
     },
     "target": "ES2017"

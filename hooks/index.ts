@@ -216,11 +216,23 @@ export {
   useDeleteReview
 } from './use-productivity';
 
-// Templates and Voice Notes hooks (new features)
-export * from './use-templates';
+// Templates and Voice Notes hooks (new features) - currently in use-features.ts
+// TODO: Refactor to avoid duplicates
+// export { 
+//   useTemplateCategories,
+//   useVoiceNoteStats,
+//   useUploadVoiceNote,
+//   useDeleteVoiceNote
+// } from './use-templates';
 
-// Tags and Analytics hooks (new comprehensive features)
-export * from './use-tags-analytics';
+// Tags and Analytics hooks (new comprehensive features) - currently in use-features.ts
+// TODO: Refactor to avoid duplicates
+// export {
+//   useTagHierarchy,
+//   useAnalyticsOverview,
+//   useWorkspaceAnalytics,
+//   useContentAnalytics
+// } from './use-tags-analytics';
 
 // Query keys
 export { queryKeys, invalidationHelpers } from './query-keys';

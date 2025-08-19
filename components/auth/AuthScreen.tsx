@@ -15,6 +15,7 @@ import {
   Sparkle
 } from 'lucide-react'
 import { useLogin, useRegister } from '../../hooks'
+import { authService, demoModeService } from '../../services'
 import { toast } from 'sonner'
 
 export function AuthScreen() {
@@ -52,13 +53,24 @@ export function AuthScreen() {
 
   const handleDemoLogin = async () => {
     try {
-      await loginMutation.mutateAsync({ 
-        email: 'demo@example.com', 
-        password: 'demo-password' 
+      // Enable demo mode
+      demoModeService.setDemoMode(true)
+      
+      // Use demo login instead of real API call
+      const result = await authService.demoLogin()
+      
+      toast.success('Welcome to AI Notes Demo! 🎉', {
+        description: 'Explore all features with sample data. Changes won\'t be saved permanently.'
+      })
+      
+      // The login mutation will handle setting the user state
+      loginMutation.mutate({ 
+        email: 'demo@ai-notes.app', 
+        password: 'demo-mode' 
       })
     } catch (error) {
       console.error('Demo login failed:', error)
-      toast.error('Demo login failed')
+      toast.error('Demo mode failed to initialize')
     }
   }
 

@@ -186,6 +186,7 @@ export function validateAllEnvironments(): void {
 export { validateEnvironment, frontendRequiredEnv, backendRequiredEnv };
 
 // Run validation if this script is executed directly
-if (require.main === module) {
+import { fileURLToPath } from 'url';
+if (import.meta.url === `file://${process.argv[1]}`) {
   validateAllEnvironments();
 }
