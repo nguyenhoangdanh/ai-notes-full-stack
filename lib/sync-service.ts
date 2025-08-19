@@ -1,4 +1,5 @@
 import { offlineStorage, OfflineNote, OfflineWorkspace, SyncOperation } from './offline-storage'
+import { getAuthToken } from './api-config'
 
 export interface SyncStatus {
   isOnline: boolean
@@ -366,7 +367,7 @@ export class SyncService {
   }
 
   private getHeaders(): Record<string, string> {
-    const token = localStorage.getItem('ai-notes-token') || localStorage.getItem('auth-token')
+    const token = getAuthToken()
     return {
       'Content-Type': 'application/json',
       ...(token && { Authorization: `Bearer ${token}` })

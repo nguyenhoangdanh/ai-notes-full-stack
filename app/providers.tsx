@@ -5,11 +5,13 @@ import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import { ThemeProvider } from 'next-themes'
 import { Toaster } from 'sonner'
 import { ErrorBoundary } from 'react-error-boundary'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { AuthProvider } from '../contexts/AuthContext'
 import { AIProvider } from '../contexts/AIContext'
+import { NotesProvider } from '../contexts/NotesContext'
 import { ErrorFallback } from '../ErrorFallback'
 import { DemoModeIndicator } from '../components/common/DemoModeIndicator'
+import { initializeApiClient } from '../lib/api-config'
 
 export function Providers({ children }: { children: React.ReactNode }) {
   const [queryClient] = useState(
@@ -40,6 +42,11 @@ export function Providers({ children }: { children: React.ReactNode }) {
       })
   )
 
+  // Initialize API client early
+  useEffect(() => {
+    initializeApiClient()
+  }, [])
+
   return (
     <ErrorBoundary FallbackComponent={ErrorFallback}>
       <QueryClientProvider client={queryClient}>
@@ -50,16 +57,18 @@ export function Providers({ children }: { children: React.ReactNode }) {
           disableTransitionOnChange
         >
           <AuthProvider>
-            <AIProvider>
-              {children}
-              <DemoModeIndicator />
-              <Toaster
-                position="top-right"
-                toastOptions={{
-                  duration: 4000,
-                }}
-              />
-            </AIProvider>
+            <NotesProvider>
+              <AIProvider>
+                {children}
+                <DemoModeIndicator />
+                <Toaster
+                  position="top-right"
+                  toastOptions={{
+                    duration: 4000,
+                  }}
+                />
+              </AIProvider>
+            </NotesProvider>
           </AuthProvider>
         </ThemeProvider>
         <ReactQueryDevtools initialIsOpen={false} />
