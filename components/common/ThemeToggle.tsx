@@ -20,7 +20,8 @@ const addTransitionStyles = () => {
     style.textContent = `
       :root {
         color-scheme: light;
-        transition: background-color 0.3s ease, color 0.3s ease;
+        transition: background-color 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+                   color 0.4s cubic-bezier(0.4, 0, 0.2, 1);
       }
 
       :root.dark {
@@ -28,11 +29,29 @@ const addTransitionStyles = () => {
       }
 
       * {
-        transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
+        transition: background-color 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+                   border-color 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+                   color 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+                   box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+
+      .glass-effect {
+        transition: background-color 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+                   backdrop-filter 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+                   border-color 0.3s cubic-bezier(0.4, 0, 0.2, 1);
       }
 
       .theme-transition-disable * {
         transition: none !important;
+      }
+
+      /* Reduce motion for accessibility */
+      @media (prefers-reduced-motion: reduce) {
+        *, *::before, *::after {
+          animation-duration: 0.001ms !important;
+          animation-iteration-count: 1 !important;
+          transition-duration: 0.001ms !important;
+        }
       }
     `;
     document.head.appendChild(style);
