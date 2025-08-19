@@ -218,8 +218,8 @@ export function Sidebar({ collapsed, onToggle, isMobile = false }: SidebarProps)
       </div>
 
       {/* Navigation */}
-      <nav className="flex-1 overflow-y-auto p-3" role="navigation" aria-label="Main navigation">
-        <ul className="space-y-2">
+      <nav className="flex-1 overflow-y-auto p-4" role="navigation" aria-label="Main navigation">
+        <ul className="space-y-1">
           {navigation.map((item, index) => {
             const isMainSection = index === 0 || index === 4 || index === 8
             return (
