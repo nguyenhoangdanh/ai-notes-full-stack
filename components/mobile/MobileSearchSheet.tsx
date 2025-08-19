@@ -222,13 +222,13 @@ export function MobileSearchSheet({
     >
       <div className="flex flex-col h-full">
         {/* Header */}
-        <div className="sticky top-0 bg-background border-b border-border p-4">
+        <div className="sticky top-0 glass-effect border-b border-border/40 p-4 shadow-sm">
           <div className="flex items-center gap-3 mb-4">
             <Button
               variant="ghost"
               size="sm"
               onClick={onClose}
-              className="h-8 w-8 p-0"
+              className="h-9 w-9 p-0 rounded-xl hover:scale-110 transition-transform"
             >
               <ArrowLeft className="h-4 w-4" />
             </Button>
@@ -239,7 +239,7 @@ export function MobileSearchSheet({
                 value={searchQuery}
                 onChange={(e) => onSearchChange(e.target.value)}
                 placeholder="Search notes..."
-                className="pl-10 pr-10"
+                className="pl-10 pr-10 h-11 rounded-xl glass-effect"
                 autoFocus
               />
               {searchQuery && (
@@ -247,7 +247,7 @@ export function MobileSearchSheet({
                   variant="ghost"
                   size="sm"
                   onClick={clearSearch}
-                  className="absolute right-1 top-1/2 transform -translate-y-1/2 h-6 w-6 p-0"
+                  className="absolute right-1 top-1/2 transform -translate-y-1/2 h-7 w-7 p-0 rounded-lg hover:scale-110 transition-transform"
                 >
                   <X className="h-3 w-3" />
                 </Button>
@@ -258,7 +258,7 @@ export function MobileSearchSheet({
               variant="ghost"
               size="sm"
               onClick={() => setShowFilters(!showFilters)}
-              className="h-8 w-8 p-0"
+              className="h-9 w-9 p-0 rounded-xl hover:scale-110 transition-transform"
             >
               <Filter className="h-4 w-4" />
             </Button>
@@ -289,7 +289,7 @@ export function MobileSearchSheet({
                           variant={sortBy === option.value ? 'default' : 'outline'}
                           size="sm"
                           onClick={() => setSortBy(option.value as SortOption)}
-                          className="whitespace-nowrap"
+                          className="whitespace-nowrap rounded-xl hover:scale-105 transition-transform"
                         >
                           {option.label}
                         </Button>
@@ -313,7 +313,7 @@ export function MobileSearchSheet({
                           variant={filterBy === option.value ? 'default' : 'outline'}
                           size="sm"
                           onClick={() => setFilterBy(option.value as FilterOption)}
-                          className="whitespace-nowrap"
+                          className="whitespace-nowrap rounded-xl hover:scale-105 transition-transform"
                         >
                           {option.label}
                         </Button>
@@ -339,7 +339,7 @@ export function MobileSearchSheet({
                       variant="ghost"
                       size="sm"
                       onClick={clearRecentSearches}
-                      className="text-xs"
+                      className="text-xs rounded-lg hover:scale-105 transition-transform"
                     >
                       Clear
                     </Button>
@@ -349,7 +349,7 @@ export function MobileSearchSheet({
                       <Button
                         key={index}
                         variant="ghost"
-                        className="w-full justify-start h-auto p-3"
+                        className="w-full justify-start h-auto p-3 rounded-xl hover:scale-[1.02] transition-transform"
                         onClick={() => onSearchChange(search)}
                       >
                         <Clock className="h-4 w-4 mr-3 text-muted-foreground" />
@@ -369,7 +369,7 @@ export function MobileSearchSheet({
                       key={suggestion}
                       variant="outline"
                       onClick={() => onSearchChange(suggestion)}
-                      className="h-auto p-3 text-left justify-start"
+                      className="h-auto p-3 text-left justify-start rounded-xl hover:scale-105 transition-transform glass-effect"
                     >
                       <Tag className="h-4 w-4 mr-2" />
                       {suggestion}
@@ -383,13 +383,18 @@ export function MobileSearchSheet({
             <div className="p-4">
               {isSearching ? (
                 <div className="flex items-center justify-center py-8">
-                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+                  <div className="relative">
+                    <div className="animate-spin rounded-full h-10 w-10 border-4 border-primary/20 border-t-primary"></div>
+                    <div className="absolute inset-0 rounded-full h-10 w-10 border-4 border-transparent border-t-primary/60 animate-pulse"></div>
+                  </div>
                 </div>
               ) : searchResults.length === 0 ? (
-                <div className="text-center py-8">
-                  <Search className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
-                  <h3 className="text-lg font-medium mb-2">No results found</h3>
-                  <p className="text-muted-foreground">
+                <div className="text-center py-12">
+                  <div className="p-4 bg-muted/30 rounded-2xl mx-auto mb-4 w-fit">
+                    <Search className="h-16 w-16 text-muted-foreground" />
+                  </div>
+                  <h3 className="text-xl font-bold mb-2">No results found</h3>
+                  <p className="text-muted-foreground leading-relaxed">
                     Try adjusting your search terms or filters
                   </p>
                 </div>
@@ -404,11 +409,11 @@ export function MobileSearchSheet({
                   {searchResults.map((note) => (
                     <Card
                       key={note.id}
-                      className="p-4 cursor-pointer active:scale-95 transition-transform"
+                      className="p-4 cursor-pointer active:scale-95 transition-all duration-200 hover:shadow-md glass-effect group"
                       onClick={() => handleNoteSelect(note)}
                     >
                       <div className="space-y-2">
-                        <h3 className="font-medium">
+                        <h3 className="font-semibold group-hover:text-primary transition-colors">
                           {highlightText(note.title, searchQuery)}
                         </h3>
                         

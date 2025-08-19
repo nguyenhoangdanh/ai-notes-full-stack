@@ -199,7 +199,7 @@
     --z-50: 50;
     --z-auto: auto;
 
-    /* Shadows - Layered shadow system */
+    /* Shadows - Enhanced layered shadow system */
     --shadow-xs: 0 1px 2px 0 rgb(0 0 0 / 0.05);
     --shadow-sm: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
     --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
@@ -207,6 +207,19 @@
     --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
     --shadow-2xl: 0 25px 50px -12px rgb(0 0 0 / 0.25);
     --shadow-inner: inset 0 2px 4px 0 rgb(0 0 0 / 0.05);
+    --shadow-glow: 0 0 20px 0 rgb(var(--color-accent-9) / 0.3);
+    --shadow-colored: 0 8px 25px -5px rgb(var(--color-accent-9) / 0.2);
+    --shadow-border: 0 0 0 1px rgb(0 0 0 / 0.05);
+
+    /* Modern Glass Effect */
+    --glass-bg: rgb(255 255 255 / 0.8);
+    --glass-border: rgb(255 255 255 / 0.18);
+    --glass-backdrop: blur(16px) saturate(180%);
+
+    /* Enhanced Border Radius */
+    --radius-xs: calc(1px * var(--radius-factor) * var(--size-scale));
+    --radius-4xl: calc(32px * var(--radius-factor) * var(--size-scale));
+    --radius-5xl: calc(40px * var(--radius-factor) * var(--size-scale));
 
     /* Animation Durations */
     --duration-75: 75ms;
@@ -225,16 +238,28 @@
     --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
     --ease-bounce: cubic-bezier(0.68, -0.55, 0.265, 1.55);
 
-    /* Typography Scale */
-    --text-xs: clamp(0.75rem, 0.7rem + 0.25vw, 0.875rem);
-    --text-sm: clamp(0.875rem, 0.825rem + 0.25vw, 1rem);
-    --text-base: clamp(1rem, 0.95rem + 0.25vw, 1.125rem);
-    --text-lg: clamp(1.125rem, 1.05rem + 0.375vw, 1.25rem);
-    --text-xl: clamp(1.25rem, 1.15rem + 0.5vw, 1.5rem);
-    --text-2xl: clamp(1.5rem, 1.35rem + 0.75vw, 1.875rem);
-    --text-3xl: clamp(1.875rem, 1.65rem + 1.125vw, 2.25rem);
-    --text-4xl: clamp(2.25rem, 1.95rem + 1.5vw, 3rem);
-    --text-5xl: clamp(3rem, 2.5rem + 2.5vw, 4rem);
+    /* Typography Scale - Improved fluid typography */
+    --text-xs: clamp(0.75rem, 0.73rem + 0.1vw, 0.8rem);
+    --text-sm: clamp(0.875rem, 0.85rem + 0.125vw, 0.9rem);
+    --text-base: clamp(1rem, 0.97rem + 0.15vw, 1.0625rem);
+    --text-lg: clamp(1.125rem, 1.08rem + 0.225vw, 1.25rem);
+    --text-xl: clamp(1.25rem, 1.18rem + 0.35vw, 1.5rem);
+    --text-2xl: clamp(1.5rem, 1.4rem + 0.5vw, 1.875rem);
+    --text-3xl: clamp(1.875rem, 1.7rem + 0.875vw, 2.25rem);
+    --text-4xl: clamp(2.25rem, 2rem + 1.25vw, 3rem);
+    --text-5xl: clamp(3rem, 2.6rem + 2vw, 4rem);
+    --text-6xl: clamp(3.75rem, 3.2rem + 2.75vw, 5rem);
+    --text-7xl: clamp(4.5rem, 3.8rem + 3.5vw, 6rem);
+
+    /* Font Weights */
+    --font-weight-thin: 100;
+    --font-weight-light: 300;
+    --font-weight-normal: 400;
+    --font-weight-medium: 500;
+    --font-weight-semibold: 600;
+    --font-weight-bold: 700;
+    --font-weight-extrabold: 800;
+    --font-weight-black: 900;
 
     /* Line Heights */
     --leading-none: 1;
@@ -334,5 +359,56 @@
     --color-bg: var(--color-neutral-1);
     --color-bg-inset: #000000;
     --color-bg-overlay: var(--color-neutral-3);
+
+    /* Dark mode glass effects */
+    --glass-bg: rgb(0 0 0 / 0.6);
+    --glass-border: rgb(255 255 255 / 0.1);
+
+    /* Dark mode shadows */
+    --shadow-xs: 0 1px 2px 0 rgb(0 0 0 / 0.2);
+    --shadow-sm: 0 1px 3px 0 rgb(0 0 0 / 0.3), 0 1px 2px -1px rgb(0 0 0 / 0.3);
+    --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.4), 0 2px 4px -2px rgb(0 0 0 / 0.4);
+    --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.5), 0 4px 6px -4px rgb(0 0 0 / 0.5);
+    --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.6), 0 8px 10px -6px rgb(0 0 0 / 0.6);
+    --shadow-2xl: 0 25px 50px -12px rgb(0 0 0 / 0.8);
+    --shadow-inner: inset 0 2px 4px 0 rgb(0 0 0 / 0.2);
+    --shadow-glow: 0 0 20px 0 rgb(var(--color-accent-9) / 0.5);
+    --shadow-colored: 0 8px 25px -5px rgb(var(--color-accent-9) / 0.4);
+    --shadow-border: 0 0 0 1px rgb(255 255 255 / 0.1);
+
+    /* Enhanced dark mode consistency */
+    --color-fg: var(--color-neutral-12);
+    --color-fg-secondary: var(--color-neutral-a11);
+    --color-focus-ring: var(--color-accent-9);
+
+    /* Dark mode specific adjustments */
+    --color-card: var(--color-neutral-2);
+    --color-muted: var(--color-neutral-3);
+    --color-accent-foreground: var(--color-neutral-1);
+    --color-secondary: var(--color-neutral-4);
+    --color-secondary-foreground: var(--color-neutral-11);
+  }
+
+  /* Custom utility classes */
+  .glass-effect {
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    backdrop-filter: var(--glass-backdrop);
+    -webkit-backdrop-filter: var(--glass-backdrop);
+  }
+
+  .text-gradient {
+    background: linear-gradient(135deg, var(--color-accent-11), var(--color-accent-secondary-11));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .shadow-glow {
+    box-shadow: var(--shadow-glow);
+  }
+
+  .shadow-colored {
+    box-shadow: var(--shadow-colored);
   }
 }

@@ -115,12 +115,12 @@ export function MobileDashboard() {
   const NotesListView = () => (
     <div className="flex flex-col h-full">
       {/* Header */}
-      <div className="sticky top-0 bg-background/95 backdrop-blur-sm border-b border-border p-4 space-y-4">
+      <div className="sticky top-0 glass-effect border-b border-border/40 p-4 space-y-4 shadow-sm">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-xl font-semibold">AI Notes</h1>
+            <h1 className="text-xl font-bold text-gradient">AI Notes</h1>
             {currentWorkspace && (
-              <p className="text-sm text-muted-foreground">{currentWorkspace.name}</p>
+              <p className="text-sm text-muted-foreground font-medium">{currentWorkspace.name}</p>
             )}
           </div>
           
@@ -131,7 +131,7 @@ export function MobileDashboard() {
               size="sm"
               onClick={handleSync}
               disabled={syncStatus.isSyncing || !syncStatus.isOnline}
-              className="h-8 w-8 p-0"
+              className="h-9 w-9 p-0 rounded-xl hover:scale-110 transition-transform"
             >
               {syncStatus.isSyncing ? (
                 <RefreshCw className="h-4 w-4 animate-spin" />
@@ -147,7 +147,7 @@ export function MobileDashboard() {
               variant="ghost"
               size="sm"
               onClick={() => setCurrentView('settings')}
-              className="h-8 w-8 p-0"
+              className="h-9 w-9 p-0 rounded-xl hover:scale-110 transition-transform"
             >
               <Settings className="h-4 w-4" />
             </Button>
@@ -158,12 +158,12 @@ export function MobileDashboard() {
         {(syncStatus.pendingOperations > 0 || syncStatus.failedOperations > 0) && (
           <div className="flex gap-2">
             {syncStatus.pendingOperations > 0 && (
-              <Badge variant="secondary" className="text-xs">
+              <Badge variant="secondary" className="text-xs px-2 py-1 bg-amber-100 text-amber-800 border-amber-200 dark:bg-amber-900/30 dark:text-amber-400 dark:border-amber-800">
                 {syncStatus.pendingOperations} pending
               </Badge>
             )}
             {syncStatus.failedOperations > 0 && (
-              <Badge variant="destructive" className="text-xs">
+              <Badge variant="destructive" className="text-xs px-2 py-1">
                 {syncStatus.failedOperations} failed
               </Badge>
             )}
@@ -175,18 +175,23 @@ export function MobileDashboard() {
       <div className="flex-1 overflow-auto">
         {isLoading ? (
           <div className="flex items-center justify-center h-32">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+            <div className="relative">
+              <div className="animate-spin rounded-full h-10 w-10 border-4 border-primary/20 border-t-primary"></div>
+              <div className="absolute inset-0 rounded-full h-10 w-10 border-4 border-transparent border-t-primary/60 animate-pulse"></div>
+            </div>
           </div>
         ) : filteredNotes.length === 0 ? (
-          <div className="flex flex-col items-center justify-center h-64 p-4 text-center">
-            <FileText className="h-16 w-16 text-muted-foreground mb-4" />
-            <h3 className="text-lg font-medium mb-2">No notes yet</h3>
-            <p className="text-muted-foreground mb-4">
-              Create your first note to get started
+          <div className="flex flex-col items-center justify-center h-64 p-6 text-center">
+            <div className="p-4 bg-primary/10 rounded-2xl mb-4">
+              <FileText className="h-16 w-16 text-primary" />
+            </div>
+            <h3 className="text-xl font-bold mb-2">No notes yet</h3>
+            <p className="text-muted-foreground mb-6 leading-relaxed">
+              Create your first note to get started with AI-powered note-taking
             </p>
-            <Button onClick={handleCreateNote}>
-              <Plus className="h-4 w-4 mr-2" />
-              Create Note
+            <Button onClick={handleCreateNote} size="lg" className="shadow-lg hover:shadow-xl">
+              <Plus className="h-5 w-5 mr-2" />
+              Create Your First Note
             </Button>
           </div>
         ) : (
@@ -216,12 +221,12 @@ export function MobileDashboard() {
     onDelete: (e: React.MouseEvent) => void
     onDuplicate: (e: React.MouseEvent) => void
   }) => (
-    <Card 
-      className="p-4 cursor-pointer active:scale-95 transition-transform"
+    <Card
+      className="p-4 cursor-pointer active:scale-95 transition-all duration-200 hover:shadow-md glass-effect group"
       onClick={onSelect}
     >
       <div className="flex items-start justify-between mb-2">
-        <h3 className="font-medium line-clamp-1 flex-1">{note.title}</h3>
+        <h3 className="font-semibold line-clamp-1 flex-1 group-hover:text-primary transition-colors">{note.title}</h3>
         <div className="flex items-center gap-1 ml-2">
           {note.syncStatus === 'pending' && (
             <div className="h-2 w-2 bg-amber-500 rounded-full" />
@@ -233,7 +238,7 @@ export function MobileDashboard() {
             variant="ghost"
             size="sm"
             onClick={onDuplicate}
-            className="h-6 w-6 p-0 opacity-0 group-hover:opacity-100"
+            className="h-7 w-7 p-0 opacity-0 group-hover:opacity-100 transition-all hover:scale-110 rounded-lg"
           >
             <Copy className="h-3 w-3" />
           </Button>
@@ -241,7 +246,7 @@ export function MobileDashboard() {
             variant="ghost"
             size="sm"
             onClick={onDelete}
-            className="h-6 w-6 p-0 opacity-0 group-hover:opacity-100"
+            className="h-7 w-7 p-0 opacity-0 group-hover:opacity-100 transition-all hover:scale-110 rounded-lg hover:bg-red-50 hover:text-red-600"
           >
             <Trash className="h-3 w-3" />
           </Button>
@@ -276,16 +281,16 @@ export function MobileDashboard() {
 
   // Bottom Navigation
   const BottomNav = () => (
-    <div className="sticky bottom-0 bg-background border-t border-border">
-      <div className="flex items-center justify-around py-2">
+    <div className="sticky bottom-0 glass-effect border-t border-border/40 shadow-lg safe-area-bottom">
+      <div className="flex items-center justify-around py-3 px-2">
         <Button
           variant={currentView === 'notes' ? 'default' : 'ghost'}
           size="sm"
           onClick={() => setCurrentView('notes')}
-          className="flex-col h-auto py-2 px-3"
+          className="flex-col h-auto py-2 px-3 rounded-xl hover:scale-105 transition-transform"
         >
           <Home className="h-5 w-5 mb-1" />
-          <span className="text-xs">Notes</span>
+          <span className="text-xs font-medium">Notes</span>
         </Button>
         
         <Button
@@ -301,9 +306,9 @@ export function MobileDashboard() {
         <Button
           size="sm"
           onClick={handleCreateNote}
-          className="h-12 w-12 rounded-full shadow-lg"
+          className="h-14 w-14 rounded-2xl shadow-lg hover:shadow-xl hover:scale-110 transition-all bg-gradient-to-r from-primary to-primary/90"
         >
-          <Plus className="h-6 w-6" />
+          <Plus className="h-7 w-7" />
         </Button>
         
         <Button

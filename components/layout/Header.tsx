@@ -20,18 +20,18 @@ interface HeaderProps {
 export function Header({ onMenuClick, sidebarOpen, isMobile }: HeaderProps) {
   return (
     <header
-      className="h-16 border-b border-border/60 bg-background/80 backdrop-blur-xl supports-[backdrop-filter]:bg-background/60 sticky top-0 z-30"
+      className="h-16 glass-effect border-b border-border/60 sticky top-0 z-30 transition-all duration-300"
       role="banner"
     >
       <div className="flex items-center justify-between h-full px-4 sm:px-6 lg:px-8">
         {/* Left section */}
-        <div className="flex items-center gap-4 min-w-0 flex-1">
+        <div className="flex items-center gap-3 min-w-0 flex-1">
           <Button
             variant="ghost"
             size="sm"
             onClick={onMenuClick}
             className={cn(
-              "h-9 w-9 p-0 transition-colors hover:bg-accent/80",
+              "h-10 w-10 p-0 transition-all duration-200 hover:bg-accent/80 hover:scale-105 rounded-xl",
               isMobile ? "" : "lg:flex"
             )}
             aria-label={sidebarOpen ? "Close sidebar" : "Open sidebar"}
@@ -45,18 +45,20 @@ export function Header({ onMenuClick, sidebarOpen, isMobile }: HeaderProps) {
             )}
           </Button>
 
-          <div className="flex-1 max-w-md">
+          <div className="flex-1 max-w-lg">
             <GlobalSearch />
           </div>
         </div>
 
         {/* Right section */}
-        <nav className="flex items-center gap-2" role="navigation" aria-label="User menu">
-          <div className="hidden sm:flex items-center gap-2">
+        <nav className="flex items-center gap-1" role="navigation" aria-label="User menu">
+          <div className="hidden sm:flex items-center gap-1">
             <ThemeToggle />
             <NotificationBell />
           </div>
-          <UserMenu />
+          <div className="ml-2">
+            <UserMenu />
+          </div>
         </nav>
       </div>
     </header>

@@ -179,10 +179,10 @@ export function Sidebar({ collapsed, onToggle, isMobile = false }: SidebarProps)
   return (
     <div
       ref={sidebarRef}
-      className="h-full bg-card/50 backdrop-blur-xl border-r border-border/60 flex flex-col shadow-lg lg:shadow-none"
+      className="h-full glass-effect border-r border-border/60 flex flex-col shadow-xl lg:shadow-lg transition-all duration-300"
     >
       {/* Header */}
-      <div className="p-4 border-b border-border/60">
+      <div className="p-4 border-b border-border/40">
         <div className="flex items-center justify-between">
           {!collapsed && (
             <Link
@@ -190,12 +190,12 @@ export function Sidebar({ collapsed, onToggle, isMobile = false }: SidebarProps)
               className="flex items-center gap-3 group transition-colors hover:text-primary"
               aria-label="AI Notes - Go to dashboard"
             >
-              <div className="p-2 bg-primary/10 rounded-lg group-hover:bg-primary/20 transition-colors">
+              <div className="p-2.5 bg-gradient-to-br from-primary/20 to-primary/10 rounded-xl group-hover:from-primary/30 group-hover:to-primary/20 transition-all duration-200 shadow-sm">
                 <SparklesIcon className="h-6 w-6 text-primary" aria-hidden="true" />
               </div>
               <div className="flex flex-col">
-                <span className="font-bold text-lg leading-none">AI Notes</span>
-                <span className="text-xs text-muted-foreground">Intelligent Platform</span>
+                <span className="font-bold text-xl leading-none text-gradient">AI Notes</span>
+                <span className="text-xs text-muted-foreground font-medium">Intelligent Platform</span>
               </div>
             </Link>
           )}
@@ -218,8 +218,8 @@ export function Sidebar({ collapsed, onToggle, isMobile = false }: SidebarProps)
       </div>
 
       {/* Navigation */}
-      <nav className="flex-1 overflow-y-auto p-3" role="navigation" aria-label="Main navigation">
-        <ul className="space-y-2">
+      <nav className="flex-1 overflow-y-auto p-4" role="navigation" aria-label="Main navigation">
+        <ul className="space-y-1">
           {navigation.map((item, index) => {
             const isMainSection = index === 0 || index === 4 || index === 8
             return (
@@ -342,12 +342,12 @@ export function Sidebar({ collapsed, onToggle, isMobile = false }: SidebarProps)
 
       {/* Footer */}
       {!collapsed && (
-        <div className="p-4 border-t border-border/60">
+        <div className="p-4 border-t border-border/40 bg-gradient-to-r from-primary/5 to-accent-secondary/5">
           <div className="flex items-center justify-between">
-            <div className="text-xs text-muted-foreground">
+            <div className="text-xs text-muted-foreground font-medium">
               AI Notes v1.0.0
             </div>
-            <Badge variant="secondary" className="text-xs px-2 py-1">
+            <Badge variant="secondary" className="text-xs px-2.5 py-1 bg-primary/10 text-primary border-primary/20 shadow-xs">
               Beta
             </Badge>
           </div>

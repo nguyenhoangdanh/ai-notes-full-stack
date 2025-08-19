@@ -9,13 +9,13 @@ export function SkipLinks() {
     <div className="sr-only focus-within:not-sr-only">
       <a
         href="#main-content"
-        className="fixed top-4 left-4 z-[9999] bg-primary text-primary-foreground px-4 py-2 rounded-md font-medium focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 transition-all"
+        className="fixed top-4 left-4 z-[9999] bg-primary text-primary-foreground px-6 py-3 rounded-xl font-semibold focus:outline-none focus:ring-4 focus:ring-primary/40 focus:ring-offset-2 transition-all shadow-lg hover:shadow-xl"
       >
         Skip to main content
       </a>
       <a
         href="#navigation"
-        className="fixed top-4 left-32 z-[9999] bg-primary text-primary-foreground px-4 py-2 rounded-md font-medium focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 transition-all"
+        className="fixed top-4 left-40 z-[9999] bg-primary text-primary-foreground px-6 py-3 rounded-xl font-semibold focus:outline-none focus:ring-4 focus:ring-primary/40 focus:ring-offset-2 transition-all shadow-lg hover:shadow-xl"
       >
         Skip to navigation
       </a>
@@ -160,7 +160,7 @@ export function LoadingIndicator({ message = 'Loading...', size = 'md' }: Loadin
     >
       <div
         className={cn(
-          'animate-spin rounded-full border-2 border-muted border-t-primary',
+          'animate-spin rounded-full border-4 border-muted/40 border-t-primary shadow-sm',
           sizeClasses[size]
         )}
         aria-hidden="true"
@@ -222,7 +222,7 @@ export function AccessibleError({ error, retry }: AccessibleErrorProps) {
       {retry && (
         <button
           onClick={retry}
-          className="px-4 py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
+          className="px-6 py-3 bg-primary text-primary-foreground rounded-xl hover:bg-primary/90 focus:outline-none focus:ring-4 focus:ring-primary/40 focus:ring-offset-2 transition-all shadow-lg hover:shadow-xl"
           aria-label="Retry the failed action"
         >
           Try Again

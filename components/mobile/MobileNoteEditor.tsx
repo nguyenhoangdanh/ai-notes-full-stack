@@ -208,20 +208,20 @@ export function MobileNoteEditor({ note, onBack, onUpdate }: MobileNoteEditorPro
   return (
     <div className="flex flex-col h-full bg-background">
       {/* Header */}
-      <div className="sticky top-0 bg-background/95 backdrop-blur-sm border-b border-border p-4">
+      <div className="sticky top-0 glass-effect border-b border-border/40 p-4 shadow-sm">
         <div className="flex items-center justify-between mb-4">
           <Button
             variant="ghost"
             size="sm"
             onClick={onBack}
-            className="h-8 w-8 p-0"
+            className="h-9 w-9 p-0 rounded-xl hover:scale-110 transition-transform"
           >
             <ArrowLeft className="h-4 w-4" />
           </Button>
           
           <div className="flex items-center gap-2">
             {hasChanges && (
-              <Badge variant="outline" className="text-xs">
+              <Badge variant="outline" className="text-xs px-2 py-1 bg-amber-50 text-amber-700 border-amber-200 animate-pulse">
                 Unsaved
               </Badge>
             )}
@@ -231,7 +231,7 @@ export function MobileNoteEditor({ note, onBack, onUpdate }: MobileNoteEditorPro
               size="sm"
               onClick={saveChanges}
               disabled={!hasChanges}
-              className="h-8 w-8 p-0"
+              className="h-9 w-9 p-0 rounded-xl hover:scale-110 transition-transform"
             >
               <Check className="h-4 w-4" />
             </Button>
@@ -239,7 +239,7 @@ export function MobileNoteEditor({ note, onBack, onUpdate }: MobileNoteEditorPro
             <Button
               variant="ghost"
               size="sm"
-              className="h-8 w-8 p-0"
+              className="h-9 w-9 p-0 rounded-xl hover:scale-110 transition-transform"
             >
               <Share className="h-4 w-4" />
             </Button>
@@ -252,18 +252,18 @@ export function MobileNoteEditor({ note, onBack, onUpdate }: MobileNoteEditorPro
           value={title}
           onChange={(e) => handleTitleChange(e.target.value)}
           placeholder="Note title..."
-          className="text-lg font-medium border-none bg-transparent p-0 focus-visible:ring-0"
+          className="text-xl font-bold border-none bg-transparent p-0 focus-visible:ring-0 placeholder:text-muted-foreground/50"
         />
       </div>
 
       {/* Formatting Toolbar */}
-      <div className="sticky top-[89px] bg-background/95 backdrop-blur-sm border-b border-border p-2">
+      <div className="sticky top-[89px] glass-effect border-b border-border/40 p-3 shadow-sm">
         <div className="flex items-center gap-1 overflow-x-auto">
           <Button
             variant="ghost"
             size="sm"
             onClick={() => formatText('bold')}
-            className="h-8 px-3 flex-shrink-0"
+            className="h-9 px-3 flex-shrink-0 rounded-xl hover:scale-105 transition-transform"
           >
             <Bold className="h-4 w-4" />
           </Button>
@@ -293,9 +293,9 @@ export function MobileNoteEditor({ note, onBack, onUpdate }: MobileNoteEditorPro
             size="sm"
             onClick={startVoiceRecording}
             disabled={isRecording}
-            className="h-8 px-3 flex-shrink-0"
+            className="h-9 px-3 flex-shrink-0 rounded-xl hover:scale-105 transition-transform"
           >
-            <Mic className={`h-4 w-4 ${isRecording ? 'text-red-500' : ''}`} />
+            <Mic className={`h-4 w-4 transition-colors ${isRecording ? 'text-red-500 animate-pulse' : ''}`} />
           </Button>
           
           <Button
@@ -333,15 +333,15 @@ export function MobileNoteEditor({ note, onBack, onUpdate }: MobileNoteEditorPro
           value={content}
           onChange={(e) => handleContentChange(e.target.value)}
           placeholder="Start writing..."
-          className="w-full h-full resize-none border-none bg-transparent p-0 focus-visible:ring-0 text-base leading-relaxed"
+          className="w-full h-full resize-none border-none bg-transparent p-0 focus-visible:ring-0 text-base leading-relaxed placeholder:text-muted-foreground/50"
         />
       </div>
 
       {/* Tags Section */}
-      <div className="border-t border-border p-4">
-        <div className="flex items-center gap-2 mb-2">
-          <Tag className="h-4 w-4 text-muted-foreground" />
-          <span className="text-sm font-medium">Tags</span>
+      <div className="border-t border-border/40 glass-effect p-4">
+        <div className="flex items-center gap-2 mb-3">
+          <Tag className="h-4 w-4 text-primary" />
+          <span className="text-sm font-semibold">Tags</span>
         </div>
         
         <div className="flex flex-wrap gap-2 mb-3">
@@ -349,7 +349,7 @@ export function MobileNoteEditor({ note, onBack, onUpdate }: MobileNoteEditorPro
             <Badge
               key={index}
               variant="secondary"
-              className="cursor-pointer"
+              className="cursor-pointer hover:scale-105 transition-transform bg-primary/10 text-primary border-primary/20"
               onClick={() => handleRemoveTag(tag)}
             >
               {tag} ×
@@ -362,7 +362,7 @@ export function MobileNoteEditor({ note, onBack, onUpdate }: MobileNoteEditorPro
             value={newTag}
             onChange={(e) => setNewTag(e.target.value)}
             placeholder="Add tag..."
-            className="flex-1 h-8"
+            className="flex-1 h-9 rounded-xl"
             onKeyPress={(e) => {
               if (e.key === 'Enter') {
                 handleAddTag()
@@ -373,7 +373,7 @@ export function MobileNoteEditor({ note, onBack, onUpdate }: MobileNoteEditorPro
             size="sm"
             onClick={handleAddTag}
             disabled={!newTag.trim()}
-            className="h-8 px-3"
+            className="h-9 px-4 rounded-xl"
           >
             Add
           </Button>
@@ -381,14 +381,15 @@ export function MobileNoteEditor({ note, onBack, onUpdate }: MobileNoteEditorPro
       </div>
 
       {/* Note Info */}
-      <div className="border-t border-border p-4 text-xs text-muted-foreground">
+      <div className="border-t border-border/40 glass-effect p-4 text-xs text-muted-foreground bg-muted/30">
         <div className="flex justify-between">
           <span>Created: {new Date(note.createdAt).toLocaleString()}</span>
           <span>Modified: {new Date(note.updatedAt).toLocaleString()}</span>
         </div>
         {note.syncStatus !== 'synced' && (
-          <div className="mt-1">
-            <span className="text-amber-600">● Pending sync</span>
+          <div className="mt-2 flex items-center gap-2">
+            <div className="h-2 w-2 bg-amber-500 rounded-full animate-pulse"></div>
+            <span className="text-amber-600 font-medium">Pending sync</span>
           </div>
         )}
       </div>
