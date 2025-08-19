@@ -78,7 +78,7 @@ export function DashboardOverview() {
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_right,_var(--color-accent-secondary-2)_0%,_transparent_70%)] opacity-20" />
       <ResponsiveContainer padding="md" mobilePadding="sm" className="py-6 xs:py-4 sm:py-8 space-y-8 xs:space-y-6 sm:space-y-12">
         {/* Welcome Section */}
-        <div className="text-center space-y-4 xs:space-y-3 sm:space-y-6 py-8 xs:py-6 sm:py-12">
+        <div className="relative text-center space-y-4 xs:space-y-3 sm:space-y-6 py-8 xs:py-6 sm:py-12">
           <div className="space-y-3 xs:space-y-2 sm:space-y-4">
             <Badge variant="secondary" className="mb-2 xs:mb-1 sm:mb-4 text-xs xs:text-sm px-3 xs:px-4 py-1">
               ✨ Powered by Advanced AI
