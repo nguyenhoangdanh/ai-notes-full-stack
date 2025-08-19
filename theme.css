@@ -65,7 +65,6 @@
 @import '@radix-ui/colors/slate-dark-alpha.css' layer(base);
 
 @import 'tailwindcss/theme' layer(theme);
-
 @import 'tailwindcss/preflight' layer(base);
 
 /*
@@ -82,12 +81,62 @@
   ::before,
   ::backdrop,
   ::file-selector-button {
-    border-color: var(--color-gray-200, currentColor);
+    border-color: var(--color-neutral-6, currentColor);
+  }
+
+  /* Performance: Reduce Paint & Layout */
+  * {
+    backface-visibility: hidden;
+    perspective: 1000px;
+  }
+
+  /* Smooth font rendering */
+  html {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+
+  /* GPU Acceleration for transforms */
+  .will-change-transform {
+    will-change: transform;
+    transform: translateZ(0);
+  }
+
+  .will-change-opacity {
+    will-change: opacity;
+  }
+
+  .will-change-auto {
+    will-change: auto;
+  }
+
+  /* Optimize scrolling */
+  .smooth-scroll {
+    scroll-behavior: smooth;
+  }
+
+  /* Enhanced focus management */
+  :focus {
+    outline: none;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-accent-9);
+    outline-offset: 2px;
+    border-radius: var(--radius-sm);
+  }
+
+  /* Hardware acceleration for common elements */
+  .gpu-accelerated {
+    transform: translate3d(0, 0, 0);
+    will-change: transform, opacity;
   }
 }
 
 @layer base {
   #spark-app {
+    /* Color Contrast Ratios */
     --tomato-contrast: #fff;
     --red-contrast: #fff;
     --ruby-contrast: #fff;
@@ -105,7 +154,7 @@
     --green-contrast: #fff;
     --grass-contrast: #fff;
     --bronze-contrast: #fff;
-    --gold-contrast: #fff;
+    --gold-contrast: #000;
     --brown-contrast: #fff;
     --orange-contrast: #fff;
     --amber-contrast: #000;
@@ -120,16 +169,7 @@
     --olive-contrast: #fff;
     --sand-contrast: #fff;
 
-    /**
-   * Spacing scale
-   *
-   * These variables define a spacing scale based on Tailwind's default.
-   * We've introduced a --size-scale variable as a multiplier.
-   * By adjusting this single value, we can proportionally
-   * scale all spacing throughout the entire application.
-   *
-   * https://tailwindcss.com/docs/customizing-spacing#default-spacing-scale
-   */
+    /* Modern Spacing Scale with Fluid Design */
     --size-scale: 1;
     --size-0: 0px;
     --size-px: 1px;
@@ -167,78 +207,101 @@
     --size-80: calc(20rem * var(--size-scale));
     --size-96: calc(24rem * var(--size-scale));
 
-    /* Border radii */
-    --radius-factor: 1;
-    --radius-sm: calc(2px * var(--radius-factor) * var(--size-scale));
-    --radius-md: calc(6px * var(--radius-factor) * var(--size-scale));
-    --radius-lg: calc(8px * var(--radius-factor) * var(--size-scale));
-    --radius-xl: calc(12px * var(--radius-factor) * var(--size-scale));
-    --radius-2xl: calc(16px * var(--radius-factor) * var(--size-scale));
-    --radius-full: 9999px;
-    --radius-3xl: calc(24px * var(--radius-factor) * var(--size-scale));
-
-    /* Additional spacing for modern layouts */
+    /* Extended spacing for modern layouts */
     --size-112: calc(28rem * var(--size-scale));
     --size-128: calc(32rem * var(--size-scale));
     --size-144: calc(36rem * var(--size-scale));
     --size-160: calc(40rem * var(--size-scale));
+    --size-176: calc(44rem * var(--size-scale));
+    --size-192: calc(48rem * var(--size-scale));
 
-    /* Container Sizes */
+    /* Enhanced Border Radius System */
+    --radius-factor: 1;
+    --radius-xs: calc(1px * var(--radius-factor) * var(--size-scale));
+    --radius-sm: calc(4px * var(--radius-factor) * var(--size-scale));
+    --radius-md: calc(8px * var(--radius-factor) * var(--size-scale));
+    --radius-lg: calc(12px * var(--radius-factor) * var(--size-scale));
+    --radius-xl: calc(16px * var(--radius-factor) * var(--size-scale));
+    --radius-2xl: calc(20px * var(--radius-factor) * var(--size-scale));
+    --radius-3xl: calc(28px * var(--radius-factor) * var(--size-scale));
+    --radius-4xl: calc(36px * var(--radius-factor) * var(--size-scale));
+    --radius-5xl: calc(48px * var(--radius-factor) * var(--size-scale));
+    --radius-full: 9999px;
+
+    /* Modern Container System */
+    --container-xs: 320px;
     --container-sm: 640px;
     --container-md: 768px;
     --container-lg: 1024px;
     --container-xl: 1280px;
     --container-2xl: 1536px;
+    --container-3xl: 1920px;
 
-    /* Z-index Scale */
-    --z-0: 0;
-    --z-10: 10;
-    --z-20: 20;
-    --z-30: 30;
-    --z-40: 40;
-    --z-50: 50;
-    --z-auto: auto;
+    /* Enhanced Z-Index Scale */
+    --z-hide: -1;
+    --z-base: 0;
+    --z-docked: 10;
+    --z-dropdown: 1000;
+    --z-sticky: 1100;
+    --z-banner: 1200;
+    --z-overlay: 1300;
+    --z-modal: 1400;
+    --z-popover: 1500;
+    --z-skip-nav: 1600;
+    --z-toast: 1700;
+    --z-tooltip: 1800;
 
-    /* Shadows - Enhanced layered shadow system */
-    --shadow-xs: 0 1px 2px 0 rgb(0 0 0 / 0.05);
-    --shadow-sm: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
-    --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
-    --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
-    --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
-    --shadow-2xl: 0 25px 50px -12px rgb(0 0 0 / 0.25);
-    --shadow-inner: inset 0 2px 4px 0 rgb(0 0 0 / 0.05);
-    --shadow-glow: 0 0 20px 0 rgb(var(--color-accent-9) / 0.3);
-    --shadow-colored: 0 8px 25px -5px rgb(var(--color-accent-9) / 0.2);
-    --shadow-border: 0 0 0 1px rgb(0 0 0 / 0.05);
+    /* Advanced Shadow System */
+    --shadow-xs: 0 1px 2px 0 rgb(0 0 0 / 0.03), 0 1px 1px 0 rgb(0 0 0 / 0.06);
+    --shadow-sm: 0 1px 3px 0 rgb(0 0 0 / 0.08), 0 1px 2px -1px rgb(0 0 0 / 0.08);
+    --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.07), 0 2px 4px -2px rgb(0 0 0 / 0.07);
+    --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.08), 0 4px 6px -4px rgb(0 0 0 / 0.08);
+    --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.08), 0 8px 10px -6px rgb(0 0 0 / 0.08);
+    --shadow-2xl: 0 25px 50px -12px rgb(0 0 0 / 0.15);
+    --shadow-inner: inset 0 2px 4px 0 rgb(0 0 0 / 0.04);
+    --shadow-none: 0 0 #0000;
 
-    /* Modern Glass Effect */
-    --glass-bg: rgb(255 255 255 / 0.8);
-    --glass-border: rgb(255 255 255 / 0.18);
-    --glass-backdrop: blur(16px) saturate(180%);
+    /* Modern Glass Morphism */
+    --glass-bg: color-mix(in srgb, transparent 20%, white);
+    --glass-bg-strong: color-mix(in srgb, transparent 10%, white);
+    --glass-border: color-mix(in srgb, transparent 80%, white);
+    --glass-border-strong: color-mix(in srgb, transparent 60%, white);
+    --glass-blur: blur(20px) saturate(180%) brightness(110%);
+    --glass-blur-strong: blur(24px) saturate(200%) brightness(120%);
 
-    /* Enhanced Border Radius */
-    --radius-xs: calc(1px * var(--radius-factor) * var(--size-scale));
-    --radius-4xl: calc(32px * var(--radius-factor) * var(--size-scale));
-    --radius-5xl: calc(40px * var(--radius-factor) * var(--size-scale));
+    /* Elevation Shadows */
+    --elevation-1: var(--shadow-sm);
+    --elevation-2: var(--shadow-md);
+    --elevation-3: var(--shadow-lg);
+    --elevation-4: var(--shadow-xl);
+    --elevation-5: var(--shadow-2xl);
 
-    /* Animation Durations */
-    --duration-75: 75ms;
-    --duration-100: 100ms;
-    --duration-150: 150ms;
-    --duration-200: 200ms;
-    --duration-300: 300ms;
-    --duration-500: 500ms;
-    --duration-700: 700ms;
-    --duration-1000: 1000ms;
+    /* Colored Shadows for Modern UI */
+    --shadow-glow-primary: 0 0 20px color-mix(in srgb, var(--color-accent-9) 30%, transparent);
+    --shadow-glow-secondary: 0 0 20px color-mix(in srgb, var(--color-accent-secondary-9) 25%, transparent);
+    --shadow-colored-primary: 0 8px 25px -5px color-mix(in srgb, var(--color-accent-9) 20%, transparent);
+    --shadow-colored-secondary: 0 8px 25px -5px color-mix(in srgb, var(--color-accent-secondary-9) 15%, transparent);
 
-    /* Animation Easings */
+    /* Enhanced Animation System */
+    --duration-instant: 0ms;
+    --duration-fast: 150ms;
+    --duration-normal: 250ms;
+    --duration-slow: 350ms;
+    --duration-slower: 500ms;
+    --duration-slowest: 750ms;
+
+    /* Advanced Easing Functions */
     --ease-linear: linear;
     --ease-in: cubic-bezier(0.4, 0, 1, 1);
     --ease-out: cubic-bezier(0, 0, 0.2, 1);
     --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
-    --ease-bounce: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    --ease-back-in: cubic-bezier(0.36, 0, 0.66, -0.56);
+    --ease-back-out: cubic-bezier(0.34, 1.56, 0.64, 1);
+    --ease-back-in-out: cubic-bezier(0.68, -0.6, 0.32, 1.6);
+    --ease-elastic-out: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    --ease-bounce-out: cubic-bezier(0.68, -0.55, 0.265, 1.55);
 
-    /* Typography Scale - Improved fluid typography */
+    /* Fluid Typography Scale */
     --text-xs: clamp(0.75rem, 0.73rem + 0.1vw, 0.8rem);
     --text-sm: clamp(0.875rem, 0.85rem + 0.125vw, 0.9rem);
     --text-base: clamp(1rem, 0.97rem + 0.15vw, 1.0625rem);
@@ -250,9 +313,12 @@
     --text-5xl: clamp(3rem, 2.6rem + 2vw, 4rem);
     --text-6xl: clamp(3.75rem, 3.2rem + 2.75vw, 5rem);
     --text-7xl: clamp(4.5rem, 3.8rem + 3.5vw, 6rem);
+    --text-8xl: clamp(6rem, 5rem + 5vw, 8rem);
+    --text-9xl: clamp(8rem, 6.5rem + 7.5vw, 10rem);
 
-    /* Font Weights */
+    /* Enhanced Font System */
     --font-weight-thin: 100;
+    --font-weight-extralight: 200;
     --font-weight-light: 300;
     --font-weight-normal: 400;
     --font-weight-medium: 500;
@@ -261,7 +327,7 @@
     --font-weight-extrabold: 800;
     --font-weight-black: 900;
 
-    /* Line Heights */
+    /* Improved Line Heights */
     --leading-none: 1;
     --leading-tight: 1.25;
     --leading-snug: 1.375;
@@ -277,7 +343,7 @@
     --tracking-wider: 0.05em;
     --tracking-widest: 0.1em;
 
-    /* Neutral colors */
+    /* Enhanced Color System */
     --color-neutral-1: var(--slate-1);
     --color-neutral-2: var(--slate-2);
     --color-neutral-3: var(--slate-3);
@@ -304,22 +370,22 @@
     --color-neutral-a12: var(--slate-a12);
     --color-neutral-contrast: var(--slate-contrast);
 
-    /* Accent colors */
-    --color-accent-1: var(--blue-1);
-    --color-accent-2: var(--blue-2);
-    --color-accent-3: var(--blue-3);
-    --color-accent-4: var(--blue-4);
-    --color-accent-5: var(--blue-5);
-    --color-accent-6: var(--blue-6);
-    --color-accent-7: var(--blue-7);
-    --color-accent-8: var(--blue-8);
-    --color-accent-9: var(--blue-9);
-    --color-accent-10: var(--blue-10);
-    --color-accent-11: var(--blue-11);
-    --color-accent-12: var(--blue-12);
-    --color-accent-contrast: var(--blue-contrast);
+    /* Primary Accent Colors */
+    --color-accent-1: var(--indigo-1);
+    --color-accent-2: var(--indigo-2);
+    --color-accent-3: var(--indigo-3);
+    --color-accent-4: var(--indigo-4);
+    --color-accent-5: var(--indigo-5);
+    --color-accent-6: var(--indigo-6);
+    --color-accent-7: var(--indigo-7);
+    --color-accent-8: var(--indigo-8);
+    --color-accent-9: var(--indigo-9);
+    --color-accent-10: var(--indigo-10);
+    --color-accent-11: var(--indigo-11);
+    --color-accent-12: var(--indigo-12);
+    --color-accent-contrast: var(--indigo-contrast);
 
-    /* Secondary accent colors */
+    /* Secondary Accent Colors */
     --color-accent-secondary-1: var(--violet-1);
     --color-accent-secondary-2: var(--violet-2);
     --color-accent-secondary-3: var(--violet-3);
@@ -334,81 +400,356 @@
     --color-accent-secondary-12: var(--violet-12);
     --color-accent-secondary-contrast: var(--violet-contrast);
 
-    /* Foreground colors */
+    /* Semantic Colors */
+    --color-success-1: var(--green-1);
+    --color-success-9: var(--green-9);
+    --color-success-11: var(--green-11);
+    --color-warning-1: var(--amber-1);
+    --color-warning-9: var(--amber-9);
+    --color-warning-11: var(--amber-11);
+    --color-error-1: var(--red-1);
+    --color-error-9: var(--red-9);
+    --color-error-11: var(--red-11);
+    --color-info-1: var(--blue-1);
+    --color-info-9: var(--blue-9);
+    --color-info-11: var(--blue-11);
+
+    /* UI Color Tokens */
     --color-fg: var(--color-neutral-12);
-    --color-fg-secondary: var(--color-neutral-a11);
+    --color-fg-secondary: var(--color-neutral-11);
+    --color-fg-muted: var(--color-neutral-10);
+    --color-fg-subtle: var(--color-neutral-9);
 
-    /* Background colors */
     --color-bg: #ffffff;
-    --color-bg-inset: var(--color-neutral-2);
-    --color-bg-overlay: #ffffff;
+    --color-bg-inset: var(--color-neutral-1);
+    --color-bg-overlay: color-mix(in srgb, white 95%, transparent);
+    --color-bg-elevated: #ffffff;
+    --color-bg-surface: var(--color-neutral-2);
 
-    /* Focus ring */
+    --color-border: var(--color-neutral-6);
+    --color-border-strong: var(--color-neutral-8);
+    --color-border-subtle: var(--color-neutral-4);
+
     --color-focus-ring: var(--color-accent-9);
 
-    /* Fonts */
-    --font-sans-serif: ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji",
-      "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+    /* Font Families */
+    --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
     --font-serif: ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
-    --font-monospace: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
-      "Liberation Mono", "Courier New", monospace;
-    --font-family: var(--font-sans-serif);
+    --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    --font-family: var(--font-sans);
   }
 
+  /* Dark Mode Theme */
   #spark-app.dark-theme {
     --color-bg: var(--color-neutral-1);
     --color-bg-inset: #000000;
-    --color-bg-overlay: var(--color-neutral-3);
+    --color-bg-overlay: color-mix(in srgb, var(--color-neutral-1) 95%, transparent);
+    --color-bg-elevated: var(--color-neutral-2);
+    --color-bg-surface: var(--color-neutral-3);
 
     /* Dark mode glass effects */
-    --glass-bg: rgb(0 0 0 / 0.6);
-    --glass-border: rgb(255 255 255 / 0.1);
+    --glass-bg: color-mix(in srgb, transparent 70%, var(--color-neutral-1));
+    --glass-bg-strong: color-mix(in srgb, transparent 50%, var(--color-neutral-1));
+    --glass-border: color-mix(in srgb, transparent 85%, white);
+    --glass-border-strong: color-mix(in srgb, transparent 70%, white);
 
-    /* Dark mode shadows */
-    --shadow-xs: 0 1px 2px 0 rgb(0 0 0 / 0.2);
+    /* Enhanced dark mode shadows */
+    --shadow-xs: 0 1px 2px 0 rgb(0 0 0 / 0.2), 0 1px 1px 0 rgb(0 0 0 / 0.3);
     --shadow-sm: 0 1px 3px 0 rgb(0 0 0 / 0.3), 0 1px 2px -1px rgb(0 0 0 / 0.3);
     --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.4), 0 2px 4px -2px rgb(0 0 0 / 0.4);
     --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.5), 0 4px 6px -4px rgb(0 0 0 / 0.5);
     --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.6), 0 8px 10px -6px rgb(0 0 0 / 0.6);
     --shadow-2xl: 0 25px 50px -12px rgb(0 0 0 / 0.8);
-    --shadow-inner: inset 0 2px 4px 0 rgb(0 0 0 / 0.2);
-    --shadow-glow: 0 0 20px 0 rgb(var(--color-accent-9) / 0.5);
-    --shadow-colored: 0 8px 25px -5px rgb(var(--color-accent-9) / 0.4);
-    --shadow-border: 0 0 0 1px rgb(255 255 255 / 0.1);
+    --shadow-inner: inset 0 2px 4px 0 rgb(0 0 0 / 0.3);
 
-    /* Enhanced dark mode consistency */
-    --color-fg: var(--color-neutral-12);
-    --color-fg-secondary: var(--color-neutral-a11);
-    --color-focus-ring: var(--color-accent-9);
-
-    /* Dark mode specific adjustments */
-    --color-card: var(--color-neutral-2);
-    --color-muted: var(--color-neutral-3);
-    --color-accent-foreground: var(--color-neutral-1);
-    --color-secondary: var(--color-neutral-4);
-    --color-secondary-foreground: var(--color-neutral-11);
+    /* Dark mode color adjustments */
+    --color-border: var(--color-neutral-6);
+    --color-border-strong: var(--color-neutral-8);
+    --color-border-subtle: var(--color-neutral-4);
   }
 
-  /* Custom utility classes */
+  /* High Contrast Mode Support */
+  @media (prefers-contrast: high) {
+    #spark-app {
+      --color-accent-9: #0066cc;
+      --color-border: var(--color-neutral-8);
+      --shadow-xs: 0 1px 2px 0 rgb(0 0 0 / 0.2);
+      --shadow-sm: 0 1px 3px 0 rgb(0 0 0 / 0.25);
+    }
+    
+    #spark-app.dark-theme {
+      --color-accent-9: #4d9eff;
+      --color-border: var(--color-neutral-7);
+    }
+  }
+
+  /* Reduced Motion Support */
+  @media (prefers-reduced-motion: reduce) {
+    #spark-app {
+      --duration-fast: 1ms;
+      --duration-normal: 1ms;
+      --duration-slow: 1ms;
+      --duration-slower: 1ms;
+      --duration-slowest: 1ms;
+      
+      --ease-back-in: ease;
+      --ease-back-out: ease;
+      --ease-back-in-out: ease;
+      --ease-elastic-out: ease;
+      --ease-bounce-out: ease;
+    }
+  }
+}
+
+@layer components {
+  /* Modern Glass Morphism Components */
   .glass-effect {
     background: var(--glass-bg);
     border: 1px solid var(--glass-border);
-    backdrop-filter: var(--glass-backdrop);
-    -webkit-backdrop-filter: var(--glass-backdrop);
+    backdrop-filter: var(--glass-blur);
+    -webkit-backdrop-filter: var(--glass-blur);
   }
 
+  .glass-effect-strong {
+    background: var(--glass-bg-strong);
+    border: 1px solid var(--glass-border-strong);
+    backdrop-filter: var(--glass-blur-strong);
+    -webkit-backdrop-filter: var(--glass-blur-strong);
+  }
+
+  /* Advanced Text Gradients */
   .text-gradient {
     background: linear-gradient(135deg, var(--color-accent-11), var(--color-accent-secondary-11));
     -webkit-background-clip: text;
     background-clip: text;
     -webkit-text-fill-color: transparent;
+    background-size: 200% 200%;
+    animation: gradient-flow 3s ease-in-out infinite;
   }
 
+  .text-gradient-primary {
+    background: linear-gradient(135deg, var(--color-accent-9), var(--color-accent-11));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .text-gradient-secondary {
+    background: linear-gradient(135deg, var(--color-accent-secondary-9), var(--color-accent-secondary-11));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  /* Modern Shadow Utilities */
   .shadow-glow {
-    box-shadow: var(--shadow-glow);
+    box-shadow: var(--shadow-glow-primary);
+  }
+
+  .shadow-glow-secondary {
+    box-shadow: var(--shadow-glow-secondary);
   }
 
   .shadow-colored {
-    box-shadow: var(--shadow-colored);
+    box-shadow: var(--shadow-colored-primary);
+  }
+
+  .shadow-colored-secondary {
+    box-shadow: var(--shadow-colored-secondary);
+  }
+
+  /* Elevation System */
+  .elevation-1 { box-shadow: var(--elevation-1); }
+  .elevation-2 { box-shadow: var(--elevation-2); }
+  .elevation-3 { box-shadow: var(--elevation-3); }
+  .elevation-4 { box-shadow: var(--elevation-4); }
+  .elevation-5 { box-shadow: var(--elevation-5); }
+
+  /* Performance-optimized animations */
+  .animate-fade-in {
+    animation: fadeIn var(--duration-normal) var(--ease-out) forwards;
+  }
+
+  .animate-slide-up {
+    animation: slideUp var(--duration-normal) var(--ease-out) forwards;
+  }
+
+  .animate-scale-in {
+    animation: scaleIn var(--duration-fast) var(--ease-back-out) forwards;
+  }
+
+  .animate-pulse-soft {
+    animation: pulseSoft 2s var(--ease-in-out) infinite;
+  }
+
+  /* Modern Loading States */
+  .skeleton {
+    background: linear-gradient(90deg, 
+      color-mix(in srgb, var(--color-neutral-3) 50%, transparent) 25%, 
+      color-mix(in srgb, var(--color-neutral-4) 50%, transparent) 50%, 
+      color-mix(in srgb, var(--color-neutral-3) 50%, transparent) 75%
+    );
+    background-size: 200% 100%;
+    animation: shimmer 1.5s ease-in-out infinite;
+  }
+
+  /* Interactive States */
+  .interactive {
+    transition: all var(--duration-fast) var(--ease-out);
+    cursor: pointer;
+  }
+
+  .interactive:hover {
+    transform: translateY(-1px);
+    box-shadow: var(--elevation-2);
+  }
+
+  .interactive:active {
+    transform: translateY(0);
+    box-shadow: var(--elevation-1);
+  }
+
+  /* Focus Management */
+  .focus-ring {
+    outline: 2px solid var(--color-focus-ring);
+    outline-offset: 2px;
+    border-radius: var(--radius-sm);
+  }
+
+  /* Modern Button Variants */
+  .btn-glass {
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    backdrop-filter: var(--glass-blur);
+    -webkit-backdrop-filter: var(--glass-blur);
+    transition: all var(--duration-fast) var(--ease-out);
+  }
+
+  .btn-glass:hover {
+    background: var(--glass-bg-strong);
+    border-color: var(--glass-border-strong);
+    transform: translateY(-1px);
+    box-shadow: var(--elevation-2);
+  }
+
+  /* Content Layout */
+  .content-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: var(--size-6);
+  }
+
+  .content-container {
+    max-width: var(--container-xl);
+    margin: 0 auto;
+    padding: 0 var(--size-4);
+  }
+
+  /* Responsive Utilities */
+  .responsive-padding {
+    padding: clamp(var(--size-4), 4vw, var(--size-8));
+  }
+
+  .responsive-margin {
+    margin: clamp(var(--size-4), 4vw, var(--size-8));
+  }
+}
+
+@layer utilities {
+  /* Performance Utilities */
+  .gpu-accelerated {
+    transform: translate3d(0, 0, 0);
+    will-change: transform, opacity;
+  }
+
+  .will-change-transform {
+    will-change: transform;
+  }
+
+  .will-change-opacity {
+    will-change: opacity;
+  }
+
+  .will-change-auto {
+    will-change: auto;
+  }
+
+  /* Animation States */
+  .animate-in {
+    animation-fill-mode: forwards;
+  }
+
+  .animate-out {
+    animation-fill-mode: forwards;
+    animation-direction: reverse;
+  }
+}
+
+/* Keyframes for modern animations */
+@keyframes gradient-flow {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { 
+    opacity: 0; 
+    transform: translateY(20px); 
+  }
+  to { 
+    opacity: 1; 
+    transform: translateY(0); 
+  }
+}
+
+@keyframes scaleIn {
+  from { 
+    opacity: 0; 
+    transform: scale(0.95); 
+  }
+  to { 
+    opacity: 1; 
+    transform: scale(1); 
+  }
+}
+
+@keyframes pulseSoft {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+/* Enhanced Print Styles */
+@media print {
+  #spark-app {
+    --color-bg: white;
+    --color-fg: black;
+    --color-border: #cccccc;
+  }
+
+  .glass-effect,
+  .glass-effect-strong {
+    background: white;
+    border: 1px solid #cccccc;
+    backdrop-filter: none;
+  }
+
+  .shadow-glow,
+  .shadow-colored,
+  .elevation-1,
+  .elevation-2,
+  .elevation-3,
+  .elevation-4,
+  .elevation-5 {
+    box-shadow: none;
   }
 }
