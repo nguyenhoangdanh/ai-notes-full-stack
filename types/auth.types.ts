@@ -61,6 +61,13 @@ export interface UserSettings {
   updatedAt: string;
 }
 
+// Settings DTOs - match backend exactly
+export interface UpdateSettingsDto {
+  model?: string;
+  maxTokens?: number;
+  autoReembed?: boolean;
+}
+
 export interface Usage {
   id: string;
   ownerId: string;

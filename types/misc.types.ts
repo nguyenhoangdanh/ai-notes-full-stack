@@ -48,10 +48,42 @@ export interface UserActivity extends BaseEntity {
   userId: string
   action: string // CREATE, UPDATE, DELETE, VIEW, SEARCH
   noteId?: string
+  workspaceId?: string
   metadata?: Record<string, any>
 }
 
-// Analytics
+// Analytics DTOs - match backend endpoints
+export interface TrackNoteActionDto {
+  action: 'view' | 'edit' | 'share';
+}
+
+export interface AnalyticsOverview {
+  totalNotes: number;
+  totalViews: number;
+  totalEdits: number;
+  totalShares: number;
+  averageReadingTime: number;
+  topTags: Array<{ tag: string; count: number }>;
+  activityTrend: Array<{ date: string; actions: number }>;
+}
+
+export interface WorkspaceAnalytics {
+  workspaceId: string;
+  workspaceName: string;
+  noteCount: number;
+  totalActivity: number;
+  collaboratorsCount: number;
+  averageNoteLength: number;
+}
+
+export interface ContentAnalytics {
+  wordCount: number;
+  readingTime: number;
+  topKeywords: Array<{ keyword: string; frequency: number }>;
+  contentTrend: Array<{ date: string; wordCount: number }>;
+}
+
+// Analytics DTOs - match backend endpoints
 export interface Analytics extends BaseEntity {
   userId: string
   type: string
