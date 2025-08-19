@@ -342,12 +342,12 @@ export function Sidebar({ collapsed, onToggle, isMobile = false }: SidebarProps)
 
       {/* Footer */}
       {!collapsed && (
-        <div className="p-4 border-t border-border/60">
+        <div className="p-4 border-t border-border/40 bg-gradient-to-r from-primary/5 to-accent-secondary/5">
           <div className="flex items-center justify-between">
-            <div className="text-xs text-muted-foreground">
+            <div className="text-xs text-muted-foreground font-medium">
               AI Notes v1.0.0
             </div>
-            <Badge variant="secondary" className="text-xs px-2 py-1">
+            <Badge variant="secondary" className="text-xs px-2.5 py-1 bg-primary/10 text-primary border-primary/20 shadow-xs">
               Beta
             </Badge>
           </div>
