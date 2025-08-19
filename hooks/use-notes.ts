@@ -230,12 +230,12 @@ export function useCreateNoteVersion() {
 
   return useMutation<SimpleNoteVersion, Error, { noteId: string; changeLog?: string }>({
     mutationFn: ({ noteId, changeLog }: { noteId: string; changeLog?: string }) =>
-      noteService.createVersion(noteId, changeLog) as Promise<SimpleNoteVersion>,
+      noteService.createVersion(noteId, changeLog) as any,
     onSuccess: (newVersion: SimpleNoteVersion) => {
       // Add to versions list
       queryClient.setQueryData(
         queryKeys.notes.versions(newVersion.noteId),
-        (old: NoteVersion[] = []) => [newVersion, ...old]
+        (old: SimpleNoteVersion[] = []) => [newVersion, ...old]
       )
       
       toast.success(`Version ${newVersion.version} created`)

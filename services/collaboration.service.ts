@@ -22,7 +22,7 @@ import {
   TrackActivityDto,
   ProductivityHeatmap,
   Tag,
-  CreateTagDto,
+  CollabCreateTagDto as CreateTagDto,
   UpdateTagDto,
   TagHierarchy,
   TagAnalytics,

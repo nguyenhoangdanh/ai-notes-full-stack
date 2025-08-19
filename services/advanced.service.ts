@@ -1,7 +1,7 @@
 import { apiClient } from '../lib/api-client';
 import {
   Template,
-  CreateTemplateDto,
+  AdvancedCreateTemplateDto as CreateTemplateDto,
   UpdateTemplateDto,
   ProcessTemplateDto,
   TemplateStats,
@@ -20,7 +20,7 @@ import {
   ContentAnalytics,
   TrackNoteViewDto,
   ExportJob,
-  CreateExportDto,
+  AdvancedCreateExportDto as CreateExportDto,
   ExportStats
 } from '../types';
 
