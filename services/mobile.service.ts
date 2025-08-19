@@ -8,7 +8,7 @@ import type {
   ConflictResolutionDto,
   OfflineSync,
   ExportHistory,
-  CreateExportDto,
+  AdvancedCreateExportDto as CreateExportDto,
 } from '../types'
 
 export const mobileService = {

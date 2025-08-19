@@ -9,7 +9,7 @@ import type {
   UpdateNoteDto,
   SearchNotesDto,
   SearchResult,
-  NoteVersion,
+  NoteVersion as SimpleNoteVersion,
   Collaboration,
   Permission,
   ShareLink,
@@ -228,14 +228,14 @@ export function useProcessNoteForRAG() {
 export function useCreateNoteVersion() {
   const queryClient = useQueryClient()
 
-  return useMutation({
+  return useMutation<SimpleNoteVersion, Error, { noteId: string; changeLog?: string }>({
     mutationFn: ({ noteId, changeLog }: { noteId: string; changeLog?: string }) =>
-      noteService.createVersion(noteId, changeLog),
-    onSuccess: (newVersion: NoteVersion) => {
+      noteService.createVersion(noteId, changeLog) as any,
+    onSuccess: (newVersion: SimpleNoteVersion) => {
       // Add to versions list
       queryClient.setQueryData(
         queryKeys.notes.versions(newVersion.noteId),
-        (old: NoteVersion[] = []) => [newVersion, ...old]
+        (old: SimpleNoteVersion[] = []) => [newVersion, ...old]
       )
       
       toast.success(`Version ${newVersion.version} created`)

@@ -3,12 +3,12 @@ import type {
   PomodoroSession,
   CreatePomodoroSessionDto,
   UpdatePomodoroSessionDto,
-  Task,
-  CreateTaskDto,
-  UpdateTaskDto,
+  ProductivityTask as Task,
+  ProductivityCreateTaskDto as CreateTaskDto,
+  ProductivityUpdateTaskDto as UpdateTaskDto,
   CalendarEvent,
-  CreateCalendarEventDto,
-  UpdateCalendarEventDto,
+  ProductivityCreateCalendarEventDto as CreateCalendarEventDto,
+  ProductivityUpdateCalendarEventDto as UpdateCalendarEventDto,
   ReviewPrompt,
 } from '../types'
 
