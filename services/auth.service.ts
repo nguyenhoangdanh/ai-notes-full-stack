@@ -81,5 +81,12 @@ export const authService = {
    */
   async getUsage(days: number = 30): Promise<any> {
     return apiClient.get('/settings/usage', { query: { days: days.toString() } });
+  },
+
+  /**
+   * Logout user (clears server-side cookie)
+   */
+  async logout(): Promise<{ message: string }> {
+    return apiClient.post('/auth/logout');
   }
 };
