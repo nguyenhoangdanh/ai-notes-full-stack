@@ -9,7 +9,9 @@
         "start": "next start -p 5000",
         "lint": "next lint",
         "analyze": "ANALYZE=true next build",
-        "kill": "fuser -k 5000/tcp"
+        "kill": "fuser -k 5000/tcp",
+        "validate-env": "npx tsx scripts/validate-env.ts",
+        "prebuild": "npm run validate-env"
     },
     "dependencies": {
         "@github/spark": "^0.39.0",
