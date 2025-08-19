@@ -375,6 +375,18 @@
     --shadow-glow: 0 0 20px 0 rgb(var(--color-accent-9) / 0.5);
     --shadow-colored: 0 8px 25px -5px rgb(var(--color-accent-9) / 0.4);
     --shadow-border: 0 0 0 1px rgb(255 255 255 / 0.1);
+
+    /* Enhanced dark mode consistency */
+    --color-fg: var(--color-neutral-12);
+    --color-fg-secondary: var(--color-neutral-a11);
+    --color-focus-ring: var(--color-accent-9);
+
+    /* Dark mode specific adjustments */
+    --color-card: var(--color-neutral-2);
+    --color-muted: var(--color-neutral-3);
+    --color-accent-foreground: var(--color-neutral-1);
+    --color-secondary: var(--color-neutral-4);
+    --color-secondary-foreground: var(--color-neutral-11);
   }
 
   /* Custom utility classes */
