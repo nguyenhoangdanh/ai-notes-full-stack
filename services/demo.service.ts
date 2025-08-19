@@ -200,6 +200,14 @@ class DemoModeService {
     return [...this.demoData.notes]
   }
 
+  getDemoNote(id: string): Note {
+    const note = this.demoData.notes.find(n => n.id === id)
+    if (!note) {
+      throw new Error('Note not found')
+    }
+    return { ...note }
+  }
+
   async createDemoNote(data: CreateNoteDto): Promise<Note> {
     const newNote: Note = {
       id: 'demo-note-' + Date.now(),

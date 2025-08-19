@@ -210,7 +210,12 @@ export class SyncService {
     })
 
     if (!response.ok) {
-      throw new Error(`Create failed: ${response.statusText}`)
+      const errorText = await response.text()
+      if (response.status === 401) {
+        console.warn('Sync failed: Unauthorized. User may need to log in again.')
+        throw new Error('Authentication required for sync')
+      }
+      throw new Error(`Create failed: ${response.statusText} - ${errorText}`)
     }
 
     const serverData = await response.json()
@@ -226,12 +231,17 @@ export class SyncService {
     })
 
     if (!response.ok) {
+      if (response.status === 401) {
+        console.warn('Sync failed: Unauthorized. User may need to log in again.')
+        throw new Error('Authentication required for sync')
+      }
       if (response.status === 404) {
         // Entity doesn't exist on server, create it
         await this.handleCreate(apiBase, operation)
         return
       }
-      throw new Error(`Update failed: ${response.statusText}`)
+      const errorText = await response.text()
+      throw new Error(`Update failed: ${response.statusText} - ${errorText}`)
     }
 
     const serverData = await response.json()
@@ -270,7 +280,14 @@ export class SyncService {
         headers: this.getHeaders()
       })
 
-      if (!response.ok) return
+      if (!response.ok) {
+        if (response.status === 401) {
+          console.warn('Sync failed: Unauthorized. User may need to log in again.')
+          throw new Error('Authentication required for sync')
+        }
+        console.warn(`Failed to fetch notes from server: ${response.status} ${response.statusText}`)
+        return
+      }
 
       const serverNotes = await response.json()
 
@@ -363,7 +380,7 @@ export class SyncService {
 
   // Utility Methods
   private getApiBase(): string {
-    return process.env.NEXT_PUBLIC_API_BASE_URL || process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:3001/api'
+    return process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:3000/api'
   }
 
   private getHeaders(): Record<string, string> {

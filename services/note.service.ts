@@ -119,5 +119,133 @@ export const noteService = {
 
   async processForRAG(id: string): Promise<{ message: string }> {
     return this.processRAG(id);
+  },
+
+  /**
+   * Get note versions/history
+   */
+  async getNoteVersions(noteId: string): Promise<any[]> {
+    if (demoModeService.isDemoMode()) {
+      return []; // Demo mode doesn't support versions
+    }
+    const response = await apiClient.get<any>(`/versions/notes/${noteId}/history`);
+    return response.versions || [];
+  },
+
+  /**
+   * Get specific version
+   */
+  async getVersion(versionId: string): Promise<any> {
+    if (demoModeService.isDemoMode()) {
+      throw new Error('Versions not supported in demo mode');
+    }
+    const response = await apiClient.get<any>(`/versions/${versionId}`);
+    return response.version;
+  },
+
+  /**
+   * Create note version
+   */
+  async createVersion(noteId: string, data?: { changeLog?: string; changeType?: string }): Promise<any> {
+    if (demoModeService.isDemoMode()) {
+      return { success: true, message: 'Version created (demo mode)' };
+    }
+    return apiClient.post<any>(`/versions/notes/${noteId}/create`, { body: data });
+  },
+
+  /**
+   * Restore note version
+   */
+  async restoreVersion(versionId: string): Promise<any> {
+    if (demoModeService.isDemoMode()) {
+      return { success: true, message: 'Version restored (demo mode)' };
+    }
+    return apiClient.post<any>(`/versions/${versionId}/restore`);
+  },
+
+  /**
+   * Get note collaborators
+   */
+  async getCollaborators(noteId: string): Promise<any[]> {
+    if (demoModeService.isDemoMode()) {
+      return []; // Demo mode doesn't support collaboration
+    }
+    return apiClient.get<any[]>(`/collaboration/notes/${noteId}`);
+  },
+
+  /**
+   * Get note share links
+   */
+  async getShareLinks(noteId: string): Promise<any[]> {
+    if (demoModeService.isDemoMode()) {
+      return []; // Demo mode doesn't support sharing
+    }
+    return apiClient.get<any[]>(`/share/notes/${noteId}/links`);
+  },
+
+  /**
+   * Get note attachments
+   */
+  async getAttachments(noteId: string): Promise<any[]> {
+    if (demoModeService.isDemoMode()) {
+      return []; // Demo mode doesn't support attachments
+    }
+    return apiClient.get<any[]>(`/attachments/notes/${noteId}`);
+  },
+
+  /**
+   * Invite collaborator
+   */
+  async inviteCollaborator(noteId: string, email: string, permission: string): Promise<any> {
+    if (demoModeService.isDemoMode()) {
+      return { success: true, message: 'Collaborator invited (demo mode)' };
+    }
+    return apiClient.post<any>(`/collaboration/notes/${noteId}/invite`, { 
+      body: { email, permission } 
+    });
+  },
+
+  /**
+   * Update collaborator permission
+   */
+  async updateCollaboratorPermission(collaborationId: string, permission: string): Promise<any> {
+    if (demoModeService.isDemoMode()) {
+      return { success: true, message: 'Permission updated (demo mode)' };
+    }
+    return apiClient.patch<any>(`/collaboration/${collaborationId}/permission`, { 
+      body: { permission } 
+    });
+  },
+
+  /**
+   * Remove collaborator
+   */
+  async removeCollaborator(collaborationId: string): Promise<void> {
+    if (demoModeService.isDemoMode()) {
+      return; // Demo mode doesn't support collaboration
+    }
+    return apiClient.delete<void>(`/collaboration/${collaborationId}`);
+  },
+
+  /**
+   * Create share link
+   */
+  async createShareLink(noteId: string, options: any): Promise<any> {
+    if (demoModeService.isDemoMode()) {
+      return { success: true, link: 'demo-link', message: 'Share link created (demo mode)' };
+    }
+    return apiClient.post<any>(`/share/notes/${noteId}/create`, { body: options });
+  },
+
+  /**
+   * Upload attachment
+   */
+  async uploadAttachment(noteId: string, file: File): Promise<any> {
+    if (demoModeService.isDemoMode()) {
+      return { success: true, message: 'Attachment uploaded (demo mode)' };
+    }
+    const formData = new FormData();
+    formData.append('file', file);
+    return apiClient.post<any>(`/attachments/notes/${noteId}/upload`, { body: formData });
   }
 };
