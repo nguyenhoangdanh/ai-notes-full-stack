@@ -5,7 +5,6 @@ import { useAuth } from '../../contexts/AuthContext'
 import { Sidebar } from './Sidebar'
 import { Header } from './Header'
 import { cn } from '../../lib/utils'
-import { useHighContrastMode, useReducedMotion } from '../accessibility/A11y'
 
 interface AppLayoutProps {
   children: React.ReactNode
@@ -14,35 +13,24 @@ interface AppLayoutProps {
 export function AppLayout({ children }: AppLayoutProps) {
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const [isMobile, setIsMobile] = useState(false)
-  const [isResizing, setIsResizing] = useState(false)
+  const [isScrolled, setIsScrolled] = useState(false)
   const { user } = useAuth()
 
-  // Initialize accessibility features
-  useHighContrastMode()
-  const isReducedMotion = useReducedMotion()
-
-  // Memoized resize handler for performance
+  // Responsive sidebar management
   const handleResize = useCallback(() => {
-    setIsResizing(true)
     const mobile = window.innerWidth < 1024
     setIsMobile(mobile)
     
-    // Auto-open sidebar on desktop, close on mobile
     if (mobile) {
       setSidebarOpen(false)
     } else {
       setSidebarOpen(true)
     }
-
-    // Debounce resize end
-    setTimeout(() => setIsResizing(false), 100)
   }, [])
 
-  // Handle responsive sidebar state
   useEffect(() => {
     handleResize()
-
-    // Throttled resize listener for performance
+    
     let resizeTimer: NodeJS.Timeout
     const throttledResize = () => {
       clearTimeout(resizeTimer)
@@ -55,6 +43,16 @@ export function AppLayout({ children }: AppLayoutProps) {
       clearTimeout(resizeTimer)
     }
   }, [handleResize])
+
+  // Scroll detection for enhanced UI effects
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 20)
+    }
+
+    window.addEventListener('scroll', handleScroll, { passive: true })
+    return () => window.removeEventListener('scroll', handleScroll)
+  }, [])
 
   // Close sidebar on mobile when clicking outside
   useEffect(() => {
@@ -72,7 +70,7 @@ export function AppLayout({ children }: AppLayoutProps) {
     return () => document.removeEventListener('mousedown', handleClickOutside)
   }, [isMobile, sidebarOpen])
 
-  // Handle keyboard navigation
+  // Superhuman keyboard shortcuts
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
       // Toggle sidebar with Ctrl/Cmd + \
@@ -95,11 +93,14 @@ export function AppLayout({ children }: AppLayoutProps) {
     setSidebarOpen(prev => !prev)
   }, [])
 
+  // Auth layout for login/register
   if (!user) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-background via-background/98 to-accent/5 relative">
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--color-accent-2)_0%,_transparent_70%)] opacity-30" />
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_right,_var(--color-accent-secondary-2)_0%,_transparent_70%)] opacity-20" />
+      <div className="min-h-screen bg-background relative overflow-hidden">
+        {/* Superhuman auth background */}
+        <div className="absolute inset-0 bg-gradient-to-br from-background via-background/95 to-primary/5" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--primary)_0%,_transparent_70%)] opacity-10" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_right,_var(--accent)_0%,_transparent_70%)] opacity-10" />
         <div className="relative z-10">
           {children}
         </div>
@@ -110,26 +111,21 @@ export function AppLayout({ children }: AppLayoutProps) {
   return (
     <div 
       className={cn(
-        "h-screen flex bg-gradient-to-br from-background via-background/98 to-accent/3 relative overflow-hidden",
-        isReducedMotion ? "" : "transition-all duration-300 ease-out",
-        isResizing && "pointer-events-none"
+        "h-screen flex bg-background relative overflow-hidden",
+        "superhuman-transition"
       )} 
       role="application" 
       aria-label="AI Notes Application"
     >
-      {/* Background decoration */}
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_left,_var(--color-accent-2)_0%,_transparent_50%)] opacity-20" />
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_right,_var(--color-accent-secondary-2)_0%,_transparent_50%)] opacity-15" />
+      {/* Superhuman background layers */}
+      <div className="absolute inset-0 bg-gradient-to-br from-background via-background/98 to-primary/3" />
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_left,_var(--primary)_0%,_transparent_50%)] opacity-10" />
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_right,_var(--accent)_0%,_transparent_50%)] opacity-8" />
 
-      {/* Mobile overlay with improved backdrop */}
+      {/* Mobile overlay */}
       {isMobile && sidebarOpen && (
         <div
-          className={cn(
-            "fixed inset-0 z-40 bg-black/60 backdrop-blur-md lg:hidden",
-            isReducedMotion 
-              ? "opacity-100" 
-              : "animate-in fade-in duration-300"
-          )}
+          className="fixed inset-0 z-40 bg-background/80 backdrop-blur-xl lg:hidden animate-superhuman-fade-in"
           onClick={() => setSidebarOpen(false)}
           aria-hidden="true"
         />
@@ -139,28 +135,20 @@ export function AppLayout({ children }: AppLayoutProps) {
       <aside
         id="app-sidebar"
         className={cn(
-          "relative z-50 flex-shrink-0",
+          "relative z-50 flex-shrink-0 superhuman-transition",
           // Desktop behavior
           "lg:translate-x-0",
           sidebarOpen && !isMobile ? "lg:w-72" : "lg:w-16",
           // Mobile behavior
           "fixed lg:relative inset-y-0 left-0",
           isMobile && sidebarOpen ? "w-72 translate-x-0" : isMobile ? "w-72 -translate-x-full" : "",
-          // Transitions
-          isReducedMotion 
-            ? "" 
-            : "transition-all duration-300 ease-out",
-          // Enhanced shadows for depth
-          "shadow-2xl lg:shadow-lg",
-          isMobile && sidebarOpen ? "shadow-colored" : ""
+          // Enhanced shadows
+          "shadow-2xl lg:shadow-lg"
         )}
         role="navigation"
         aria-label="Main navigation"
         aria-expanded={sidebarOpen}
         aria-hidden={!sidebarOpen && isMobile}
-        style={{ 
-          willChange: isResizing ? 'transform, width' : 'auto'
-        }}
       >
         <Sidebar
           collapsed={!sidebarOpen}
@@ -183,51 +171,43 @@ export function AppLayout({ children }: AppLayoutProps) {
           id="main-content"
           className={cn(
             "flex-1 overflow-auto focus:outline-none relative",
-            "bg-gradient-to-br from-background/95 via-background/98 to-background",
-            // Safe area insets for mobile
-            "safe-area-inset safe-area-inset-bottom"
+            "bg-background/30 backdrop-blur-sm",
+            "safe-area-inset safe-area-inset-bottom",
+            isScrolled ? "group-data-[scrolled]" : ""
           )}
           role="main"
           aria-label="Main content"
           tabIndex={-1}
         >
-          {/* Content container with responsive padding */}
+          {/* Content container */}
           <div className={cn(
             "w-full mx-auto min-h-full",
             "px-4 xs:px-3 sm:px-6 lg:px-8",
             "py-6 xs:py-4 sm:py-8",
-            "max-w-7xl",
-            "responsive-padding"
+            "max-w-7xl"
           )}>
-            <div className={cn(
-              "w-full h-full",
-              isReducedMotion 
-                ? "" 
-                : "animate-in fade-in slide-in-from-bottom-4 duration-500"
-            )}>
+            <div className="w-full h-full animate-superhuman-fade-in">
               {children}
             </div>
           </div>
 
-          {/* Scroll to top button for better UX */}
+          {/* Superhuman scroll to top button */}
           <button
             className={cn(
               "fixed bottom-6 right-6 z-30",
               "w-12 h-12 rounded-full",
-              "glass-effect-strong",
+              "bg-background/80 border border-border/30 backdrop-blur-xl",
               "flex items-center justify-center",
-              "text-foreground/80 hover:text-foreground",
-              "shadow-lg hover:shadow-xl",
-              "transition-all duration-200 ease-out",
-              "opacity-0 pointer-events-none",
-              "focus-visible:opacity-100 focus-visible:pointer-events-auto",
-              // Show on scroll
-              "group-data-[scrolled]:opacity-100 group-data-[scrolled]:pointer-events-auto"
+              "text-muted-foreground hover:text-primary",
+              "shadow-lg hover:shadow-xl superhuman-hover superhuman-glow",
+              "superhuman-transition",
+              "opacity-0 pointer-events-none scale-90",
+              isScrolled && "opacity-100 pointer-events-auto scale-100"
             )}
             onClick={() => {
               document.getElementById('main-content')?.scrollTo({
                 top: 0,
-                behavior: isReducedMotion ? 'auto' : 'smooth'
+                behavior: 'smooth'
               })
             }}
             aria-label="Scroll to top"
