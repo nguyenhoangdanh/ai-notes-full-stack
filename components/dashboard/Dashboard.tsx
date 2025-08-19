@@ -13,7 +13,7 @@ import { AIAssistantToggle } from '../ai/AIAssistantToggle'
 import { InstallPWAButton } from '../common/InstallPWAButton'
 import { SyncStatusIndicator } from '../dev/SyncStatusIndicator'
 import { Button } from '../ui/button'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../ui/card'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle, MetricCard } from '../ui/card'
 import { Badge } from '../ui/badge'
 import { Separator } from '../ui/separator'
 import { 
@@ -26,11 +26,11 @@ import {
   Users,
   Zap,
   BarChart3,
-  Calendar,
-  Filter,
   Grid3X3,
   List,
-  Settings
+  Filter,
+  Settings,
+  Sparkles
 } from 'lucide-react'
 import { useIsMobile } from '../../hooks/use-mobile'
 import { cn } from '../../lib/utils'
@@ -53,15 +53,14 @@ export function Dashboard() {
   const [filterBy, setFilterBy] = useState<'all' | 'recent' | 'starred' | 'shared'>('all')
   const isMobile = useIsMobile()
 
-  // Calculate dashboard stats
+  // Superhuman stats calculation
   const stats: DashboardStats = useMemo(() => ({
     totalNotes: notes.length,
-    totalWorkspaces: 3, // Mock data
-    recentActivity: 12, // Mock data
-    aiSuggestions: 5, // Mock data
+    totalWorkspaces: 3,
+    recentActivity: 12,
+    aiSuggestions: 5,
   }), [notes.length])
 
-  // Handle creating new note
   const handleCreateNote = useCallback(async () => {
     const newNote = await createNote({
       title: 'Untitled Note',
@@ -71,7 +70,6 @@ export function Dashboard() {
     setSelectedNoteId(newNote.id)
   }, [createNote])
 
-  // Handle bulk operations
   const handleBulkDelete = useCallback(async (noteIds: string[]) => {
     for (const id of noteIds) {
       await deleteNote(id)
@@ -90,55 +88,16 @@ export function Dashboard() {
     console.log('Sharing notes:', noteIds)
   }, [])
 
-  // Stats cards data
-  const statsCards = [
-    {
-      title: 'Total Notes',
-      value: stats.totalNotes,
-      description: '+12 this week',
-      icon: BookOpen,
-      color: 'text-blue-600',
-      bgColor: 'bg-blue-50 dark:bg-blue-950/20'
-    },
-    {
-      title: 'Workspaces',
-      value: stats.totalWorkspaces,
-      description: '2 active projects',
-      icon: Users,
-      color: 'text-green-600',
-      bgColor: 'bg-green-50 dark:bg-green-950/20'
-    },
-    {
-      title: 'AI Suggestions',
-      value: stats.aiSuggestions,
-      description: 'Ready to review',
-      icon: Zap,
-      color: 'text-purple-600',
-      bgColor: 'bg-purple-50 dark:bg-purple-950/20',
-      badge: 'New'
-    },
-    {
-      title: 'Activity',
-      value: stats.recentActivity,
-      description: 'Last 7 days',
-      icon: TrendingUp,
-      color: 'text-orange-600',
-      bgColor: 'bg-orange-50 dark:bg-orange-950/20'
-    }
-  ]
-
   return (
-    <div className="flex h-screen bg-gradient-to-br from-background via-background/98 to-accent/3 overflow-hidden">
-      {/* Background decoration */}
-      <div className="absolute inset-0 opacity-30 pointer-events-none">
-        <div className="absolute top-0 left-0 w-72 h-72 bg-accent/10 rounded-full blur-3xl" />
-        <div className="absolute bottom-0 right-0 w-96 h-96 bg-accent-secondary/10 rounded-full blur-3xl" />
-      </div>
+    <div className="flex h-screen bg-background relative overflow-hidden">
+      {/* Superhuman background */}
+      <div className="absolute inset-0 bg-gradient-to-br from-background via-background/98 to-primary/2" />
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--primary)_0%,_transparent_70%)] opacity-5" />
 
-      {/* Mobile Sidebar Overlay */}
+      {/* Mobile sidebar overlay */}
       {isMobile && sidebarOpen && (
         <div
-          className="fixed inset-0 z-40 bg-black/60 backdrop-blur-md transition-opacity duration-300"
+          className="fixed inset-0 z-40 bg-background/80 backdrop-blur-xl animate-superhuman-fade-in lg:hidden"
           onClick={() => setSidebarOpen(false)}
         />
       )}
@@ -147,9 +106,9 @@ export function Dashboard() {
       {(!isMobile || sidebarOpen) && (
         <div className={cn(
           isMobile
-            ? 'fixed inset-y-0 left-0 z-50 w-80 transform transition-transform duration-300 ease-in-out'
+            ? 'fixed inset-y-0 left-0 z-50 w-80 superhuman-transition'
             : 'relative w-80 flex-shrink-0',
-          'border-r border-border/60 glass-effect'
+          'border-r border-border/30 superhuman-glass backdrop-blur-xl'
         )}>
           <Sidebar
             onClose={() => setSidebarOpen(false)}
@@ -161,19 +120,19 @@ export function Dashboard() {
 
       {/* Main Content */}
       <div className="flex-1 flex flex-col min-w-0 relative z-10">
-        {/* Header */}
-        <header className="flex-shrink-0 border-b border-border/60 glass-effect-strong px-4 sm:px-6 py-4">
+        {/* Superhuman Header */}
+        <header className="flex-shrink-0 border-b border-border/30 bg-background/60 backdrop-blur-xl px-4 sm:px-6 py-3">
           <div className="flex items-center justify-between gap-4">
             <div className="flex items-center space-x-3 flex-1 min-w-0">
               {isMobile && (
                 <Button
                   variant="ghost"
-                  size="sm"
+                  size="icon-sm"
                   onClick={() => setSidebarOpen(true)}
                   aria-label="Open sidebar"
-                  className="h-10 w-10 p-0 hover:bg-accent/10 rounded-xl"
+                  className="rounded-full superhuman-hover"
                 >
-                  <SidebarIcon className="h-5 w-5" />
+                  <SidebarIcon className="h-4 w-4" />
                 </Button>
               )}
 
@@ -181,42 +140,41 @@ export function Dashboard() {
                 <SearchBar
                   value={searchQuery}
                   onChange={setSearchQuery}
-                  placeholder="Search your notes..."
-                  className="glass-effect border-border/40"
+                  placeholder="Search notes..."
+                  className="superhuman-glass border-border/30"
                 />
               </div>
 
               {!isMobile && (
                 <div className="flex items-center gap-2">
                   {/* View mode toggle */}
-                  <div className="flex bg-muted/50 rounded-lg p-1">
+                  <div className="flex bg-muted/30 rounded-full p-1 border border-border/30">
                     <Button
                       variant={viewMode === 'grid' ? 'default' : 'ghost'}
-                      size="sm"
+                      size="icon-xs"
                       onClick={() => setViewMode('grid')}
-                      className="h-8 w-8 p-0"
+                      className="rounded-full"
                       aria-label="Grid view"
                     >
-                      <Grid3X3 className="h-4 w-4" />
+                      <Grid3X3 className="h-3 w-3" />
                     </Button>
                     <Button
                       variant={viewMode === 'list' ? 'default' : 'ghost'}
-                      size="sm"
+                      size="icon-xs"
                       onClick={() => setViewMode('list')}
-                      className="h-8 w-8 p-0"
+                      className="rounded-full"
                       aria-label="List view"
                     >
-                      <List className="h-4 w-4" />
+                      <List className="h-3 w-3" />
                     </Button>
                   </div>
 
-                  {/* Filter dropdown */}
                   <Button
                     variant="outline"
                     size="sm"
-                    className="gap-2 glass-effect border-border/40"
+                    className="gap-2 superhuman-glass border-border/30 rounded-full"
                   >
-                    <Filter className="h-4 w-4" />
+                    <Filter className="h-3 w-3" />
                     <span className="hidden sm:inline">Filter</span>
                   </Button>
                 </div>
@@ -227,7 +185,7 @@ export function Dashboard() {
               <Button
                 onClick={handleCreateNote}
                 size={isMobile ? "sm" : "default"}
-                className="gap-2 bg-gradient-to-r from-accent to-accent-secondary hover:from-accent/90 hover:to-accent-secondary/90 text-white shadow-colored"
+                className="gap-2 rounded-full superhuman-gradient superhuman-glow"
               >
                 <Plus className="h-4 w-4" />
                 <span className="hidden sm:inline">New Note</span>
@@ -236,8 +194,8 @@ export function Dashboard() {
               {!isMobile && (
                 <Button
                   variant="outline"
-                  size="sm"
-                  className="gap-2 glass-effect border-border/40"
+                  size="icon-sm"
+                  className="rounded-full superhuman-glass border-border/30 superhuman-hover"
                 >
                   <Settings className="h-4 w-4" />
                 </Button>
@@ -247,63 +205,61 @@ export function Dashboard() {
         </header>
 
         {/* Dashboard Content */}
-        <div className="flex-1 overflow-auto p-4 sm:p-6 space-y-6">
-          {/* Welcome Section */}
+        <div className="flex-1 overflow-auto p-4 sm:p-6 space-y-6 superhuman-scrollbar">
+          {/* Superhuman Welcome */}
           <div className="space-y-2">
-            <h1 className="text-2xl sm:text-3xl font-bold text-gradient">
-              Welcome back, {user?.name || 'User'}! 👋
-            </h1>
-            <p className="text-muted-foreground">
+            <div className="flex items-center gap-2">
+              <h1 className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text text-transparent">
+                Welcome back, {user?.name || 'User'}!
+              </h1>
+              <Sparkles className="h-6 w-6 text-primary" />
+            </div>
+            <p className="text-muted-foreground leading-relaxed">
               Here's what's happening with your notes today.
             </p>
           </div>
 
-          {/* Stats Cards */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            {statsCards.map((stat, index) => (
-              <Card key={stat.title} className={cn(
-                "relative overflow-hidden transition-all duration-200 hover:shadow-md hover:scale-105",
-                "glass-effect border-border/40",
-                "group cursor-pointer"
-              )}>
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium text-muted-foreground">
-                    {stat.title}
-                  </CardTitle>
-                  <div className={cn(
-                    "h-8 w-8 rounded-lg flex items-center justify-center",
-                    stat.bgColor
-                  )}>
-                    <stat.icon className={cn("h-4 w-4", stat.color)} />
-                  </div>
-                </CardHeader>
-                <CardContent>
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <div className="text-2xl font-bold">{stat.value}</div>
-                      <p className="text-xs text-muted-foreground mt-1">
-                        {stat.description}
-                      </p>
-                    </div>
-                    {stat.badge && (
-                      <Badge variant="secondary" className="text-xs bg-accent/20 text-accent-foreground">
-                        {stat.badge}
-                      </Badge>
-                    )}
-                  </div>
-                </CardContent>
-                
-                {/* Hover effect */}
-                <div className="absolute inset-0 bg-gradient-to-r from-accent/5 to-accent-secondary/5 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none" />
-              </Card>
-            ))}
+          {/* Superhuman Stats Cards */}
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+            <MetricCard
+              label="Total Notes"
+              value={stats.totalNotes}
+              change={{ value: "+12%", trend: "up" }}
+              icon={BookOpen}
+              color="primary"
+              className="superhuman-hover"
+            />
+            <MetricCard
+              label="Workspaces"
+              value={stats.totalWorkspaces}
+              change={{ value: "+2", trend: "up" }}
+              icon={Users}
+              color="emerald"
+              className="superhuman-hover"
+            />
+            <MetricCard
+              label="AI Suggestions"
+              value={stats.aiSuggestions}
+              change={{ value: "New", trend: "neutral" }}
+              icon={Zap}
+              color="amber"
+              className="superhuman-hover"
+            />
+            <MetricCard
+              label="Activity"
+              value={stats.recentActivity}
+              change={{ value: "7 days", trend: "neutral" }}
+              icon={TrendingUp}
+              color="primary"
+              className="superhuman-hover"
+            />
           </div>
 
           {/* Quick Actions */}
-          <Card className="glass-effect border-border/40">
+          <Card variant="glass" className="superhuman-hover">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <Zap className="h-5 w-5 text-accent" />
+                <Zap className="h-5 w-5 text-primary" />
                 Quick Actions
               </CardTitle>
               <CardDescription>
@@ -314,11 +270,11 @@ export function Dashboard() {
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
                 <Button
                   variant="outline"
-                  className="h-auto p-4 flex flex-col items-start gap-2 glass-effect border-border/40 hover:border-accent/30 transition-all duration-200"
+                  className="h-auto p-4 flex flex-col items-start gap-2 superhuman-glass border-border/30 hover:border-primary/30 superhuman-transition rounded-xl"
                   onClick={handleCreateNote}
                 >
                   <div className="flex items-center gap-2 w-full">
-                    <Plus className="h-4 w-4 text-accent" />
+                    <Plus className="h-4 w-4 text-primary" />
                     <span className="font-medium">Create Note</span>
                   </div>
                   <span className="text-xs text-muted-foreground text-left">
@@ -328,10 +284,10 @@ export function Dashboard() {
 
                 <Button
                   variant="outline"
-                  className="h-auto p-4 flex flex-col items-start gap-2 glass-effect border-border/40 hover:border-accent/30 transition-all duration-200"
+                  className="h-auto p-4 flex flex-col items-start gap-2 superhuman-glass border-border/30 hover:border-primary/30 superhuman-transition rounded-xl"
                 >
                   <div className="flex items-center gap-2 w-full">
-                    <Search className="h-4 w-4 text-accent" />
+                    <Search className="h-4 w-4 text-primary" />
                     <span className="font-medium">Advanced Search</span>
                   </div>
                   <span className="text-xs text-muted-foreground text-left">
@@ -341,10 +297,10 @@ export function Dashboard() {
 
                 <Button
                   variant="outline"
-                  className="h-auto p-4 flex flex-col items-start gap-2 glass-effect border-border/40 hover:border-accent/30 transition-all duration-200"
+                  className="h-auto p-4 flex flex-col items-start gap-2 superhuman-glass border-border/30 hover:border-primary/30 superhuman-transition rounded-xl"
                 >
                   <div className="flex items-center gap-2 w-full">
-                    <BarChart3 className="h-4 w-4 text-accent" />
+                    <BarChart3 className="h-4 w-4 text-primary" />
                     <span className="font-medium">View Analytics</span>
                   </div>
                   <span className="text-xs text-muted-foreground text-left">
@@ -356,35 +312,35 @@ export function Dashboard() {
           </Card>
 
           {/* Recent Activity */}
-          <Card className="glass-effect border-border/40">
+          <Card variant="glass" className="superhuman-hover">
             <CardHeader>
               <div className="flex items-center justify-between">
                 <div>
                   <CardTitle className="flex items-center gap-2">
-                    <Clock className="h-5 w-5 text-accent" />
+                    <Clock className="h-5 w-5 text-primary" />
                     Recent Activity
                   </CardTitle>
                   <CardDescription>
                     Your latest notes and updates
                   </CardDescription>
                 </div>
-                <Button variant="outline" size="sm" className="glass-effect border-border/40">
+                <Button variant="outline" size="sm" className="superhuman-glass border-border/30 rounded-full">
                   View All
                 </Button>
               </div>
             </CardHeader>
             <CardContent>
-              <div className="space-y-4">
-                {notes.slice(0, 3).map((note, index) => (
-                  <div key={note.id} className="flex items-center gap-3 p-3 rounded-lg hover:bg-accent/5 transition-colors duration-200 cursor-pointer">
-                    <div className="h-8 w-8 rounded-full bg-accent/10 flex items-center justify-center">
-                      <BookOpen className="h-4 w-4 text-accent" />
+              <div className="space-y-3">
+                {notes.slice(0, 3).map((note) => (
+                  <div key={note.id} className="flex items-center gap-3 p-3 rounded-xl hover:bg-primary/5 superhuman-transition cursor-pointer">
+                    <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center">
+                      <BookOpen className="h-4 w-4 text-primary" />
                     </div>
                     <div className="flex-1 min-w-0">
                       <p className="font-medium truncate">{note.title}</p>
                       <p className="text-sm text-muted-foreground">Updated 2 hours ago</p>
                     </div>
-                    <Badge variant="outline" className="text-xs">
+                    <Badge variant="outline" className="text-xs rounded-full">
                       Note
                     </Badge>
                   </div>
@@ -392,11 +348,11 @@ export function Dashboard() {
                 
                 {notes.length === 0 && (
                   <div className="text-center py-8">
-                    <BookOpen className="h-12 w-12 text-muted-foreground/50 mx-auto mb-4" />
-                    <p className="text-muted-foreground">No recent activity</p>
+                    <BookOpen className="h-12 w-12 text-muted-foreground/40 mx-auto mb-4" />
+                    <p className="text-muted-foreground mb-4">No recent activity</p>
                     <Button 
                       variant="outline" 
-                      className="mt-4"
+                      className="rounded-full"
                       onClick={handleCreateNote}
                     >
                       Create your first note
@@ -408,7 +364,7 @@ export function Dashboard() {
           </Card>
         </div>
 
-        {/* Content Area for Notes */}
+        {/* Note Editor Overlay */}
         {selectedNoteId && (
           <div className="fixed inset-0 z-50 lg:relative lg:inset-auto">
             <div className={cn(
@@ -424,10 +380,8 @@ export function Dashboard() {
         )}
       </div>
 
-      {/* AI Assistant Toggle */}
+      {/* Floating Components */}
       <AIAssistantToggle selectedNoteId={selectedNoteId} />
-
-      {/* Bulk Actions Bar */}
       <BulkActionsBar
         selectedCount={selectedNoteIds.length}
         selectedNoteIds={selectedNoteIds}
@@ -436,11 +390,7 @@ export function Dashboard() {
         onShare={handleBulkShare}
         onClear={() => setSelectedNoteIds([])}
       />
-
-      {/* PWA Install Prompt */}
       <InstallPWAButton />
-
-      {/* Development: Sync Status Indicator */}
       {process.env.NODE_ENV === 'development' && <SyncStatusIndicator />}
     </div>
   )
