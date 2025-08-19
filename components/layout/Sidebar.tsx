@@ -12,8 +12,6 @@ import {
   HomeIcon,
   MagnifyingGlassIcon,
   PlusIcon,
-  Bars3Icon,
-  XMarkIcon,
   ClockIcon,
   CalendarIcon,
   CheckCircleIcon,
@@ -24,16 +22,14 @@ import {
   DocumentTextIcon,
   ChartBarIcon,
   ArrowUpTrayIcon,
-  BellIcon,
   SparklesIcon,
   ChevronRightIcon,
   CommandLineIcon
 } from '@heroicons/react/24/outline'
 import { cn } from '../../lib/utils'
 import { Button } from '../ui/button'
-import { Tooltip, TooltipContent, TooltipTrigger } from '../ui/tooltip'
-import { Separator } from '../ui/separator'
 import { Badge } from '../ui/badge'
+import { Separator } from '../ui/separator'
 
 interface NavigationItem {
   name: string
@@ -45,13 +41,12 @@ interface NavigationItem {
   shortcut?: string
 }
 
-// Memoized navigation data for performance
 const navigation: NavigationItem[] = [
   {
     name: 'Dashboard',
     href: '/dashboard',
     icon: HomeIcon,
-    description: 'Overview and recent activity',
+    description: 'Overview and insights',
     shortcut: '⌘1'
   },
   {
@@ -68,7 +63,7 @@ const navigation: NavigationItem[] = [
     name: 'Workspaces',
     href: '/workspaces',
     icon: FolderIcon,
-    description: 'Organize with workspaces',
+    description: 'Organize projects',
     children: [
       { name: 'All Workspaces', href: '/workspaces', icon: FolderIcon },
       { name: 'Create Workspace', href: '/workspaces/create', icon: PlusIcon },
@@ -82,58 +77,35 @@ const navigation: NavigationItem[] = [
     badge: 'New',
     children: [
       { name: 'AI Chat', href: '/ai/chat', icon: ChatBubbleLeftIcon },
-      { name: 'Suggestions', href: '/ai/suggestions', icon: SparklesIcon },
-      { name: 'Summaries', href: '/ai/summaries', icon: DocumentDuplicateIcon },
     ]
   },
   {
     name: 'Productivity',
     href: '/productivity',
     icon: CheckCircleIcon,
-    description: 'Tasks and time management',
+    description: 'Tasks and time',
     children: [
       { name: 'Tasks', href: '/productivity/tasks', icon: CheckCircleIcon },
       { name: 'Pomodoro', href: '/productivity/pomodoro', icon: ClockIcon },
-      { name: 'Calendar', href: '/productivity/calendar', icon: CalendarIcon },
-      { name: 'Review', href: '/productivity/review', icon: BookOpenIcon },
     ]
   },
   {
-    name: 'Mobile',
-    href: '/mobile',
+    name: 'Voice Notes',
+    href: '/voice-notes',
     icon: MicrophoneIcon,
-    description: 'Mobile-specific features',
-    children: [
-      { name: 'Voice Notes', href: '/voice-notes', icon: MicrophoneIcon },
-      { name: 'Location Notes', href: '/mobile/location-notes', icon: MapPinIcon },
-      { name: 'Sync', href: '/mobile/sync', icon: CloudArrowUpIcon },
-    ]
-  },
-  {
-    name: 'Collaboration',
-    href: '/collaboration',
-    icon: UserGroupIcon,
-    description: 'Share and collaborate',
-    children: [
-      { name: 'Shared Notes', href: '/collaboration/shared', icon: DocumentTextIcon },
-      { name: 'Permissions', href: '/collaboration/permissions', icon: UserGroupIcon },
-    ]
+    description: 'Record and transcribe',
   },
   {
     name: 'Templates',
     href: '/templates',
     icon: DocumentDuplicateIcon,
     description: 'Note templates',
-    children: [
-      { name: 'All Templates', href: '/templates', icon: DocumentDuplicateIcon },
-      { name: 'Create Template', href: '/templates/create', icon: PlusIcon },
-    ]
   },
   {
     name: 'Search',
     href: '/search',
     icon: MagnifyingGlassIcon,
-    description: 'Advanced search',
+    description: 'Find anything',
     shortcut: '⌘K'
   },
   {
@@ -143,16 +115,10 @@ const navigation: NavigationItem[] = [
     description: 'Usage insights'
   },
   {
-    name: 'Export',
-    href: '/export',
-    icon: ArrowUpTrayIcon,
-    description: 'Export your data'
-  },
-  {
     name: 'Settings',
     href: '/settings',
     icon: Cog6ToothIcon,
-    description: 'App settings',
+    description: 'Preferences',
     shortcut: '⌘,'
   },
 ]
@@ -166,10 +132,8 @@ interface SidebarProps {
 export function Sidebar({ collapsed, onToggle, isMobile = false }: SidebarProps) {
   const pathname = usePathname()
   const [expandedItems, setExpandedItems] = useState<string[]>([])
-  const [hoveredItem, setHoveredItem] = useState<string | null>(null)
   const sidebarRef = useRef<HTMLDivElement>(null)
 
-  // Memoized functions for performance
   const toggleExpanded = useCallback((href: string) => {
     setExpandedItems(prev => 
       prev.includes(href) 
@@ -186,25 +150,7 @@ export function Sidebar({ collapsed, onToggle, isMobile = false }: SidebarProps)
     return expandedItems.includes(href)
   }, [expandedItems])
 
-  // Memoized sections for performance
-  const navigationSections = useMemo(() => {
-    const sections = []
-    let currentSection = []
-    
-    navigation.forEach((item, index) => {
-      currentSection.push(item)
-      
-      // Create sections at specific breakpoints
-      if (index === 3 || index === 7 || index === navigation.length - 1) {
-        sections.push([...currentSection])
-        currentSection = []
-      }
-    })
-    
-    return sections
-  }, [])
-
-  // Render navigation item
+  // Superhuman navigation renderer
   const renderNavItem = useCallback((item: NavigationItem, isSubItem = false) => {
     const active = isActive(item.href)
     const expanded = isExpanded(item.href)
@@ -212,98 +158,99 @@ export function Sidebar({ collapsed, onToggle, isMobile = false }: SidebarProps)
 
     if (collapsed && !isSubItem) {
       return (
-        <Tooltip key={item.href}>
-          <TooltipTrigger asChild>
-            <Link
-              href={item.href}
-              className={cn(
-                "flex items-center justify-center h-12 w-12 rounded-xl transition-all duration-200 mx-auto group relative",
-                "hover:scale-105 active:scale-95",
-                active
-                  ? "bg-gradient-to-br from-accent/90 to-accent text-accent-foreground shadow-colored scale-105"
-                  : "hover:bg-accent/10 text-muted-foreground hover:text-foreground glass-effect"
-              )}
-              aria-label={item.name}
-              onMouseEnter={() => setHoveredItem(item.href)}
-              onMouseLeave={() => setHoveredItem(null)}
-            >
-              <item.icon className="h-5 w-5" aria-hidden="true" />
-              
-              {/* Active indicator */}
-              {active && (
-                <div className="absolute -right-1 -top-1 w-3 h-3 bg-accent-secondary rounded-full border-2 border-background animate-pulse" />
-              )}
-              
-              {/* Badge for new features */}
-              {item.badge && (
-                <div className="absolute -top-1 -right-1 min-w-5 h-5 bg-gradient-to-r from-accent-secondary to-accent text-white text-xs rounded-full flex items-center justify-center px-1">
-                  {item.badge}
-                </div>
-              )}
-            </Link>
-          </TooltipTrigger>
-          <TooltipContent side="right" className="font-medium">
-            <div className="space-y-1">
-              <div className="font-semibold">{item.name}</div>
-              {item.description && (
-                <p className="text-xs text-muted-foreground">{item.description}</p>
-              )}
-              {item.shortcut && (
-                <div className="flex items-center gap-1 text-xs">
-                  <kbd className="px-1 py-0.5 bg-muted rounded text-xs">{item.shortcut}</kbd>
-                </div>
-              )}
-            </div>
-          </TooltipContent>
-        </Tooltip>
+        <div key={item.href} className="relative group">
+          <Link
+            href={item.href}
+            className={cn(
+              "flex items-center justify-center h-10 w-10 rounded-full superhuman-transition mx-auto relative",
+              "superhuman-hover",
+              active
+                ? "bg-gradient-to-r from-primary to-accent text-primary-foreground shadow-lg superhuman-glow scale-105"
+                : "hover:bg-primary/10 text-muted-foreground hover:text-primary"
+            )}
+            aria-label={item.name}
+          >
+            <item.icon className="h-4 w-4" aria-hidden="true" />
+            
+            {/* Active pulse */}
+            {active && (
+              <div className="absolute -right-0.5 -top-0.5 w-2.5 h-2.5 bg-accent rounded-full animate-pulse" />
+            )}
+            
+            {/* New badge */}
+            {item.badge && (
+              <div className="absolute -top-1 -right-1 min-w-4 h-4 bg-gradient-to-r from-accent to-primary text-white text-xs rounded-full flex items-center justify-center px-1 shadow-md">
+                {item.badge}
+              </div>
+            )}
+          </Link>
+          
+          {/* Superhuman tooltip */}
+          <div className="absolute left-full top-1/2 -translate-y-1/2 ml-3 px-3 py-2 bg-popover/95 text-popover-foreground text-sm rounded-xl opacity-0 group-hover:opacity-100 superhuman-transition pointer-events-none z-50 whitespace-nowrap shadow-xl backdrop-blur-sm border border-border/30">
+            <div className="font-medium">{item.name}</div>
+            {item.description && (
+              <p className="text-xs text-muted-foreground mt-0.5">{item.description}</p>
+            )}
+            {item.shortcut && (
+              <div className="flex items-center gap-1 text-xs mt-1">
+                <kbd className="px-1 py-0.5 bg-muted/50 rounded text-xs">{item.shortcut}</kbd>
+              </div>
+            )}
+          </div>
+        </div>
       )
     }
 
     return (
-      <li key={item.href} className={cn(isSubItem && "ml-6")}>
+      <li key={item.href} className={cn(isSubItem && "ml-4")}>
         <div
           className={cn(
-            "flex items-center rounded-xl transition-all duration-200 group relative",
-            isSubItem ? "px-3 py-2" : "px-3 py-3",
+            "flex items-center rounded-xl superhuman-transition group relative",
+            isSubItem ? "px-3 py-2" : "px-3 py-2.5",
             active
-              ? "bg-gradient-to-r from-accent/90 to-accent text-accent-foreground shadow-colored"
-              : "hover:bg-accent/10 text-muted-foreground hover:text-foreground",
-            hasChildren && "cursor-pointer"
+              ? "bg-gradient-to-r from-primary/20 via-primary/15 to-accent/10 text-primary shadow-sm"
+              : "hover:bg-primary/5 text-muted-foreground hover:text-foreground"
           )}
           onClick={() => {
             if (hasChildren && !isSubItem) {
               toggleExpanded(item.href)
             }
           }}
-          onMouseEnter={() => setHoveredItem(item.href)}
-          onMouseLeave={() => setHoveredItem(null)}
         >
           <Link href={item.href} className="flex items-center flex-1 min-w-0">
             <div className="flex-shrink-0 mr-3">
-              <item.icon className={cn("transition-transform duration-200", isSubItem ? "h-4 w-4" : "h-5 w-5")} aria-hidden="true" />
+              <item.icon className={cn(
+                "superhuman-transition", 
+                isSubItem ? "h-4 w-4" : "h-4 w-4",
+                active ? "text-primary" : ""
+              )} aria-hidden="true" />
             </div>
             <div className="flex-1 min-w-0">
-              <span className={cn("font-medium truncate block", isSubItem ? "text-sm" : "text-sm")}>
+              <span className={cn(
+                "font-medium truncate block", 
+                isSubItem ? "text-sm" : "text-sm",
+                active ? "text-primary" : ""
+              )}>
                 {item.name}
               </span>
               {item.description && !active && !isSubItem && (
-                <span className="text-xs text-muted-foreground/70 truncate block leading-tight">
+                <span className="text-xs text-muted-foreground/60 truncate block leading-tight">
                   {item.description}
                 </span>
               )}
             </div>
           </Link>
 
-          {/* Badges and indicators */}
+          {/* Right side indicators */}
           <div className="flex items-center gap-2 flex-shrink-0">
             {item.badge && (
-              <Badge variant="secondary" className="text-xs px-2 py-0.5 bg-accent/20 text-accent-foreground border-accent/30">
+              <Badge variant="secondary" className="text-xs px-2 py-0.5 bg-accent/20 text-accent-foreground border-accent/30 superhuman-glow">
                 {item.badge}
               </Badge>
             )}
             
             {item.shortcut && !isSubItem && (
-              <kbd className="hidden group-hover:flex px-1.5 py-0.5 bg-muted/50 rounded text-xs font-mono items-center">
+              <kbd className="hidden group-hover:flex px-1.5 py-0.5 bg-muted/30 rounded text-xs font-mono items-center superhuman-transition">
                 {item.shortcut}
               </kbd>
             )}
@@ -311,8 +258,8 @@ export function Sidebar({ collapsed, onToggle, isMobile = false }: SidebarProps)
             {hasChildren && !isSubItem && (
               <Button
                 variant="ghost"
-                size="sm"
-                className="h-7 w-7 p-0 flex-shrink-0 opacity-60 hover:opacity-100"
+                size="icon-xs"
+                className="opacity-60 hover:opacity-100 superhuman-transition"
                 onClick={(e) => {
                   e.stopPropagation()
                   toggleExpanded(item.href)
@@ -321,7 +268,7 @@ export function Sidebar({ collapsed, onToggle, isMobile = false }: SidebarProps)
               >
                 <ChevronRightIcon
                   className={cn(
-                    "h-4 w-4 transition-transform duration-200",
+                    "h-3 w-3 superhuman-transition",
                     expanded ? "rotate-90" : ""
                   )}
                   aria-hidden="true"
@@ -330,29 +277,29 @@ export function Sidebar({ collapsed, onToggle, isMobile = false }: SidebarProps)
             )}
 
             {active && (
-              <div className="w-2 h-2 bg-accent-secondary rounded-full animate-pulse" />
+              <div className="w-1.5 h-1.5 bg-primary rounded-full animate-pulse" />
             )}
           </div>
         </div>
 
         {/* Sub-navigation */}
         {hasChildren && expanded && !collapsed && (
-          <ul className="mt-2 space-y-1 border-l border-border/40 pl-4 ml-6">
+          <ul className="mt-1 space-y-0.5 border-l border-border/30 pl-3 ml-6">
             {item.children!.map((child) => (
               <li key={child.href}>
                 <Link
                   href={child.href}
                   className={cn(
-                    "flex items-center px-3 py-2 rounded-lg text-sm transition-all duration-200 group",
+                    "flex items-center px-3 py-1.5 rounded-lg text-sm superhuman-transition group",
                     isActive(child.href)
-                      ? "bg-accent/20 text-accent-foreground font-medium"
-                      : "hover:bg-accent/10 text-muted-foreground hover:text-foreground"
+                      ? "bg-primary/10 text-primary font-medium"
+                      : "hover:bg-primary/5 text-muted-foreground hover:text-foreground"
                   )}
                 >
-                  <child.icon className="h-4 w-4 mr-2 flex-shrink-0" aria-hidden="true" />
+                  <child.icon className="h-3.5 w-3.5 mr-2 flex-shrink-0" aria-hidden="true" />
                   <span className="truncate">{child.name}</span>
                   {isActive(child.href) && (
-                    <div className="ml-auto w-2 h-2 bg-accent rounded-full" />
+                    <div className="ml-auto w-1.5 h-1.5 bg-primary rounded-full" />
                   )}
                 </Link>
               </li>
@@ -361,113 +308,79 @@ export function Sidebar({ collapsed, onToggle, isMobile = false }: SidebarProps)
         )}
       </li>
     )
-  }, [collapsed, isActive, isExpanded, toggleExpanded, hoveredItem])
+  }, [collapsed, isActive, isExpanded, toggleExpanded])
 
   return (
     <div
       ref={sidebarRef}
-      className="h-full glass-effect-strong border-r border-border/60 flex flex-col shadow-xl lg:shadow-lg transition-all duration-300 relative overflow-hidden"
+      className="h-full bg-background/60 border-r border-border/30 flex flex-col shadow-xl backdrop-blur-xl superhuman-glass relative overflow-hidden"
     >
-      {/* Background gradient */}
+      {/* Superhuman gradient background */}
       <div className="absolute inset-0 bg-gradient-to-b from-background/95 via-background/98 to-background pointer-events-none" />
       
       {/* Header */}
-      <div className="relative z-10 p-4 border-b border-border/40">
+      <div className="relative z-10 p-4 border-b border-border/30">
         <div className="flex items-center justify-between">
           {!collapsed && (
             <Link
               href="/dashboard"
-              className="flex items-center gap-3 group transition-all duration-200 hover:scale-105"
+              className="flex items-center gap-3 group superhuman-transition superhuman-hover"
               aria-label="AI Notes - Go to dashboard"
             >
-              <div className="relative p-2.5 bg-gradient-to-br from-accent/20 via-accent/15 to-accent-secondary/10 rounded-xl group-hover:from-accent/30 group-hover:to-accent-secondary/20 transition-all duration-200 shadow-sm">
-                <SparklesIcon className="h-6 w-6 text-gradient-primary" aria-hidden="true" />
-                <div className="absolute inset-0 bg-gradient-to-br from-accent/5 to-transparent rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-200" />
+              <div className="relative p-2 bg-gradient-to-br from-primary/20 to-accent/10 rounded-xl group-hover:from-primary/30 group-hover:to-accent/20 superhuman-transition shadow-sm superhuman-glow">
+                <SparklesIcon className="h-5 w-5 text-primary" aria-hidden="true" />
               </div>
               <div className="flex flex-col">
-                <span className="font-bold text-xl leading-none text-gradient bg-gradient-to-r from-accent to-accent-secondary bg-clip-text text-transparent">
+                <span className="font-bold text-lg leading-none bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
                   AI Notes
                 </span>
-                <span className="text-xs text-muted-foreground font-medium tracking-wide">
-                  Intelligent Platform
+                <span className="text-xs text-muted-foreground font-medium">
+                  Smart workspace
                 </span>
               </div>
             </Link>
           )}
-          
-          {!isMobile && (
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={onToggle}
-              className="h-9 w-9 p-0 hover:bg-accent/10 transition-all duration-200 hover:scale-105"
-              aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
-            >
-              {collapsed ? (
-                <Bars3Icon className="h-5 w-5" aria-hidden="true" />
-              ) : (
-                <XMarkIcon className="h-5 w-5" aria-hidden="true" />
-              )}
-            </Button>
-          )}
         </div>
 
-        {/* Quick actions bar for collapsed state */}
+        {/* Quick actions for collapsed state */}
         {collapsed && (
           <div className="mt-4 space-y-2">
             <Button
               variant="ghost"
-              size="sm"
-              className="w-full h-10 p-0 hover:bg-accent/10"
+              size="icon-sm"
+              className="w-full h-8 rounded-full superhuman-transition superhuman-hover hover:bg-primary/10"
               aria-label="Create new note"
             >
-              <PlusIcon className="h-5 w-5" />
-            </Button>
-            <Button
-              variant="ghost"
-              size="sm"
-              className="w-full h-10 p-0 hover:bg-accent/10"
-              aria-label="Search"
-            >
-              <MagnifyingGlassIcon className="h-5 w-5" />
+              <PlusIcon className="h-4 w-4" />
             </Button>
           </div>
         )}
       </div>
 
       {/* Navigation */}
-      <nav className="relative z-10 flex-1 overflow-y-auto p-4 scroll-smooth" role="navigation" aria-label="Main navigation">
-        <div className="space-y-6">
-          {navigationSections.map((section, sectionIndex) => (
-            <div key={sectionIndex}>
-              {sectionIndex > 0 && !collapsed && (
-                <Separator className="my-4 opacity-60" />
-              )}
-              <ul className="space-y-1">
-                {section.map((item) => renderNavItem(item))}
-              </ul>
-            </div>
-          ))}
-        </div>
+      <nav className="relative z-10 flex-1 overflow-y-auto p-4 superhuman-scrollbar" role="navigation" aria-label="Main navigation">
+        <ul className="space-y-1">
+          {navigation.map((item) => renderNavItem(item))}
+        </ul>
       </nav>
 
       {/* Footer */}
       {!collapsed && (
-        <div className="relative z-10 p-4 border-t border-border/40 bg-gradient-to-r from-accent/5 via-transparent to-accent-secondary/5">
+        <div className="relative z-10 p-4 border-t border-border/30 bg-gradient-to-r from-primary/5 via-transparent to-accent/5">
           <div className="flex items-center justify-between">
             <div className="text-xs text-muted-foreground font-medium">
-              AI Notes v1.0.0
+              AI Notes v1.0
             </div>
             <Badge 
               variant="secondary" 
-              className="text-xs px-2.5 py-1 bg-gradient-to-r from-accent/20 to-accent-secondary/20 text-accent-foreground border-accent/30 shadow-sm"
+              className="text-xs px-2 py-1 bg-gradient-to-r from-accent/20 to-primary/20 text-accent-foreground border-accent/30 shadow-sm superhuman-glow"
             >
               Beta
             </Badge>
           </div>
           
-          {/* Keyboard shortcuts hint */}
-          <div className="mt-2 text-xs text-muted-foreground/60 flex items-center gap-1">
+          {/* Keyboard hint */}
+          <div className="mt-2 text-xs text-muted-foreground/50 flex items-center gap-1">
             <CommandLineIcon className="h-3 w-3" />
             <span>Press ⌘\ to toggle</span>
           </div>
