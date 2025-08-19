@@ -179,7 +179,7 @@ export function Sidebar({ collapsed, onToggle, isMobile = false }: SidebarProps)
   return (
     <div
       ref={sidebarRef}
-      className="h-full bg-card/50 backdrop-blur-xl border-r border-border/60 flex flex-col shadow-lg lg:shadow-none"
+      className="h-full glass-effect border-r border-border/60 flex flex-col shadow-xl lg:shadow-lg transition-all duration-300"
     >
       {/* Header */}
       <div className="p-4 border-b border-border/60">
