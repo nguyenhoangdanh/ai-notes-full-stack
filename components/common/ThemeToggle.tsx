@@ -145,7 +145,7 @@ export function ThemeToggle() {
         <Button
           variant="ghost"
           size="sm"
-          className="h-9 w-9 rounded-xl hover:bg-accent/80 transition-all duration-200 group"
+          className="h-9 w-9 rounded-xl hover:bg-accent/80 hover:scale-105 transition-all duration-200 group shadow-sm hover:shadow-md"
           aria-label={`Current theme: ${theme}. Click to change theme`}
         >
           <Icon className="h-4 w-4 transition-transform duration-200 group-hover:scale-110" />
