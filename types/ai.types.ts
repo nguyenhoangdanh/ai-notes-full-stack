@@ -43,6 +43,22 @@ export interface ChatQueryDto {
   maxTokens?: number;
 }
 
+export interface GenerateSuggestionDto {
+  content: string;
+  selectedText?: string;
+  suggestionType: 'improve' | 'expand' | 'summarize' | 'restructure' | 'examples' | 'grammar' | 'translate';
+  targetLanguage?: string;
+}
+
+export interface ApplySuggestionDto {
+  noteId: string;
+  originalContent: string;
+  suggestion: string;
+  selectedText?: string;
+  applyType: 'replace' | 'append' | 'insert';
+  position?: number;
+}
+
 export interface ChatRequest {
   conversationId: string;
   message: string;
