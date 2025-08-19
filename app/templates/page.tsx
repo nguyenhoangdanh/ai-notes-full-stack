@@ -7,21 +7,26 @@ import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { FileText, Plus, Search, Star, Globe, User } from 'lucide-react'
-import { useTemplates, usePublicTemplates, useTemplateCategories } from '@/hooks/use-templates'
+import { useTemplates, useCreateTemplate } from '@/hooks/use-features'
 
 export default function TemplatesPage() {
   const [searchQuery, setSearchQuery] = useState('')
   
   const { data: myTemplates, isLoading: loadingMyTemplates } = useTemplates()
-  const { data: publicTemplates, isLoading: loadingPublicTemplates } = usePublicTemplates()
-  const { data: categories, isLoading: loadingCategories } = useTemplateCategories()
+  // TODO: Add usePublicTemplates to use-features.ts
+  const publicTemplates: any[] = []
+  const loadingPublicTemplates = false
+  
+  // TODO: Add useTemplateCategories to use-features.ts  
+  const categories: any[] = []
+  const loadingCategories = false
 
   const filteredMyTemplates = myTemplates?.filter(template =>
     template.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
     template.description?.toLowerCase().includes(searchQuery.toLowerCase())
   ) || []
 
-  const filteredPublicTemplates = publicTemplates?.filter(template =>
+  const filteredPublicTemplates = publicTemplates?.filter((template: any) =>
     template.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
     template.description?.toLowerCase().includes(searchQuery.toLowerCase())
   ) || []
@@ -134,7 +139,7 @@ export default function TemplatesPage() {
                       
                       {template.tags && template.tags.length > 0 && (
                         <div className="flex flex-wrap gap-1">
-                          {template.tags.slice(0, 3).map((tag) => (
+                          {template.tags.slice(0, 3).map((tag: string) => (
                             <Badge key={tag} variant="outline" className="text-xs">
                               {tag}
                             </Badge>
@@ -213,7 +218,7 @@ export default function TemplatesPage() {
                       
                       {template.tags && template.tags.length > 0 && (
                         <div className="flex flex-wrap gap-1">
-                          {template.tags.slice(0, 3).map((tag) => (
+                          {template.tags.slice(0, 3).map((tag: string) => (
                             <Badge key={tag} variant="outline" className="text-xs">
                               {tag}
                             </Badge>

@@ -18,8 +18,7 @@ export {
   collaborationService, 
   shareService, 
   versionsService, 
-  activitiesService, 
-  tagsService 
+  activitiesService
 } from './collaboration.service'
 
 // Advanced Features
@@ -27,7 +26,6 @@ export {
   templatesService, 
   attachmentsService, 
   searchService, 
-  analyticsService, 
   exportService 
 } from './advanced.service'
 

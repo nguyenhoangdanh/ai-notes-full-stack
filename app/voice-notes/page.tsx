@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Input } from '@/components/ui/input'
 import { Mic, Upload, Play, Pause, Download, Trash2, Clock, FileAudio } from 'lucide-react'
-import { useVoiceNotes, useVoiceNoteStats, useUploadVoiceNote, useDeleteVoiceNote } from '@/hooks/use-templates'
+import { useVoiceNotes, useCreateVoiceNote } from '@/hooks/use-features'
 
 export default function VoiceNotesPage() {
   const [isRecording, setIsRecording] = useState(false)
@@ -14,9 +14,23 @@ export default function VoiceNotesPage() {
   const fileInputRef = useRef<HTMLInputElement>(null)
   
   const { data: voiceNotes, isLoading: loadingNotes } = useVoiceNotes()
-  const { data: stats, isLoading: loadingStats } = useVoiceNoteStats()
-  const uploadMutation = useUploadVoiceNote()
-  const deleteMutation = useDeleteVoiceNote()
+  // TODO: Add useVoiceNoteStats to use-features.ts
+  const stats = null
+  const loadingStats = false
+  
+  // TODO: Add useUploadVoiceNote and useDeleteVoiceNote to use-features.ts
+  const uploadMutation = { 
+    mutate: (data: any) => console.log('Upload:', data),
+    isPending: false,
+    isError: false,
+    error: null
+  }
+  const deleteMutation = { 
+    mutate: (id: string) => console.log('Delete:', id),
+    isPending: false,
+    isError: false,
+    error: null
+  }
 
   const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0]
@@ -73,7 +87,7 @@ export default function VoiceNotesPage() {
               <CardTitle className="text-sm font-medium">Total Notes</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">{stats.totalNotes}</div>
+              <div className="text-2xl font-bold">{"--"}</div>
             </CardContent>
           </Card>
           <Card>
@@ -81,7 +95,7 @@ export default function VoiceNotesPage() {
               <CardTitle className="text-sm font-medium">Total Duration</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">{formatDuration(stats.totalDuration)}</div>
+              <div className="text-2xl font-bold">{"--"}</div>
             </CardContent>
           </Card>
           <Card>
@@ -89,7 +103,7 @@ export default function VoiceNotesPage() {
               <CardTitle className="text-sm font-medium">Transcribed</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">{stats.transcribedNotes}</div>
+              <div className="text-2xl font-bold">{"--"}</div>
             </CardContent>
           </Card>
           <Card>
@@ -97,7 +111,7 @@ export default function VoiceNotesPage() {
               <CardTitle className="text-sm font-medium">Recent Notes</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">{stats.recentNotes}</div>
+              <div className="text-2xl font-bold">{"--"}</div>
             </CardContent>
           </Card>
         </div>
