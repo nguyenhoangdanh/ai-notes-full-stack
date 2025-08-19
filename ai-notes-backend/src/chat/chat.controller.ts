@@ -1,22 +1,22 @@
 import { Controller, Post, Body, UseGuards, Res, HttpException, HttpStatus } from '@nestjs/common';
 import { Response } from 'express';
+import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { ChatService } from './chat.service';
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
 import { User } from '../types/user.types';
+import { ChatQueryDto, GenerateSuggestionDto, ApplySuggestionDto } from './dto/chat.dto';
 
-interface ChatQueryDto {
-  query: string;
-  model?: string;
-  maxTokens?: number;
-}
-
+@ApiTags('chat')
+@ApiBearerAuth()
 @Controller('chat')
 @UseGuards(JwtAuthGuard)
 export class ChatController {
   constructor(private chatService: ChatService) {}
 
   @Post('stream')
+  @ApiOperation({ summary: 'Stream AI chat response' })
+  @ApiResponse({ status: 200, description: 'Chat stream initiated' })
   async stream(
     @Body() data: ChatQueryDto,
     @CurrentUser() user: User,
@@ -98,6 +98,8 @@ export class ChatController {
   }
 
   @Post('complete')
+  @ApiOperation({ summary: 'Get complete chat response' })
+  @ApiResponse({ status: 200, description: 'Chat response generated' })
   async complete(
     @Body() data: ChatQueryDto,
     @CurrentUser() user: User,
@@ -121,13 +123,10 @@ export class ChatController {
   }
 
   @Post('suggest')
+  @ApiOperation({ summary: 'Generate content suggestions' })
+  @ApiResponse({ status: 200, description: 'Suggestion generated' })
   async generateSuggestion(
-    @Body() data: {
-      content: string;
-      selectedText?: string;
-      suggestionType: 'improve' | 'expand' | 'summarize' | 'restructure' | 'examples' | 'grammar' | 'translate';
-      targetLanguage?: string;
-    },
+    @Body() data: GenerateSuggestionDto,
     @CurrentUser() user: User,
   ) {
     try {
@@ -156,15 +155,10 @@ export class ChatController {
   }
 
   @Post('apply-suggestion')
+  @ApiOperation({ summary: 'Apply content suggestion' })
+  @ApiResponse({ status: 200, description: 'Suggestion applied' })
   async applySuggestion(
-    @Body() data: {
-      noteId: string;
-      originalContent: string;
-      suggestion: string;
-      selectedText?: string;
-      applyType: 'replace' | 'append' | 'insert';
-      position?: number;
-    },
+    @Body() data: ApplySuggestionDto,
     @CurrentUser() user: User,
   ) {
     try {

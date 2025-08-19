@@ -80,16 +80,16 @@ export function AISuggestions({
         }
       })
 
-      if (result && result.suggestions && result.suggestions.length > 0) {
-        const newSuggestions: SmartSuggestion[] = result.suggestions.map((s: any, index: number) => ({
-          id: `suggestion-${Date.now()}-${index}`,
-          type: s.type || 'content',
-          title: s.title || 'Improvement suggestion',
-          description: s.description || s.suggestion,
-          suggestion: s.suggestion,
-          confidence: s.confidence || 0.7,
-          preview: s.preview
-        }))
+      if (result && result.suggestion) {
+        const newSuggestions: SmartSuggestion[] = [{
+          id: `suggestion-${Date.now()}`,
+          type: 'content',
+          title: 'AI Suggestion',
+          description: result.suggestion,
+          suggestion: result.suggestion,
+          confidence: 0.8,
+          preview: result.suggestion.substring(0, 100) + '...'
+        }]
 
         setSuggestions(newSuggestions)
 

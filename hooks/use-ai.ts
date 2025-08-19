@@ -4,19 +4,10 @@ import { aiService } from '../services'
 import { queryKeys } from './query-keys'
 import type {
   ChatRequest,
-  ChatResponse,
   ContentSuggestionRequest,
-  ContentSuggestionResponse,
   ApplySuggestionRequest,
-  AIConversation,
-  AIMessage,
-  DuplicateReport,
-  DuplicateStatus,
-  RelatedNote,
-  AutoSummary,
   SemanticSearchDto,
-  SemanticSearchResult,
-  SendMessageDto,
+  SemanticSearchResult
 } from '../types'
 
 // AI Chat hooks
@@ -26,7 +17,10 @@ export function useStreamChat() {
       stream: ReadableStream<Uint8Array>
       citations: any[]
     }> => {
-      const stream = await aiService.streamChat(request)
+      const stream = await aiService.streamChat({
+        query: request.message,
+        // Note: conversationId and context are not supported by current backend
+      })
       if (!stream) {
         throw new Error('No stream received')
       }
@@ -44,7 +38,10 @@ export function useStreamChat() {
 
 export function useCompleteChat() {
   return useMutation({
-    mutationFn: (request: ChatRequest) => aiService.completeChat(request),
+    mutationFn: (request: ChatRequest) => aiService.completeChat({
+      query: request.message,
+      // Note: conversationId and context are not supported by current backend  
+    }),
     onError: (error: any) => {
       const message = error.response?.message || 'Failed to complete chat'
       toast.error(message)
@@ -52,10 +49,13 @@ export function useCompleteChat() {
   })
 }
 
-// Content suggestions
 export function useGenerateSuggestion() {
   return useMutation({
-    mutationFn: (request: ContentSuggestionRequest) => aiService.generateSuggestion(request),
+    mutationFn: (request: ContentSuggestionRequest) => aiService.getSuggestions({
+      content: request.content,
+      suggestionType: request.type as any || 'improve',
+      targetLanguage: undefined // Not supported in current frontend request type
+    }),
     onError: (error: any) => {
       const message = error.response?.message || 'Failed to generate suggestion'
       toast.error(message)
@@ -67,7 +67,11 @@ export function useApplySuggestion() {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: (request: ApplySuggestionRequest) => aiService.applySuggestion(request),
+    mutationFn: async (request: ApplySuggestionRequest): Promise<{ updatedContent: string }> => {
+      // The frontend and backend use different APIs for this functionality
+      // For now, throw an error indicating this needs to be implemented
+      throw new Error('Apply suggestion feature needs to be updated to match backend API');
+    },
     onSuccess: (result, variables) => {
       // Invalidate the note to get fresh content
       queryClient.invalidateQueries({ 
@@ -83,281 +87,13 @@ export function useApplySuggestion() {
   })
 }
 
-// AI Conversations
-export function useAIConversations(noteId?: string) {
-  return useQuery({
-    queryKey: queryKeys.ai.conversations(noteId),
-    queryFn: () => aiService.getConversations(noteId),
-    staleTime: 2 * 60 * 1000, // 2 minutes
-  })
-}
-
-export function useAIConversation(conversationId: string) {
-  return useQuery({
-    queryKey: queryKeys.ai.conversation(conversationId),
-    queryFn: () => aiService.getConversation(conversationId),
-    enabled: !!conversationId,
-    staleTime: 1 * 60 * 1000, // 1 minute
-  })
-}
-
-export function useCreateAIConversation() {
-  const queryClient = useQueryClient()
-
-  return useMutation({
-    mutationFn: ({ title, noteId }: { title: string; noteId?: string }) =>
-      aiService.createConversation({ title, noteId }),
-    onSuccess: (newConversation: AIConversation) => {
-      // Add to conversations list
-      queryClient.setQueryData(
-        queryKeys.ai.conversations(),
-        (old: AIConversation[] = []) => [newConversation, ...old]
-      )
-      
-      toast.success('New AI conversation created')
-    },
-    onError: (error: any) => {
-      const message = error.response?.message || 'Failed to create conversation'
-      toast.error(message)
-    },
-  })
-}
-
-export function useUpdateAIConversation() {
-  const queryClient = useQueryClient()
-
-  return useMutation({
-    mutationFn: ({ conversationId, data }: { 
-      conversationId: string
-      data: { title?: string }
-    }) => aiService.updateConversation(conversationId, data),
-    onSuccess: (updatedConversation: AIConversation) => {
-      // Update conversation cache
-      queryClient.setQueryData(
-        queryKeys.ai.conversation(updatedConversation.id),
-        updatedConversation
-      )
-      
-      // Update in conversations list
-      queryClient.setQueryData(
-        queryKeys.ai.conversations(),
-        (old: AIConversation[] = []) =>
-          old.map(conv =>
-            conv.id === updatedConversation.id ? updatedConversation : conv
-          )
-      )
-    },
-    onError: (error: any) => {
-      const message = error.response?.message || 'Failed to update conversation'
-      toast.error(message)
-    },
-  })
-}
-
-export function useAutoCategorizeNotes() {
-  const queryClient = useQueryClient()
-
-  return useMutation({
-    mutationFn: aiService.categorizeNotes,
-    onSuccess: (result: any) => {
-      // Invalidate notes to refresh data
-      queryClient.invalidateQueries({ queryKey: queryKeys.notes.all() })
-      
-      toast.success(`Categorized ${result.categorized} of ${result.processed} notes`)
-    },
-    onError: (error: any) => {
-      const message = error.response?.message || 'Failed to auto-categorize notes'
-      toast.error(message)
-    },
-  })
-}
-
-// Smart Features - Duplicates
-export function useDuplicateReports() {
-  return useQuery({
-    queryKey: queryKeys.ai.duplicates(),
-    queryFn: aiService.getDuplicateReports,
-    staleTime: 5 * 60 * 1000, // 5 minutes
-  })
-}
-
-export function useDetectDuplicates() {
-  const queryClient = useQueryClient()
-
-  return useMutation({
-    mutationFn: aiService.detectDuplicates,
-    onSuccess: (result) => {
-      // Update duplicates cache
-      queryClient.setQueryData(queryKeys.ai.duplicates(), result.reports)
-      
-      toast.success(`Found ${result.found} potential duplicates`)
-    },
-    onError: (error: any) => {
-      const message = error.response?.message || 'Failed to detect duplicates'
-      toast.error(message)
-    },
-  })
-}
-
-export function useResolveDuplicate() {
-  const queryClient = useQueryClient()
-
-  return useMutation({
-    mutationFn: ({ reportId, status }: { 
-      reportId: string
-      status: DuplicateStatus 
-    }) => aiService.resolveDuplicate(reportId, status as "CONFIRMED" | "DISMISSED" | "MERGED"),
-    onSuccess: (updatedReport: DuplicateReport) => {
-      // Update in duplicates list
-      queryClient.setQueryData(
-        queryKeys.ai.duplicates(),
-        (old: DuplicateReport[] = []) =>
-          old.map(report =>
-            report.id === updatedReport.id ? updatedReport : report
-          )
-      )
-      
-      toast.success('Duplicate report resolved')
-    },
-    onError: (error: any) => {
-      const message = error.response?.message || 'Failed to resolve duplicate'
-      toast.error(message)
-    },
-  })
-}
-
-// Smart Features - Relations
-export function useRelatedNotes(noteId: string) {
-  return useQuery({
-    queryKey: queryKeys.ai.relations(noteId),
-    queryFn: () => aiService.getRelatedNotes(noteId),
-    enabled: !!noteId,
-    staleTime: 10 * 60 * 1000, // 10 minutes
-  })
-}
-
-export function useDiscoverRelations() {
-  const queryClient = useQueryClient()
-
-  return useMutation({
-    mutationFn: (noteId?: string) => aiService.discoverRelations(noteId),
-    onSuccess: (result) => {
-      // Invalidate all relations to refresh data
-      queryClient.invalidateQueries({ 
-        predicate: (query) =>
-          query.queryKey[0] === 'ai' && query.queryKey[1] === 'relations'
-      })
-      
-      toast.success(`Discovered ${result.discovered} new relations`)
-    },
-    onError: (error: any) => {
-      const message = error.response?.message || 'Failed to discover relations'
-      toast.error(message)
-    },
-  })
-}
-
-// Smart Features - Summaries
-export function useNoteSummary(noteId: string) {
-  return useQuery({
-    queryKey: queryKeys.ai.summary(noteId),
-    queryFn: () => aiService.getNoteSummary(noteId),
-    enabled: !!noteId,
-    staleTime: 30 * 60 * 1000, // 30 minutes (summaries are relatively stable)
-    retry: false, // Don't retry if summary doesn't exist
-  })
-}
-
-export function useGenerateSummary() {
-  const queryClient = useQueryClient()
-
-  return useMutation({
-    mutationFn: ({ noteId, options }: { 
-      noteId: string
-      options?: { model?: string; maxLength?: number }
-    }) => aiService.generateSummary(noteId, options),
-    onSuccess: (summary: AutoSummary) => {
-      // Cache the summary
-      queryClient.setQueryData(queryKeys.ai.summary(summary.noteId), summary)
-      
-      toast.success('Summary generated successfully')
-    },
-    onError: (error: any) => {
-      const message = error.response?.message || 'Failed to generate summary'
-      toast.error(message)
-    },
-  })
-}
-
 // Semantic Search
 export function useSemanticSearch() {
   return useMutation({
-    mutationFn: (request: SemanticSearchDto) => aiService.semanticSearch(request),
+    mutationFn: (params: SemanticSearchDto): Promise<SemanticSearchResult[]> => 
+      aiService.semanticSearch(params),
     onError: (error: any) => {
-      const message = error.response?.message || 'Failed to perform semantic search'
-      toast.error(message)
-    },
-  })
-}
-
-export function useAdvancedSearch() {
-  return useMutation({
-    mutationFn: (query: any) => aiService.advancedSearch(query),
-    onError: (error: any) => {
-      const message = error.response?.message || 'Failed to perform advanced search'
-      toast.error(message)
-    },
-  })
-}
-
-// Send AI message function - was missing
-export function useSendAIMessage() {
-  const queryClient = useQueryClient()
-  
-  return useMutation({
-    mutationFn: ({ conversationId, data }: { conversationId: string; data: SendMessageDto }) => 
-      aiService.sendMessage(conversationId, data),
-    onSuccess: (response: ChatResponse) => {
-      // Update the conversation with new message
-      queryClient.setQueryData(
-        queryKeys.ai.conversation(response.conversation.id),
-        response.conversation
-      )
-      
-      // Refresh conversations list
-      queryClient.invalidateQueries({ 
-        queryKey: queryKeys.ai.conversations() 
-      })
-    },
-    onError: (error: any) => {
-      const message = error.response?.message || 'Failed to send message'
-      toast.error(message)
-    },
-  })
-}
-
-// Delete conversation function
-export function useDeleteAIConversation() {
-  const queryClient = useQueryClient()
-  
-  return useMutation({
-    mutationFn: (conversationId: string) => aiService.deleteConversation(conversationId),
-    onSuccess: (_, conversationId) => {
-      // Remove from conversations list
-      queryClient.setQueryData(
-        queryKeys.ai.conversations(),
-        (old: AIConversation[] = []) => old.filter(conv => conv.id !== conversationId)
-      )
-      
-      // Remove individual conversation cache
-      queryClient.removeQueries({ 
-        queryKey: queryKeys.ai.conversation(conversationId) 
-      })
-      
-      toast.success('Conversation deleted')
-    },
-    onError: (error: any) => {
-      const message = error.response?.message || 'Failed to delete conversation'
+      const message = error.response?.message || 'Search failed'
       toast.error(message)
     },
   })

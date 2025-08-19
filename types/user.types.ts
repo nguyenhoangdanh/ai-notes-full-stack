@@ -22,10 +22,13 @@ export interface UserProfile {
   updatedAt: string;
 }
 
-export interface UpdateUserDto {
+export interface UpdateProfileDto {
   name?: string;
   image?: string;
 }
+
+// Alias for compatibility
+export interface UpdateUserDto extends UpdateProfileDto {}
 
 export interface UserSettings {
   id: string;

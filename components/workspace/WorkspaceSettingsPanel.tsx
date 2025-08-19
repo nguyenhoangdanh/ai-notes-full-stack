@@ -4,12 +4,11 @@ import { Button } from '../ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../ui/card';
 import { Input } from '../ui/input';
 import { Label } from '../ui/label';
-import { Textarea } from '../ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
 import { Separator } from '../ui/separator';
 import { Badge } from '../ui/badge';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '../ui/alert-dialog';
-import { useWorkspaces, useUpdateWorkspace, useDeleteWorkspace } from '../../hooks/use-workspaces';
+import { useWorkspaces } from '../../hooks/use-workspaces';
 import { toast } from 'sonner';
 
 interface WorkspaceSettingsPanelProps {
@@ -19,44 +18,23 @@ interface WorkspaceSettingsPanelProps {
 
 export function WorkspaceSettingsPanel({ workspaceId, onClose }: WorkspaceSettingsPanelProps) {
   const { data: workspaces } = useWorkspaces();
-  const updateWorkspace = useUpdateWorkspace();
-  const deleteWorkspace = useDeleteWorkspace();
   
   // Find the specific workspace from the list
   const workspace = workspaces?.find(w => w.id === workspaceId);
   
   const [formData, setFormData] = useState({
     name: workspace?.name || '',
-    description: workspace?.description || '',
     privacy: workspace?.privacy || 'private'
   });
 
   const [isLoading, setIsLoading] = useState(false);
 
   const handleSave = async () => {
-    setIsLoading(true);
-    try {
-      await updateWorkspace.mutateAsync({
-        id: workspaceId,
-        data: formData
-      });
-      toast.success('Workspace updated successfully');
-      onClose?.();
-    } catch (error) {
-      toast.error('Failed to update workspace');
-    } finally {
-      setIsLoading(false);
-    }
+    toast.error('Workspace updates are not supported yet');
   };
 
   const handleDelete = async () => {
-    try {
-      await deleteWorkspace.mutateAsync(workspaceId);
-      toast.success('Workspace deleted');
-      onClose?.();
-    } catch (error) {
-      toast.error('Failed to delete workspace');
-    }
+    toast.error('Workspace deletion is not supported yet');
   };
 
   return (
@@ -79,17 +57,6 @@ export function WorkspaceSettingsPanel({ workspaceId, onClose }: WorkspaceSettin
               value={formData.name}
               onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
               placeholder="Workspace name"
-            />
-          </div>
-          
-          <div className="space-y-2">
-            <Label htmlFor="workspace-description">Description</Label>
-            <Textarea
-              id="workspace-description"
-              value={formData.description}
-              onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
-              placeholder="Brief description of this workspace"
-              rows={3}
             />
           </div>
           

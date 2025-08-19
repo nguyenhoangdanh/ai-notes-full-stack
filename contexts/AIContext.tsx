@@ -1,171 +1,57 @@
 import React, { createContext, useContext, useState, useCallback } from 'react'
-import { useAIConversations, useCreateAIConversation, useSendAIMessage, useDeleteAIConversation, useSemanticSearch } from '../hooks/use-ai'
-import { CreateConversationDto, SendMessageDto, SemanticSearchDto, AIConversation, SemanticSearchResult } from '../types'
+import { useSemanticSearch } from '../hooks/use-ai'
+import { SemanticSearchDto, SemanticSearchResult } from '../types'
 import { toast } from 'sonner'
 
 interface AIContextType {
-  // Conversation state
-  conversations: AIConversation[]
-  activeConversation: AIConversation | null
-  isLoadingConversations: boolean
-  
-  // Processing states
-  isProcessing: boolean
-  isSending: boolean
+  // Semantic Search
+  searchResults: SemanticSearchResult[]
   isSearching: boolean
-  
-  // Conversation operations
-  createConversation: (data: CreateConversationDto) => Promise<AIConversation | undefined>
-  deleteConversation: (conversationId: string) => Promise<void>
-  selectConversation: (conversation: AIConversation | null) => void
-  sendMessage: (message: string, context?: string[]) => Promise<void>
-  
-  // Search operations
-  performSemanticSearch: (query: string, options?: Partial<SemanticSearchDto>) => Promise<SemanticSearchResult[]>
-  
-  // Helper functions
-  startNewChat: (noteId?: string) => Promise<void>
-  
-  // Aliases for backward compatibility
-  currentConversation?: AIConversation | null
-  askAI?: (message: string, context?: string[]) => Promise<void>
-  isLoading?: boolean
+  semanticSearch: (params: SemanticSearchDto) => Promise<SemanticSearchResult[]>
+  clearSearchResults: () => void
 }
 
-const AIContext = createContext<AIContextType | undefined>(undefined)
+const AIContext = createContext<AIContextType | null>(null)
 
-export function AIProvider({ children }: { children: React.ReactNode }) {
-  const [activeConversation, setActiveConversation] = useState<AIConversation | null>(null)
-  const [isProcessing, setIsProcessing] = useState(false)
-  
-  // Use the AI hooks
-  const { data: conversations = [], isLoading: isLoadingConversations } = useAIConversations()
-  const createConversationMutation = useCreateAIConversation()
-  const deleteConversationMutation = useDeleteAIConversation()
-  const sendMessageMutation = useSendAIMessage()
-  const semanticSearchMutation = useSemanticSearch()
-
-  const createConversation = useCallback(async (data: CreateConversationDto): Promise<AIConversation | undefined> => {
-    try {
-      setIsProcessing(true)
-      const conversation = await createConversationMutation.mutateAsync(data)
-      setActiveConversation(conversation)
-      return conversation
-    } catch (error) {
-      console.error('Failed to create conversation:', error)
-      return undefined
-    } finally {
-      setIsProcessing(false)
-    }
-  }, [createConversationMutation])
-
-  const deleteConversation = useCallback(async (conversationId: string): Promise<void> => {
-    try {
-      setIsProcessing(true)
-      await deleteConversationMutation.mutateAsync(conversationId)
-      
-      // If we're deleting the active conversation, clear it
-      if (activeConversation?.id === conversationId) {
-        setActiveConversation(null)
-      }
-    } catch (error) {
-      console.error('Failed to delete conversation:', error)
-      throw error
-    } finally {
-      setIsProcessing(false)
-    }
-  }, [deleteConversationMutation, activeConversation])
-
-  const selectConversation = useCallback((conversation: AIConversation | null) => {
-    setActiveConversation(conversation)
-  }, [])
-
-  const sendMessage = useCallback(async (message: string, context?: string[]): Promise<void> => {
-    if (!activeConversation) {
-      throw new Error('No active conversation')
-    }
-
-    try {
-      setIsProcessing(true)
-      const response = await sendMessageMutation.mutateAsync({
-        conversationId: activeConversation.id,
-        data: { content: message, context }
-      })
-      
-      // Update active conversation with the response
-      setActiveConversation(response.conversation)
-    } catch (error) {
-      console.error('Failed to send message:', error)
-      throw error
-    } finally {
-      setIsProcessing(false)
-    }
-  }, [activeConversation, sendMessageMutation])
-
-  const performSemanticSearch = useCallback(async (
-    query: string, 
-    options: Partial<SemanticSearchDto> = {}
-  ): Promise<SemanticSearchResult[]> => {
-    try {
-      setIsProcessing(true)
-      const results = await semanticSearchMutation.mutateAsync({
-        query,
-        limit: 10,
-        threshold: 0.7,
-        ...options
-      })
-      return results
-    } catch (error) {
-      console.error('Semantic search failed:', error)
-      toast.error('Search failed')
-      return []
-    } finally {
-      setIsProcessing(false)
-    }
-  }, [semanticSearchMutation])
-
-  const startNewChat = useCallback(async (noteId?: string): Promise<void> => {
-    const conversation = await createConversation({
-      title: noteId ? 'Note Chat' : 'New Chat',
-      noteId,
-      context: noteId ? [noteId] : []
-    })
-    
-    if (conversation) {
-      setActiveConversation(conversation)
-    }
-  }, [createConversation])
-
-  const value: AIContextType = {
-    conversations,
-    activeConversation,
-    isLoadingConversations,
-    isProcessing,
-    isSending: sendMessageMutation.isPending,
-    isSearching: semanticSearchMutation.isPending,
-    createConversation,
-    deleteConversation,
-    selectConversation,
-    sendMessage,
-    performSemanticSearch,
-    startNewChat,
-    // Aliases for backward compatibility
-    currentConversation: activeConversation,
-    askAI: sendMessage,
-    isLoading: isProcessing
-  }
-
-  return (
-    <AIContext.Provider value={value}>
-      {children}
-    </AIContext.Provider>
-  )
-}
-
-export function useAI() {
+export const useAI = () => {
   const context = useContext(AIContext)
-  if (context === undefined) {
+  if (!context) {
     throw new Error('useAI must be used within an AIProvider')
   }
   return context
+}
+
+export const AIProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const [searchResults, setSearchResults] = useState<SemanticSearchResult[]>([])
+  
+  const semanticSearchMutation = useSemanticSearch()
+
+  const semanticSearch = useCallback(async (params: SemanticSearchDto): Promise<SemanticSearchResult[]> => {
+    try {
+      const results = await semanticSearchMutation.mutateAsync(params)
+      setSearchResults(results)
+      return results
+    } catch (error) {
+      console.error('Semantic search failed:', error)
+      toast.error('Failed to perform semantic search')
+      return []
+    }
+  }, [semanticSearchMutation])
+
+  const clearSearchResults = useCallback(() => {
+    setSearchResults([])
+  }, [])
+
+  const contextValue: AIContextType = {
+    searchResults,
+    isSearching: semanticSearchMutation.isPending,
+    semanticSearch,
+    clearSearchResults,
+  }
+
+  return (
+    <AIContext.Provider value={contextValue}>
+      {children}
+    </AIContext.Provider>
+  )
 }

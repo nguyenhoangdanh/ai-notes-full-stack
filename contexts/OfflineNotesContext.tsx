@@ -166,7 +166,6 @@ export function OfflineNotesProvider({ children }: { children: React.ReactNode }
       try {
         const serverWorkspace = await createWorkspaceMutation.mutateAsync({
           name: workspace.name,
-          isDefault: true
         })
         
         return {
