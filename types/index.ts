@@ -26,18 +26,130 @@ export type {
   UsageStats
 } from './user.types'
 
-// Export specific items from productivity to avoid conflicts
+// Export Smart Features types - avoid conflicts
+export type {
+  // Categories
+  Category,
+  CreateCategoryDto,
+  UpdateCategoryDto,
+  AutoCategorizeDto,
+  CategorySuggestionDto,
+  // Summaries  
+  Summary,
+  GenerateSummaryDto,
+  BatchSummaryDto,
+  SummaryResponseDto,
+  // Relations - prefix to avoid conflicts
+  NoteRelation,
+  RelatedNote as SmartRelatedNote,
+  NoteGraph,
+  // Duplicates
+  DuplicateDetectionReport,
+  DuplicateGroup,
+  CreateDuplicateReportDto,
+  MergeDuplicatesDto
+} from './smart.types'
+
+// Export Collaboration types
+export type {
+  // Collaboration
+  Collaborator,
+  InviteCollaboratorDto,
+  UpdatePermissionDto,
+  CollaborationStats,
+  CursorUpdate,
+  // Share
+  ShareLink,
+  CreateShareLinkDto,
+  UpdateShareLinkDto,
+  ShareAnalytics,
+  ShareStats,
+  // Versions
+  NoteVersion,
+  CreateVersionDto,
+  VersionComparison,
+  VersionStatistics,
+  VersionTimeline,
+  // Activities
+  Activity,
+  ActivityInsights,
+  ActivityFeed,
+  ActivityStats,
+  TrackActivityDto,
+  ProductivityHeatmap,
+  // Tags - avoid conflicts
+  Tag,
+  CreateTagDto as CollabCreateTagDto,
+  UpdateTagDto,
+  TagHierarchy,
+  TagAnalytics,
+  TagSuggestion,
+  BulkTagOperationDto
+} from './collaboration.types'
+
+// Export Advanced Features types
+export type {
+  // Templates
+  Template,
+  CreateTemplateDto as AdvancedCreateTemplateDto,
+  UpdateTemplateDto,
+  ProcessTemplateDto,
+  TemplateStats,
+  TemplatePreview,
+  TemplateVariable,
+  // Attachments
+  Attachment,
+  AttachmentAnalytics,
+  OCRResult,
+  // Search
+  AdvancedSearchDto,
+  SearchResult,
+  SearchSuggestion,
+  SavedSearch as AdvancedSavedSearch,
+  SearchAnalytics,
+  QuickSearchDto,
+  // Analytics
+  AnalyticsOverview,
+  WorkspaceAnalytics,
+  ContentAnalytics,
+  TrackNoteViewDto,
+  // Export
+  ExportJob,
+  CreateExportDto as AdvancedCreateExportDto,
+  ExportStats,
+  ExportSettings
+} from './advanced.types'
+
+// Export Enhanced Productivity types
 export type { 
-  Task, 
-  PomodoroSession, 
+  // Notifications
+  Notification,
+  CreateNotificationDto,
+  UpdateNotificationDto,
+  // Reminders  
+  Reminder,
+  CreateReminderDto,
+  UpdateReminderDto,
+  ReminderStats,
+  // Tasks - avoid conflicts
+  Task as ProductivityTask, 
+  CreateTaskDto as ProductivityCreateTaskDto,
+  UpdateTaskDto as ProductivityUpdateTaskDto,
+  TaskStats,
+  // Calendar
   CalendarEvent,
-  ReviewPrompt,
+  CreateCalendarEventDto as ProductivityCreateCalendarEventDto,
+  UpdateCalendarEventDto as ProductivityUpdateCalendarEventDto,
+  // Pomodoro
+  PomodoroSession,
   CreatePomodoroSessionDto,
   UpdatePomodoroSessionDto,
-  CreateTaskDto,
-  UpdateTaskDto,
-  CreateCalendarEventDto,
-  UpdateCalendarEventDto
+  PomodoroStats,
+  // Review
+  ReviewPrompt,
+  CreateReviewDto,
+  AnswerReviewDto,
+  ReviewStats
 } from './productivity.types'
 
 // Export specific items from mobile to avoid conflicts  
@@ -52,23 +164,14 @@ export type {
   SyncOperationDto,
   ConflictResolutionDto,
   OfflineSync,
-  ExportHistory,
-  CreateExportDto
+  ExportHistory
 } from './mobile.types'
 
 // Export specific items from misc to avoid conflicts
 export type { 
-  Notification, 
-  Reminder, 
   SavedSearch, 
-  Template, 
-  Tag, 
-  CreateNotificationDto,
-  CreateReminderDto,
   CreateSavedSearchDto,
-  CreateTemplateDto,
-  UpdateTemplateDto,
   SearchHistory,
   Analytics,
-  Activity
+  Activity as MiscActivity
 } from './misc.types'

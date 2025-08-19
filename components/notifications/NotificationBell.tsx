@@ -97,17 +97,17 @@ export function NotificationBell() {
                   <p className="text-xs text-muted-foreground">
                     {notification.message}
                   </p>
-                  {notification.noteId && (
+                  {notification.actionUrl && (
                     <Button 
                       variant="link" 
                       size="sm" 
                       className="h-auto p-0 mt-2 text-xs"
                       onClick={(e) => {
                         e.stopPropagation()
-                        window.location.href = `/notes/${notification.noteId}`
+                        window.location.href = notification.actionUrl!
                       }}
                     >
-                      View Note
+                      {notification.actionLabel || 'View'}
                     </Button>
                   )}
                 </div>
