@@ -190,7 +190,7 @@ export function Sidebar({ collapsed, onToggle, isMobile = false }: SidebarProps)
               className="flex items-center gap-3 group transition-colors hover:text-primary"
               aria-label="AI Notes - Go to dashboard"
             >
-              <div className="p-2 bg-primary/10 rounded-lg group-hover:bg-primary/20 transition-colors">
+              <div className="p-2.5 bg-gradient-to-br from-primary/20 to-primary/10 rounded-xl group-hover:from-primary/30 group-hover:to-primary/20 transition-all duration-200 shadow-sm">
                 <SparklesIcon className="h-6 w-6 text-primary" aria-hidden="true" />
               </div>
               <div className="flex flex-col">
