@@ -216,6 +216,12 @@ export {
   useDeleteReview
 } from './use-productivity';
 
+// Templates and Voice Notes hooks (new features)
+export * from './use-templates';
+
+// Tags and Analytics hooks (new comprehensive features)
+export * from './use-tags-analytics';
+
 // Query keys
 export { queryKeys, invalidationHelpers } from './query-keys';
 
