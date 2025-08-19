@@ -65,7 +65,7 @@ export function AppLayout({ children }: AppLayoutProps) {
       {/* Mobile overlay */}
       {isMobile && sidebarOpen && (
         <div
-          className="fixed inset-0 z-40 bg-black/50 backdrop-blur-sm transition-opacity lg:hidden"
+          className="fixed inset-0 z-40 bg-black/60 backdrop-blur-md transition-all duration-300 lg:hidden"
           onClick={() => setSidebarOpen(false)}
           aria-hidden="true"
         />
@@ -82,7 +82,7 @@ export function AppLayout({ children }: AppLayoutProps) {
           // Mobile behavior
           "fixed lg:relative inset-y-0 left-0",
           isMobile && sidebarOpen ? "w-64 translate-x-0" : "-translate-x-full",
-          "shadow-xl lg:shadow-none"
+          "shadow-2xl lg:shadow-lg"
         )}
         role="navigation"
         aria-label="Main navigation"
@@ -105,12 +105,12 @@ export function AppLayout({ children }: AppLayoutProps) {
         />
         <main
           id="main-content"
-          className="flex-1 overflow-auto focus:outline-none safe-area-inset"
+          className="flex-1 overflow-auto focus:outline-none safe-area-inset bg-gradient-to-br from-background to-background/95"
           role="main"
           aria-label="Main content"
           tabIndex={-1}
         >
-          <div className="w-full mx-auto px-4 xs:px-3 sm:px-6 lg:px-8 py-4 xs:py-3 sm:py-6 max-w-7xl min-h-full">
+          <div className="w-full mx-auto px-4 xs:px-3 sm:px-6 lg:px-8 py-6 xs:py-4 sm:py-8 max-w-7xl min-h-full">
             {children}
           </div>
         </main>
