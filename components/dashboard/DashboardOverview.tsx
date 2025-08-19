@@ -72,7 +72,10 @@ export function DashboardOverview() {
   ]
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/20">
+    <div className="min-h-screen bg-gradient-to-br from-background via-background/95 to-primary/5 relative overflow-hidden">
+      {/* Background decorations */}
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_left,_var(--color-primary-2)_0%,_transparent_70%)] opacity-30" />
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_right,_var(--color-accent-secondary-2)_0%,_transparent_70%)] opacity-20" />
       <ResponsiveContainer padding="md" mobilePadding="sm" className="py-6 xs:py-4 sm:py-8 space-y-8 xs:space-y-6 sm:space-y-12">
         {/* Welcome Section */}
         <div className="text-center space-y-4 xs:space-y-3 sm:space-y-6 py-8 xs:py-6 sm:py-12">
