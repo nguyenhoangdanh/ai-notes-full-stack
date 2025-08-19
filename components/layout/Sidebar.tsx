@@ -182,7 +182,7 @@ export function Sidebar({ collapsed, onToggle, isMobile = false }: SidebarProps)
       className="h-full glass-effect border-r border-border/60 flex flex-col shadow-xl lg:shadow-lg transition-all duration-300"
     >
       {/* Header */}
-      <div className="p-4 border-b border-border/60">
+      <div className="p-4 border-b border-border/40">
         <div className="flex items-center justify-between">
           {!collapsed && (
             <Link
