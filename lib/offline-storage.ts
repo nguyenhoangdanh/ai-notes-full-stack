@@ -9,6 +9,7 @@ export interface OfflineNote {
   workspaceId: string
   ownerId: string
   isDeleted: boolean
+  starred?: boolean
   createdAt: Date
   updatedAt: Date
   lastSyncedAt?: Date

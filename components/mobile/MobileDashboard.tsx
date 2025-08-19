@@ -28,6 +28,7 @@ import {
   Folder
 } from 'lucide-react'
 import { useOfflineNotes } from '../../contexts/OfflineNotesContext'
+import { OfflineNote } from '../../lib/offline-storage'
 import { MobileNoteEditor } from './MobileNoteEditor'
 import { VoiceNoteRecorder } from './VoiceNoteRecorder'
 import { MobileSearchSheet } from './MobileSearchSheet'
@@ -90,7 +91,7 @@ export function MobileDashboard() {
         filtered = filtered.filter(note => {
           const dayAgo = new Date()
           dayAgo.setDate(dayAgo.getDate() - 1)
-          return new Date(note.updatedAt) > dayAgo
+          return note.updatedAt > dayAgo
         })
         break
       case 'starred':
@@ -102,7 +103,7 @@ export function MobileDashboard() {
     }
 
     // Sort by updated date
-    return filtered.sort((a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime())
+    return filtered.sort((a, b) => b.updatedAt.getTime() - a.updatedAt.getTime())
   }, [notes, searchQuery, filterType])
 
   // Optimized handlers
@@ -345,7 +346,7 @@ export function MobileDashboard() {
 
   // Enhanced Note Card Component
   const NoteCard = ({ note, onSelect, onDelete, onDuplicate }: {
-    note: Note
+    note: OfflineNote
     onSelect: () => void
     onDelete: (e: React.MouseEvent) => void
     onDuplicate: (e: React.MouseEvent) => void
@@ -398,7 +399,7 @@ export function MobileDashboard() {
       
       <div className="flex items-center justify-between text-xs text-muted-foreground">
         <span className="font-medium">
-          {new Date(note.updatedAt).toLocaleDateString('en-US', { 
+          {note.updatedAt.toLocaleDateString('en-US', { 
             month: 'short', 
             day: 'numeric',
             hour: '2-digit',

@@ -39,7 +39,7 @@ export { DashboardOverview } from './dashboard/DashboardOverview'
 export { Dashboard } from './dashboard/Dashboard'
 
 // SEO Components
-export { PageMeta, withSEO } from './seo/PageMeta'
+export { PageMeta } from './seo/PageMeta'
 
 // Accessibility Components
 export { 
@@ -48,11 +48,12 @@ export {
   FocusTrap,
   LiveRegion,
   LoadingIndicator,
-  TooltipWrapper,
   AccessibleError,
   keyboardHelpers,
   useHighContrastMode,
-  useReducedMotion
+  useReducedMotion,
+  useAnnounce,
+  useRovingTabindex
 } from './accessibility/A11y'
 
 // Auth Components

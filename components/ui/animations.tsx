@@ -73,12 +73,12 @@ export const animationVariants: Record<string, Variants> = {
 
 // Default transition configurations
 export const transitions = {
-  fast: { duration: 0.2, ease: "easeOut" },
-  normal: { duration: 0.3, ease: "easeOut" },
-  slow: { duration: 0.5, ease: "easeOut" },
-  spring: { type: "spring", damping: 15, stiffness: 300 },
-  bounce: { type: "spring", damping: 8, stiffness: 100 },
-  elastic: { type: "spring", damping: 5, stiffness: 200 }
+  fast: { duration: 0.2, ease: [0.25, 0.1, 0.25, 1] as const },
+  normal: { duration: 0.3, ease: [0.25, 0.1, 0.25, 1] as const },
+  slow: { duration: 0.5, ease: [0.25, 0.1, 0.25, 1] as const },
+  spring: { type: "spring" as const, damping: 15, stiffness: 300 },
+  bounce: { type: "spring" as const, damping: 8, stiffness: 100 },
+  elastic: { type: "spring" as const, damping: 5, stiffness: 200 }
 }
 
 // Animated container component
@@ -225,8 +225,8 @@ export function FloatingButton({
       onClick={onClick}
       onHoverStart={() => setIsHovered(true)}
       onHoverEnd={() => setIsHovered(false)}
-      onTapStart={() => setIsPressed(true)}
-      onTapEnd={() => setIsPressed(false)}
+      onPointerDown={() => setIsPressed(true)}
+      onPointerUp={() => setIsPressed(false)}
       animate={{
         scale: isPressed ? 0.9 : isHovered ? 1.1 : 1,
         boxShadow: isHovered 
@@ -235,7 +235,7 @@ export function FloatingButton({
       }}
       transition={transitions.spring}
       whileHover={{ y: -2 }}
-      whileTap={{ y: 0 }}
+      whileTap={{ y: 0, scale: 0.9 }}
     >
       {children}
     </motion.button>

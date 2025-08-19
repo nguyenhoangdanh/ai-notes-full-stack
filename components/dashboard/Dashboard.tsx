@@ -225,7 +225,7 @@ export function Dashboard() {
               label="Total Notes"
               value={stats.totalNotes}
               change={{ value: "+12%", trend: "up" }}
-              icon={BookOpen}
+              icon={<BookOpen className="h-4 w-4" />}
               color="primary"
               className="superhuman-hover"
             />
@@ -233,7 +233,7 @@ export function Dashboard() {
               label="Workspaces"
               value={stats.totalWorkspaces}
               change={{ value: "+2", trend: "up" }}
-              icon={Users}
+              icon={<Users className="h-4 w-4" />}
               color="emerald"
               className="superhuman-hover"
             />
@@ -241,7 +241,7 @@ export function Dashboard() {
               label="AI Suggestions"
               value={stats.aiSuggestions}
               change={{ value: "New", trend: "neutral" }}
-              icon={Zap}
+              icon={<Zap className="h-4 w-4" />}
               color="amber"
               className="superhuman-hover"
             />
@@ -249,7 +249,7 @@ export function Dashboard() {
               label="Activity"
               value={stats.recentActivity}
               change={{ value: "7 days", trend: "neutral" }}
-              icon={TrendingUp}
+              icon={<TrendingUp className="h-4 w-4" />}
               color="primary"
               className="superhuman-hover"
             />

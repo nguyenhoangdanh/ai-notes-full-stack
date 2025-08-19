@@ -92,7 +92,7 @@ export function FocusTrap({
       ].join(',')
       
       return Array.from(container.querySelectorAll(selector)).filter(
-        el => el.offsetParent !== null && getComputedStyle(el).visibility !== 'hidden'
+        el => (el as HTMLElement).offsetParent !== null && getComputedStyle(el).visibility !== 'hidden'
       ) as HTMLElement[]
     }
 
