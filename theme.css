@@ -359,5 +359,44 @@
     --color-bg: var(--color-neutral-1);
     --color-bg-inset: #000000;
     --color-bg-overlay: var(--color-neutral-3);
+
+    /* Dark mode glass effects */
+    --glass-bg: rgb(0 0 0 / 0.6);
+    --glass-border: rgb(255 255 255 / 0.1);
+
+    /* Dark mode shadows */
+    --shadow-xs: 0 1px 2px 0 rgb(0 0 0 / 0.2);
+    --shadow-sm: 0 1px 3px 0 rgb(0 0 0 / 0.3), 0 1px 2px -1px rgb(0 0 0 / 0.3);
+    --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.4), 0 2px 4px -2px rgb(0 0 0 / 0.4);
+    --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.5), 0 4px 6px -4px rgb(0 0 0 / 0.5);
+    --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.6), 0 8px 10px -6px rgb(0 0 0 / 0.6);
+    --shadow-2xl: 0 25px 50px -12px rgb(0 0 0 / 0.8);
+    --shadow-inner: inset 0 2px 4px 0 rgb(0 0 0 / 0.2);
+    --shadow-glow: 0 0 20px 0 rgb(var(--color-accent-9) / 0.5);
+    --shadow-colored: 0 8px 25px -5px rgb(var(--color-accent-9) / 0.4);
+    --shadow-border: 0 0 0 1px rgb(255 255 255 / 0.1);
+  }
+
+  /* Custom utility classes */
+  .glass-effect {
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    backdrop-filter: var(--glass-backdrop);
+    -webkit-backdrop-filter: var(--glass-backdrop);
+  }
+
+  .text-gradient {
+    background: linear-gradient(135deg, var(--color-accent-11), var(--color-accent-secondary-11));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .shadow-glow {
+    box-shadow: var(--shadow-glow);
+  }
+
+  .shadow-colored {
+    box-shadow: var(--shadow-colored);
   }
 }
