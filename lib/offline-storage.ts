@@ -1,6 +1,23 @@
 import Dexie, { Table } from 'dexie'
 
-// Types for offline storage
+// Database record types (with numeric isDeleted for indexing)
+interface OfflineNoteRecord {
+  id: string
+  title: string
+  content: string
+  tags: string[]
+  workspaceId: string
+  ownerId: string
+  isDeleted: number // 0 = false, 1 = true for Dexie indexing
+  starred?: boolean
+  createdAt: Date
+  updatedAt: Date
+  lastSyncedAt?: Date
+  syncStatus: 'synced' | 'pending' | 'conflict'
+  localChanges?: any
+}
+
+// Types for offline storage (with boolean isDeleted for API compatibility)
 export interface OfflineNote {
   id: string
   title: string
@@ -76,7 +93,7 @@ export interface AppSettings {
 
 // IndexedDB Schema
 class AINotesDB extends Dexie {
-  notes!: Table<OfflineNote>
+  notes!: Table<OfflineNoteRecord>
   workspaces!: Table<OfflineWorkspace>
   syncQueue!: Table<SyncOperation>
   attachments!: Table<CachedAttachment>
@@ -87,7 +104,7 @@ class AINotesDB extends Dexie {
     super('AINotesDB')
     
     this.version(1).stores({
-      notes: 'id, title, workspaceId, ownerId, createdAt, updatedAt, syncStatus',
+      notes: 'id, title, workspaceId, ownerId, isDeleted, createdAt, updatedAt, syncStatus',
       workspaces: 'id, ownerId, isDefault, syncStatus',
       syncQueue: 'id, operation, entityType, entityId, timestamp, retryCount',
       attachments: 'id, noteId, syncStatus',
@@ -112,21 +129,39 @@ export class OfflineStorageService {
 
   // Notes Operations
   async saveNote(note: OfflineNote): Promise<void> {
-    await db.notes.put(note)
+    // Convert boolean to number for indexing
+    const noteForDb: OfflineNoteRecord = { 
+      ...note, 
+      isDeleted: note.isDeleted ? 1 : 0 
+    }
+    await db.notes.put(noteForDb)
   }
 
   async getNote(id: string): Promise<OfflineNote | undefined> {
-    return await db.notes.get(id)
+    const note = await db.notes.get(id)
+    if (note) {
+      // Convert number back to boolean
+      return { 
+        ...note, 
+        isDeleted: note.isDeleted === 1 
+      } as OfflineNote
+    }
+    return undefined
   }
 
   async getNotes(workspaceId?: string): Promise<OfflineNote[]> {
-    let collection = db.notes.where('isDeleted').equals(0)
+    let collection = db.notes.where('isDeleted').equals(0) // 0 = false, 1 = true
     
     if (workspaceId) {
       collection = collection.and(note => note.workspaceId === workspaceId)
     }
     
-    return await collection.toArray()
+    const notes = await collection.toArray()
+    // Convert numbers back to booleans
+    return notes.map(note => ({ 
+      ...note, 
+      isDeleted: note.isDeleted === 1 
+    })) as OfflineNote[]
   }
 
   async deleteNote(id: string): Promise<void> {
