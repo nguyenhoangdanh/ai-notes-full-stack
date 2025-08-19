@@ -14,13 +14,13 @@ const Card = forwardRef<HTMLDivElement, CardProps>(
         ref={ref}
         data-slot="card"
         className={cn(
-          "flex flex-col rounded-xl border transition-all duration-200",
+          "flex flex-col rounded-2xl border transition-all duration-300 group",
           {
             // Variants
-            "bg-card/50 backdrop-blur-sm border-border/60 shadow-sm hover:shadow-md hover:border-border/80": variant === "default",
-            "bg-card/80 backdrop-blur-md border-border/40 shadow-lg hover:shadow-xl hover:-translate-y-1": variant === "elevated",
-            "bg-transparent border-border hover:bg-card/30 hover:backdrop-blur-sm": variant === "outlined",
-            "bg-transparent border-transparent hover:bg-card/20": variant === "ghost",
+            "glass-effect border-border/40 shadow-md hover:shadow-lg hover:border-border/60 hover:scale-[1.02]": variant === "default",
+            "glass-effect border-border/30 shadow-xl hover:shadow-2xl hover:-translate-y-2 hover:scale-[1.02] shadow-colored": variant === "elevated",
+            "bg-transparent border-2 border-border/60 hover:border-primary/40 hover:bg-card/20 hover:backdrop-blur-sm hover:shadow-sm": variant === "outlined",
+            "bg-transparent border-transparent hover:bg-card/20 hover:backdrop-blur-sm": variant === "ghost",
 
             // Padding
             "p-0": padding === "none",
