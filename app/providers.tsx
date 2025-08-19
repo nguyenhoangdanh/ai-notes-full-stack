@@ -9,6 +9,7 @@ import { useState } from 'react'
 import { AuthProvider } from '../contexts/AuthContext'
 import { AIProvider } from '../contexts/AIContext'
 import { ErrorFallback } from '../ErrorFallback'
+import { DemoModeIndicator } from '../components/common/DemoModeIndicator'
 
 export function Providers({ children }: { children: React.ReactNode }) {
   const [queryClient] = useState(
@@ -51,6 +52,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
           <AuthProvider>
             <AIProvider>
               {children}
+              <DemoModeIndicator />
               <Toaster
                 position="top-right"
                 toastOptions={{

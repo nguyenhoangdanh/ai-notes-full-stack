@@ -4,6 +4,7 @@ export { workspaceService } from './workspace.service'
 export { noteService } from './note.service'
 export { aiService } from './ai.service'
 export { userService } from './user.service'
+export { demoModeService } from './demo.service'
 
 // Smart Features
 export { 

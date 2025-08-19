@@ -3,6 +3,7 @@
  */
 
 import { apiClient } from '../lib/api-client';
+import { demoModeService } from './demo.service';
 import { 
   Note, 
   CreateNoteDto, 
@@ -19,6 +20,10 @@ export const noteService = {
    * Get all notes for user
    */
   async getAll(workspaceId?: string, limit?: number): Promise<Note[]> {
+    if (demoModeService.isDemoMode()) {
+      const notes = demoModeService.getDemoNotes();
+      return limit ? notes.slice(0, limit) : notes;
+    }
     return apiClient.get<Note[]>('/notes', { 
       query: { workspaceId, limit } 
     });
@@ -28,6 +33,15 @@ export const noteService = {
    * Search notes by query
    */
   async search(params: SearchNotesDto): Promise<SearchResult[]> {
+    if (demoModeService.isDemoMode()) {
+      const notes = demoModeService.searchDemoNotes(params.q || '');
+      return notes.map(note => ({
+        note,
+        relevanceScore: 1.0,
+        snippet: note.content.substring(0, 200) + (note.content.length > 200 ? '...' : ''),
+        matchedChunks: []
+      }));
+    }
     return apiClient.get<SearchResult[]>('/notes/search', { query: params });
   },
 
@@ -35,6 +49,14 @@ export const noteService = {
    * Get note by ID
    */
   async getById(id: string): Promise<Note> {
+    if (demoModeService.isDemoMode()) {
+      const notes = demoModeService.getDemoNotes();
+      const note = notes.find(n => n.id === id);
+      if (!note) {
+        throw new Error('Note not found');
+      }
+      return note;
+    }
     return apiClient.get<Note>(`/notes/${id}`);
   },
 
@@ -42,6 +64,24 @@ export const noteService = {
    * Get note with analytics
    */
   async getWithAnalytics(id: string): Promise<NoteWithAnalytics> {
+    if (demoModeService.isDemoMode()) {
+      const note = await this.getById(id);
+      return {
+        ...note,
+        analytics: {
+          id: 'demo-analytics-' + id,
+          noteId: id,
+          viewCount: Math.floor(Math.random() * 50) + 1,
+          editCount: Math.floor(Math.random() * 10) + 1,
+          shareCount: Math.floor(Math.random() * 3),
+          lastViewed: new Date(Date.now() - Math.random() * 7 * 24 * 60 * 60 * 1000).toISOString(),
+          lastEdited: note.updatedAt,
+          readingTime: Math.floor(note.content.length / 200), // Rough estimate
+          wordCount: note.content.split(' ').length,
+          updatedAt: new Date().toISOString()
+        }
+      };
+    }
     return apiClient.get<NoteWithAnalytics>(`/notes/${id}/analytics`);
   },
 
@@ -49,6 +89,9 @@ export const noteService = {
    * Create new note
    */
   async create(data: CreateNoteDto): Promise<Note> {
+    if (demoModeService.isDemoMode()) {
+      return demoModeService.createDemoNote(data);
+    }
     return apiClient.post<Note>('/notes', { body: data });
   },
 
@@ -56,6 +99,9 @@ export const noteService = {
    * Update note
    */
   async update(id: string, data: UpdateNoteDto): Promise<Note> {
+    if (demoModeService.isDemoMode()) {
+      return demoModeService.updateDemoNote(id, data);
+    }
     return apiClient.patch<Note>(`/notes/${id}`, { body: data });
   },
 
@@ -63,6 +109,9 @@ export const noteService = {
    * Delete note
    */
   async delete(id: string): Promise<void> {
+    if (demoModeService.isDemoMode()) {
+      return demoModeService.deleteDemoNote(id);
+    }
     return apiClient.delete<void>(`/notes/${id}`);
   },
 
