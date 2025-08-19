@@ -18,7 +18,8 @@ import {
   ProductivityUpdateCalendarEventDto as UpdateCalendarEventDto,
   CreatePomodoroSessionDto,
   UpdatePomodoroSessionDto,
-  CreateReviewDto,
+  CreateReviewPromptDto,
+  UpdateReviewPromptDto,
   AnswerReviewDto
 } from '../types';
 
@@ -482,7 +483,7 @@ export const useCreateReview = () => {
   const queryClient = useQueryClient();
   
   return useMutation({
-    mutationFn: (data: CreateReviewDto) => reviewService.create(data),
+    mutationFn: (data: CreateReviewPromptDto) => reviewService.create(data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: productivityQueryKeys.review.all });
     },
@@ -518,7 +519,7 @@ export const useUpdateReview = () => {
   const queryClient = useQueryClient();
   
   return useMutation({
-    mutationFn: ({ id, data }: { id: string; data: Partial<CreateReviewDto> }) =>
+    mutationFn: ({ id, data }: { id: string; data: UpdateReviewPromptDto }) =>
       reviewService.update(id, data),
     onSuccess: (_, { id }) => {
       queryClient.invalidateQueries({ queryKey: productivityQueryKeys.review.detail(id) });

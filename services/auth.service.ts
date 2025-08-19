@@ -9,7 +9,10 @@ import {
   LoginDto, 
   RegisterDto, 
   TokenVerificationResponse, 
-  User 
+  User,
+  UserSettings,
+  UpdateSettingsDto,
+  Usage
 } from '../types/auth.types';
 
 export const authService = {
@@ -87,29 +90,29 @@ export const authService = {
   /**
    * Get user settings
    */
-  async getSettings(): Promise<any> {
-    return apiClient.get('/settings');
+  async getSettings(): Promise<UserSettings> {
+    return apiClient.get<UserSettings>('/settings');
   },
 
   /**
    * Update user settings
    */
-  async updateSettings(data: any): Promise<any> {
-    return apiClient.patch('/settings', { body: data });
+  async updateSettings(data: UpdateSettingsDto): Promise<UserSettings> {
+    return apiClient.patch<UserSettings>('/settings', { body: data });
   },
 
   /**
    * Reset user settings to defaults
    */
-  async resetSettings(): Promise<any> {
-    return apiClient.patch('/settings', { body: { model: 'gemini-1.5-flash', maxTokens: 4000, autoReembed: true } });
+  async resetSettings(): Promise<UserSettings> {
+    return apiClient.patch<UserSettings>('/settings', { body: { model: 'gemini-1.5-flash', maxTokens: 4000, autoReembed: true } });
   },
 
   /**
    * Get usage statistics
    */
-  async getUsage(days: number = 30): Promise<any> {
-    return apiClient.get('/settings/usage', { query: { days: days.toString() } });
+  async getUsage(days: number = 30): Promise<Usage[]> {
+    return apiClient.get<Usage[]>('/settings/usage', { query: { days: days.toString() } });
   },
 
   /**

@@ -15,65 +15,97 @@ import type {
 export const productivityService = {
   // Pomodoro sessions
   async getPomodoroSessions(): Promise<PomodoroSession[]> {
-    return apiClient.get<PomodoroSession[]>('/productivity/pomodoro/sessions')
+    return apiClient.get<PomodoroSession[]>('/pomodoro')
+  },
+
+  async getActivePomodoroSession(): Promise<PomodoroSession | null> {
+    return apiClient.get<PomodoroSession | null>('/pomodoro/active')
+  },
+
+  async getPomodoroStats(): Promise<any> {
+    return apiClient.get<any>('/pomodoro/stats')
+  },
+
+  async getTodayPomodoroStats(): Promise<any> {
+    return apiClient.get<any>('/pomodoro/stats/today')
   },
 
   async createPomodoroSession(data: CreatePomodoroSessionDto): Promise<PomodoroSession> {
-    return apiClient.post<PomodoroSession>('/productivity/pomodoro/sessions', { body: data })
+    return apiClient.post<PomodoroSession>('/pomodoro', { body: data })
   },
 
   async updatePomodoroSession(sessionId: string, data: UpdatePomodoroSessionDto): Promise<PomodoroSession> {
-    return apiClient.patch<PomodoroSession>(`/productivity/pomodoro/sessions/${sessionId}`, { body: data })
+    return apiClient.patch<PomodoroSession>(`/pomodoro/${sessionId}`, { body: data })
   },
 
-  async cancelPomodoroSession(sessionId: string): Promise<void> {
-    return apiClient.delete<void>(`/productivity/pomodoro/sessions/${sessionId}`)
+  async deletePomodoroSession(sessionId: string): Promise<void> {
+    return apiClient.delete<void>(`/pomodoro/${sessionId}`)
   },
 
   // Tasks
-  async getTasks(filters?: { status?: string; priority?: string; noteId?: string }): Promise<Task[]> {
-    return apiClient.get<Task[]>('/productivity/tasks', { query: filters })
+  async getTasks(): Promise<Task[]> {
+    return apiClient.get<Task[]>('/tasks')
+  },
+
+  async getTaskStats(): Promise<any> {
+    return apiClient.get<any>('/tasks/stats')
+  },
+
+  async getOverdueTasks(): Promise<Task[]> {
+    return apiClient.get<Task[]>('/tasks/overdue')
+  },
+
+  async getDueTasks(): Promise<Task[]> {
+    return apiClient.get<Task[]>('/tasks/due')
   },
 
   async getTask(taskId: string): Promise<Task> {
-    return apiClient.get<Task>(`/productivity/tasks/${taskId}`)
+    return apiClient.get<Task>(`/tasks/${taskId}`)
   },
 
   async createTask(data: CreateTaskDto): Promise<Task> {
-    return apiClient.post<Task>('/productivity/tasks', { body: data })
+    return apiClient.post<Task>('/tasks', { body: data })
   },
 
   async updateTask(taskId: string, data: UpdateTaskDto): Promise<Task> {
-    return apiClient.patch<Task>(`/productivity/tasks/${taskId}`, { body: data })
+    return apiClient.patch<Task>(`/tasks/${taskId}`, { body: data })
   },
 
   async deleteTask(taskId: string): Promise<void> {
-    return apiClient.delete<void>(`/productivity/tasks/${taskId}`)
+    return apiClient.delete<void>(`/tasks/${taskId}`)
   },
 
   // Calendar events
-  async getCalendarEvents(filters?: { 
-    start?: string
-    end?: string
-    noteId?: string 
-  }): Promise<CalendarEvent[]> {
-    return apiClient.get<CalendarEvent[]>('/productivity/calendar/events', { query: filters })
+  async getCalendarEvents(): Promise<CalendarEvent[]> {
+    return apiClient.get<CalendarEvent[]>('/calendar')
+  },
+
+  async getUpcomingEvents(): Promise<CalendarEvent[]> {
+    return apiClient.get<CalendarEvent[]>('/calendar/upcoming')
+  },
+
+  async getTodayEvents(): Promise<CalendarEvent[]> {
+    return apiClient.get<CalendarEvent[]>('/calendar/today')
+  },
+
+  async getWeekEvents(): Promise<CalendarEvent[]> {
+    return apiClient.get<CalendarEvent[]>('/calendar/week')
   },
 
   async getCalendarEvent(eventId: string): Promise<CalendarEvent> {
-    return apiClient.get<CalendarEvent>(`/productivity/calendar/events/${eventId}`)
+    return apiClient.get<CalendarEvent>(`/calendar/${eventId}`)
   },
 
   async createCalendarEvent(data: CreateCalendarEventDto): Promise<CalendarEvent> {
-    return apiClient.post<CalendarEvent>('/productivity/calendar/events', { body: data })
+    return apiClient.post<CalendarEvent>('/calendar', { body: data })
   },
 
   async updateCalendarEvent(eventId: string, data: UpdateCalendarEventDto): Promise<CalendarEvent> {
-    return apiClient.patch<CalendarEvent>(`/productivity/calendar/events/${eventId}`, { body: data })
+    return apiClient.patch<CalendarEvent>(`/calendar/${eventId}`, { body: data })
   },
 
   async deleteCalendarEvent(eventId: string): Promise<void> {
-    return apiClient.delete<void>(`/productivity/calendar/events/${eventId}`)
+    return apiClient.delete<void>(`/calendar/${eventId}`)
   },
 
   // Review prompts

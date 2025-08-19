@@ -3,6 +3,12 @@
  */
 
 import { apiClient } from '../lib/api-client';
+import { 
+  AnalyticsOverview, 
+  WorkspaceAnalytics, 
+  ContentAnalytics, 
+  TrackNoteActionDto 
+} from '../types/misc.types';
 
 // Tags interfaces
 export interface Tag {
@@ -51,36 +57,6 @@ export interface BulkTagOperation {
   tagIds: string[];
   targetTagId?: string;
   newName?: string;
-}
-
-// Analytics interfaces
-export interface AnalyticsOverview {
-  totalNotes: number;
-  totalWorkspaces: number;
-  totalTags: number;
-  totalCollaborations: number;
-  recentActivity: number;
-  storageUsed: number;
-  aiQueries: number;
-  collaborators: number;
-}
-
-export interface WorkspaceAnalytics {
-  id: string;
-  name: string;
-  noteCount: number;
-  lastActivity: string;
-  collaboratorCount: number;
-  storageUsed: number;
-  growth: number;
-}
-
-export interface ContentAnalytics {
-  wordCount: number;
-  averageNoteLength: number;
-  mostActiveCategories: { category: string; count: number }[];
-  contentGrowth: { date: string; notes: number; words: number }[];
-  languageDistribution: { language: string; percentage: number }[];
 }
 
 // Tags Service
@@ -194,7 +170,7 @@ export const analyticsService = {
   /**
    * Track note action
    */
-  async trackNoteAction(noteId: string, action: 'view' | 'edit' | 'share'): Promise<void> {
-    return apiClient.post<void>(`/analytics/note/${noteId}/track`, { body: { action } });
+  async trackNoteAction(noteId: string, data: TrackNoteActionDto): Promise<void> {
+    return apiClient.post<void>(`/analytics/note/${noteId}/track`, { body: data });
   }
 };

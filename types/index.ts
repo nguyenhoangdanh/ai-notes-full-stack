@@ -147,9 +147,10 @@ export type {
   PomodoroStats,
   // Review
   ReviewPrompt,
-  CreateReviewDto,
+  CreateReviewPromptDto,
+  UpdateReviewPromptDto,
   AnswerReviewDto,
-  ReviewStats
+  ReviewSession
 } from './productivity.types'
 
 // Export specific items from mobile to avoid conflicts  

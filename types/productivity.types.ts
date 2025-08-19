@@ -1,21 +1,14 @@
-// Notifications types
+// Notifications types - Updated to match backend exactly
+export type NotificationType = 'MENTION' | 'COMMENT' | 'SHARE' | 'REMINDER' | 'SYSTEM' | 'UPDATE';
+
 export interface CreateNotificationDto {
   title: string;
   message: string;
-  type: 'INFO' | 'SUCCESS' | 'WARNING' | 'ERROR';
-  actionUrl?: string;
-  actionLabel?: string;
-  priority?: 'LOW' | 'NORMAL' | 'HIGH';
-  scheduledFor?: string;
+  type: NotificationType;
+  noteId?: string;
 }
 
 export interface UpdateNotificationDto {
-  title?: string;
-  message?: string;
-  type?: 'INFO' | 'SUCCESS' | 'WARNING' | 'ERROR';
-  actionUrl?: string;
-  actionLabel?: string;
-  priority?: 'LOW' | 'NORMAL' | 'HIGH';
   isRead?: boolean;
 }
 
@@ -23,52 +16,36 @@ export interface Notification {
   id: string;
   title: string;
   message: string;
-  type: 'INFO' | 'SUCCESS' | 'WARNING' | 'ERROR';
-  actionUrl?: string;
-  actionLabel?: string;
-  priority: 'LOW' | 'NORMAL' | 'HIGH';
+  type: NotificationType;
+  noteId?: string;
   isRead: boolean;
   userId: string;
-  scheduledFor?: string;
-  readAt?: string;
   createdAt: string;
   updatedAt: string;
 }
 
-// Reminders types
+// Reminders types - Updated to match backend exactly  
 export interface CreateReminderDto {
+  noteId: string;
   title: string;
-  description?: string;
-  noteId?: string;
-  reminderDate: string;
-  repeatInterval?: 'NONE' | 'DAILY' | 'WEEKLY' | 'MONTHLY' | 'YEARLY';
-  repeatUntil?: string;
-  tags?: string[];
+  remindAt: string;
+  recurrence?: string; // daily, weekly, monthly
 }
 
 export interface UpdateReminderDto {
   title?: string;
-  description?: string;
-  noteId?: string;
-  reminderDate?: string;
-  repeatInterval?: 'NONE' | 'DAILY' | 'WEEKLY' | 'MONTHLY' | 'YEARLY';
-  repeatUntil?: string;
-  tags?: string[];
-  isCompleted?: boolean;
-  completedAt?: string;
+  remindAt?: string;
+  isComplete?: boolean;
+  recurrence?: string;
 }
 
 export interface Reminder {
   id: string;
+  noteId: string;
   title: string;
-  description?: string;
-  noteId?: string;
-  reminderDate: string;
-  repeatInterval: 'NONE' | 'DAILY' | 'WEEKLY' | 'MONTHLY' | 'YEARLY';
-  repeatUntil?: string;
-  tags: string[];
-  isCompleted: boolean;
-  completedAt?: string;
+  remindAt: string;
+  recurrence?: string;
+  isComplete: boolean;
   userId: string;
   createdAt: string;
   updatedAt: string;
@@ -87,31 +64,29 @@ export interface ReminderStats {
   averageCompletionTime: number;
 }
 
-// Tasks types - Enhanced version
+// Tasks types - Updated to match backend exactly
+export type TaskStatus = 'TODO' | 'IN_PROGRESS' | 'COMPLETED' | 'CANCELLED';
+export type TaskPriority = 'LOW' | 'MEDIUM' | 'HIGH' | 'URGENT';
+
 export interface CreateTaskDto {
   title: string;
   description?: string;
   noteId?: string;
-  status?: 'TODO' | 'IN_PROGRESS' | 'COMPLETED' | 'CANCELLED';
-  priority?: 'LOW' | 'MEDIUM' | 'HIGH' | 'URGENT';
+  status?: TaskStatus;
+  priority?: TaskPriority;
   dueDate?: string;
   tags?: string[];
-  estimatedMinutes?: number;
-  parentTaskId?: string;
 }
 
 export interface UpdateTaskDto {
   title?: string;
   description?: string;
   noteId?: string;
-  status?: 'TODO' | 'IN_PROGRESS' | 'COMPLETED' | 'CANCELLED';
-  priority?: 'LOW' | 'MEDIUM' | 'HIGH' | 'URGENT';
+  status?: TaskStatus;
+  priority?: TaskPriority;
   dueDate?: string;
   completedAt?: string;
   tags?: string[];
-  estimatedMinutes?: number;
-  actualMinutes?: number;
-  parentTaskId?: string;
 }
 
 export interface Task {
@@ -119,14 +94,11 @@ export interface Task {
   title: string;
   description?: string;
   noteId?: string;
-  status: 'TODO' | 'IN_PROGRESS' | 'COMPLETED' | 'CANCELLED';
-  priority: 'LOW' | 'MEDIUM' | 'HIGH' | 'URGENT';
+  status: TaskStatus;
+  priority: TaskPriority;
   dueDate?: string;
   completedAt?: string;
   tags: string[];
-  estimatedMinutes?: number;
-  actualMinutes?: number;
-  parentTaskId?: string;
   userId: string;
   createdAt: string;
   updatedAt: string;
@@ -134,8 +106,6 @@ export interface Task {
     id: string;
     title: string;
   };
-  subtasks?: Task[];
-  parent?: Task;
 }
 
 export interface TaskStats {
@@ -149,45 +119,39 @@ export interface TaskStats {
   productivityScore: number;
 }
 
-// Calendar types
+// Calendar types - Updated to match backend exactly
 export interface CreateCalendarEventDto {
   title: string;
   description?: string;
-  startDate: string;
-  endDate: string;
-  location?: string;
   noteId?: string;
-  tags?: string[];
+  startTime: string;
+  endTime: string;
+  location?: string;
   isAllDay?: boolean;
-  reminderMinutes?: number[];
-  attendees?: string[];
+  recurrence?: string; // RRULE format
 }
 
 export interface UpdateCalendarEventDto {
   title?: string;
   description?: string;
-  startDate?: string;
-  endDate?: string;
-  location?: string;
   noteId?: string;
-  tags?: string[];
+  startTime?: string;
+  endTime?: string;
+  location?: string;
   isAllDay?: boolean;
-  reminderMinutes?: number[];
-  attendees?: string[];
+  recurrence?: string;
 }
 
 export interface CalendarEvent {
   id: string;
   title: string;
   description?: string;
-  startDate: string;
-  endDate: string;
-  location?: string;
   noteId?: string;
-  tags: string[];
+  startTime: string;
+  endTime: string;
+  location?: string;
   isAllDay: boolean;
-  reminderMinutes: number[];
-  attendees: string[];
+  recurrence?: string;
   userId: string;
   createdAt: string;
   updatedAt: string;
@@ -197,42 +161,33 @@ export interface CalendarEvent {
   };
 }
 
-// Pomodoro types
+// Pomodoro types - Updated to match backend exactly
+export type PomodoroType = 'WORK' | 'SHORT_BREAK' | 'LONG_BREAK';
+
 export interface CreatePomodoroSessionDto {
   noteId?: string;
-  taskId?: string;
-  duration?: number; // in minutes, default 25
-  breakDuration?: number; // in minutes, default 5
-  longBreakDuration?: number; // in minutes, default 15
-  sessionsUntilLongBreak?: number; // default 4
+  duration: number; // in minutes
+  type?: PomodoroType;
+  startedAt: string;
 }
 
 export interface UpdatePomodoroSessionDto {
   completedAt?: string;
-  actualDuration?: number;
-  wasInterrupted?: boolean;
-  notes?: string;
+  status?: 'ACTIVE' | 'PAUSED' | 'COMPLETED' | 'CANCELLED';
 }
 
 export interface PomodoroSession {
   id: string;
   noteId?: string;
-  taskId?: string;
   duration: number;
-  actualDuration?: number;
+  type: PomodoroType;
   startedAt: string;
   completedAt?: string;
-  wasInterrupted: boolean;
-  notes?: string;
-  sessionNumber: number;
+  status: 'ACTIVE' | 'PAUSED' | 'COMPLETED' | 'CANCELLED';
   userId: string;
   createdAt: string;
   updatedAt: string;
   note?: {
-    id: string;
-    title: string;
-  };
-  task?: {
     id: string;
     title: string;
   };
@@ -255,46 +210,50 @@ export interface PomodoroStats {
   }>;
 }
 
-// Review types
-export interface CreateReviewDto {
-  noteId: string;
-  reviewType?: 'SPACED_REPETITION' | 'ACTIVE_RECALL' | 'COMPREHENSION';
-  difficulty?: 'EASY' | 'MEDIUM' | 'HARD';
-  interval?: number; // days until next review
+// Review types - Updated to match backend exactly
+export type ReviewType = 'DAILY' | 'WEEKLY' | 'MONTHLY' | 'CUSTOM';
+
+export interface CreateReviewPromptDto {
+  type: ReviewType;
+  title: string;
+  questions: string[];
+  frequency: string; // daily, weekly, monthly
+  nextDue: string;
+  isActive?: boolean;
+}
+
+export interface UpdateReviewPromptDto {
+  type?: ReviewType;
+  title?: string;
+  questions?: string[];
+  frequency?: string;
+  nextDue?: string;
+  lastAnswered?: string;
+  isActive?: boolean;
 }
 
 export interface AnswerReviewDto {
-  quality: 1 | 2 | 3 | 4 | 5; // 1=worst, 5=best
-  timeSpent?: number; // seconds
-  notes?: string;
+  answers: string[];
 }
 
 export interface ReviewPrompt {
   id: string;
-  noteId: string;
-  reviewType: 'SPACED_REPETITION' | 'ACTIVE_RECALL' | 'COMPREHENSION';
-  difficulty: 'EASY' | 'MEDIUM' | 'HARD';
-  interval: number;
-  nextReviewDate: string;
-  repetitions: number;
-  easinessFactor: number;
+  type: ReviewType;
+  title: string;
+  questions: string[];
+  frequency: string;
+  nextDue: string;
+  lastAnswered?: string;
+  isActive: boolean;
   userId: string;
   createdAt: string;
   updatedAt: string;
-  lastReviewedAt?: string;
-  note: {
-    id: string;
-    title: string;
-    content: string;
-  };
 }
 
 export interface ReviewSession {
   id: string;
   reviewPromptId: string;
-  quality: number;
-  timeSpent: number;
-  notes?: string;
+  answers: string[];
   createdAt: string;
 }
 

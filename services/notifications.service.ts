@@ -19,9 +19,10 @@ import {
   UpdatePomodoroSessionDto,
   PomodoroStats,
   ReviewPrompt,
-  CreateReviewDto,
+  CreateReviewPromptDto,
+  UpdateReviewPromptDto,
   AnswerReviewDto,
-  ReviewStats
+  ReviewSession
 } from '../types';
 
 // Notifications Service
@@ -179,7 +180,7 @@ export const pomodoroService = {
 
 // Review Service
 export const reviewService = {
-  create: (data: CreateReviewDto) =>
+  create: (data: CreateReviewPromptDto) =>
     apiClient.post<ReviewPrompt>('/review', { body: data }),
 
   setupDefaults: () =>
@@ -195,12 +196,12 @@ export const reviewService = {
     apiClient.get<ReviewPrompt[]>('/review/due'),
 
   getStats: () =>
-    apiClient.get<ReviewStats>('/review/stats'),
+    apiClient.get<any>('/review/stats'),
 
   getById: (id: string) =>
     apiClient.get<ReviewPrompt>(`/review/${id}`),
 
-  update: (id: string, data: Partial<CreateReviewDto>) =>
+  update: (id: string, data: UpdateReviewPromptDto) =>
     apiClient.patch<ReviewPrompt>(`/review/${id}`, { body: data }),
 
   delete: (id: string) =>

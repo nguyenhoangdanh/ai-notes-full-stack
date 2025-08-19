@@ -19,9 +19,7 @@ import {
   Cloud,
   HardDrive,
   Info,
-  ExternalLink,
-  Moon,
-  Sun
+  ExternalLink
 } from 'lucide-react'
 import { useOfflineNotes } from '../../contexts/OfflineNotesContext'
 import { offlineStorage, AppSettings } from '../../lib/offline-storage'
@@ -46,19 +44,12 @@ export function MobileSettingsSheet({ isOpen, onClose }: MobileSettingsSheetProp
   const updateSettingsMutation = useUpdateSettings()
   const [storageUsage, setStorageUsage] = useState({ notes: 0, attachments: 0, total: 0 })
   const [isExporting, setIsExporting] = useState(false)
-  const [theme, setTheme] = useState(settings?.theme || 'system')
 
   useEffect(() => {
     if (isOpen) {
       loadStorageUsage()
     }
   }, [isOpen])
-
-  useEffect(() => {
-    if (settings?.theme) {
-      setTheme(settings.theme)
-    }
-  }, [settings])
 
   const loadStorageUsage = async () => {
     try {
@@ -78,10 +69,6 @@ export function MobileSettingsSheet({ isOpen, onClose }: MobileSettingsSheetProp
       }
       
       await updateSettingsMutation.mutateAsync(updatedSettings)
-      
-      if (key === 'theme') {
-        setTheme(value)
-      }
     } catch (error) {
       console.error('Failed to update settings:', error)
       toast.error('Failed to update settings')
@@ -249,77 +236,42 @@ export function MobileSettingsSheet({ isOpen, onClose }: MobileSettingsSheetProp
           {/* App Settings */}
           {settings && (
             <Card className="p-4">
-              <h3 className="font-medium mb-4">App Settings</h3>
+              <h3 className="font-medium mb-4">AI Settings</h3>
               
               <div className="space-y-4">
-                {/* Theme */}
+                {/* Model Selection */}
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
-                    {theme === 'dark' ? (
-                      <Moon className="h-5 w-5" />
-                    ) : (
-                      <Sun className="h-5 w-5" />
-                    )}
+                    <Database className="h-5 w-5" />
                     <div>
-                      <p className="font-medium">Theme</p>
-                      <p className="text-sm text-muted-foreground">App appearance</p>
+                      <p className="font-medium">AI Model</p>
+                      <p className="text-sm text-muted-foreground">Current: {settings?.model}</p>
                     </div>
-                  </div>
-                  <div className="flex gap-1">
-                    {['light', 'dark', 'system'].map((themeOption) => (
-                      <Button
-                        key={themeOption}
-                        variant={theme === themeOption ? 'default' : 'outline'}
-                        size="sm"
-                        onClick={() => updateSetting('theme', themeOption)}
-                      >
-                        {themeOption}
-                      </Button>
-                    ))}
                   </div>
                 </div>
 
-                {/* Offline Mode */}
+                {/* Max Tokens */}
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
-                    <Cloud className="h-5 w-5" />
+                    <Info className="h-5 w-5" />
                     <div>
-                      <p className="font-medium">Offline Mode</p>
-                      <p className="text-sm text-muted-foreground">Work without internet</p>
+                      <p className="font-medium">Max Tokens</p>
+                      <p className="text-sm text-muted-foreground">Current: {settings?.maxTokens}</p>
                     </div>
                   </div>
-                  <Switch
-                    checked={settings.offlineMode}
-                    onCheckedChange={(checked) => updateSetting('offlineMode', checked)}
-                  />
-                </div>
-
-                {/* Sync on WiFi Only */}
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <Wifi className="h-5 w-5" />
-                    <div>
-                      <p className="font-medium">WiFi Only Sync</p>
-                      <p className="text-sm text-muted-foreground">Save mobile data</p>
-                    </div>
-                  </div>
-                  <Switch
-                    checked={settings.syncOnWifi}
-                    onCheckedChange={(checked) => updateSetting('syncOnWifi', checked)}
-                  />
                 </div>
 
                 {/* Auto Re-embed */}
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
-                    <Database className="h-5 w-5" />
+                    <RefreshCw className="h-5 w-5" />
                     <div>
                       <p className="font-medium">Auto Re-embed</p>
-                      <p className="text-sm text-muted-foreground">Update AI embeddings</p>
+                      <p className="text-sm text-muted-foreground">Auto process notes for search</p>
                     </div>
                   </div>
                   <Switch
-                    checked={settings.autoReembed}
+                    checked={settings?.autoReembed || false}
                     onCheckedChange={(checked) => updateSetting('autoReembed', checked)}
                   />
                 </div>

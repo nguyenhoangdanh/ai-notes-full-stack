@@ -83,10 +83,10 @@ export function useUpdatePomodoroSession() {
 }
 
 // Tasks
-export function useTasks(filters?: any) {
+export function useTasks() {
   return useQuery({
     queryKey: queryKeys.productivity.tasks(),
-    queryFn: () => productivityService.getTasks(filters),
+    queryFn: () => productivityService.getTasks(),
     staleTime: 2 * 60 * 1000, // 2 minutes
   })
 }
@@ -136,10 +136,10 @@ export function useUpdateTask() {
 }
 
 // Calendar Events
-export function useCalendarEvents(filters?: any) {
+export function useCalendarEvents() {
   return useQuery({
-    queryKey: queryKeys.productivity.calendarEvents(filters),
-    queryFn: () => productivityService.getCalendarEvents(filters),
+    queryKey: queryKeys.productivity.calendarEvents(),
+    queryFn: () => productivityService.getCalendarEvents(),
     staleTime: 2 * 60 * 1000, // 2 minutes
   })
 }

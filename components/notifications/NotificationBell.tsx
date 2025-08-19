@@ -97,19 +97,6 @@ export function NotificationBell() {
                   <p className="text-xs text-muted-foreground">
                     {notification.message}
                   </p>
-                  {notification.actionUrl && (
-                    <Button 
-                      variant="link" 
-                      size="sm" 
-                      className="h-auto p-0 mt-2 text-xs"
-                      onClick={(e) => {
-                        e.stopPropagation()
-                        window.location.href = notification.actionUrl!
-                      }}
-                    >
-                      {notification.actionLabel || 'View'}
-                    </Button>
-                  )}
                 </div>
               ))}
             </div>
