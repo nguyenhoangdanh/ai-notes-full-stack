@@ -1,4 +1,4 @@
-import { DashboardOverview } from '../../components/dashboard/DashboardOverview'
+import { Dashboard } from '../../components/dashboard/Dashboard'
 import { PageMeta } from '../../components/seo/PageMeta'
 
 export const metadata = {
@@ -21,9 +21,9 @@ export default function DashboardPage() {
         keywords={['dashboard', 'notes management', 'productivity', 'AI assistant', 'workspace']}
         type="website"
       />
-      <div role="main" aria-label="Dashboard">
-        <DashboardOverview />
-      </div>
+      <main role="main" aria-label="AI Notes Dashboard" className="h-full">
+        <Dashboard />
+      </main>
     </>
   )
 }
