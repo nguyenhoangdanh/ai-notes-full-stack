@@ -194,8 +194,8 @@ export function Sidebar({ collapsed, onToggle, isMobile = false }: SidebarProps)
                 <SparklesIcon className="h-6 w-6 text-primary" aria-hidden="true" />
               </div>
               <div className="flex flex-col">
-                <span className="font-bold text-lg leading-none">AI Notes</span>
-                <span className="text-xs text-muted-foreground">Intelligent Platform</span>
+                <span className="font-bold text-xl leading-none text-gradient">AI Notes</span>
+                <span className="text-xs text-muted-foreground font-medium">Intelligent Platform</span>
               </div>
             </Link>
           )}
