@@ -15,9 +15,6 @@ export interface Workspace {
 
 export interface CreateWorkspaceDto {
   name: string;
-  description?: string;
-  privacy?: string;
-  isDefault?: boolean;
 }
 
 export interface UpdateWorkspaceDto {

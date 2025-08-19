@@ -1,22 +1,22 @@
 import { Controller, Post, Body, UseGuards, Res, HttpException, HttpStatus } from '@nestjs/common';
 import { Response } from 'express';
+import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { ChatService } from './chat.service';
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
 import { User } from '../types/user.types';
+import { ChatQueryDto } from './dto/chat.dto';
 
-interface ChatQueryDto {
-  query: string;
-  model?: string;
-  maxTokens?: number;
-}
-
+@ApiTags('chat')
+@ApiBearerAuth()
 @Controller('chat')
 @UseGuards(JwtAuthGuard)
 export class ChatController {
   constructor(private chatService: ChatService) {}
 
   @Post('stream')
+  @ApiOperation({ summary: 'Stream AI chat response' })
+  @ApiResponse({ status: 200, description: 'Chat stream initiated' })
   async stream(
     @Body() data: ChatQueryDto,
     @CurrentUser() user: User,

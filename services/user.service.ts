@@ -27,29 +27,6 @@ export const userService = {
   },
 
   /**
-   * Get user settings
-   */
-  async getSettings(): Promise<UserSettings> {
-    return apiClient.get<UserSettings>('/users/settings');
-  },
-
-  /**
-   * Update user settings
-   */
-  async updateSettings(data: UpdateSettingsDto): Promise<UserSettings> {
-    return apiClient.patch<UserSettings>('/users/settings', { body: data });
-  },
-
-  /**
-   * Get usage statistics
-   */
-  async getUsageStats(days?: number): Promise<UsageStats> {
-    return apiClient.get<UsageStats>('/users/usage', { 
-      query: days ? { days } : undefined 
-    });
-  },
-
-  /**
    * Delete user account
    */
   async deleteAccount(): Promise<void> {
