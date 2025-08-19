@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import { ArrowLeftIcon, DocumentArrowUpIcon, EyeIcon, TagIcon, FolderIcon, SparklesIcon, BookOpenIcon } from '@heroicons/react/24/outline'
+import { ArrowLeft, Upload, Eye, Tag, Folder, Sparkles, BookOpen } from 'lucide-react'
 import { Button } from '../../../components/ui/button'
 import { Input } from '../../../components/ui/input'
 import { Textarea } from '../../../components/ui/textarea'
@@ -112,7 +112,7 @@ export default function CreateNotePage() {
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-8">
           <div className="flex items-center gap-6">
             <Button variant="ghost" size="sm" onClick={handleCancel} className="flex-shrink-0">
-              <ArrowLeftIcon className="h-4 w-4 mr-2" />
+              <ArrowLeft className="h-4 w-4 mr-2" />
               Back
             </Button>
             <div className="space-y-1">
@@ -131,7 +131,7 @@ export default function CreateNotePage() {
               onClick={() => setIsPreview(!isPreview)}
               className="hidden sm:flex"
             >
-              <EyeIcon className="h-4 w-4 mr-2" />
+              <Eye className="h-4 w-4 mr-2" />
               {isPreview ? 'Edit' : 'Preview'}
             </Button>
             <Button 
@@ -140,7 +140,7 @@ export default function CreateNotePage() {
               size="lg"
               className="px-6"
             >
-              <DocumentArrowUpIcon className="h-5 w-5 mr-2" />
+              <Upload className="h-5 w-5 mr-2" />
               {isSaving ? 'Creating...' : 'Create Note'}
             </Button>
           </div>
@@ -155,7 +155,7 @@ export default function CreateNotePage() {
                   {/* Title Input */}
                   <div className="space-y-2">
                     <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                      <BookOpenIcon className="h-4 w-4" />
+                      <BookOpen className="h-4 w-4" />
                       <span>Title</span>
                     </div>
                     <Input
@@ -169,7 +169,7 @@ export default function CreateNotePage() {
                   {/* Tags Section */}
                   <div className="space-y-3">
                     <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                      <TagIcon className="h-4 w-4" />
+                      <Tag className="h-4 w-4" />
                       <span>Tags</span>
                     </div>
                     <div className="space-y-3">
@@ -218,7 +218,7 @@ export default function CreateNotePage() {
                         className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:shadow-none py-4 text-sm font-medium"
                       >
                         <span className="flex items-center gap-2">
-                          <EyeIcon className="h-4 w-4" />
+                          <Eye className="h-4 w-4" />
                           Preview
                         </span>
                       </TabsTrigger>
@@ -247,7 +247,7 @@ export default function CreateNotePage() {
                       ) : (
                         <div className="flex flex-col items-center justify-center min-h-[400px] text-center space-y-4">
                           <div className="w-16 h-16 bg-muted/50 rounded-full flex items-center justify-center">
-                            <EyeIcon className="h-8 w-8 text-muted-foreground" />
+                            <Eye className="h-8 w-8 text-muted-foreground" />
                           </div>
                           <div className="space-y-2">
                             <p className="text-lg font-medium text-muted-foreground">
@@ -272,7 +272,7 @@ export default function CreateNotePage() {
             <Card variant="outlined" className="sticky top-8">
               <CardHeader className="pb-4">
                 <CardTitle className="text-lg flex items-center gap-2">
-                  <FolderIcon className="h-5 w-5 text-primary" />
+                  <Folder className="h-5 w-5 text-primary" />
                   Settings
                 </CardTitle>
               </CardHeader>
@@ -290,7 +290,7 @@ export default function CreateNotePage() {
                       {workspaces.map((workspace) => (
                         <SelectItem key={workspace.id} value={workspace.id}>
                           <div className="flex items-center gap-2">
-                            <FolderIcon className="h-4 w-4" />
+                            <Folder className="h-4 w-4" />
                             {workspace.name}
                           </div>
                         </SelectItem>
@@ -305,7 +305,7 @@ export default function CreateNotePage() {
             <Card variant="outlined" className="border-primary/20 bg-primary/5">
               <CardHeader className="pb-4">
                 <CardTitle className="text-lg flex items-center gap-2">
-                  <SparklesIcon className="h-5 w-5 text-primary" />
+                  <Sparkles className="h-5 w-5 text-primary" />
                   AI Writing Tips
                 </CardTitle>
               </CardHeader>
@@ -331,7 +331,7 @@ export default function CreateNotePage() {
                 
                 <div className="pt-3 border-t border-border/50">
                   <Button variant="outline" size="sm" className="w-full" disabled>
-                    <SparklesIcon className="h-4 w-4 mr-2" />
+                    <Sparkles className="h-4 w-4 mr-2" />
                     AI Assistance Coming Soon
                   </Button>
                 </div>

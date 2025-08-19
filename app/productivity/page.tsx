@@ -1,6 +1,6 @@
 'use client'
 
-import { CheckCircleIcon, ClockIcon, CalendarIcon, BookOpenIcon } from '@heroicons/react/24/outline'
+import { CheckCircle, Clock, Calendar, BookOpen } from 'lucide-react'
 import { Card, CardContent, CardHeader, CardTitle } from '../../components/ui/card'
 import { Button } from '../../components/ui/button'
 import Link from 'next/link'
@@ -10,7 +10,7 @@ export default function ProductivityPage() {
     {
       title: 'Tasks',
       description: 'Manage your tasks and to-dos with smart organization',
-      icon: CheckCircleIcon,
+      icon: CheckCircle,
       href: '/productivity/tasks',
       color: 'bg-green-500',
       features: ['Smart prioritization', 'Due date tracking', 'Progress monitoring']
@@ -18,7 +18,7 @@ export default function ProductivityPage() {
     {
       title: 'Pomodoro Timer',
       description: 'Stay focused with time-boxed work sessions',
-      icon: ClockIcon,
+      icon: Clock,
       href: '/productivity/pomodoro',
       color: 'bg-red-500',
       features: ['25-minute focus sessions', 'Break reminders', 'Session tracking']
@@ -26,7 +26,7 @@ export default function ProductivityPage() {
     {
       title: 'Calendar',
       description: 'Schedule and track important events and deadlines',
-      icon: CalendarIcon,
+      icon: Calendar,
       href: '/productivity/calendar',
       color: 'bg-blue-500',
       features: ['Event scheduling', 'Deadline tracking', 'Calendar integration']
@@ -34,7 +34,7 @@ export default function ProductivityPage() {
     {
       title: 'Review System',
       description: 'Regular review of your notes and learning progress',
-      icon: BookOpenIcon,
+      icon: BookOpen,
       href: '/productivity/review',
       color: 'bg-purple-500',
       features: ['Spaced repetition', 'Knowledge retention', 'Progress analytics']

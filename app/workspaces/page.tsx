@@ -1,8 +1,9 @@
 'use client'
+import { Plus, Folder, Users, Settings } from 'lucide-react'
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { PlusIcon, FolderIcon, UsersIcon, CogIcon } from '@heroicons/react/24/outline'
+
 import { Button } from '../../components/ui/button'
 import { Input } from '../../components/ui/input'
 import { Card, CardContent, CardHeader, CardTitle } from '../../components/ui/card'
@@ -58,7 +59,7 @@ export default function WorkspacesPage() {
           </p>
         </div>
         <Button onClick={handleCreateWorkspace}>
-          <PlusIcon className="h-4 w-4 mr-2" />
+          <Plus className="h-4 w-4 mr-2" />
           New Workspace
         </Button>
       </div>
@@ -90,13 +91,13 @@ export default function WorkspacesPage() {
       ) : filteredWorkspaces.length === 0 ? (
         <div className="text-center py-12">
           <div className="max-w-md mx-auto">
-            <FolderIcon className="h-16 w-16 mx-auto text-muted-foreground mb-4" />
+            <Folder className="h-16 w-16 mx-auto text-muted-foreground mb-4" />
             <h3 className="text-lg font-medium">No workspaces found</h3>
             <p className="text-muted-foreground mt-2">
               {search ? 'Try adjusting your search terms' : 'Get started by creating your first workspace'}
             </p>
             <Button onClick={handleCreateWorkspace} className="mt-4">
-              <PlusIcon className="h-4 w-4 mr-2" />
+              <Plus className="h-4 w-4 mr-2" />
               Create Workspace
             </Button>
           </div>
@@ -113,7 +114,7 @@ export default function WorkspacesPage() {
                 <div className="flex items-start justify-between">
                   <div className="flex items-center space-x-3">
                     <div className="p-2 bg-primary/10 rounded-lg">
-                      <FolderIcon className="h-6 w-6 text-primary" />
+                      <Folder className="h-6 w-6 text-primary" />
                     </div>
                     <div>
                       <CardTitle className="text-lg">{workspace.name}</CardTitle>
@@ -136,7 +137,7 @@ export default function WorkspacesPage() {
                       router.push(`/workspaces/${workspace.id}/settings`)
                     }}
                   >
-                    <CogIcon className="h-4 w-4" />
+                    <Settings className="h-4 w-4" />
                   </Button>
                 </div>
               </CardHeader>
@@ -148,7 +149,7 @@ export default function WorkspacesPage() {
                 
                 <div className="flex items-center justify-between text-xs text-muted-foreground">
                   <div className="flex items-center space-x-1">
-                    <UsersIcon className="h-3 w-3" />
+                    <Users className="h-3 w-3" />
                     <span>Personal</span>
                   </div>
                   <div className="flex items-center space-x-1">

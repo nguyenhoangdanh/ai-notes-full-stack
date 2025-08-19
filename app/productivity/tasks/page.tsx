@@ -1,7 +1,8 @@
 'use client'
+import { CheckCircle, Clock, Plus } from 'lucide-react'
 
 import { useState } from 'react'
-import { CheckCircleIcon, ClockIcon, PlusIcon } from '@heroicons/react/24/outline'
+
 import { Card, CardContent, CardHeader, CardTitle } from '../../../components/ui/card'
 import { Button } from '../../../components/ui/button'
 import { Input } from '../../../components/ui/input'
@@ -30,7 +31,7 @@ export default function TasksPage() {
           <p className="text-muted-foreground">Manage your tasks and to-dos</p>
         </div>
         <Button>
-          <PlusIcon className="h-4 w-4 mr-2" />
+          <Plus className="h-4 w-4 mr-2" />
           New Task
         </Button>
       </div>
@@ -58,7 +59,7 @@ export default function TasksPage() {
           <Card key={task.id}>
             <CardContent className="p-4">
               <div className="flex items-center space-x-3">
-                <CheckCircleIcon 
+                <CheckCircle 
                   className={`h-5 w-5 ${task.completed ? 'text-green-500' : 'text-gray-300'}`} 
                 />
                 <div className="flex-1">
@@ -71,7 +72,7 @@ export default function TasksPage() {
                     </Badge>
                   </div>
                   <div className="flex items-center space-x-2 mt-1 text-sm text-muted-foreground">
-                    <ClockIcon className="h-3 w-3" />
+                    <Clock className="h-3 w-3" />
                     <span>Due {task.dueDate}</span>
                   </div>
                 </div>

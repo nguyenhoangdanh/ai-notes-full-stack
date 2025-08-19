@@ -230,7 +230,7 @@ export function useCreateNoteVersion() {
 
   return useMutation<SimpleNoteVersion, Error, { noteId: string; changeLog?: string }>({
     mutationFn: ({ noteId, changeLog }: { noteId: string; changeLog?: string }) =>
-      noteService.createVersion(noteId, changeLog) as any,
+      noteService.createVersion(noteId, changeLog ? { changeLog } : undefined) as any,
     onSuccess: (newVersion: SimpleNoteVersion) => {
       // Add to versions list
       queryClient.setQueryData(
@@ -251,8 +251,8 @@ export function useRestoreNoteVersion() {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: ({ noteId, version }: { noteId: string; version: number }) => 
-      noteService.restoreVersion(noteId, version),
+    mutationFn: ({ versionId }: { versionId: string }) => 
+      noteService.restoreVersion(versionId),
     onSuccess: (restoredNote: Note) => {
       // Update note cache
       queryClient.setQueryData(queryKeys.notes.detail(restoredNote.id), restoredNote)

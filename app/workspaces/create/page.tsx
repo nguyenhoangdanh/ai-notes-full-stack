@@ -1,8 +1,9 @@
 'use client'
+import { ArrowLeft, Upload } from 'lucide-react'
 
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import { ArrowLeftIcon, DocumentArrowUpIcon } from '@heroicons/react/24/outline'
+
 import { Button } from '../../../components/ui/button'
 import { Input } from '../../../components/ui/input'
 import { Textarea } from '../../../components/ui/textarea'
@@ -64,7 +65,7 @@ export default function CreateWorkspacePage() {
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center space-x-4">
           <Button variant="ghost" size="sm" onClick={handleCancel}>
-            <ArrowLeftIcon className="h-4 w-4 mr-2" />
+            <ArrowLeft className="h-4 w-4 mr-2" />
             Back
           </Button>
           <div>
@@ -77,7 +78,7 @@ export default function CreateWorkspacePage() {
           onClick={handleSave}
           disabled={isSaving || !name.trim()}
         >
-          <DocumentArrowUpIcon className="h-4 w-4 mr-2" />
+          <Upload className="h-4 w-4 mr-2" />
           {isSaving ? 'Creating...' : 'Create Workspace'}
         </Button>
       </div>

@@ -1,6 +1,6 @@
 'use client'
 
-import { PlusIcon, BookOpenIcon, FolderIcon, SparklesIcon, ArrowRightIcon, CheckCircleIcon } from '@heroicons/react/24/outline'
+import { Plus, BookOpen, Folder, Sparkles, ArrowRight, CheckCircle } from "lucide-react"
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card'
 import { Button } from '../ui/button'
 import { Badge } from '../ui/badge'
@@ -9,15 +9,13 @@ import { useRouter } from 'next/navigation'
 import { cn } from '../../lib/utils'
 import { ResponsiveGrid } from '../common/ResponsiveGrid'
 import { ResponsiveContainer } from '../common/ResponsiveContainer'
-
 export function DashboardOverview() {
   const router = useRouter()
-
   const quickActions = [
     {
       title: 'Create Note',
       description: 'Start writing with AI assistance',
-      icon: PlusIcon,
+      icon: Plus,
       href: '/notes/create',
       gradient: 'from-primary to-primary/80',
       badge: 'Popular'
@@ -25,7 +23,7 @@ export function DashboardOverview() {
     {
       title: 'Browse Notes',
       description: 'Search and organize your notes',
-      icon: BookOpenIcon,
+      icon: BookOpen,
       href: '/notes',
       gradient: 'from-emerald-500 to-emerald-600',
       badge: null
@@ -33,7 +31,7 @@ export function DashboardOverview() {
     {
       title: 'Workspaces',
       description: 'Collaborate and organize projects',
-      icon: FolderIcon,
+      icon: Folder,
       href: '/workspaces',
       gradient: 'from-purple-500 to-purple-600',
       badge: null
@@ -41,13 +39,12 @@ export function DashboardOverview() {
     {
       title: 'AI Assistant',
       description: 'Get intelligent writing help',
-      icon: SparklesIcon,
+      icon: Sparkles,
       href: '/ai/chat',
       gradient: 'from-orange-500 to-orange-600',
       badge: 'New'
     }
   ]
-
   const features = [
     {
       title: 'Smart Notes',
@@ -70,14 +67,12 @@ export function DashboardOverview() {
       items: ['Voice notes', 'Offline sync', 'Location tagging']
     }
   ]
-
   return (
     <div className="min-h-screen bg-background relative overflow-hidden">
       {/* Superhuman background */}
       <div className="absolute inset-0 bg-gradient-to-br from-background via-background/95 to-primary/3" />
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--primary)_0%,_transparent_70%)] opacity-8" />
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_right,_var(--accent)_0%,_transparent_70%)] opacity-6" />
-      
       <ResponsiveContainer padding="md" mobilePadding="sm" className="py-6 xs:py-4 sm:py-8 space-y-8 xs:space-y-6 sm:space-y-12 relative z-10">
         {/* Superhuman Welcome Section */}
         <div className="relative text-center space-y-4 xs:space-y-3 sm:space-y-6 py-8 xs:py-6 sm:py-12">
@@ -98,17 +93,16 @@ export function DashboardOverview() {
               Your intelligent note-taking companion. Capture ideas, organize thoughts, and enhance your productivity with the power of AI.
             </p>
           </div>
-          
           <div className="flex flex-col xs:flex-row gap-3 xs:gap-4 justify-center items-center pt-4 xs:pt-6 px-4 xs:px-0 animate-superhuman-slide-up">
             <Button 
               size="lg" 
               onClick={() => router.push('/notes/create')}
               className="w-full xs:w-auto px-6 xs:px-8 py-3 text-base xs:text-lg group rounded-full superhuman-gradient superhuman-glow"
             >
-              <PlusIcon className="h-5 w-5 mr-2 group-hover:scale-110 superhuman-transition" />
+              <Plus className="h-5 w-5 mr-2 group-hover:scale-110 superhuman-transition" />
               <span className="xs:hidden">Create Note</span>
               <span className="hidden xs:inline">Create Your First Note</span>
-              <ArrowRightIcon className="h-4 w-4 ml-2 group-hover:translate-x-1 superhuman-transition" />
+              <ArrowRight className="h-4 w-4 ml-2 group-hover:translate-x-1 superhuman-transition" />
             </Button>
             <Button 
               variant="outline" 
@@ -120,14 +114,12 @@ export function DashboardOverview() {
             </Button>
           </div>
         </div>
-
         {/* Superhuman Quick Actions */}
         <div className="space-y-4 xs:space-y-6">
           <div className="text-center px-4 xs:px-0">
             <h2 className="text-2xl xs:text-3xl font-bold mb-2 bg-gradient-to-r from-foreground to-foreground/80 bg-clip-text text-transparent">Quick Actions</h2>
             <p className="text-sm xs:text-base text-muted-foreground">Jump right into your most common tasks</p>
           </div>
-          
           <ResponsiveGrid cols={{ default: 1, xs: 2, lg: 4 }} gap="lg">
             {quickActions.map((action, index) => (
               <Card 
@@ -145,7 +137,6 @@ export function DashboardOverview() {
                       {action.badge}
                     </Badge>
                   )}
-                  
                   <div className="text-center space-y-3 xs:space-y-4">
                     <div className={cn(
                       "w-12 xs:w-16 h-12 xs:h-16 rounded-2xl mx-auto flex items-center justify-center mb-3 xs:mb-4 bg-gradient-to-br shadow-lg superhuman-transition",
@@ -154,7 +145,6 @@ export function DashboardOverview() {
                     )}>
                       <action.icon className="h-6 xs:h-8 w-6 xs:w-8 text-white" />
                     </div>
-                    
                     <div className="space-y-2">
                       <h3 className="text-base xs:text-lg font-semibold group-hover:text-primary superhuman-transition">
                         {action.title}
@@ -164,14 +154,12 @@ export function DashboardOverview() {
                       </p>
                     </div>
                   </div>
-                  
                   <div className="absolute inset-0 bg-gradient-to-br from-transparent to-primary/5 opacity-0 group-hover:opacity-100 superhuman-transition rounded-2xl" />
                 </Link>
               </Card>
             ))}
           </ResponsiveGrid>
         </div>
-
         {/* Superhuman Features Overview */}
         <div className="space-y-6 xs:space-y-8">
           <div className="text-center space-y-3 xs:space-y-4 px-4 xs:px-0">
@@ -182,7 +170,6 @@ export function DashboardOverview() {
               Everything you need for intelligent note-taking and productivity
             </p>
           </div>
-
           <ResponsiveGrid cols={{ default: 1, lg: 2 }} gap="lg">
             {features.map((feature, index) => (
               <Card 
@@ -200,7 +187,6 @@ export function DashboardOverview() {
                       {feature.description}
                     </p>
                   </div>
-                  
                   <div className="space-y-2 xs:space-y-3">
                     {feature.items.map((item, itemIndex) => (
                       <div 
@@ -209,7 +195,7 @@ export function DashboardOverview() {
                         style={{transitionDelay: `${itemIndex * 50}ms`}}
                       >
                         <div className="flex-shrink-0 w-5 xs:w-6 h-5 xs:h-6 bg-primary/10 rounded-full flex items-center justify-center mr-3 xs:mr-4 superhuman-glow">
-                          <CheckCircleIcon className="w-3 xs:w-4 h-3 xs:h-4 text-primary" />
+                          <CheckCircle className="w-3 xs:w-4 h-3 xs:h-4 text-primary" />
                         </div>
                         <span className="text-foreground font-medium text-sm xs:text-base">{item}</span>
                       </div>
@@ -220,7 +206,6 @@ export function DashboardOverview() {
             ))}
           </ResponsiveGrid>
         </div>
-
         {/* Superhuman CTA */}
         <div className="relative mx-4 xs:mx-0">
           <div className="absolute inset-0 bg-gradient-to-r from-primary/5 via-primary/8 to-accent/5 rounded-3xl superhuman-glass" />
@@ -233,26 +218,24 @@ export function DashboardOverview() {
                 Join thousands of users who have revolutionized their productivity with AI-powered notes
               </p>
             </div>
-            
             <div className="flex flex-col xs:flex-row gap-3 xs:gap-4 justify-center items-center pt-4">
               <Button 
                 size="lg" 
                 onClick={() => router.push('/notes/create')}
                 className="w-full xs:w-auto px-8 xs:px-10 py-3 xs:py-4 text-base xs:text-lg group rounded-full superhuman-gradient superhuman-glow shadow-lg"
               >
-                <PlusIcon className="h-5 xs:h-6 w-5 xs:w-6 mr-2 group-hover:scale-110 superhuman-transition" />
+                <Plus className="h-5 xs:h-6 w-5 xs:w-6 mr-2 group-hover:scale-110 superhuman-transition" />
                 <span className="xs:hidden">Start Creating</span>
                 <span className="hidden xs:inline">Start Creating Now</span>
-                <ArrowRightIcon className="h-4 xs:h-5 w-4 xs:w-5 ml-2 group-hover:translate-x-1 superhuman-transition" />
+                <ArrowRight className="h-4 xs:h-5 w-4 xs:w-5 ml-2 group-hover:translate-x-1 superhuman-transition" />
               </Button>
-              
               <Button 
                 variant="outline" 
                 size="lg"
                 onClick={() => router.push('/ai/chat')}
                 className="w-full xs:w-auto px-8 xs:px-10 py-3 xs:py-4 text-base xs:text-lg rounded-full superhuman-glass border-border/30 superhuman-hover"
               >
-                <SparklesIcon className="h-5 w-5 mr-2" />
+                <Sparkles className="h-5 w-5 mr-2" />
                 Try AI Assistant
               </Button>
             </div>

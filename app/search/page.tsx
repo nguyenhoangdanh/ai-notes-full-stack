@@ -1,8 +1,9 @@
 'use client'
+import { Search, FileText, Folder } from 'lucide-react'
 
 import { useState, useEffect, Suspense } from 'react'
 import { useSearchParams } from 'next/navigation'
-import { MagnifyingGlassIcon, DocumentTextIcon, FolderIcon } from '@heroicons/react/24/outline'
+
 import { Card, CardContent, CardHeader, CardTitle } from '../../components/ui/card'
 import { Input } from '../../components/ui/input'
 import { Button } from '../../components/ui/button'
@@ -33,7 +34,7 @@ function SearchContent() {
   return (
     <div className="container mx-auto py-6 space-y-6">
       <div className="text-center space-y-4">
-        <MagnifyingGlassIcon className="h-16 w-16 mx-auto text-primary" />
+        <Search className="h-16 w-16 mx-auto text-primary" />
         <h1 className="text-3xl font-bold">Search</h1>
         <p className="text-muted-foreground">Find notes, workspaces, and more</p>
       </div>
@@ -67,9 +68,9 @@ function SearchContent() {
               <CardContent className="p-4">
                 <div className="flex items-start space-x-3">
                   {result.type === 'note' ? (
-                    <DocumentTextIcon className="h-5 w-5 text-blue-500 mt-1" />
+                    <FileText className="h-5 w-5 text-blue-500 mt-1" />
                   ) : (
-                    <FolderIcon className="h-5 w-5 text-green-500 mt-1" />
+                    <Folder className="h-5 w-5 text-green-500 mt-1" />
                   )}
                   <div className="flex-1">
                     <div className="flex items-center space-x-2">
