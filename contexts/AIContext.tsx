@@ -111,7 +111,6 @@ export function AIProvider({ children }: { children: React.ReactNode }) {
       const results = await semanticSearchMutation.mutateAsync({
         query,
         limit: 10,
-        threshold: 0.7,
         ...options
       })
       return results

@@ -67,9 +67,8 @@ export default function AIChatPage() {
       const assistantMessage: ChatMessage = {
         id: (Date.now() + 1).toString(),
         role: 'assistant',
-        content: response.message,
+        content: response.response,
         timestamp: new Date(),
-        citations: response.citations
       }
 
       setMessages(prev => [...prev, assistantMessage])

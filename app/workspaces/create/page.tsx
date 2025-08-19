@@ -36,8 +36,6 @@ export default function CreateWorkspacePage() {
     try {
       const workspace = await createWorkspace.mutateAsync({
         name: name.trim(),
-        description: description.trim() || undefined,
-        privacy: type as any
       })
 
       toast.success('Workspace created successfully!')

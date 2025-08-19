@@ -152,7 +152,7 @@ export default function WorkspacesPage() {
                     <span>Personal</span>
                   </div>
                   <div className="flex items-center space-x-1">
-                    <span>{workspace.noteCount || 0} notes</span>
+                    <span>Workspace</span>
                   </div>
                 </div>
               </CardContent>
