@@ -200,5 +200,5 @@ class ApiClient {
 
 // Create singleton instance
 export const apiClient = new ApiClient(
-  process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:3001'
+  process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:3001/api'
 );
