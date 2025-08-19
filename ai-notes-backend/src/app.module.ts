@@ -10,6 +10,8 @@ import { ChatModule } from './chat/chat.module';
 import { VectorsModule } from './vectors/vectors.module';
 import { SettingsModule } from './settings/settings.module';
 import { PrismaModule } from './prisma/prisma.module';
+import { HealthController } from './common/health.controller';
+import { EnvironmentConfig } from './config/config.environment';
 
 // Smart Features
 import { QueueModule } from './shared/queue/queue.module';
@@ -106,5 +108,7 @@ import { AnalyticsModule } from './analytics/analytics.module';
     // Analytics
     AnalyticsModule,
   ],
+  controllers: [HealthController],
+  providers: [EnvironmentConfig],
 })
 export class AppModule {}
