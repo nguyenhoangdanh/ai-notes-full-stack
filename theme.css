@@ -199,7 +199,7 @@
     --z-50: 50;
     --z-auto: auto;
 
-    /* Shadows - Layered shadow system */
+    /* Shadows - Enhanced layered shadow system */
     --shadow-xs: 0 1px 2px 0 rgb(0 0 0 / 0.05);
     --shadow-sm: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
     --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
@@ -207,6 +207,19 @@
     --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
     --shadow-2xl: 0 25px 50px -12px rgb(0 0 0 / 0.25);
     --shadow-inner: inset 0 2px 4px 0 rgb(0 0 0 / 0.05);
+    --shadow-glow: 0 0 20px 0 rgb(var(--color-accent-9) / 0.3);
+    --shadow-colored: 0 8px 25px -5px rgb(var(--color-accent-9) / 0.2);
+    --shadow-border: 0 0 0 1px rgb(0 0 0 / 0.05);
+
+    /* Modern Glass Effect */
+    --glass-bg: rgb(255 255 255 / 0.8);
+    --glass-border: rgb(255 255 255 / 0.18);
+    --glass-backdrop: blur(16px) saturate(180%);
+
+    /* Enhanced Border Radius */
+    --radius-xs: calc(1px * var(--radius-factor) * var(--size-scale));
+    --radius-4xl: calc(32px * var(--radius-factor) * var(--size-scale));
+    --radius-5xl: calc(40px * var(--radius-factor) * var(--size-scale));
 
     /* Animation Durations */
     --duration-75: 75ms;
