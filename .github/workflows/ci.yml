@@ -1,0 +1,51 @@
+name: CI
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: |
+          if [ -f pnpm-lock.yaml ]; then
+            corepack enable || true
+            pnpm install --frozen-lockfile
+          elif [ -f package-lock.json ]; then
+            npm ci
+          else
+            npm install
+          fi
+
+      - name: Build (telemetry disabled)
+        run: npm run build
+        env:
+          NEXT_TELEMETRY_DISABLED: "1"
+          NO_UPDATE_NOTIFIER: "1"
+          ADBLOCK: "1"
+          DISABLE_OPENCOLLECTIVE: "1"
+          npm_config_update_notifier: "false"
+          CI: "true"
+
+      - name: Lint (telemetry disabled)
+        run: npm run lint
+        env:
+          NEXT_TELEMETRY_DISABLED: "1"
+          NO_UPDATE_NOTIFIER: "1"
+          ADBLOCK: "1"
+          DISABLE_OPENCOLLECTIVE: "1"
+          npm_config_update_notifier: "false"
+          CI: "true"
