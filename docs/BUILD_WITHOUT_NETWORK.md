@@ -1,36 +1,36 @@
 # Zero-Network Build Playbook
 
-This project builds in environments with outbound network restrictions (firewall/DNS block). To ensure deterministic, networkless builds:
+This project must build and lint without any outbound network access. Use the provided wrapper to guarantee that all Next.js commands run with telemetry and update notifiers disabled.
 
-## 1) Disable Telemetry and Notifiers
-Set these env vars for all build steps:
+## Usage
+
+Update your package.json scripts to use the wrapper:
+
+```json
+{
+  "scripts": {
+    "dev": "node scripts/next-ci.mjs dev",
+    "build": "node scripts/next-ci.mjs build",
+    "start": "node scripts/next-ci.mjs start",
+    "lint": "node scripts/next-ci.mjs lint",
+    "postinstall": "next telemetry disable || true"
+  }
+}
+```
+
+Now all Next CLI invocations (dev/build/lint/start) run with:
 - `NEXT_TELEMETRY_DISABLED=1`
 - `NO_UPDATE_NOTIFIER=1`
 - `ADBLOCK=1`
 - `DISABLE_OPENCOLLECTIVE=1`
 - `CI=1`
+- `npm_config_update_notifier=false`
 
-Optionally run:
-```
-npx next telemetry disable
-```
-Note: this writes to the user profile and may not persist in ephemeral CI. Env vars are authoritative.
+These prevent any "phoning home" or DNS lookups (e.g., telemetry.nextjs.org).
 
-## 2) Prevent Build-Time Data Fetching
-For any page that might trigger SSG/ISR and reach external services:
-- Add at top-level of the page file:
-  ```ts
-  export const dynamic = "force-dynamic";
-  // or
-  export const revalidate = 0;
-  ```
-- Avoid performing external `fetch()` during `next build`. Move calls to:
-  - Server Actions/Route Handlers executed at runtime, or
-  - Client-side effects (on user interaction), or
-  - Ensure targets are internal-only services reachable within the build network.
+## CI
 
-## 3) CI Configuration (GitHub Actions)
-Set env globally in the workflow:
+In GitHub Actions, set env once and call the build script:
 ```yaml
 env:
   NEXT_TELEMETRY_DISABLED: "1"
@@ -38,26 +38,28 @@ env:
   ADBLOCK: "1"
   DISABLE_OPENCOLLECTIVE: "1"
   CI: "true"
-```
-Call a single entry build script (see `scripts/ci-build.sh`).
+  npm_config_update_notifier: "false"
 
-## 4) Docker Builds
-In your Dockerfile:
-```dockerfile
-ARG NEXT_TELEMETRY_DISABLED=1
-ENV NEXT_TELEMETRY_DISABLED=$NEXT_TELEMETRY_DISABLED \
-    NO_UPDATE_NOTIFIER=1 \
-    ADBLOCK=1 \
-    DISABLE_OPENCOLLECTIVE=1 \
-    CI=1
-
-# then run install + build without network dependency
-RUN npx next telemetry disable || true
+steps:
+  - uses: actions/checkout@v4
+  - uses: actions/setup-node@v4
+    with:
+      node-version: "20"
+      cache: "npm"
+  - run: bash scripts/ci-build.sh
 ```
 
-## 5) Whitelist (Optional, Not Recommended)
-If policy allows, add `telemetry.nextjs.org` to your firewall allowlist. Prefer zero-network builds for reproducibility.
+## Prevent Build-Time Data Fetching
 
-## 6) Verify
-- Ensure the build completes with no outbound connections.
-- If the build still fails, scan pages for network calls executed during build and mark them as dynamic.
+If any page could cause SSG/ISR to fetch external data during `next build`, mark it dynamic:
+```ts
+export const dynamic = "force-dynamic"; // or
+export const revalidate = 0;
+```
+
+Keep external fetches at runtime (server actions/route handlers) instead of build time.
+
+## Verify
+
+- `node scripts/next-ci.mjs build` completes without firewall/DNS errors.
+- `node scripts/next-ci.mjs lint` also completes without hitting the network.

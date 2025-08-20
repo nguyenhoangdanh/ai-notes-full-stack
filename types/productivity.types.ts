@@ -128,7 +128,6 @@ export interface SpacedRepetitionSettings {
   easeFactor: number; // 2.5 default
   minimumEaseFactor: number; // 1.3 default
   maximumInterval: number; // 365 days default
-}
   updatedAt: string;
   note?: {
     id: string;
@@ -173,9 +172,9 @@ export interface UpdateTaskDto {
 export interface Task {
   id: string;
   title: string;
+  status: TaskStatus;
   description?: string;
   noteId?: string;
-  status: TaskStatus;
   priority: TaskPriority;
   dueDate?: string;
   completedAt?: string;
