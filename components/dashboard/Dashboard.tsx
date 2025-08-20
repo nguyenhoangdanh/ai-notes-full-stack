@@ -3,7 +3,6 @@
 import { useState, useCallback, useMemo } from 'react'
 import { useAuth } from '../../hooks/use-auth'
 import { useNotes } from '../../contexts/NotesContext'
-import { Sidebar } from './Sidebar'
 import { NotesList } from './NotesList'
 import { NoteEditor } from './NoteEditor'
 import { SearchBar } from './SearchBar'
@@ -13,12 +12,10 @@ import { AIAssistantToggle } from '../ai/AIAssistantToggle'
 import { InstallPWAButton } from '../common/InstallPWAButton'
 import { SyncStatusIndicator } from '../dev/SyncStatusIndicator'
 import { Button } from '../ui/button'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle, MetricCard } from '../ui/card'
-import { Badge } from '../ui/badge'
-import { Separator } from '../ui/separator'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle, MetricCard, FeatureCard } from '../ui/card'
+import { Badge, StatusBadge, TrendBadge } from '../ui/badge'
 import { 
   Plus, 
-  Sidebar as SidebarIcon,
   Search,
   Clock,
   TrendingUp,
@@ -30,7 +27,14 @@ import {
   List,
   Filter,
   Settings,
-  Sparkles
+  Sparkles,
+  Target,
+  Calendar,
+  Archive,
+  Star,
+  Lightbulb,
+  BrainCircuit,
+  Workflow
 } from 'lucide-react'
 import { useIsMobile } from '../../hooks/use-mobile'
 import { cn } from '../../lib/utils'
@@ -40,6 +44,8 @@ interface DashboardStats {
   totalWorkspaces: number
   recentActivity: number
   aiSuggestions: number
+  weeklyGrowth: number
+  completedTasks: number
 }
 
 export function Dashboard() {
@@ -48,17 +54,18 @@ export function Dashboard() {
   const [selectedNoteId, setSelectedNoteId] = useState<string | null>(null)
   const [selectedNoteIds, setSelectedNoteIds] = useState<string[]>([])
   const [searchQuery, setSearchQuery] = useState('')
-  const [sidebarOpen, setSidebarOpen] = useState(true)
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid')
   const [filterBy, setFilterBy] = useState<'all' | 'recent' | 'starred' | 'shared'>('all')
   const isMobile = useIsMobile()
 
-  // Superhuman stats calculation
+  // Enhanced stats calculation with marketing metrics
   const stats: DashboardStats = useMemo(() => ({
     totalNotes: notes.length,
     totalWorkspaces: 3,
     recentActivity: 12,
     aiSuggestions: 5,
+    weeklyGrowth: 23,
+    completedTasks: 8,
   }), [notes.length])
 
   const handleCreateNote = useCallback(async () => {
@@ -89,296 +96,301 @@ export function Dashboard() {
   }, [])
 
   return (
-    <div className="flex h-screen bg-background relative overflow-hidden">
-      {/* Superhuman background */}
-      <div className="absolute inset-0 bg-gradient-to-br from-background via-background/98 to-primary/2" />
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--primary)_0%,_transparent_70%)] opacity-5" />
+    <div className="min-h-screen bg-bg relative">
+      {/* Modern background */}
+      <div className="absolute inset-0 bg-gradient-to-br from-bg via-bg-elevated to-brand-50/20" />
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_left,_var(--color-brand-100)_0%,_transparent_50%)] opacity-30" />
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_right,_var(--color-brand-200)_0%,_transparent_50%)] opacity-20" />
 
-      {/* Mobile sidebar overlay */}
-      {isMobile && sidebarOpen && (
-        <div
-          className="fixed inset-0 z-40 bg-background/80 backdrop-blur-xl animate-superhuman-fade-in lg:hidden"
-          onClick={() => setSidebarOpen(false)}
-        />
-      )}
-
-      {/* Sidebar */}
-      {(!isMobile || sidebarOpen) && (
-        <div className={cn(
-          isMobile
-            ? 'fixed inset-y-0 left-0 z-50 w-80 superhuman-transition'
-            : 'relative w-80 flex-shrink-0',
-          'border-r border-border/30 superhuman-glass backdrop-blur-xl'
-        )}>
-          <Sidebar
-            onClose={() => setSidebarOpen(false)}
-            searchQuery={searchQuery}
-            onSearchChange={setSearchQuery}
-          />
-        </div>
-      )}
-
-      {/* Main Content */}
-      <div className="flex-1 flex flex-col min-w-0 relative z-10">
-        {/* Superhuman Header */}
-        <header className="flex-shrink-0 border-b border-border/30 bg-background/60 backdrop-blur-xl px-4 sm:px-6 py-3">
-          <div className="flex items-center justify-between gap-4">
-            <div className="flex items-center space-x-3 flex-1 min-w-0">
-              {isMobile && (
-                <Button
-                  variant="ghost"
-                  size="icon-sm"
-                  onClick={() => setSidebarOpen(true)}
-                  aria-label="Open sidebar"
-                  className="rounded-full superhuman-hover"
-                >
-                  <SidebarIcon className="h-4 w-4" />
-                </Button>
-              )}
-
-              <div className="flex-1 max-w-md">
-                <SearchBar
-                  value={searchQuery}
-                  onChange={setSearchQuery}
-                  placeholder="Search notes..."
-                  className="superhuman-glass border-border/30"
-                />
+      <div className="relative z-10 space-y-8 px-4 sm:px-6 lg:px-8 py-8 max-w-7xl mx-auto">
+        {/* Modern Welcome Header */}
+        <div className="space-y-6">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+            <div className="space-y-2">
+              <div className="flex items-center gap-3">
+                <h1 className="text-3xl sm:text-4xl font-bold text-gradient">
+                  Welcome back, {user?.name || 'User'}!
+                </h1>
+                <StatusBadge status="active" showDot={true} />
               </div>
-
-              {!isMobile && (
-                <div className="flex items-center gap-2">
-                  {/* View mode toggle */}
-                  <div className="flex bg-muted/30 rounded-full p-1 border border-border/30">
-                    <Button
-                      variant={viewMode === 'grid' ? 'default' : 'ghost'}
-                      size="icon-xs"
-                      onClick={() => setViewMode('grid')}
-                      className="rounded-full"
-                      aria-label="Grid view"
-                    >
-                      <Grid3X3 className="h-3 w-3" />
-                    </Button>
-                    <Button
-                      variant={viewMode === 'list' ? 'default' : 'ghost'}
-                      size="icon-xs"
-                      onClick={() => setViewMode('list')}
-                      className="rounded-full"
-                      aria-label="List view"
-                    >
-                      <List className="h-3 w-3" />
-                    </Button>
-                  </div>
-
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className="gap-2 superhuman-glass border-border/30 rounded-full"
-                  >
-                    <Filter className="h-3 w-3" />
-                    <span className="hidden sm:inline">Filter</span>
-                  </Button>
-                </div>
-              )}
+              <p className="text-text-secondary text-lg leading-relaxed">
+                Here's your productivity overview and latest updates.
+              </p>
             </div>
-
-            <div className="flex items-center space-x-2 flex-shrink-0">
+            
+            <div className="flex items-center gap-3">
+              <Button
+                variant="outline"
+                size="lg"
+                className="gap-2 rounded-xl"
+                onClick={() => setSearchQuery('')}
+              >
+                <Search className="h-4 w-4" />
+                <span className="hidden sm:inline">Search</span>
+              </Button>
+              
               <Button
                 onClick={handleCreateNote}
-                size={isMobile ? "sm" : "default"}
-                className="gap-2 rounded-full superhuman-gradient superhuman-glow"
+                size="lg"
+                variant="gradient"
+                className="gap-2 rounded-xl shadow-3"
               >
                 <Plus className="h-4 w-4" />
-                <span className="hidden sm:inline">New Note</span>
+                New Note
               </Button>
-
-              {!isMobile && (
-                <Button
-                  variant="outline"
-                  size="icon-sm"
-                  className="rounded-full superhuman-glass border-border/30 superhuman-hover"
-                >
-                  <Settings className="h-4 w-4" />
-                </Button>
-              )}
             </div>
           </div>
-        </header>
-
-        {/* Dashboard Content */}
-        <div className="flex-1 overflow-auto p-4 sm:p-6 space-y-6 superhuman-scrollbar">
-          {/* Superhuman Welcome */}
-          <div className="space-y-2">
-            <div className="flex items-center gap-2">
-              <h1 className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text text-transparent">
-                Welcome back, {user?.name || 'User'}!
-              </h1>
-              <Sparkles className="h-6 w-6 text-primary" />
-            </div>
-            <p className="text-muted-foreground leading-relaxed">
-              Here's what's happening with your notes today.
-            </p>
-          </div>
-
-          {/* Superhuman Stats Cards */}
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-            <MetricCard
-              label="Total Notes"
-              value={stats.totalNotes}
-              change={{ value: "+12%", trend: "up" }}
-              icon={<BookOpen className="h-4 w-4" />}
-              color="primary"
-              className="superhuman-hover"
-            />
-            <MetricCard
-              label="Workspaces"
-              value={stats.totalWorkspaces}
-              change={{ value: "+2", trend: "up" }}
-              icon={<Users className="h-4 w-4" />}
-              color="emerald"
-              className="superhuman-hover"
-            />
-            <MetricCard
-              label="AI Suggestions"
-              value={stats.aiSuggestions}
-              change={{ value: "New", trend: "neutral" }}
-              icon={<Zap className="h-4 w-4" />}
-              color="amber"
-              className="superhuman-hover"
-            />
-            <MetricCard
-              label="Activity"
-              value={stats.recentActivity}
-              change={{ value: "7 days", trend: "neutral" }}
-              icon={<TrendingUp className="h-4 w-4" />}
-              color="primary"
-              className="superhuman-hover"
+          
+          {/* Search Bar */}
+          <div className="max-w-2xl">
+            <SearchBar
+              value={searchQuery}
+              onChange={setSearchQuery}
+              placeholder="Search notes, workspaces, and more..."
+              className="h-12 text-base"
             />
           </div>
+        </div>
 
-          {/* Quick Actions */}
-          <Card variant="glass" className="superhuman-hover">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Zap className="h-5 w-5 text-primary" />
-                Quick Actions
-              </CardTitle>
-              <CardDescription>
-                Get started quickly with these common tasks
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-                <Button
-                  variant="outline"
-                  className="h-auto p-4 flex flex-col items-start gap-2 superhuman-glass border-border/30 hover:border-primary/30 superhuman-transition rounded-xl"
-                  onClick={handleCreateNote}
-                >
-                  <div className="flex items-center gap-2 w-full">
-                    <Plus className="h-4 w-4 text-primary" />
-                    <span className="font-medium">Create Note</span>
-                  </div>
-                  <span className="text-xs text-muted-foreground text-left">
-                    Start writing immediately
-                  </span>
-                </Button>
+        {/* Enhanced Stats Grid */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <MetricCard
+            label="Total Notes"
+            value={stats.totalNotes}
+            change={{ value: `+${stats.weeklyGrowth}%`, trend: "up" }}
+            icon={<BookOpen />}
+            color="brand"
+            size="default"
+          />
+          
+          <MetricCard
+            label="Workspaces"
+            value={stats.totalWorkspaces}
+            change={{ value: "+2 this week", trend: "up" }}
+            icon={<Users />}
+            color="success"
+            size="default"
+          />
+          
+          <MetricCard
+            label="AI Insights"
+            value={stats.aiSuggestions}
+            change={{ value: "5 ready", trend: "neutral" }}
+            icon={<BrainCircuit />}
+            color="info"
+            size="default"
+          />
+          
+          <MetricCard
+            label="Tasks Done"
+            value={stats.completedTasks}
+            change={{ value: "+60%", trend: "up" }}
+            icon={<Target />}
+            color="success"
+            size="default"
+          />
+        </div>
 
-                <Button
-                  variant="outline"
-                  className="h-auto p-4 flex flex-col items-start gap-2 superhuman-glass border-border/30 hover:border-primary/30 superhuman-transition rounded-xl"
-                >
-                  <div className="flex items-center gap-2 w-full">
-                    <Search className="h-4 w-4 text-primary" />
-                    <span className="font-medium">Advanced Search</span>
-                  </div>
-                  <span className="text-xs text-muted-foreground text-left">
-                    Find notes quickly
-                  </span>
-                </Button>
-
-                <Button
-                  variant="outline"
-                  className="h-auto p-4 flex flex-col items-start gap-2 superhuman-glass border-border/30 hover:border-primary/30 superhuman-transition rounded-xl"
-                >
-                  <div className="flex items-center gap-2 w-full">
-                    <BarChart3 className="h-4 w-4 text-primary" />
-                    <span className="font-medium">View Analytics</span>
-                  </div>
-                  <span className="text-xs text-muted-foreground text-left">
-                    Track your progress
-                  </span>
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Recent Activity */}
-          <Card variant="glass" className="superhuman-hover">
-            <CardHeader>
-              <div className="flex items-center justify-between">
-                <div>
-                  <CardTitle className="flex items-center gap-2">
-                    <Clock className="h-5 w-5 text-primary" />
-                    Recent Activity
-                  </CardTitle>
-                  <CardDescription>
-                    Your latest notes and updates
-                  </CardDescription>
+        {/* Quick Actions Grid */}
+        <Card variant="elevated" className="p-6">
+          <CardHeader className="pb-4">
+            <CardTitle className="flex items-center gap-2 text-xl">
+              <Zap className="h-5 w-5 text-brand-600" />
+              Quick Actions
+            </CardTitle>
+            <CardDescription>
+              Start your most common tasks instantly
+            </CardDescription>
+          </CardHeader>
+          
+          <CardContent className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            <Button
+              variant="outline"
+              className="h-auto p-4 flex flex-col items-start gap-3 rounded-xl hover-lift"
+              onClick={handleCreateNote}
+            >
+              <div className="flex items-center gap-2 w-full">
+                <div className="p-2 bg-brand-100 rounded-lg">
+                  <Plus className="h-4 w-4 text-brand-600" />
                 </div>
-                <Button variant="outline" size="sm" className="superhuman-glass border-border/30 rounded-full">
+                <span className="font-semibold">Create Note</span>
+              </div>
+              <p className="text-xs text-text-muted text-left">
+                Start writing with AI assistance
+              </p>
+            </Button>
+
+            <Button
+              variant="outline"
+              className="h-auto p-4 flex flex-col items-start gap-3 rounded-xl hover-lift"
+            >
+              <div className="flex items-center gap-2 w-full">
+                <div className="p-2 bg-success-bg rounded-lg">
+                  <BarChart3 className="h-4 w-4 text-success" />
+                </div>
+                <span className="font-semibold">View Analytics</span>
+              </div>
+              <p className="text-xs text-text-muted text-left">
+                Track your productivity trends
+              </p>
+            </Button>
+
+            <Button
+              variant="outline"
+              className="h-auto p-4 flex flex-col items-start gap-3 rounded-xl hover-lift"
+            >
+              <div className="flex items-center gap-2 w-full">
+                <div className="p-2 bg-info-bg rounded-lg">
+                  <Workflow className="h-4 w-4 text-info" />
+                </div>
+                <span className="font-semibold">AI Assistant</span>
+              </div>
+              <p className="text-xs text-text-muted text-left">
+                Get intelligent writing help
+              </p>
+            </Button>
+          </CardContent>
+        </Card>
+
+        {/* Feature Highlights */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <FeatureCard
+            title="AI-Powered Insights"
+            description="Get intelligent suggestions and automated organization for your notes based on content analysis and usage patterns."
+            icon={<Lightbulb />}
+            badge="Smart"
+          />
+          
+          <FeatureCard
+            title="Real-time Collaboration"
+            description="Work together seamlessly with your team using real-time editing, comments, and shared workspaces."
+            icon={<Users />}
+            badge="Team"
+          />
+        </div>
+
+        {/* Recent Activity */}
+        <Card variant="elevated" className="p-6">
+          <CardHeader className="pb-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <CardTitle className="flex items-center gap-2 text-xl">
+                  <Clock className="h-5 w-5 text-brand-600" />
+                  Recent Activity
+                </CardTitle>
+                <CardDescription>
+                  Your latest notes and updates
+                </CardDescription>
+              </div>
+              
+              <div className="flex items-center gap-2">
+                <Button variant="ghost" size="sm" className="gap-2">
+                  <Filter className="h-4 w-4" />
+                  Filter
+                </Button>
+                <Button variant="outline" size="sm" className="rounded-xl">
                   View All
                 </Button>
               </div>
+            </div>
+          </CardHeader>
+          
+          <CardContent>
+            <div className="space-y-4">
+              {notes.length > 0 ? (
+                notes.slice(0, 5).map((note, index) => (
+                  <div key={note.id} className="flex items-center gap-4 p-4 rounded-xl hover:bg-surface-hover transition-modern cursor-pointer">
+                    <div className="h-10 w-10 rounded-xl bg-brand-100 flex items-center justify-center flex-shrink-0">
+                      <BookOpen className="h-4 w-4 text-brand-600" />
+                    </div>
+                    
+                    <div className="flex-1 min-w-0">
+                      <p className="font-medium truncate">{note.title}</p>
+                      <p className="text-sm text-text-muted">Updated 2 hours ago</p>
+                    </div>
+                    
+                    <div className="flex items-center gap-2 flex-shrink-0">
+                      <Badge variant="outline" size="sm">
+                        Note
+                      </Badge>
+                      {index === 0 && <Badge variant="success" size="sm">New</Badge>}
+                    </div>
+                  </div>
+                ))
+              ) : (
+                <EmptyState />
+              )}
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Productivity Insights */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <Card variant="feature" className="p-6">
+            <CardHeader className="pb-4">
+              <CardTitle className="flex items-center gap-2">
+                <TrendingUp className="h-5 w-5 text-success" />
+                Growth
+              </CardTitle>
             </CardHeader>
             <CardContent>
               <div className="space-y-3">
-                {notes.slice(0, 3).map((note) => (
-                  <div key={note.id} className="flex items-center gap-3 p-3 rounded-xl hover:bg-primary/5 superhuman-transition cursor-pointer">
-                    <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center">
-                      <BookOpen className="h-4 w-4 text-primary" />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <p className="font-medium truncate">{note.title}</p>
-                      <p className="text-sm text-muted-foreground">Updated 2 hours ago</p>
-                    </div>
-                    <Badge variant="outline" className="text-xs rounded-full">
-                      Note
-                    </Badge>
-                  </div>
-                ))}
-                
-                {notes.length === 0 && (
-                  <div className="text-center py-8">
-                    <BookOpen className="h-12 w-12 text-muted-foreground/40 mx-auto mb-4" />
-                    <p className="text-muted-foreground mb-4">No recent activity</p>
-                    <Button 
-                      variant="outline" 
-                      className="rounded-full"
-                      onClick={handleCreateNote}
-                    >
-                      Create your first note
-                    </Button>
-                  </div>
-                )}
+                <div className="text-3xl font-bold text-text">+{stats.weeklyGrowth}%</div>
+                <p className="text-sm text-text-muted">Notes created this week</p>
+                <TrendBadge trend="up" value="vs last week" />
               </div>
             </CardContent>
           </Card>
-        </div>
 
-        {/* Note Editor Overlay */}
-        {selectedNoteId && (
-          <div className="fixed inset-0 z-50 lg:relative lg:inset-auto">
-            <div className={cn(
-              "h-full overflow-hidden",
-              isMobile ? "bg-background" : "lg:absolute lg:inset-0"
-            )}>
-              <NoteEditor
-                noteId={selectedNoteId}
-                onClose={() => setSelectedNoteId(null)}
-              />
-            </div>
-          </div>
-        )}
+          <Card variant="glass" className="p-6">
+            <CardHeader className="pb-4">
+              <CardTitle className="flex items-center gap-2">
+                <Calendar className="h-5 w-5 text-brand-600" />
+                Schedule
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-3">
+                <div className="text-lg font-semibold">3 tasks today</div>
+                <p className="text-sm text-text-muted">2 meetings, 1 deadline</p>
+                <Button variant="outline" size="sm" className="w-full">
+                  View Calendar
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card variant="gradient" className="p-6">
+            <CardHeader className="pb-4">
+              <CardTitle className="flex items-center gap-2">
+                <Star className="h-5 w-5 text-warning" />
+                Pro Tip
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-sm mb-3">Use keyboard shortcuts to speed up your workflow.</p>
+              <Button variant="ghost" size="sm" className="text-xs">
+                Learn shortcuts
+              </Button>
+            </CardContent>
+          </Card>
+        </div>
       </div>
+
+      {/* Note Editor Overlay */}
+      {selectedNoteId && (
+        <div className="fixed inset-0 z-50 lg:relative lg:inset-auto">
+          <div className={cn(
+            "h-full overflow-hidden",
+            isMobile ? "bg-bg" : "lg:absolute lg:inset-0"
+          )}>
+            <NoteEditor
+              noteId={selectedNoteId}
+              onClose={() => setSelectedNoteId(null)}
+            />
+          </div>
+        </div>
+      )}
 
       {/* Floating Components */}
       <AIAssistantToggle selectedNoteId={selectedNoteId} />
