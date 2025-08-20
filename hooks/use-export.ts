@@ -37,7 +37,7 @@ export const useDeleteExport = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: ({ params: { id: string } }) => exportService.deleteExport(params),
+    mutationFn: (id: string) => exportService.deleteExport({ id }),
     onSuccess: () => {
       // Invalidate related queries
       queryClient.invalidateQueries({ queryKey: queryKeys.export.all() });
@@ -56,7 +56,8 @@ export const useQueueNoteExport = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: ({ params: { noteId: string }, data: any }) => exportService.queueNoteExport(params, data),
+    mutationFn: ({ noteId, data }: { noteId: string; data: any }) => 
+      exportService.queueNoteExport({ noteId }, data),
     onSuccess: () => {
       // Invalidate related queries
       queryClient.invalidateQueries({ queryKey: queryKeys.export.all() });

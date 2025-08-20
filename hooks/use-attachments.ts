@@ -11,7 +11,8 @@ export const useUploadNoteAttachment = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: ({ params, data }: { params: { noteId: string }, data: any }) => attachmentsService.uploadAttachment(params, data),
+    mutationFn: ({ noteId, data }: { noteId: string; data: any }) => 
+      attachmentsService.uploadAttachment({ noteId }, data),
     onSuccess: () => {
       // Invalidate related queries
       queryClient.invalidateQueries({ queryKey: queryKeys.attachments.all() });

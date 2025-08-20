@@ -59,12 +59,12 @@ export const useCreateNotification = (options?: UseMutationOptions<NotificationR
   });
 };
 
-export const useUpdateNotification = (options?: UseMutationOptions<NotificationResponse, Error, { params: { id: string }, data: NotificationUpdateData }>) => {
+export const useUpdateNotification = (options?: UseMutationOptions<NotificationResponse, Error, { id: string; data: NotificationUpdateData }>) => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: ({ params, data }: { params: { id: string }, data: NotificationUpdateData }) => 
-      notificationsService.updateNotification(params, data),
+    mutationFn: ({ id, data }: { id: string; data: NotificationUpdateData }) => 
+      notificationsService.updateNotification({ id }, data),
     onSuccess: (data, variables) => {
       // Invalidate related queries
       queryClient.invalidateQueries({ queryKey: queryKeys.notifications.all() });
@@ -100,12 +100,12 @@ export const useGetUnreadCount = (options?: Omit<UseQueryOptions<UnreadCountResp
   });
 };
 
-export const useMarkAsRead = (options?: UseMutationOptions<NotificationResponse, Error, { params: { id: string }, data?: Record<string, unknown> }>) => {
+export const useMarkAsRead = (options?: UseMutationOptions<NotificationResponse, Error, { id: string; data?: Record<string, unknown> }>) => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: ({ params, data = {} }: { params: { id: string }, data?: Record<string, unknown> }) => 
-      notificationsService.markAsRead(params, data),
+    mutationFn: ({ id, data = {} }: { id: string; data?: Record<string, unknown> }) => 
+      notificationsService.markAsRead({ id }, data),
     onSuccess: (data, variables) => {
       // Invalidate related queries
       queryClient.invalidateQueries({ queryKey: queryKeys.notifications.all() });
