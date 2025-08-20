@@ -30,7 +30,7 @@ export {
 export { MobileButton, mobileButtonVariants } from './ui/mobile-button'
 
 // Common Components
-export { ThemeToggle, CompactThemeToggle } from './common/ThemeToggle'
+export { ThemeToggle, SimpleThemeToggle, ThemePicker } from './common/ThemeToggle'
 export { ResponsiveContainer } from './common/ResponsiveContainer'
 export { ResponsiveGrid } from './common/ResponsiveGrid'
 
@@ -42,18 +42,11 @@ export { Dashboard } from './dashboard/Dashboard'
 export { PageMeta } from './seo/PageMeta'
 
 // Accessibility Components
-export { 
-  SkipLinks,
-  ScreenReaderOnly,
-  FocusTrap,
-  LiveRegion,
-  LoadingIndicator,
-  AccessibleError,
-  keyboardHelpers,
-  useHighContrastMode,
-  useReducedMotion,
-  useAnnounce,
-  useRovingTabindex
+export {
+  A11y,
+  announceToScreenReader,
+  trapFocus,
+  restoreFocus
 } from './accessibility/A11y'
 
 // Auth Components
