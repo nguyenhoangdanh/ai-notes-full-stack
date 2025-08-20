@@ -2,11 +2,190 @@
   "extend": {
     "colors": {
       "brand": {
-        "50": "#f0f9ff",
-        "500": "#3b82f6",
-        "600": "#2563eb",
-        "700": "#1d4ed8"
+        "50": "color-mix(in srgb, var(--color-brand-500) 5%, white)",
+        "100": "color-mix(in srgb, var(--color-brand-500) 10%, white)",
+        "200": "color-mix(in srgb, var(--color-brand-500) 20%, white)",
+        "300": "color-mix(in srgb, var(--color-brand-500) 35%, white)",
+        "400": "color-mix(in srgb, var(--color-brand-500) 60%, white)",
+        "500": "var(--color-brand-500)",
+        "600": "color-mix(in srgb, var(--color-brand-500) 85%, black)",
+        "700": "color-mix(in srgb, var(--color-brand-500) 70%, black)",
+        "800": "color-mix(in srgb, var(--color-brand-500) 50%, black)",
+        "900": "color-mix(in srgb, var(--color-brand-500) 35%, black)",
+        "950": "color-mix(in srgb, var(--color-brand-500) 20%, black)"
+      },
+      "surface": {
+        "DEFAULT": "var(--color-bg-elevated)",
+        "elevated": "var(--color-surface-elevated)",
+        "hover": "var(--color-surface-hover)",
+        "active": "var(--color-surface-active)"
+      },
+      "text": {
+        "DEFAULT": "var(--color-text)",
+        "secondary": "var(--color-text-secondary)",
+        "muted": "var(--color-text-muted)",
+        "subtle": "var(--color-text-subtle)",
+        "disabled": "var(--color-text-disabled)"
+      },
+      "border": {
+        "DEFAULT": "var(--color-border)",
+        "strong": "var(--color-border-strong)",
+        "subtle": "var(--color-border-subtle)"
+      },
+      "success": {
+        "DEFAULT": "var(--color-success)",
+        "bg": "var(--color-success-bg)",
+        "border": "var(--color-success-border)"
+      },
+      "warning": {
+        "DEFAULT": "var(--color-warning)",
+        "bg": "var(--color-warning-bg)",
+        "border": "var(--color-warning-border)"
+      },
+      "danger": {
+        "DEFAULT": "var(--color-danger)",
+        "bg": "var(--color-danger-bg)",
+        "border": "var(--color-danger-border)"
+      },
+      "info": {
+        "DEFAULT": "var(--color-info)",
+        "bg": "var(--color-info-bg)",
+        "border": "var(--color-info-border)"
+      },
+      "interactive": {
+        "DEFAULT": "var(--color-interactive)",
+        "hover": "var(--color-interactive-hover)",
+        "active": "var(--color-interactive-active)"
       }
+    },
+    "spacing": {
+      "18": "var(--size-18)",
+      "22": "var(--size-22)",
+      "26": "var(--size-26)",
+      "30": "var(--size-30)"
+    },
+    "fontSize": {
+      "xs": ["var(--text-xs)", { "lineHeight": "var(--leading-tight)" }],
+      "sm": ["var(--text-sm)", { "lineHeight": "var(--leading-normal)" }],
+      "base": ["var(--text-base)", { "lineHeight": "var(--leading-normal)" }],
+      "lg": ["var(--text-lg)", { "lineHeight": "var(--leading-relaxed)" }],
+      "xl": ["var(--text-xl)", { "lineHeight": "var(--leading-tight)" }],
+      "2xl": ["var(--text-2xl)", { "lineHeight": "var(--leading-tight)" }],
+      "3xl": ["var(--text-3xl)", { "lineHeight": "var(--leading-tight)" }],
+      "4xl": ["var(--text-4xl)", { "lineHeight": "var(--leading-none)" }],
+      "5xl": ["var(--text-5xl)", { "lineHeight": "var(--leading-none)" }],
+      "6xl": ["var(--text-6xl)", { "lineHeight": "var(--leading-none)" }],
+      "7xl": ["var(--text-7xl)", { "lineHeight": "var(--leading-none)" }],
+      "8xl": ["var(--text-8xl)", { "lineHeight": "var(--leading-none)" }],
+      "9xl": ["var(--text-9xl)", { "lineHeight": "var(--leading-none)" }]
+    },
+    "fontWeight": {
+      "thin": "var(--font-weight-thin)",
+      "extralight": "var(--font-weight-extralight)",
+      "light": "var(--font-weight-light)",
+      "normal": "var(--font-weight-normal)",
+      "medium": "var(--font-weight-medium)",
+      "semibold": "var(--font-weight-semibold)",
+      "bold": "var(--font-weight-bold)",
+      "extrabold": "var(--font-weight-extrabold)",
+      "black": "var(--font-weight-black)"
+    },
+    "borderRadius": {
+      "xs": "var(--radius-xs)",
+      "sm": "var(--radius-sm)",
+      "md": "var(--radius-md)",
+      "lg": "var(--radius-lg)",
+      "xl": "var(--radius-xl)",
+      "2xl": "var(--radius-2xl)",
+      "3xl": "var(--radius-3xl)",
+      "4xl": "var(--radius-4xl)",
+      "5xl": "var(--radius-5xl)",
+      "full": "var(--radius-full)"
+    },
+    "boxShadow": {
+      "xs": "var(--shadow-xs)",
+      "sm": "var(--shadow-sm)",
+      "DEFAULT": "var(--shadow-md)",
+      "md": "var(--shadow-md)",
+      "lg": "var(--shadow-lg)",
+      "xl": "var(--shadow-xl)",
+      "2xl": "var(--shadow-2xl)",
+      "inner": "var(--shadow-inner)",
+      "none": "var(--shadow-none)",
+      "1": "var(--shadow-1)",
+      "2": "var(--shadow-2)",
+      "3": "var(--shadow-3)",
+      "4": "var(--shadow-4)",
+      "5": "var(--shadow-5)",
+      "glow": "var(--shadow-glow-primary)",
+      "glow-secondary": "var(--shadow-glow-secondary)",
+      "colored": "var(--shadow-colored-primary)",
+      "colored-secondary": "var(--shadow-colored-secondary)"
+    },
+    "transitionDuration": {
+      "fast": "var(--duration-fast)",
+      "normal": "var(--duration-normal)",
+      "slow": "var(--duration-slow)",
+      "slower": "var(--duration-slower)",
+      "slowest": "var(--duration-slowest)"
+    },
+    "transitionTimingFunction": {
+      "modern": "var(--ease-out)",
+      "spring": "var(--ease-back-out)",
+      "elastic": "var(--ease-elastic-out)",
+      "bounce": "var(--ease-bounce-out)"
+    },
+    "zIndex": {
+      "hide": "var(--z-hide)",
+      "base": "var(--z-base)",
+      "docked": "var(--z-docked)",
+      "dropdown": "var(--z-dropdown)",
+      "sticky": "var(--z-sticky)",
+      "banner": "var(--z-banner)",
+      "overlay": "var(--z-overlay)",
+      "modal": "var(--z-modal)",
+      "popover": "var(--z-popover)",
+      "skip-nav": "var(--z-skip-nav)",
+      "toast": "var(--z-toast)",
+      "tooltip": "var(--z-tooltip)"
+    },
+    "maxWidth": {
+      "xs": "var(--container-xs)",
+      "sm": "var(--container-sm)",
+      "md": "var(--container-md)",
+      "lg": "var(--container-lg)",
+      "xl": "var(--container-xl)",
+      "2xl": "var(--container-2xl)",
+      "3xl": "var(--container-3xl)"
+    },
+    "animation": {
+      "fade-in": "fadeIn var(--duration-normal) var(--ease-out)",
+      "slide-up": "slideUp var(--duration-normal) var(--ease-out)",
+      "scale-in": "scaleIn var(--duration-fast) var(--ease-spring)",
+      "float": "float 4s ease-in-out infinite",
+      "float-subtle": "floatSubtle 6s ease-in-out infinite",
+      "float-strong": "floatStrong 3s ease-in-out infinite",
+      "bounce-once": "bounceOnce 600ms ease-out",
+      "shake": "shake 500ms ease-in-out",
+      "pulse-once": "pulseOnce 1000ms ease-in-out",
+      "wave": "wave 2s ease-in-out infinite",
+      "shimmer": "shimmer 1.5s ease-in-out infinite",
+      "ripple": "ripple 600ms linear",
+      "slide-in-up": "slideInUp 300ms ease-out",
+      "slide-in-down": "slideInDown 300ms ease-out",
+      "zoom-in": "zoomIn 400ms ease-out",
+      "heartbeat": "heartbeat 1.5s ease-in-out infinite",
+      "gradient-flow": "gradient-flow 3s ease-in-out infinite"
+    },
+    "backdropBlur": {
+      "xs": "blur(2px)",
+      "sm": "blur(4px)",
+      "DEFAULT": "blur(8px)",
+      "md": "blur(12px)",
+      "lg": "blur(16px)",
+      "xl": "blur(24px)",
+      "2xl": "blur(40px)",
+      "3xl": "blur(64px)"
     }
   }
 }
