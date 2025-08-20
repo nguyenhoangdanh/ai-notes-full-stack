@@ -45,12 +45,14 @@ export function Header({ onMenuClick, sidebarOpen, isMobile }: HeaderProps) {
     <header
       ref={headerRef}
       className={cn(
-        "h-14 sticky top-0 z-40 border-b superhuman-transition",
-        // Superhuman dynamic glass effect
+        "h-14 sticky top-0 z-40 border-b superhuman-transition backdrop-blur-xl",
+        // Enhanced superhuman dynamic glass effect with modern styling
         isScrolled 
-          ? "bg-background/80 border-border/60 shadow-lg backdrop-blur-2xl" 
-          : "bg-background/60 border-border/30 shadow-sm backdrop-blur-xl",
-        "superhuman-glass",
+          ? "bg-background/80 border-border/60 shadow-xl backdrop-blur-2xl" 
+          : "bg-background/60 border-border/30 shadow-lg backdrop-blur-xl",
+        "superhuman-glass border-b-border/20",
+        // Modern glass morphism effect
+        "before:absolute before:inset-0 before:bg-gradient-to-r before:from-primary/5 before:to-accent/5 before:pointer-events-none",
         isMobile && "safe-area-inset-top"
       )}
       role="banner"

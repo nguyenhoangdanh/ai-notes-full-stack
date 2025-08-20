@@ -212,8 +212,7 @@ export default function VoiceNotesPage() {
               {voiceNotes.map((note, index) => (
                 <Card 
                   key={note.id} 
-                  variant="outline" 
-                  className="group cursor-pointer superhuman-hover animate-superhuman-fade-in"
+                  className="group cursor-pointer superhuman-hover animate-superhuman-fade-in border"
                   style={{ animationDelay: `${index * 100}ms` }}
                 >
                   <CardContent className="p-4">

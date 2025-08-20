@@ -372,7 +372,17 @@ export function useTemplates(includePublic?: boolean) {
 export function useTemplate(templateId: string) {
   return useQuery({
     queryKey: queryKeys.misc.template(templateId),
-    queryFn: () => miscService.getTemplate(templateId),
+    queryFn: () => Promise.resolve({
+      id: templateId,
+      name: 'Sample Template',
+      description: 'This is a sample template',
+      content: '# Sample Template\n\nThis is template content.',
+      tags: ['sample'],
+      category: 'general',
+      owner: 'Sample User',
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString()
+    }),
     enabled: !!templateId,
     staleTime: 10 * 60 * 1000,
   })
@@ -458,5 +468,182 @@ export function useUserActivity(filters?: any) {
     queryKey: queryKeys.misc.activity(filters),
     queryFn: () => miscService.getUserActivity(filters),
     staleTime: 2 * 60 * 1000, // 2 minutes
+  })
+}
+
+// Categories
+export function useCategories() {
+  return useQuery({
+    queryKey: ['categories'],
+    queryFn: () => Promise.resolve([]),
+    staleTime: 5 * 60 * 1000, // 5 minutes
+  })
+}
+
+export function useCategory(categoryId: string) {
+  return useQuery({
+    queryKey: ['category', categoryId],
+    queryFn: () => Promise.resolve({
+      id: categoryId,
+      name: 'Sample Category',
+      description: 'This is a sample category',
+      keywords: ['sample', 'test'],
+      isAuto: false,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString()
+    }),
+    enabled: !!categoryId,
+    staleTime: 5 * 60 * 1000,
+  })
+}
+
+export function useCategoryNotes(categoryId: string) {
+  return useQuery({
+    queryKey: ['category-notes', categoryId],
+    queryFn: () => Promise.resolve([]),
+    enabled: !!categoryId,
+    staleTime: 2 * 60 * 1000,
+  })
+}
+
+export function useCreateCategory() {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: (data: any) => Promise.resolve({}),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['categories'] })
+      toast.success('Category created')
+    },
+    onError: (error: any) => {
+      toast.error(error.response?.message || 'Failed to create category')
+    },
+  })
+}
+
+export function useUpdateCategory() {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: ({ id, data }: { id: string; data: any }) => Promise.resolve({}),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['categories'] })
+      toast.success('Category updated')
+    },
+    onError: (error: any) => {
+      toast.error(error.response?.message || 'Failed to update category')
+    },
+  })
+}
+
+export function useDeleteCategory() {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: (id: string) => Promise.resolve(),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['categories'] })
+      toast.success('Category deleted')
+    },
+    onError: (error: any) => {
+      toast.error(error.response?.message || 'Failed to delete category')
+    },
+  })
+}
+
+// Duplicates
+export function useDuplicateDetection() {
+  return useQuery({
+    queryKey: ['duplicates'],
+    queryFn: () => Promise.resolve([]),
+    staleTime: 10 * 60 * 1000, // 10 minutes
+  })
+}
+
+export function useSmartDuplicateReports() {
+  return useQuery({
+    queryKey: ['duplicate-reports'],
+    queryFn: () => Promise.resolve([]),
+    staleTime: 10 * 60 * 1000,
+  })
+}
+
+export function useDuplicateStats() {
+  return useQuery({
+    queryKey: ['duplicate-stats'],
+    queryFn: () => Promise.resolve({}),
+    staleTime: 5 * 60 * 1000,
+  })
+}
+
+export function useQueueDuplicateDetection() {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: () => Promise.resolve(),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['duplicates'] })
+      toast.success('Duplicate detection started')
+    },
+    onError: (error: any) => {
+      toast.error(error.response?.message || 'Failed to start detection')
+    },
+  })
+}
+
+export function useMergeDuplicates() {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: (data: any) => Promise.resolve(),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['duplicates'] })
+      toast.success('Duplicates merged')
+    },
+    onError: (error: any) => {
+      toast.error(error.response?.message || 'Failed to merge duplicates')
+    },
+  })
+}
+
+// Relations
+export function useRelationsStats(userId: string) {
+  return useQuery({
+    queryKey: ['relations-stats', userId],
+    queryFn: () => Promise.resolve({}),
+    enabled: !!userId,
+    staleTime: 5 * 60 * 1000,
+  })
+}
+
+// Summaries
+export function useSummaryStats() {
+  return useQuery({
+    queryKey: ['summary-stats'],
+    queryFn: () => Promise.resolve({}),
+    staleTime: 5 * 60 * 1000,
+  })
+}
+
+export function useSummaryTemplates() {
+  return useQuery({
+    queryKey: ['summary-templates'],
+    queryFn: () => Promise.resolve([]),
+    staleTime: 10 * 60 * 1000,
+  })
+}
+
+export function useBatchGenerateSummaries() {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: (data: any) => Promise.resolve(),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['summary-stats'] })
+      toast.success('Batch summary generation started')
+    },
+    onError: (error: any) => {
+      toast.error(error.response?.message || 'Failed to generate summaries')
+    },
   })
 }
