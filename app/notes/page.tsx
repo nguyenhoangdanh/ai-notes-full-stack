@@ -1,34 +1,35 @@
 import { PageMeta } from '../../components/seo/PageMeta'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../../components/ui/card'
-import { Button } from '../../components/ui/button'
-import { Input } from '../../components/ui/input'
-import { Badge } from '../../components/ui/badge'
-import { Separator } from '../../components/ui/separator'
-import { 
-  Plus, 
-  Search, 
-  Filter, 
-  Grid3X3, 
-  List, 
-  BookOpen, 
-  Calendar, 
-  Tag, 
-  Sparkles,
-  Clock,
-  Star,
-  MoreHorizontal
-} from 'lucide-react'
-import Link from 'next/link'
 import NotesClient from './NotesClient'
 
 export const metadata = {
   title: 'Notes - AI Notes',
-  description: 'Browse, search, and manage all your notes with AI-powered organization. Create, edit, and organize your thoughts efficiently.',
-  keywords: ['notes', 'note taking', 'AI organization', 'search notes', 'productivity', 'knowledge management'],
+  description: 'Browse, search, and manage all your notes with AI-powered organization. Create, edit, and organize your thoughts efficiently with intelligent categorization and semantic search.',
+  keywords: [
+    'notes', 'note taking', 'AI organization', 'search notes', 'productivity', 
+    'knowledge management', 'smart notes', 'intelligent search', 'note organization',
+    'digital notes', 'cloud notes', 'collaborative notes', 'note sharing'
+  ],
   openGraph: {
-    title: 'Notes - AI Notes',
-    description: 'Browse, search, and manage all your notes with AI-powered organization.',
+    title: 'Notes - AI Notes | Intelligent Note Management',
+    description: 'Browse, search, and manage all your notes with AI-powered organization and smart categorization.',
     type: 'website',
+    images: [
+      {
+        url: '/og-notes.png',
+        width: 1200,
+        height: 630,
+        alt: 'AI Notes - Intelligent Note Management',
+      }
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Notes - AI Notes | Intelligent Note Management',
+    description: 'Browse, search, and manage notes with AI-powered organization.',
+    images: ['/twitter-notes.png'],
+  },
+  alternates: {
+    canonical: '/notes',
   },
 }
 
@@ -37,11 +38,45 @@ export default function NotesPage() {
     <>
       <PageMeta
         title="Notes"
-        description="Browse, search, and manage all your notes with AI-powered organization. Create, edit, and organize your thoughts efficiently."
-        keywords={['notes', 'note taking', 'AI organization', 'search notes', 'productivity', 'knowledge management']}
+        description="Browse, search, and manage all your notes with AI-powered organization. Create, edit, and organize your thoughts efficiently with intelligent categorization, semantic search, and collaborative features."
+        keywords={[
+          'notes', 'note taking', 'AI organization', 'search notes', 'productivity', 
+          'knowledge management', 'smart notes', 'intelligent search', 'note organization',
+          'digital workspace', 'collaborative editing', 'note synchronization', 'offline notes'
+        ]}
         type="website"
+        structuredData={{
+          '@type': 'CollectionPage',
+          name: 'Notes Collection',
+          description: 'AI-powered note management and organization system',
+          hasPart: {
+            '@type': 'WebPageElement',
+            name: 'Note List',
+            description: 'Collection of user notes with AI-powered search and organization'
+          }
+        }}
       />
-      <NotesClient />
+      <main 
+        role="main" 
+        aria-label="Notes Management - Browse and organize your notes"
+        className="h-full"
+        itemScope 
+        itemType="https://schema.org/CollectionPage"
+      >
+        <meta itemProp="name" content="Notes Collection" />
+        <meta itemProp="description" content="AI-powered note management and organization system" />
+        
+        <div className="h-full relative">
+          {/* Modern background */}
+          <div className="absolute inset-0 bg-gradient-to-br from-bg via-surface to-brand-50/10 pointer-events-none" />
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--color-brand-100)_0%,_transparent_50%)] pointer-events-none opacity-30" />
+          
+          {/* Notes content */}
+          <div className="relative z-10 h-full">
+            <NotesClient />
+          </div>
+        </div>
+      </main>
     </>
   )
 }
