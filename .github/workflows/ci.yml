@@ -12,6 +12,7 @@ env:
   ADBLOCK: "1"
   DISABLE_OPENCOLLECTIVE: "1"
   CI: "true"
+  npm_config_update_notifier: "false"
 
 jobs:
   build:
@@ -29,5 +30,5 @@ jobs:
       - name: Enable Corepack
         run: corepack enable || true
 
-      - name: Install deps and build (zero-network)
+      - name: Install, Build, Lint (Zero-Network)
         run: bash scripts/ci-build.sh

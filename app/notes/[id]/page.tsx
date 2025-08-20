@@ -19,7 +19,9 @@ import { Button } from '../../../components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '../../../components/ui/card'
 import { Badge } from '../../../components/ui/badge'
 import { Separator } from '../../../components/ui/separator'
-import { useNote } from '../../../hooks/use-notes'
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '../../../components/ui/alert-dialog'
+import { useNote, useDeleteNote, useUpdateNote } from '../../../hooks/use-notes'
+import { useNoteSummary, useGenerateSummary, useRelatedNotes } from '../../../hooks/use-smart'
 import { toast } from 'sonner'
 import { format } from 'date-fns'
 import { marked } from 'marked'
@@ -31,6 +33,13 @@ export default function NoteDetailPage() {
   const noteId = params.id as string
   
   const { data: note, isLoading, error } = useNote(noteId)
+  const { data: summary, isLoading: isSummaryLoading } = useNoteSummary(noteId)
+  const { data: relatedNotes = [] } = useRelatedNotes(noteId)
+  
+  const deleteNote = useDeleteNote()
+  const updateNote = useUpdateNote()
+  const generateSummary = useGenerateSummary()
+  
   const [isBookmarked, setIsBookmarked] = useState(false)
   const [readingTime, setReadingTime] = useState(0)
 
@@ -39,42 +48,81 @@ export default function NoteDetailPage() {
       // Calculate reading time (average 200 words per minute)
       const wordCount = note.content.split(/\s+/).length
       setReadingTime(Math.ceil(wordCount / 200))
+      
+      // Set initial bookmark state
+      setIsBookmarked(note.starred || false)
     }
-  }, [note?.content])
+  }, [note?.content, note?.starred])
 
   const handleEdit = () => {
-    router.push(`/notes/${noteId}/edit`)
+    // For now, we'll stay on the same page and add inline editing later
+    // TODO: Implement inline editing or create a separate edit page
+    toast.info('Edit functionality coming soon!')
   }
 
   const handleDelete = async () => {
-    if (confirm('Are you sure you want to delete this note?')) {
-      try {
-        // Delete logic here
-        toast.success('Note deleted successfully')
-        router.push('/notes')
-      } catch (error) {
-        toast.error('Failed to delete note')
-      }
+    try {
+      await deleteNote.mutateAsync(noteId)
+      toast.success('Note deleted successfully')
+      router.push('/notes')
+    } catch (error) {
+      toast.error('Failed to delete note')
     }
   }
 
   const handleShare = async () => {
     try {
-      await navigator.share({
-        title: note?.title,
-        text: note?.content?.substring(0, 100) + '...',
-        url: window.location.href
-      })
+      if (navigator.share) {
+        await navigator.share({
+          title: note?.title,
+          text: note?.content?.substring(0, 100) + '...',
+          url: window.location.href
+        })
+      } else {
+        // Fallback to copying URL
+        await navigator.clipboard.writeText(window.location.href)
+        toast.success('Link copied to clipboard')
+      }
     } catch (error) {
-      // Fallback to copying URL
-      navigator.clipboard.writeText(window.location.href)
+      // Final fallback
+      const textArea = document.createElement('textarea')
+      textArea.value = window.location.href
+      document.body.appendChild(textArea)
+      textArea.select()
+      document.execCommand('copy')
+      document.body.removeChild(textArea)
       toast.success('Link copied to clipboard')
     }
   }
 
-  const toggleBookmark = () => {
-    setIsBookmarked(!isBookmarked)
-    toast.success(isBookmarked ? 'Bookmark removed' : 'Note bookmarked')
+  const toggleBookmark = async () => {
+    if (!note) return
+    
+    try {
+      await updateNote.mutateAsync({
+        id: noteId,
+        data: { starred: !isBookmarked }
+      })
+      setIsBookmarked(!isBookmarked)
+      toast.success(isBookmarked ? 'Bookmark removed' : 'Note bookmarked')
+    } catch (error) {
+      toast.error('Failed to update bookmark')
+    }
+  }
+
+  const handleGenerateSummary = async () => {
+    if (!note) return
+    
+    try {
+      await generateSummary.mutateAsync({
+        noteId,
+        type: 'automatic',
+        content: note.content
+      })
+      toast.success('Summary generated successfully')
+    } catch (error) {
+      toast.error('Failed to generate summary')
+    }
   }
 
   if (isLoading) {
@@ -137,12 +185,13 @@ export default function NoteDetailPage() {
                 variant="ghost" 
                 size="icon"
                 onClick={toggleBookmark}
+                disabled={updateNote.isPending}
                 className={cn(
                   "hover:bg-primary/10",
                   isBookmarked && "text-yellow-500"
                 )}
               >
-                <BookmarkIcon className="h-4 w-4" />
+                <BookmarkIcon className={cn("h-4 w-4", isBookmarked && "fill-current")} />
               </Button>
               <Button variant="ghost" size="icon" onClick={handleShare}>
                 <ShareIcon className="h-4 w-4" />
@@ -150,14 +199,35 @@ export default function NoteDetailPage() {
               <Button variant="ghost" size="icon" onClick={handleEdit}>
                 <PencilIcon className="h-4 w-4" />
               </Button>
-              <Button 
-                variant="ghost" 
-                size="icon" 
-                onClick={handleDelete}
-                className="text-destructive hover:bg-destructive/10"
-              >
-                <TrashIcon className="h-4 w-4" />
-              </Button>
+              <AlertDialog>
+                <AlertDialogTrigger asChild>
+                  <Button 
+                    variant="ghost" 
+                    size="icon" 
+                    className="text-destructive hover:bg-destructive/10"
+                    disabled={deleteNote.isPending}
+                  >
+                    <TrashIcon className="h-4 w-4" />
+                  </Button>
+                </AlertDialogTrigger>
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>Delete Note</AlertDialogTitle>
+                    <AlertDialogDescription>
+                      Are you sure you want to delete "{note?.title}"? This action cannot be undone.
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel>Cancel</AlertDialogCancel>
+                    <AlertDialogAction
+                      onClick={handleDelete}
+                      className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                    >
+                      Delete
+                    </AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
             </div>
           </div>
 
@@ -258,22 +328,35 @@ export default function NoteDetailPage() {
                     variant="outline" 
                     size="sm" 
                     className="w-full justify-start"
+                    onClick={handleGenerateSummary}
+                    disabled={generateSummary.isPending}
                   >
                     <SparklesIcon className="h-4 w-4 mr-2" />
-                    Generate Summary
+                    {generateSummary.isPending ? 'Generating...' : 'Generate Summary'}
                   </Button>
+                  
+                  {summary && (
+                    <div className="p-3 bg-muted/50 rounded-lg">
+                      <p className="text-sm font-medium mb-1">Summary:</p>
+                      <p className="text-sm text-muted-foreground">{summary.content}</p>
+                    </div>
+                  )}
+                  
                   <Button 
                     variant="outline" 
                     size="sm" 
                     className="w-full justify-start"
+                    onClick={() => router.push(`/relations?noteId=${noteId}`)}
                   >
                     <SparklesIcon className="h-4 w-4 mr-2" />
-                    Find Relations
+                    View Relations ({relatedNotes.length})
                   </Button>
+                  
                   <Button 
                     variant="outline" 
                     size="sm" 
                     className="w-full justify-start"
+                    onClick={() => toast.info('Auto-tagging coming soon!')}
                   >
                     <SparklesIcon className="h-4 w-4 mr-2" />
                     Suggest Tags
@@ -281,6 +364,50 @@ export default function NoteDetailPage() {
                 </div>
               </CardContent>
             </Card>
+
+            {/* Related Notes */}
+            {relatedNotes.length > 0 && (
+              <Card className="superhuman-glass">
+                <CardHeader>
+                  <CardTitle className="text-sm flex items-center gap-2">
+                    <DocumentTextIcon className="h-4 w-4" />
+                    Related Notes
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-2">
+                    {relatedNotes.slice(0, 3).map((relatedNote) => (
+                      <Button
+                        key={relatedNote.id}
+                        variant="ghost"
+                        size="sm"
+                        className="w-full justify-start h-auto p-2"
+                        onClick={() => router.push(`/notes/${relatedNote.id}`)}
+                      >
+                        <div className="text-left">
+                          <div className="font-medium text-sm truncate">
+                            {relatedNote.title}
+                          </div>
+                          <div className="text-xs text-muted-foreground">
+                            Similarity: {Math.round((relatedNote.similarity || 0) * 100)}%
+                          </div>
+                        </div>
+                      </Button>
+                    ))}
+                    {relatedNotes.length > 3 && (
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="w-full"
+                        onClick={() => router.push(`/relations?noteId=${noteId}`)}
+                      >
+                        View all {relatedNotes.length} related notes
+                      </Button>
+                    )}
+                  </div>
+                </CardContent>
+              </Card>
+            )}
           </div>
         </div>
       </div>
