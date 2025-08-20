@@ -16,7 +16,7 @@ export function AppLayout({ children }: AppLayoutProps) {
   const [isScrolled, setIsScrolled] = useState(false)
   const { user } = useAuth()
 
-  // Responsive sidebar management
+  // Responsive sidebar management with improved UX
   const handleResize = useCallback(() => {
     const mobile = window.innerWidth < 1024
     setIsMobile(mobile)
@@ -44,14 +44,18 @@ export function AppLayout({ children }: AppLayoutProps) {
     }
   }, [handleResize])
 
-  // Scroll detection for enhanced UI effects
+  // Enhanced scroll detection for modern visual feedback
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 20)
     }
 
-    window.addEventListener('scroll', handleScroll, { passive: true })
-    return () => window.removeEventListener('scroll', handleScroll)
+    const throttledScroll = () => {
+      requestAnimationFrame(handleScroll)
+    }
+
+    window.addEventListener('scroll', throttledScroll, { passive: true })
+    return () => window.removeEventListener('scroll', throttledScroll)
   }, [])
 
   // Close sidebar on mobile when clicking outside
@@ -70,7 +74,7 @@ export function AppLayout({ children }: AppLayoutProps) {
     return () => document.removeEventListener('mousedown', handleClickOutside)
   }, [isMobile, sidebarOpen])
 
-  // Superhuman keyboard shortcuts
+  // Modern keyboard shortcuts
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
       // Toggle sidebar with Ctrl/Cmd + \
@@ -93,22 +97,22 @@ export function AppLayout({ children }: AppLayoutProps) {
     setSidebarOpen(prev => !prev)
   }, [])
 
-  // Auth layout for login/register
+  // Auth layout for login/register with modern design
   if (!user) {
     return (
-      <div className="min-h-screen bg-background relative overflow-hidden">
-        {/* Enhanced superhuman auth background */}
-        <div className="absolute inset-0 bg-gradient-to-br from-background via-background/95 to-primary/5" />
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--primary)_0%,_transparent_70%)] opacity-10" />
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_right,_var(--accent)_0%,_transparent_70%)] opacity-10" />
+      <div className="min-h-screen bg-bg relative overflow-hidden">
+        {/* Enhanced modern auth background */}
+        <div className="absolute inset-0 bg-gradient-to-br from-bg via-bg-elevated to-brand-50" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--color-brand-100)_0%,_transparent_70%)] opacity-30" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_right,_var(--color-brand-200)_0%,_transparent_70%)] opacity-20" />
         
         {/* Modern geometric patterns */}
         <div className="absolute inset-0 bg-grid-white/[0.02] bg-[size:50px_50px]" />
-        <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-bg via-transparent to-transparent" />
         
-        {/* Floating geometric shapes for modern feel */}
-        <div className="absolute top-1/4 left-1/4 w-64 h-64 bg-primary/5 rounded-full blur-3xl animate-pulse" />
-        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-accent/5 rounded-full blur-3xl animate-pulse delay-700" />
+        {/* Floating geometric shapes for modern appeal */}
+        <div className="absolute top-1/4 left-1/4 w-64 h-64 bg-brand-100/30 rounded-full blur-3xl animate-pulse" />
+        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-brand-200/20 rounded-full blur-3xl animate-pulse delay-700" />
         
         <div className="relative z-10">
           {children}
@@ -120,28 +124,28 @@ export function AppLayout({ children }: AppLayoutProps) {
   return (
     <div 
       className={cn(
-        "h-screen flex bg-background relative overflow-hidden",
-        "superhuman-transition"
+        "h-screen flex bg-bg relative overflow-hidden",
+        "transition-modern"
       )} 
       role="application" 
       aria-label="AI Notes Application"
     >
-      {/* Enhanced superhuman background layers */}
-      <div className="absolute inset-0 bg-gradient-to-br from-background via-background/98 to-primary/3" />
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_left,_var(--primary)_0%,_transparent_50%)] opacity-10" />
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_right,_var(--accent)_0%,_transparent_50%)] opacity-8" />
+      {/* Enhanced modern background layers */}
+      <div className="absolute inset-0 bg-gradient-to-br from-bg via-bg-elevated to-bg" />
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_left,_var(--color-brand-50)_0%,_transparent_50%)] opacity-50" />
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_right,_var(--color-brand-100)_0%,_transparent_50%)] opacity-30" />
       
       {/* Modern grid pattern */}
       <div className="absolute inset-0 bg-grid-white/[0.01] bg-[size:60px_60px]" />
       
-      {/* Subtle animated elements */}
-      <div className="absolute top-1/3 right-1/3 w-48 h-48 bg-primary/3 rounded-full blur-3xl animate-pulse opacity-50" />
-      <div className="absolute bottom-1/3 left-1/3 w-64 h-64 bg-accent/3 rounded-full blur-3xl animate-pulse delay-1000 opacity-50" />
+      {/* Subtle animated elements for visual interest */}
+      <div className="absolute top-1/3 right-1/3 w-48 h-48 bg-brand-50/50 rounded-full blur-3xl animate-pulse opacity-50" />
+      <div className="absolute bottom-1/3 left-1/3 w-64 h-64 bg-brand-100/30 rounded-full blur-3xl animate-pulse delay-1000 opacity-50" />
 
-      {/* Mobile overlay */}
+      {/* Mobile overlay with improved backdrop */}
       {isMobile && sidebarOpen && (
         <div
-          className="fixed inset-0 z-40 bg-background/80 backdrop-blur-xl lg:hidden animate-superhuman-fade-in"
+          className="fixed inset-0 z-40 bg-bg-overlay backdrop-blur-xl lg:hidden animate-fade-in"
           onClick={() => setSidebarOpen(false)}
           aria-hidden="true"
         />
@@ -151,7 +155,7 @@ export function AppLayout({ children }: AppLayoutProps) {
       <aside
         id="app-sidebar"
         className={cn(
-          "relative z-50 flex-shrink-0 superhuman-transition",
+          "relative z-50 flex-shrink-0 transition-modern",
           // Desktop behavior
           "lg:translate-x-0",
           sidebarOpen && !isMobile ? "lg:w-72" : "lg:w-16",
@@ -159,7 +163,7 @@ export function AppLayout({ children }: AppLayoutProps) {
           "fixed lg:relative inset-y-0 left-0",
           isMobile && sidebarOpen ? "w-72 translate-x-0" : isMobile ? "w-72 -translate-x-full" : "",
           // Enhanced shadows
-          "shadow-2xl lg:shadow-lg"
+          "shadow-4 lg:shadow-2"
         )}
         role="navigation"
         aria-label="Main navigation"
@@ -182,41 +186,40 @@ export function AppLayout({ children }: AppLayoutProps) {
           isMobile={isMobile}
         />
 
-        {/* Main Content */}
+        {/* Main Content with enhanced styling */}
         <main
           id="main-content"
           className={cn(
             "flex-1 overflow-auto focus:outline-none relative",
-            "bg-background/30 backdrop-blur-sm",
-            "safe-area-inset safe-area-inset-bottom",
-            isScrolled ? "group-data-[scrolled]" : ""
+            "bg-bg-muted/20",
+            "safe-area-inset safe-area-inset-bottom"
           )}
           role="main"
           aria-label="Main content"
           tabIndex={-1}
         >
-          {/* Content container */}
+          {/* Content container with responsive padding */}
           <div className={cn(
             "w-full mx-auto min-h-full",
             "px-4 xs:px-3 sm:px-6 lg:px-8",
             "py-6 xs:py-4 sm:py-8",
             "max-w-7xl"
           )}>
-            <div className="w-full h-full animate-superhuman-fade-in">
+            <div className="w-full h-full animate-fade-in">
               {children}
             </div>
           </div>
 
-          {/* Superhuman scroll to top button */}
+          {/* Modern scroll to top button */}
           <button
             className={cn(
               "fixed bottom-6 right-6 z-30",
-              "w-12 h-12 rounded-full",
-              "bg-background/80 border border-border/30 backdrop-blur-xl",
+              "w-12 h-12 rounded-2xl",
+              "glass border border-border-subtle",
               "flex items-center justify-center",
-              "text-muted-foreground hover:text-primary",
-              "shadow-lg hover:shadow-xl superhuman-hover superhuman-glow",
-              "superhuman-transition",
+              "text-text-muted hover:text-brand-600",
+              "shadow-3 hover:shadow-4 hover-lift",
+              "transition-modern",
               "opacity-0 pointer-events-none scale-90",
               isScrolled && "opacity-100 pointer-events-auto scale-100"
             )}
@@ -239,6 +242,39 @@ export function AppLayout({ children }: AppLayoutProps) {
                 strokeLinejoin="round"
                 strokeWidth={2}
                 d="M5 10l7-7m0 0l7 7m-7-7v18"
+              />
+            </svg>
+          </button>
+
+          {/* Floating action button for quick note creation */}
+          <button
+            className={cn(
+              "fixed bottom-20 right-6 z-30",
+              "w-14 h-14 rounded-2xl",
+              "bg-gradient-to-r from-brand-500 to-brand-600 text-white",
+              "flex items-center justify-center",
+              "shadow-3 hover:shadow-4 hover-lift",
+              "transition-modern border border-brand-400/20",
+              "opacity-0 pointer-events-none scale-90",
+              !isMobile && "opacity-100 pointer-events-auto scale-100"
+            )}
+            onClick={() => {
+              // Navigate to new note creation
+              window.location.href = '/notes/create'
+            }}
+            aria-label="Create new note"
+          >
+            <svg
+              className="w-6 h-6"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M12 4v16m8-8H4"
               />
             </svg>
           </button>
