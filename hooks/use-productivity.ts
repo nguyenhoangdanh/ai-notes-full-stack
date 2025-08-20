@@ -22,7 +22,7 @@ export const useCreateTask = () => {
 export const useTasks = (status?: string, priority?: string) => {
   return useQuery({
     queryKey: queryKeys.productivity.getTasks(status, priority),
-    queryFn: () => productivityService.getTasks(status, priority),
+    queryFn: () => productivityService.getTasks({ status, priority }),
   });
 };
 
@@ -43,7 +43,7 @@ export const useOverdueTasks = () => {
 export const useTasksByDueDate = (startDate: string, endDate: string) => {
   return useQuery({
     queryKey: queryKeys.productivity.getTasksByDueDate(startDate, endDate),
-    queryFn: () => productivityService.getTasksByDueDate(startDate, endDate),
+    queryFn: () => productivityService.getTasksByDueDate(),
   });
 };
 
@@ -82,7 +82,7 @@ export const useStartPomodoroSession = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (noteId?: string) => productivityService.startPomodoroSession(noteId),
+    mutationFn: (data: { noteId?: string }) => productivityService.startPomodoroSession({ noteId: data.noteId, duration: 25, startedAt: new Date().toISOString() }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: queryKeys.productivity.pomodoro() });
     },
@@ -93,7 +93,7 @@ export const usePausePomodoroSession = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: () => productivityService.pausePomodoroSession(),
+    mutationFn: (data: any) => productivityService.pausePomodoroSession(data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: queryKeys.productivity.pomodoro() });
     },
@@ -104,7 +104,7 @@ export const useCompletePomodoroSession = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: () => productivityService.completePomodoroSession(),
+    mutationFn: (data: any) => productivityService.completePomodoroSession(data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: queryKeys.productivity.pomodoro() });
     },
@@ -129,7 +129,7 @@ export const usePomodoroStats = () => {
 export const usePomodoroHistory = (limit?: number) => {
   return useQuery({
     queryKey: queryKeys.productivity.getPomodoroHistory(limit),
-    queryFn: () => productivityService.getPomodoroHistory(limit),
+    queryFn: () => productivityService.getPomodoroHistory(),
   });
 };
 
@@ -148,7 +148,7 @@ export const useUpdatePomodoroSettings = () => {
 export const useCalendarEvents = (startDate?: string, endDate?: string) => {
   return useQuery({
     queryKey: queryKeys.productivity.getCalendarEvents(startDate, endDate),
-    queryFn: () => productivityService.getCalendarEvents(startDate, endDate),
+    queryFn: () => productivityService.getCalendarEvents(),
   });
 };
 
@@ -189,7 +189,7 @@ export const useDeleteCalendarEvent = () => {
 export const useUpcomingEvents = (days: number = 7) => {
   return useQuery({
     queryKey: queryKeys.productivity.getUpcomingEvents(days),
-    queryFn: () => productivityService.getUpcomingEvents(days),
+    queryFn: () => productivityService.getUpcomingEvents(),
   });
 };
 
@@ -220,7 +220,7 @@ export const useReviewNote = () => {
 
   return useMutation({
     mutationFn: ({ noteId, difficulty }: { noteId: string; difficulty: 'EASY' | 'MEDIUM' | 'HARD' }) => 
-      productivityService.reviewNote(noteId, difficulty),
+      productivityService.reviewNote({ noteId }, { difficulty }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: queryKeys.productivity.review() });
     },
@@ -238,8 +238,8 @@ export const useSetupSpacedRepetition = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: ({ noteId, settings }: { noteId: string; settings?: any }) => 
-      productivityService.setupSpacedRepetition(noteId, settings),
+    mutationFn: (data: any) => 
+      productivityService.setupSpacedRepetition(data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: queryKeys.productivity.review() });
     },
@@ -249,6 +249,6 @@ export const useSetupSpacedRepetition = () => {
 export const useReviewSchedule = (noteId: string) => {
   return useQuery({
     queryKey: queryKeys.productivity.getReviewSchedule(noteId),
-    queryFn: () => productivityService.getReviewSchedule(noteId),
+    queryFn: () => productivityService.getReviewSchedule({ noteId }),
   });
 };

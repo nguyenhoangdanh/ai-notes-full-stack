@@ -1,13 +1,13 @@
 import { apiClient } from '../lib/api-client';
 import {
-  Template,
+  AdvancedTemplate as Template,
   AdvancedCreateTemplateDto as CreateTemplateDto,
-  UpdateTemplateDto,
+  AdvancedUpdateTemplateDto as UpdateTemplateDto,
   ProcessTemplateDto,
   TemplateStats,
   TemplatePreview,
-  Attachment,
-  AttachmentAnalytics,
+  AdvancedAttachment as Attachment,
+  AdvancedAttachmentAnalytics as AttachmentAnalytics,
   OCRResult,
   AdvancedSearchDto,
   SearchResult,
@@ -15,13 +15,13 @@ import {
   SavedSearch,
   SearchAnalytics,
   QuickSearchDto,
-  AnalyticsOverview,
-  WorkspaceAnalytics,
-  ContentAnalytics,
+  AdvancedAnalyticsOverview as AnalyticsOverview,
+  AdvancedWorkspaceAnalytics as WorkspaceAnalytics,
+  AdvancedContentAnalytics as ContentAnalytics,
   TrackNoteViewDto,
   ExportJob,
   AdvancedCreateExportDto as CreateExportDto,
-  ExportStats
+  AdvancedExportStats as ExportStats
 } from '../types';
 
 // Templates Service

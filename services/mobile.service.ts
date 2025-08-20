@@ -1,20 +1,15 @@
 import { apiClient } from '../lib/api-client';
-import {
-  StartRecordingResponse,
-  StartRecordingRequest,
-  StopRecordingResponse,
-  StopRecordingRequest,
-  GetVoiceNotesResponse,
-  TranscribeVoiceNoteResponse,
-  TranscribeVoiceNoteRequest,
-  TranscribeVoiceNoteParams,
-  CreateLocationNoteResponse,
-  CreateLocationNoteRequest,
-  GetNearbyNotesResponse,
-  SyncOfflineDataResponse,
-  SyncOfflineDataRequest,
-  GetSyncStatusResponse
-} from '../types/mobile.types';
+import type {
+  VoiceNote,
+  CreateVoiceNoteDto,
+  LocationNote,
+  CreateLocationNoteDto,
+  SyncOperationDto,
+  ConflictResolutionDto,
+  OfflineSync,
+  ExportHistory,
+  AdvancedCreateExportDto as CreateExportDto,
+} from '../types';
 
 /**
  * Mobile Service
@@ -24,56 +19,56 @@ export const mobileService = {
   /**
    * POST /voice-notes/record
    */
-  async startRecording(data: StartRecordingRequest): Promise<StartRecordingResponse> {
-    return apiClient.post(`/voice-notes/record`, data);
+  async startRecording(data: any): Promise<any> {
+    return apiClient.post(`/voice-notes/record`, { body: data });
   },
 
   /**
    * POST /voice-notes/stop
    */
-  async stopRecording(data: StopRecordingRequest): Promise<StopRecordingResponse> {
-    return apiClient.post(`/voice-notes/stop`, data);
+  async stopRecording(data: any): Promise<any> {
+    return apiClient.post(`/voice-notes/stop`, { body: data });
   },
 
   /**
    * GET /voice-notes
    */
-  async getVoiceNotes(): Promise<GetVoiceNotesResponse> {
+  async getVoiceNotes(): Promise<VoiceNote[]> {
     return apiClient.get(`/voice-notes`);
   },
 
   /**
    * POST /voice-notes/:id/transcribe
    */
-  async transcribeVoiceNote(params: TranscribeVoiceNoteParams, data: TranscribeVoiceNoteRequest): Promise<TranscribeVoiceNoteResponse> {
-    return apiClient.post(`/voice-notes/${params.id}/transcribe`, data);
+  async transcribeVoiceNote(params: { id: string }, data: any): Promise<any> {
+    return apiClient.post(`/voice-notes/${params.id}/transcribe`, { body: data });
   },
 
   /**
    * POST /location-notes
    */
-  async createLocationNote(data: CreateLocationNoteRequest): Promise<CreateLocationNoteResponse> {
-    return apiClient.post(`/location-notes`, data);
+  async createLocationNote(data: CreateLocationNoteDto): Promise<LocationNote> {
+    return apiClient.post(`/location-notes`, { body: data });
   },
 
   /**
    * GET /location-notes/nearby
    */
-  async getNearbyNotes(): Promise<GetNearbyNotesResponse> {
+  async getNearbyNotes(): Promise<LocationNote[]> {
     return apiClient.get(`/location-notes/nearby`);
   },
 
   /**
    * POST /offline-sync/sync
    */
-  async syncOfflineData(data: SyncOfflineDataRequest): Promise<SyncOfflineDataResponse> {
-    return apiClient.post(`/offline-sync/sync`, data);
+  async syncOfflineData(data: SyncOperationDto): Promise<any> {
+    return apiClient.post(`/offline-sync/sync`, { body: data });
   },
 
   /**
    * GET /offline-sync/status
    */
-  async getSyncStatus(): Promise<GetSyncStatusResponse> {
+  async getSyncStatus(): Promise<any> {
     return apiClient.get(`/offline-sync/status`);
   },
 
@@ -90,7 +85,7 @@ export const mobileService = {
     Object.keys(data).forEach(key => {
       formData.append(key, data[key]);
     });
-    return apiClient.post(`/voice-notes`, formData);
+    return apiClient.post(`/voice-notes`, { body: formData });
   },
 
   /**

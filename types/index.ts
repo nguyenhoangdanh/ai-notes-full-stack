@@ -4,10 +4,10 @@ export * from './workspace.types'
 export * from './note.types'
 export * from './ai.types'
 
-// Export new module types
+// Export new module types - avoid conflicts
 export * from './activities.types'
 export * from './analytics.types'
-export * from './attachments.types'
+// export * from './attachments.types' - use specific exports to avoid conflicts
 export * from './export.types'
 export * from './notifications.types'
 export * from './reminders.types'
@@ -97,10 +97,10 @@ export type {
 
 // Export Advanced Features types
 export type {
-  // Templates
-  Template,
+  // Templates - use alias to avoid conflict with misc
+  Template as AdvancedTemplate,
   CreateTemplateDto as AdvancedCreateTemplateDto,
-  UpdateTemplateDto,
+  UpdateTemplateDto as AdvancedUpdateTemplateDto,
   ProcessTemplateDto,
   TemplateStats,
   TemplatePreview,
@@ -127,6 +127,14 @@ export type {
   ExportStats as AdvancedExportStats,
   ExportSettings
 } from './advanced.types'
+
+// Export specific attachments types to avoid conflicts
+export type {
+  Attachment,
+  AttachmentAnalytics,
+  CreateAttachmentDto,
+  UpdateAttachmentDto
+} from './attachments.types'
 
 // Export Enhanced Productivity types
 export type { 
@@ -182,7 +190,7 @@ export type {
   Notification,
   Reminder as MiscReminder,
   CreateReminderDto as MiscCreateReminderDto,
-  Template,
+  Template as MiscTemplate,
   CreateTemplateDto as MiscCreateTemplateDto,
   UpdateTemplateDto as MiscUpdateTemplateDto,
   Tag as MiscTag
