@@ -130,20 +130,30 @@ export type {
 
 // Export Enhanced Productivity types
 export type { 
-  // Tasks, Pomodoro, Calendar, Review
-  Task,
-  CreateTaskDto,
-  UpdateTaskDto,
+  // Tasks - with alias to avoid conflicts
+  Task as ProductivityTask,
+  CreateTaskDto as ProductivityCreateTaskDto,
+  UpdateTaskDto as ProductivityUpdateTaskDto,
   TaskStats,
+  // Pomodoro
   PomodoroSession,
+  CreatePomodoroSessionDto,
+  UpdatePomodoroSessionDto,
   PomodoroStats,
   PomodoroSettings,
+  // Calendar - with alias to avoid conflicts
   CalendarEvent,
-  CreateCalendarEventDto,
-  UpdateCalendarEventDto,
+  CreateCalendarEventDto as ProductivityCreateCalendarEventDto,
+  UpdateCalendarEventDto as ProductivityUpdateCalendarEventDto,
+  // Review
   ReviewItem,
   ReviewStats,
-  SpacedRepetitionSettings
+  SpacedRepetitionSettings,
+  // Reminders
+  Reminder,
+  CreateReminderDto,
+  UpdateReminderDto,
+  ReminderStats
 } from './productivity.types'
 
 // Export specific items from mobile to avoid conflicts  
@@ -167,5 +177,13 @@ export type {
   CreateSavedSearchDto,
   SearchHistory,
   Analytics,
-  Activity as MiscActivity
+  Activity as MiscActivity,
+  // Add missing types that are referenced in hooks
+  Notification,
+  Reminder as MiscReminder,
+  CreateReminderDto as MiscCreateReminderDto,
+  Template,
+  CreateTemplateDto as MiscCreateTemplateDto,
+  UpdateTemplateDto as MiscUpdateTemplateDto,
+  Tag as MiscTag
 } from './misc.types'

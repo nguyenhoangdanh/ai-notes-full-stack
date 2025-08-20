@@ -1,7 +1,6 @@
 import { apiClient } from '../lib/api-client'
 import type {
   Notification,
-  CreateNotificationDto,
   Reminder,
   CreateReminderDto,
   SearchHistory,

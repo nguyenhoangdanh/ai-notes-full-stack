@@ -118,6 +118,7 @@ export const queryKeys = {
     all: () => ['productivity'] as const,
     // Tasks
     tasks: () => ['productivity', 'tasks'] as const,
+    task: (taskId: string) => ['productivity', 'task', taskId] as const,
     getTasks: (status?: string, priority?: string) => 
       ['productivity', 'tasks', { status, priority }] as const,
     getTaskStats: () => ['productivity', 'tasks', 'stats'] as const,
@@ -126,12 +127,14 @@ export const queryKeys = {
       ['productivity', 'tasks', 'due', { start, end }] as const,
     // Pomodoro
     pomodoro: () => ['productivity', 'pomodoro'] as const,
+    pomodoroSessions: () => ['productivity', 'pomodoro', 'sessions'] as const,
     getActivePomodoroSession: () => ['productivity', 'pomodoro', 'active'] as const,
     getPomodoroStats: () => ['productivity', 'pomodoro', 'stats'] as const,
     getPomodoroHistory: (limit?: number) => 
       ['productivity', 'pomodoro', 'history', { limit }] as const,
     // Calendar
     calendar: () => ['productivity', 'calendar'] as const,
+    calendarEvents: () => ['productivity', 'calendar', 'events'] as const,
     getCalendarEvents: (start?: string, end?: string) => 
       ['productivity', 'calendar', 'events', { start, end }] as const,
     getUpcomingEvents: (days?: number) => 
@@ -150,6 +153,9 @@ export const queryKeys = {
   mobile: {
     all: () => ['mobile'] as const,
     voiceNotes: () => ['mobile', 'voice-notes'] as const,
+    getVoiceNotes: () => ['mobile', 'voice-notes', 'list'] as const,
+    getNearbyNotes: () => ['mobile', 'nearby-notes'] as const,
+    getSyncStatus: () => ['mobile', 'sync-status'] as const,
     offlineSync: () => ['mobile', 'offline-sync'] as const,
     location: (noteId: string) => ['mobile', 'location', noteId] as const,
     exports: () => ['mobile', 'exports'] as const,

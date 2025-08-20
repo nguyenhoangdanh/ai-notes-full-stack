@@ -57,11 +57,21 @@ export const productivityService = {
     return apiClient.post(`/tasks`, data);
   },
 
+  // Alias for create - used by hooks
+  async createTask(data: CreateRequest): Promise<CreateResponse> {
+    return this.create(data);
+  },
+
   /**
    * GET /tasks
    */
   async findAll(): Promise<FindAllResponse> {
     return apiClient.get(`/tasks`);
+  },
+
+  // Alias for findAll - used by hooks
+  async getTasks(filters?: any): Promise<FindAllResponse> {
+    return this.findAll();
   },
 
   /**
@@ -92,11 +102,31 @@ export const productivityService = {
     return apiClient.get(`/tasks/${params.id}`);
   },
 
+  // Alias for findOne - used by hooks
+  async getTask(taskId: string): Promise<FindOneResponse> {
+    return this.findOne({ id: taskId });
+  },
+
   /**
    * PATCH /tasks/:id
    */
   async update(params: UpdateParams, data: UpdateRequest): Promise<UpdateResponse> {
     return apiClient.patch(`/tasks/${params.id}`, data);
+  },
+
+  // Alias for update - used by hooks
+  async updateTask(taskId: string, data: UpdateRequest): Promise<UpdateResponse> {
+    return this.update({ id: taskId }, data);
+  },
+
+  // Alias for getStats - used by hooks
+  async getTaskStats(): Promise<GetStatsResponse> {
+    return this.getStats();
+  },
+
+  // Alias for getOverdue - used by hooks
+  async getOverdueTasks(): Promise<GetOverdueResponse> {
+    return this.getOverdue();
   },
 
   /**
@@ -106,11 +136,26 @@ export const productivityService = {
     return apiClient.delete(`/tasks/${params.id}`);
   },
 
+  // Alias for remove - used by hooks
+  async deleteTask(taskId: string): Promise<RemoveResponse> {
+    return this.remove({ id: taskId });
+  },
+
   /**
    * POST /pomodoro/start
    */
   async startSession(data: StartSessionRequest): Promise<StartSessionResponse> {
     return apiClient.post(`/pomodoro/start`, data);
+  },
+
+  // Alias for startSession - used by hooks
+  async createPomodoroSession(data: StartSessionRequest): Promise<StartSessionResponse> {
+    return this.startSession(data);
+  },
+
+  // Alias for startSession - used by hooks
+  async startPomodoroSession(data: StartSessionRequest): Promise<StartSessionResponse> {
+    return this.startSession(data);
   },
 
   /**
@@ -120,11 +165,26 @@ export const productivityService = {
     return apiClient.post(`/pomodoro/pause`, data);
   },
 
+  // Alias for pauseSession - used by hooks
+  async pausePomodoroSession(data: PauseSessionRequest): Promise<PauseSessionResponse> {
+    return this.pauseSession(data);
+  },
+
   /**
    * POST /pomodoro/complete
    */
   async completeSession(data: CompleteSessionRequest): Promise<CompleteSessionResponse> {
     return apiClient.post(`/pomodoro/complete`, data);
+  },
+
+  // Alias for completeSession - used by hooks
+  async completePomodoroSession(data: CompleteSessionRequest): Promise<CompleteSessionResponse> {
+    return this.completeSession(data);
+  },
+
+  // Alias for completeSession - used by hooks
+  async updatePomodoroSession(sessionId: string, data: CompleteSessionRequest): Promise<CompleteSessionResponse> {
+    return this.completeSession(data);
   },
 
   /**
@@ -134,10 +194,20 @@ export const productivityService = {
     return apiClient.get(`/pomodoro/active`);
   },
 
+  // Alias for getActiveSession - used by hooks
+  async getActivePomodoroSession(): Promise<GetActiveSessionResponse> {
+    return this.getActiveSession();
+  },
+
   /**
    * GET /pomodoro/stats
    */
   async getStats(): Promise<GetStatsResponse> {
+    return apiClient.get(`/pomodoro/stats`);
+  },
+
+  // Alias for getStats - used by hooks (pomodoro stats)
+  async getPomodoroStats(): Promise<GetStatsResponse> {
     return apiClient.get(`/pomodoro/stats`);
   },
 
@@ -148,11 +218,21 @@ export const productivityService = {
     return apiClient.get(`/pomodoro/history`);
   },
 
+  // Alias for getHistory - used by hooks
+  async getPomodoroHistory(): Promise<GetHistoryResponse> {
+    return this.getHistory();
+  },
+
   /**
    * POST /pomodoro/settings
    */
   async updateSettings(data: UpdateSettingsRequest): Promise<UpdateSettingsResponse> {
     return apiClient.post(`/pomodoro/settings`, data);
+  },
+
+  // Alias for updateSettings - used by hooks
+  async updatePomodoroSettings(data: UpdateSettingsRequest): Promise<UpdateSettingsResponse> {
+    return this.updateSettings(data);
   },
 
   /**
@@ -162,11 +242,21 @@ export const productivityService = {
     return apiClient.get(`/calendar/events`);
   },
 
+  // Alias for getEvents - used by hooks
+  async getCalendarEvents(): Promise<GetEventsResponse> {
+    return this.getEvents();
+  },
+
   /**
    * POST /calendar/events
    */
   async createEvent(data: CreateEventRequest): Promise<CreateEventResponse> {
     return apiClient.post(`/calendar/events`, data);
+  },
+
+  // Alias for createEvent - used by hooks
+  async createCalendarEvent(data: CreateEventRequest): Promise<CreateEventResponse> {
+    return this.createEvent(data);
   },
 
   /**
@@ -176,11 +266,21 @@ export const productivityService = {
     return apiClient.patch(`/calendar/events/${params.id}`, data);
   },
 
+  // Alias for updateEvent - used by hooks
+  async updateCalendarEvent(eventId: string, data: UpdateEventRequest): Promise<UpdateEventResponse> {
+    return this.updateEvent({ id: eventId }, data);
+  },
+
   /**
    * DELETE /calendar/events/:id
    */
   async deleteEvent(params: DeleteEventParams): Promise<DeleteEventResponse> {
     return apiClient.delete(`/calendar/events/${params.id}`);
+  },
+
+  // Alias for deleteEvent - used by hooks
+  async deleteCalendarEvent(eventId: string): Promise<DeleteEventResponse> {
+    return this.deleteEvent({ id: eventId });
   },
 
   /**
