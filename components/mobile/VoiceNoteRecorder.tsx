@@ -1,83 +1,115 @@
-import React, { useState, useRef, useEffect } from 'react'
+'use client'
+
+import React, { useState, useEffect, useRef, useCallback } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Button } from '../ui/button'
 import { Card } from '../ui/card'
 import { Badge } from '../ui/badge'
-import { Progress } from '../ui/progress'
 import { 
-  ArrowLeft, 
   Mic, 
   Square, 
   Play, 
   Pause, 
   Trash, 
-  FileText, 
+  Save, 
+  ArrowLeft,
+  Volume2,
+  FileAudio,
+  Clock,
+  Waveform,
+  Settings,
   Download,
-  Check,
-  Activity
+  Share,
+  X,
+  RotateCcw,
+  PenTool,
+  Sparkles
 } from 'lucide-react'
-import { useOfflineNotes } from '../../contexts/OfflineNotesContext'
-import { offlineStorage, VoiceRecording } from '../../lib/offline-storage'
-import { useAuthProfile as useProfile } from '../../hooks'
-import { v4 as uuidv4 } from 'uuid'
+import { cn } from '../../lib/utils'
 import { toast } from 'sonner'
 
 interface VoiceNoteRecorderProps {
   onBack: () => void
+  onSave?: (audioBlob: Blob, transcript?: string) => void
+  className?: string
 }
 
-export function VoiceNoteRecorder({ onBack }: VoiceNoteRecorderProps) {
-  const { createNote } = useOfflineNotes()
-  const { data: user } = useProfile()
-  
-  const [isRecording, setIsRecording] = useState(false)
-  const [isPaused, setIsPaused] = useState(false)
-  const [recordingTime, setRecordingTime] = useState(0)
-  const [audioLevel, setAudioLevel] = useState(0)
-  const [recordings, setRecordings] = useState<VoiceRecording[]>([])
-  const [selectedRecording, setSelectedRecording] = useState<VoiceRecording | null>(null)
-  const [isPlaying, setIsPlaying] = useState(false)
-  const [playbackTime, setPlaybackTime] = useState(0)
+type RecordingState = 'idle' | 'recording' | 'paused' | 'stopped'
+
+export function VoiceNoteRecorder({ onBack, onSave, className }: VoiceNoteRecorderProps) {
+  const [recordingState, setRecordingState] = useState<RecordingState>('idle')
+  const [duration, setDuration] = useState(0)
+  const [audioBlob, setAudioBlob] = useState<Blob | null>(null)
+  const [audioUrl, setAudioUrl] = useState<string | null>(null)
+  const [transcript, setTranscript] = useState<string>('')
   const [isTranscribing, setIsTranscribing] = useState(false)
+  const [permission, setPermission] = useState<'granted' | 'denied' | 'prompt'>('prompt')
+  const [volumeLevel, setVolumeLevel] = useState(0)
+  const [showSettings, setShowSettings] = useState(false)
 
   const mediaRecorderRef = useRef<MediaRecorder | null>(null)
-  const audioStreamRef = useRef<MediaStream | null>(null)
-  const audioContextRef = useRef<AudioContext | null>(null)
+  const streamRef = useRef<MediaStream | null>(null)
+  const timerRef = useRef<NodeJS.Timeout | null>(null)
   const analyserRef = useRef<AnalyserNode | null>(null)
-  const audioChunksRef = useRef<Blob[]>([])
-  const recordingIntervalRef = useRef<NodeJS.Timeout | null>(null)
-  const audioLevelIntervalRef = useRef<NodeJS.Timeout | null>(null)
-  const audioElementRef = useRef<HTMLAudioElement | null>(null)
+  const audioContextRef = useRef<AudioContext | null>(null)
+  const animationFrameRef = useRef<number | null>(null)
 
-  // Load existing recordings
+  // Audio visualization data
+  const [audioData, setAudioData] = useState<number[]>(new Array(32).fill(0))
+
+  // Check microphone permission
   useEffect(() => {
-    loadRecordings()
+    navigator.permissions?.query({ name: 'microphone' as PermissionName })
+      .then(permissionStatus => {
+        setPermission(permissionStatus.state as 'granted' | 'denied' | 'prompt')
+        
+        permissionStatus.onchange = () => {
+          setPermission(permissionStatus.state as 'granted' | 'denied' | 'prompt')
+        }
+      })
+      .catch(() => {
+        setPermission('prompt')
+      })
   }, [])
 
-  // Cleanup on unmount
+  // Timer for recording duration
   useEffect(() => {
+    if (recordingState === 'recording') {
+      timerRef.current = setInterval(() => {
+        setDuration(prev => prev + 1)
+      }, 1000)
+    } else {
+      if (timerRef.current) {
+        clearInterval(timerRef.current)
+      }
+    }
+
     return () => {
-      stopRecording()
-      if (audioStreamRef.current) {
-        audioStreamRef.current.getTracks().forEach(track => track.stop())
-      }
-      if (audioContextRef.current) {
-        audioContextRef.current.close()
+      if (timerRef.current) {
+        clearInterval(timerRef.current)
       }
     }
+  }, [recordingState])
+
+  // Audio visualization
+  const updateVolumeLevel = useCallback(() => {
+    if (!analyserRef.current) return
+
+    const dataArray = new Uint8Array(analyserRef.current.frequencyBinCount)
+    analyserRef.current.getByteFrequencyData(dataArray)
+    
+    // Calculate average volume
+    const average = dataArray.reduce((sum, value) => sum + value, 0) / dataArray.length
+    setVolumeLevel(average / 255)
+
+    // Update visualization data
+    const newAudioData = Array.from(dataArray.slice(0, 32)).map(value => value / 255)
+    setAudioData(newAudioData)
+
+    animationFrameRef.current = requestAnimationFrame(updateVolumeLevel)
   }, [])
 
-  const loadRecordings = async () => {
-    try {
-      const voiceRecordings = await offlineStorage.getVoiceRecordings()
-      setRecordings(voiceRecordings.sort((a, b) => 
-        new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-      ))
-    } catch (error) {
-      console.error('Failed to load recordings:', error)
-    }
-  }
-
+  // Start recording
   const startRecording = async () => {
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ 
@@ -88,403 +120,450 @@ export function VoiceNoteRecorder({ onBack }: VoiceNoteRecorderProps) {
         }
       })
       
-      audioStreamRef.current = stream
+      streamRef.current = stream
+
+      // Set up audio context for visualization
+      const audioContext = new AudioContext()
+      const source = audioContext.createMediaStreamSource(stream)
+      const analyser = audioContext.createAnalyser()
       
-      // Setup audio context for level monitoring
-      audioContextRef.current = new AudioContext()
-      analyserRef.current = audioContextRef.current.createAnalyser()
-      const source = audioContextRef.current.createMediaStreamSource(stream)
-      source.connect(analyserRef.current)
+      analyser.fftSize = 256
+      source.connect(analyser)
       
-      // Setup media recorder
-      mediaRecorderRef.current = new MediaRecorder(stream, {
-        mimeType: 'audio/webm;codecs=opus'
+      audioContextRef.current = audioContext
+      analyserRef.current = analyser
+      
+      updateVolumeLevel()
+
+      const mediaRecorder = new MediaRecorder(stream, {
+        mimeType: 'audio/webm'
       })
       
-      audioChunksRef.current = []
+      const chunks: Blob[] = []
       
-      mediaRecorderRef.current.ondataavailable = (event) => {
+      mediaRecorder.ondataavailable = (event) => {
         if (event.data.size > 0) {
-          audioChunksRef.current.push(event.data)
+          chunks.push(event.data)
         }
       }
       
-      mediaRecorderRef.current.onstop = async () => {
-        const audioBlob = new Blob(audioChunksRef.current, { type: 'audio/webm;codecs=opus' })
-        await saveRecording(audioBlob)
+      mediaRecorder.onstop = () => {
+        const blob = new Blob(chunks, { type: 'audio/webm' })
+        setAudioBlob(blob)
+        setAudioUrl(URL.createObjectURL(blob))
+        
+        // Clean up
+        stream.getTracks().forEach(track => track.stop())
+        if (audioContextRef.current) {
+          audioContextRef.current.close()
+        }
+        if (animationFrameRef.current) {
+          cancelAnimationFrame(animationFrameRef.current)
+        }
       }
       
-      mediaRecorderRef.current.start()
-      setIsRecording(true)
-      setRecordingTime(0)
-      
-      // Start time tracking
-      recordingIntervalRef.current = setInterval(() => {
-        setRecordingTime(prev => prev + 1)
-      }, 1000)
-      
-      // Start audio level monitoring
-      startAudioLevelMonitoring()
+      mediaRecorderRef.current = mediaRecorder
+      mediaRecorder.start()
+      setRecordingState('recording')
+      setDuration(0)
       
       toast.success('Recording started')
     } catch (error) {
-      console.error('Failed to start recording:', error)
-      toast.error('Microphone access denied')
+      console.error('Error starting recording:', error)
+      toast.error('Failed to start recording. Please check microphone permissions.')
+      setPermission('denied')
     }
   }
 
+  // Stop recording
   const stopRecording = () => {
-    if (mediaRecorderRef.current && isRecording) {
+    if (mediaRecorderRef.current && mediaRecorderRef.current.state !== 'inactive') {
       mediaRecorderRef.current.stop()
-      setIsRecording(false)
-      setIsPaused(false)
-      
-      if (recordingIntervalRef.current) {
-        clearInterval(recordingIntervalRef.current)
-      }
-      
-      if (audioLevelIntervalRef.current) {
-        clearInterval(audioLevelIntervalRef.current)
-      }
-      
-      if (audioStreamRef.current) {
-        audioStreamRef.current.getTracks().forEach(track => track.stop())
-      }
-      
-      setAudioLevel(0)
-      toast.success('Recording saved')
+      setRecordingState('stopped')
+      toast.success('Recording stopped')
     }
   }
 
+  // Pause recording
   const pauseRecording = () => {
-    if (mediaRecorderRef.current && isRecording) {
-      if (isPaused) {
-        mediaRecorderRef.current.resume()
-        setIsPaused(false)
-        
-        recordingIntervalRef.current = setInterval(() => {
-          setRecordingTime(prev => prev + 1)
-        }, 1000)
-      } else {
-        mediaRecorderRef.current.pause()
-        setIsPaused(true)
-        
-        if (recordingIntervalRef.current) {
-          clearInterval(recordingIntervalRef.current)
-        }
-      }
+    if (mediaRecorderRef.current && mediaRecorderRef.current.state === 'recording') {
+      mediaRecorderRef.current.pause()
+      setRecordingState('paused')
     }
   }
 
-  const startAudioLevelMonitoring = () => {
-    if (!analyserRef.current) return
-    
-    const dataArray = new Uint8Array(analyserRef.current.frequencyBinCount)
-    
-    audioLevelIntervalRef.current = setInterval(() => {
-      if (analyserRef.current) {
-        analyserRef.current.getByteFrequencyData(dataArray)
-        const average = dataArray.reduce((a, b) => a + b) / dataArray.length
-        setAudioLevel(Math.min(100, (average / 255) * 100))
-      }
-    }, 100)
-  }
-
-  const saveRecording = async (audioBlob: Blob) => {
-    try {
-      const recording: VoiceRecording = {
-        id: uuidv4(),
-        filename: `voice_${Date.now()}.webm`,
-        blob: audioBlob,
-        duration: recordingTime,
-        createdAt: new Date(),
-        syncStatus: 'pending'
-      }
-      
-      await offlineStorage.saveVoiceRecording(recording)
-      await loadRecordings()
-    } catch (error) {
-      console.error('Failed to save recording:', error)
-      toast.error('Failed to save recording')
+  // Resume recording
+  const resumeRecording = () => {
+    if (mediaRecorderRef.current && mediaRecorderRef.current.state === 'paused') {
+      mediaRecorderRef.current.resume()
+      setRecordingState('recording')
     }
   }
 
-  const playRecording = async (recording: VoiceRecording) => {
-    if (audioElementRef.current) {
-      audioElementRef.current.pause()
-    }
-    
-    const audioUrl = URL.createObjectURL(recording.blob)
-    const audio = new Audio(audioUrl)
-    audioElementRef.current = audio
-    
-    audio.onloadedmetadata = () => {
-      setSelectedRecording(recording)
-      setPlaybackTime(0)
-    }
-    
-    audio.ontimeupdate = () => {
-      setPlaybackTime(audio.currentTime)
-    }
-    
-    audio.onended = () => {
-      setIsPlaying(false)
-      setPlaybackTime(0)
-    }
-    
-    audio.play()
-    setIsPlaying(true)
+  // Delete recording
+  const deleteRecording = () => {
+    setAudioBlob(null)
+    setAudioUrl(null)
+    setTranscript('')
+    setDuration(0)
+    setRecordingState('idle')
+    toast.success('Recording deleted')
   }
 
-  const pausePlayback = () => {
-    if (audioElementRef.current) {
-      audioElementRef.current.pause()
-      setIsPlaying(false)
-    }
-  }
-
-  const resumePlayback = () => {
-    if (audioElementRef.current) {
-      audioElementRef.current.play()
-      setIsPlaying(true)
-    }
-  }
-
-  const deleteRecording = async (recordingId: string) => {
-    try {
-      await offlineStorage.deleteVoiceRecording(recordingId)
-      await loadRecordings()
-      
-      if (selectedRecording?.id === recordingId) {
-        setSelectedRecording(null)
-        if (audioElementRef.current) {
-          audioElementRef.current.pause()
-        }
-      }
-      
-      toast.success('Recording deleted')
-    } catch (error) {
-      console.error('Failed to delete recording:', error)
-      toast.error('Failed to delete recording')
-    }
-  }
-
-  const transcribeRecording = async (recording: VoiceRecording) => {
+  // Mock transcription (replace with actual speech-to-text service)
+  const transcribeAudio = async () => {
+    if (!audioBlob) return
+    
     setIsTranscribing(true)
-    try {
-      // Here you would integrate with a speech-to-text service
-      // For now, we'll simulate the transcription
-      setTimeout(async () => {
-        const mockTranscription = `This is a simulated transcription of the voice recording from ${new Date(recording.createdAt).toLocaleString()}.`
-        
-        // Create a note with the transcription
-        await createNote('Voice Note Transcription', mockTranscription)
-        
-        setIsTranscribing(false)
-        toast.success('Note created from transcription')
-      }, 2000)
-    } catch (error) {
-      console.error('Transcription failed:', error)
-      toast.error('Transcription failed')
+    
+    // Simulate transcription delay
+    setTimeout(() => {
+      setTranscript("This is a sample transcription of your voice note. In a real implementation, this would be generated by a speech-to-text service.")
       setIsTranscribing(false)
+      toast.success('Transcription completed')
+    }, 2000)
+  }
+
+  // Save voice note
+  const saveVoiceNote = () => {
+    if (audioBlob) {
+      onSave?.(audioBlob, transcript)
+      toast.success('Voice note saved!')
+      onBack()
     }
   }
 
-  const formatTime = (seconds: number) => {
+  // Format duration
+  const formatDuration = (seconds: number) => {
     const mins = Math.floor(seconds / 60)
-    const secs = Math.floor(seconds % 60)
+    const secs = seconds % 60
     return `${mins}:${secs.toString().padStart(2, '0')}`
   }
 
   return (
-    <div className="flex flex-col h-full bg-background">
+    <div className={cn("flex flex-col h-full bg-gradient-to-b from-bg to-bg-elevated safe-area-top", className)}>
       {/* Header */}
-      <div className="sticky top-0 bg-background/95 backdrop-blur-sm border-b border-border p-4">
-        <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between p-4 border-b border-border-subtle">
+        <div className="flex items-center gap-3">
           <Button
             variant="ghost"
-            size="sm"
+            size="icon-sm"
             onClick={onBack}
-            className="h-8 w-8 p-0"
+            className="rounded-xl"
           >
             <ArrowLeft className="h-4 w-4" />
           </Button>
           
-          <h1 className="text-lg font-semibold">Voice Notes</h1>
-          
-          <div className="w-8" /> {/* Spacer */}
+          <div>
+            <h1 className="text-lg font-semibold text-text">Voice Notes</h1>
+            <p className="text-sm text-text-muted">Record and transcribe</p>
+          </div>
         </div>
+        
+        <Button
+          variant="ghost"
+          size="icon-sm"
+          onClick={() => setShowSettings(!showSettings)}
+          className="rounded-xl"
+        >
+          <Settings className="h-4 w-4" />
+        </Button>
       </div>
 
-      {/* Recording Controls */}
-      <div className="p-6">
-        <Card className="p-6 text-center">
-          {/* Recording Status */}
-          <div className="mb-6">
-            {isRecording ? (
-              <div className="space-y-4">
-                <motion.div
-                  animate={{ scale: [1, 1.1, 1] }}
-                  transition={{ repeat: Infinity, duration: 1 }}
-                  className="inline-flex items-center justify-center w-20 h-20 bg-red-500 rounded-full"
-                >
-                  <Mic className="h-8 w-8 text-white" />
-                </motion.div>
-                
-                <div>
-                  <div className="text-2xl font-mono font-bold text-red-500">
-                    {formatTime(recordingTime)}
-                  </div>
-                  {isPaused && (
-                    <Badge variant="outline" className="mt-2">
-                      Paused
-                    </Badge>
-                  )}
-                </div>
-                
-                {/* Audio Level Indicator */}
-                <div className="w-full max-w-xs mx-auto">
-                  <Progress value={audioLevel} className="h-2" />
-                  <p className="text-xs text-muted-foreground mt-1">Audio Level</p>
-                </div>
-              </div>
-            ) : (
-              <div className="space-y-4">
-                <div className="inline-flex items-center justify-center w-20 h-20 bg-primary rounded-full">
-                  <Mic className="h-8 w-8 text-primary-foreground" />
-                </div>
-                <p className="text-muted-foreground">Tap to start recording</p>
-              </div>
-            )}
-          </div>
-
-          {/* Control Buttons */}
-          <div className="flex items-center justify-center gap-4">
-            {isRecording ? (
-              <>
-                <Button
-                  variant="outline"
-                  size="lg"
-                  onClick={pauseRecording}
-                  className="rounded-full"
-                >
-                  {isPaused ? <Play className="h-6 w-6" /> : <Pause className="h-6 w-6" />}
-                </Button>
-                
-                <Button
-                  variant="destructive"
-                  size="lg"
-                  onClick={stopRecording}
-                  className="rounded-full"
-                >
-                  <Square className="h-6 w-6" />
-                </Button>
-              </>
-            ) : (
-              <Button
-                size="lg"
-                onClick={startRecording}
-                className="rounded-full px-8"
-              >
-                <Mic className="h-6 w-6 mr-2" />
-                Record
-              </Button>
-            )}
-          </div>
-        </Card>
-      </div>
-
-      {/* Recordings List */}
-      <div className="flex-1 overflow-auto">
-        <div className="p-4">
-          <h2 className="text-lg font-semibold mb-4">Recent Recordings</h2>
-          
-          {recordings.length === 0 ? (
-            <div className="text-center py-8">
-              <Activity className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
-              <p className="text-muted-foreground">No recordings yet</p>
+      {/* Main Recording Area */}
+      <div className="flex-1 flex flex-col items-center justify-center p-8 space-y-8">
+        {/* Permission Check */}
+        {permission === 'denied' && (
+          <Card variant="outlined" className="p-6 text-center max-w-sm">
+            <div className="p-4 bg-danger-bg rounded-2xl inline-block mb-4">
+              <Mic className="h-8 w-8 text-danger" />
             </div>
-          ) : (
-            <div className="space-y-3">
-              {recordings.map((recording) => (
-                <Card key={recording.id} className="p-4">
-                  <div className="flex items-center justify-between mb-3">
-                    <div>
-                      <p className="font-medium">
-                        {new Date(recording.createdAt).toLocaleDateString()}
-                      </p>
-                      <p className="text-sm text-muted-foreground">
-                        {formatTime(recording.duration)} • {new Date(recording.createdAt).toLocaleTimeString()}
-                      </p>
-                    </div>
-                    
-                    <div className="flex items-center gap-2">
-                      {recording.syncStatus === 'pending' && (
-                        <div className="h-2 w-2 bg-amber-500 rounded-full" />
-                      )}
-                      
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => deleteRecording(recording.id)}
-                        className="h-8 w-8 p-0"
-                      >
-                        <Trash className="h-4 w-4" />
-                      </Button>
-                    </div>
-                  </div>
-                  
-                  <div className="flex items-center gap-2">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => {
-                        if (selectedRecording?.id === recording.id && isPlaying) {
-                          pausePlayback()
-                        } else if (selectedRecording?.id === recording.id && !isPlaying) {
-                          resumePlayback()
-                        } else {
-                          playRecording(recording)
-                        }
+            <h3 className="font-semibold text-text mb-2">Microphone Access Required</h3>
+            <p className="text-sm text-text-muted mb-4">
+              Please allow microphone access in your browser settings to record voice notes.
+            </p>
+            <Button variant="outline" size="sm" onClick={() => window.location.reload()}>
+              Retry
+            </Button>
+          </Card>
+        )}
+
+        {/* Recording Interface */}
+        {permission !== 'denied' && (
+          <>
+            {/* Audio Visualization */}
+            <div className="relative">
+              {/* Outer Ring */}
+              <motion.div
+                className={cn(
+                  "w-64 h-64 rounded-full border-4 border-border-subtle",
+                  recordingState === 'recording' && "border-danger",
+                  recordingState === 'paused' && "border-warning"
+                )}
+                animate={recordingState === 'recording' ? {
+                  scale: [1, 1.05, 1],
+                  borderColor: ['var(--color-border)', 'var(--color-danger)', 'var(--color-border)']
+                } : {}}
+                transition={{ duration: 2, repeat: Infinity }}
+              >
+                {/* Volume Visualization */}
+                <div className="absolute inset-4 rounded-full overflow-hidden bg-bg-muted">
+                  {recordingState === 'recording' && (
+                    <motion.div
+                      className="absolute inset-0 bg-gradient-to-r from-brand-400 to-brand-600 opacity-30"
+                      animate={{
+                        scale: [1, 1 + volumeLevel * 0.3, 1]
                       }}
-                      className="flex-1"
-                    >
-                      {selectedRecording?.id === recording.id && isPlaying ? (
-                        <Pause className="h-4 w-4 mr-2" />
-                      ) : (
-                        <Play className="h-4 w-4 mr-2" />
-                      )}
-                      {selectedRecording?.id === recording.id && isPlaying ? 'Pause' : 'Play'}
-                    </Button>
-                    
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => transcribeRecording(recording)}
-                      disabled={isTranscribing}
-                    >
-                      <FileText className="h-4 w-4 mr-2" />
-                      {isTranscribing ? 'Transcribing...' : 'To Note'}
-                    </Button>
-                  </div>
+                      transition={{ duration: 0.1 }}
+                    />
+                  )}
                   
-                  {/* Playback Progress */}
-                  {selectedRecording?.id === recording.id && (
-                    <div className="mt-3">
-                      <Progress 
-                        value={(playbackTime / recording.duration) * 100} 
-                        className="h-1"
-                      />
-                      <div className="flex justify-between text-xs text-muted-foreground mt-1">
-                        <span>{formatTime(playbackTime)}</span>
-                        <span>{formatTime(recording.duration)}</span>
+                  {/* Waveform Visualization */}
+                  {recordingState === 'recording' && (
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      <div className="flex items-end gap-1 h-20">
+                        {audioData.slice(0, 16).map((value, index) => (
+                          <motion.div
+                            key={index}
+                            className="w-2 bg-brand-500 rounded-full"
+                            animate={{
+                              height: Math.max(4, value * 80)
+                            }}
+                            transition={{ duration: 0.1 }}
+                          />
+                        ))}
                       </div>
                     </div>
                   )}
-                </Card>
-              ))}
+                </div>
+
+                {/* Center Content */}
+                <div className="absolute inset-0 flex flex-col items-center justify-center">
+                  {recordingState === 'idle' && (
+                    <motion.div
+                      initial={{ scale: 0.9, opacity: 0 }}
+                      animate={{ scale: 1, opacity: 1 }}
+                      className="text-center"
+                    >
+                      <Mic className="h-12 w-12 text-text-muted mb-2 mx-auto" />
+                      <p className="text-sm text-text-muted">Tap to record</p>
+                    </motion.div>
+                  )}
+                  
+                  {(recordingState === 'recording' || recordingState === 'paused') && (
+                    <motion.div
+                      initial={{ scale: 0.9, opacity: 0 }}
+                      animate={{ scale: 1, opacity: 1 }}
+                      className="text-center"
+                    >
+                      <div className={cn(
+                        "text-3xl font-mono font-bold mb-2",
+                        recordingState === 'recording' ? "text-danger" : "text-warning"
+                      )}>
+                        {formatDuration(duration)}
+                      </div>
+                      
+                      <Badge 
+                        variant={recordingState === 'recording' ? 'danger' : 'warning'}
+                        className="animate-pulse"
+                      >
+                        <div className="w-2 h-2 rounded-full bg-current mr-2" />
+                        {recordingState === 'recording' ? 'Recording' : 'Paused'}
+                      </Badge>
+                    </motion.div>
+                  )}
+                  
+                  {recordingState === 'stopped' && audioBlob && (
+                    <motion.div
+                      initial={{ scale: 0.9, opacity: 0 }}
+                      animate={{ scale: 1, opacity: 1 }}
+                      className="text-center"
+                    >
+                      <FileAudio className="h-12 w-12 text-success mb-2 mx-auto" />
+                      <div className="text-lg font-semibold text-text mb-1">
+                        {formatDuration(duration)}
+                      </div>
+                      <p className="text-sm text-text-muted">Recording complete</p>
+                    </motion.div>
+                  )}
+                </div>
+              </motion.div>
             </div>
-          )}
+
+            {/* Controls */}
+            <div className="flex items-center justify-center gap-4">
+              {recordingState === 'idle' && (
+                <motion.div
+                  initial={{ scale: 0.9, opacity: 0 }}
+                  animate={{ scale: 1, opacity: 1 }}
+                >
+                  <Button
+                    onTouchStart={startRecording}
+                    onClick={startRecording}
+                    variant="gradient"
+                    size="xl"
+                    className="h-20 w-20 rounded-full shadow-4 hover:shadow-5"
+                  >
+                    <Mic className="h-8 w-8" />
+                  </Button>
+                </motion.div>
+              )}
+
+              {(recordingState === 'recording' || recordingState === 'paused') && (
+                <motion.div
+                  initial={{ scale: 0.9, opacity: 0 }}
+                  animate={{ scale: 1, opacity: 1 }}
+                  className="flex items-center gap-4"
+                >
+                  {recordingState === 'recording' ? (
+                    <Button
+                      onClick={pauseRecording}
+                      variant="outline"
+                      size="lg"
+                      className="h-16 w-16 rounded-full"
+                    >
+                      <Pause className="h-6 w-6" />
+                    </Button>
+                  ) : (
+                    <Button
+                      onClick={resumeRecording}
+                      variant="gradient"
+                      size="lg"
+                      className="h-16 w-16 rounded-full"
+                    >
+                      <Play className="h-6 w-6" />
+                    </Button>
+                  )}
+
+                  <Button
+                    onClick={stopRecording}
+                    variant="danger"
+                    size="xl"
+                    className="h-20 w-20 rounded-full"
+                  >
+                    <Square className="h-8 w-8" />
+                  </Button>
+                </motion.div>
+              )}
+
+              {recordingState === 'stopped' && audioBlob && (
+                <motion.div
+                  initial={{ scale: 0.9, opacity: 0 }}
+                  animate={{ scale: 1, opacity: 1 }}
+                  className="flex items-center gap-3"
+                >
+                  <Button
+                    onClick={deleteRecording}
+                    variant="outline"
+                    size="lg"
+                    className="h-14 w-14 rounded-full"
+                  >
+                    <Trash className="h-5 w-5" />
+                  </Button>
+
+                  <Button
+                    onClick={() => setRecordingState('idle')}
+                    variant="outline"
+                    size="lg"
+                    className="h-14 w-14 rounded-full"
+                  >
+                    <RotateCcw className="h-5 w-5" />
+                  </Button>
+
+                  <Button
+                    onClick={saveVoiceNote}
+                    variant="gradient"
+                    size="xl"
+                    className="h-16 w-16 rounded-full shadow-3"
+                  >
+                    <Save className="h-6 w-6" />
+                  </Button>
+                </motion.div>
+              )}
+            </div>
+          </>
+        )}
+      </div>
+
+      {/* Transcript Section */}
+      {recordingState === 'stopped' && audioBlob && (
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="p-4 border-t border-border-subtle bg-surface/50"
+        >
+          <Card variant="glass" className="p-4">
+            <div className="flex items-center justify-between mb-3">
+              <h3 className="font-semibold text-text flex items-center gap-2">
+                <PenTool className="h-4 w-4" />
+                Transcript
+              </h3>
+              
+              {!transcript && (
+                <Button
+                  onClick={transcribeAudio}
+                  variant="outline"
+                  size="sm"
+                  disabled={isTranscribing}
+                  loading={isTranscribing}
+                  className="gap-2 rounded-xl"
+                >
+                  <Sparkles className="h-3 w-3" />
+                  {isTranscribing ? 'Transcribing...' : 'Generate'}
+                </Button>
+              )}
+            </div>
+            
+            {transcript ? (
+              <div className="space-y-3">
+                <p className="text-text-secondary leading-relaxed">{transcript}</p>
+                <div className="flex gap-2">
+                  <Button variant="ghost" size="sm" className="gap-2">
+                    <PenTool className="h-3 w-3" />
+                    Edit
+                  </Button>
+                  <Button variant="ghost" size="sm" className="gap-2">
+                    <Share className="h-3 w-3" />
+                    Share
+                  </Button>
+                </div>
+              </div>
+            ) : (
+              <div className="text-center py-6">
+                <div className="p-3 bg-bg-muted rounded-xl inline-block mb-3">
+                  <Sparkles className="h-6 w-6 text-text-muted" />
+                </div>
+                <p className="text-sm text-text-muted">
+                  Generate a transcript using AI speech recognition
+                </p>
+              </div>
+            )}
+          </Card>
+        </motion.div>
+      )}
+
+      {/* Quick Actions Bar */}
+      <div className="p-4 bg-surface/80 backdrop-blur-sm border-t border-border-subtle safe-area-bottom">
+        <div className="flex items-center justify-around">
+          <Button variant="ghost" size="sm" className="flex-col gap-1 h-auto py-2">
+            <Volume2 className="h-4 w-4" />
+            <span className="text-xs">Quality</span>
+          </Button>
+          
+          <Button variant="ghost" size="sm" className="flex-col gap-1 h-auto py-2">
+            <Clock className="h-4 w-4" />
+            <span className="text-xs">Timer</span>
+          </Button>
+          
+          <Button variant="ghost" size="sm" className="flex-col gap-1 h-auto py-2">
+            <Download className="h-4 w-4" />
+            <span className="text-xs">Export</span>
+          </Button>
+          
+          <Button variant="ghost" size="sm" className="flex-col gap-1 h-auto py-2">
+            <Share className="h-4 w-4" />
+            <span className="text-xs">Share</span>
+          </Button>
         </div>
       </div>
     </div>
