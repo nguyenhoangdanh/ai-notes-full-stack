@@ -53,84 +53,120 @@ export default function AnalyticsPage() {
   }
 
   return (
-    <div className="container mx-auto p-6 space-y-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold">Analytics Dashboard</h1>
-          <p className="text-muted-foreground">
-            Insights into your productivity and usage patterns
-          </p>
+    <div className="min-h-screen bg-gradient-to-br from-background via-background/98 to-primary/2 relative overflow-hidden">
+      {/* Superhuman background decorations */}
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--primary)_0%,_transparent_70%)] opacity-3" />
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_right,_var(--accent)_0%,_transparent_70%)] opacity-2" />
+      
+      <div className="container mx-auto px-4 sm:px-6 py-6 sm:py-8 space-y-6 sm:space-y-8 relative z-10">
+        {/* Superhuman Header */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div className="space-y-2">
+            <div className="flex items-center gap-3">
+              <h1 className="text-3xl sm:text-4xl font-bold bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text text-transparent">
+                Analytics Dashboard
+              </h1>
+              <BarChart3 className="h-6 w-6 text-primary" />
+            </div>
+            <p className="text-muted-foreground text-lg leading-relaxed">
+              Insights into your productivity and usage patterns
+            </p>
+          </div>
+          <Badge variant="outline" className="flex items-center gap-2 rounded-full bg-background/50 border-border/30">
+            <Activity className="w-4 h-4" />
+            Live Data
+          </Badge>
         </div>
-        <Badge variant="outline" className="flex items-center gap-2">
-          <Activity className="w-4 h-4" />
-          Live Data
-        </Badge>
-      </div>
 
-      {/* Overview Cards */}
-      {overview && (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Total Notes</CardTitle>
-              <FileText className="h-4 w-4 text-muted-foreground" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">{formatNumber(overview.totalNotes)}</div>
-              <p className="text-xs text-muted-foreground">
-                +{overview.recentActivity} this week
-              </p>
-            </CardContent>
-          </Card>
+        {/* Overview Cards */}
+        {overview && (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            <Card variant="glass" className="superhuman-hover border-border/30">
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">Total Notes</CardTitle>
+                <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center">
+                  <FileText className="h-4 w-4 text-primary" />
+                </div>
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">{formatNumber(overview.totalNotes)}</div>
+                <p className="text-xs text-muted-foreground flex items-center gap-1">
+                  <TrendingUp className="h-3 w-3 text-emerald-500" />
+                  +{overview.recentActivity} this week
+                </p>
+              </CardContent>
+            </Card>
 
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Workspaces</CardTitle>
-              <FolderOpen className="h-4 w-4 text-muted-foreground" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">{overview.totalWorkspaces}</div>
-              <p className="text-xs text-muted-foreground">
-                {overview.collaborators} collaborators
-              </p>
-            </CardContent>
-          </Card>
+            <Card variant="glass" className="superhuman-hover border-border/30">
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">Workspaces</CardTitle>
+                <div className="h-8 w-8 rounded-full bg-blue-500/10 flex items-center justify-center">
+                  <FolderOpen className="h-4 w-4 text-blue-500" />
+                </div>
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">{overview.totalWorkspaces}</div>
+                <p className="text-xs text-muted-foreground flex items-center gap-1">
+                  <Users className="h-3 w-3 text-blue-500" />
+                  {overview.collaborators} collaborators
+                </p>
+              </CardContent>
+            </Card>
 
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">AI Queries</CardTitle>
-              <MessageSquare className="h-4 w-4 text-muted-foreground" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">{formatNumber(overview.aiQueries)}</div>
-              <p className="text-xs text-muted-foreground">
-                AI interactions
-              </p>
-            </CardContent>
-          </Card>
+            <Card variant="glass" className="superhuman-hover border-border/30">
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">AI Queries</CardTitle>
+                <div className="h-8 w-8 rounded-full bg-purple-500/10 flex items-center justify-center">
+                  <MessageSquare className="h-4 w-4 text-purple-500" />
+                </div>
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">{formatNumber(overview.aiQueries)}</div>
+                <p className="text-xs text-muted-foreground">
+                  AI interactions
+                </p>
+              </CardContent>
+            </Card>
 
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Storage Used</CardTitle>
-              <HardDrive className="h-4 w-4 text-muted-foreground" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">{formatBytes(overview.storageUsed)}</div>
-              <p className="text-xs text-muted-foreground">
-                {overview.totalTags} tags organized
-              </p>
-            </CardContent>
-          </Card>
-        </div>
-      )}
+            <Card variant="glass" className="superhuman-hover border-border/30">
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">Storage Used</CardTitle>
+                <div className="h-8 w-8 rounded-full bg-orange-500/10 flex items-center justify-center">
+                  <HardDrive className="h-4 w-4 text-orange-500" />
+                </div>
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">{formatBytes(overview.storageUsed)}</div>
+                <p className="text-xs text-muted-foreground">
+                  {overview.totalTags} tags organized
+                </p>
+              </CardContent>
+            </Card>
+          </div>
+        )}
 
-      {/* Detailed Analytics */}
-      <Tabs defaultValue="workspaces" className="space-y-6">
-        <TabsList className="grid w-full grid-cols-3">
-          <TabsTrigger value="workspaces">Workspaces</TabsTrigger>
-          <TabsTrigger value="content">Content</TabsTrigger>
-          <TabsTrigger value="activity">Activity</TabsTrigger>
-        </TabsList>
+        {/* Detailed Analytics */}
+        <Tabs defaultValue="workspaces" className="space-y-6">
+          <TabsList className="bg-muted/30 p-1 rounded-full border border-border/30">
+            <TabsTrigger 
+              value="workspaces" 
+              className="rounded-full data-[state=active]:bg-background data-[state=active]:shadow-sm"
+            >
+              Workspaces
+            </TabsTrigger>
+            <TabsTrigger 
+              value="content" 
+              className="rounded-full data-[state=active]:bg-background data-[state=active]:shadow-sm"
+            >
+              Content
+            </TabsTrigger>
+            <TabsTrigger 
+              value="activity" 
+              className="rounded-full data-[state=active]:bg-background data-[state=active]:shadow-sm"
+            >
+              Activity
+            </TabsTrigger>
+          </TabsList>
 
         <TabsContent value="workspaces" className="space-y-4">
           <Card>
@@ -259,6 +295,7 @@ export default function AnalyticsPage() {
           </Card>
         </TabsContent>
       </Tabs>
+      </div>
     </div>
   )
 }
