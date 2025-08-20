@@ -42,3 +42,28 @@ export function useCreateWorkspace() {
     },
   })
 }
+
+export function useWorkspace(workspaceId: string) {
+  return useQuery({
+    queryKey: ['workspace', workspaceId],
+    queryFn: () => Promise.resolve({
+      id: workspaceId,
+      name: 'Sample Workspace',
+      description: 'This is a sample workspace',
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+      members: []
+    }),
+    enabled: !!workspaceId,
+    staleTime: 5 * 60 * 1000,
+  })
+}
+
+export function useWorkspaceNotes(workspaceId: string) {
+  return useQuery({
+    queryKey: ['workspace-notes', workspaceId],
+    queryFn: () => Promise.resolve([]),
+    enabled: !!workspaceId,
+    staleTime: 2 * 60 * 1000,
+  })
+}

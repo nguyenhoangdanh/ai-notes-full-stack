@@ -97,10 +97,19 @@ export function AppLayout({ children }: AppLayoutProps) {
   if (!user) {
     return (
       <div className="min-h-screen bg-background relative overflow-hidden">
-        {/* Superhuman auth background */}
+        {/* Enhanced superhuman auth background */}
         <div className="absolute inset-0 bg-gradient-to-br from-background via-background/95 to-primary/5" />
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--primary)_0%,_transparent_70%)] opacity-10" />
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_right,_var(--accent)_0%,_transparent_70%)] opacity-10" />
+        
+        {/* Modern geometric patterns */}
+        <div className="absolute inset-0 bg-grid-white/[0.02] bg-[size:50px_50px]" />
+        <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent" />
+        
+        {/* Floating geometric shapes for modern feel */}
+        <div className="absolute top-1/4 left-1/4 w-64 h-64 bg-primary/5 rounded-full blur-3xl animate-pulse" />
+        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-accent/5 rounded-full blur-3xl animate-pulse delay-700" />
+        
         <div className="relative z-10">
           {children}
         </div>
@@ -117,10 +126,17 @@ export function AppLayout({ children }: AppLayoutProps) {
       role="application" 
       aria-label="AI Notes Application"
     >
-      {/* Superhuman background layers */}
+      {/* Enhanced superhuman background layers */}
       <div className="absolute inset-0 bg-gradient-to-br from-background via-background/98 to-primary/3" />
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_left,_var(--primary)_0%,_transparent_50%)] opacity-10" />
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_right,_var(--accent)_0%,_transparent_50%)] opacity-8" />
+      
+      {/* Modern grid pattern */}
+      <div className="absolute inset-0 bg-grid-white/[0.01] bg-[size:60px_60px]" />
+      
+      {/* Subtle animated elements */}
+      <div className="absolute top-1/3 right-1/3 w-48 h-48 bg-primary/3 rounded-full blur-3xl animate-pulse opacity-50" />
+      <div className="absolute bottom-1/3 left-1/3 w-64 h-64 bg-accent/3 rounded-full blur-3xl animate-pulse delay-1000 opacity-50" />
 
       {/* Mobile overlay */}
       {isMobile && sidebarOpen && (

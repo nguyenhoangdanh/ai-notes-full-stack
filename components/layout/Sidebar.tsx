@@ -23,7 +23,12 @@ import {
   Terminal,
   Users,
   CloudUpload,
-  Upload
+  Upload,
+  Tag,
+  Smartphone,
+  Network,
+  Brain,
+  Hash
 } from 'lucide-react'
 import { cn } from '../../lib/utils'
 import { Button } from '../ui/button'
@@ -67,6 +72,16 @@ const navigation: NavigationItem[] = [
     ]
   },
   {
+    name: 'Categories',
+    href: '/categories',
+    icon: Tag,
+    description: 'Organize with tags',
+    children: [
+      { name: 'All Categories', href: '/categories', icon: Tag },
+      { name: 'Auto Categories', href: '/categories?filter=auto', icon: Brain },
+    ]
+  },
+  {
     name: 'AI Assistant',
     href: '/ai',
     icon: Sparkles,
@@ -74,6 +89,9 @@ const navigation: NavigationItem[] = [
     badge: 'New',
     children: [
       { name: 'AI Chat', href: '/ai/chat', icon: MessageSquare },
+      { name: 'Summaries', href: '/summaries', icon: Brain },
+      { name: 'Relations', href: '/relations', icon: Network },
+      { name: 'Duplicates', href: '/duplicates', icon: Copy },
     ]
   },
   {
@@ -97,6 +115,12 @@ const navigation: NavigationItem[] = [
     href: '/templates',
     icon: Copy,
     description: 'Note templates',
+  },
+  {
+    name: 'Mobile',
+    href: '/mobile',
+    icon: Smartphone,
+    description: 'Mobile features',
   },
   {
     name: 'Search',
