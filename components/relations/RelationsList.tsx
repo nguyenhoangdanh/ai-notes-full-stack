@@ -48,14 +48,16 @@ export function RelationsList({ noteId }: RelationsListProps) {
   return (
     <div className="space-y-6">
       {/* Stored Relations */}
-      <Card>
+      <Card className="superhuman-glass superhuman-glow">
         <CardHeader>
           <div className="flex justify-between items-center">
             <CardTitle className="flex items-center gap-2">
-              <Link2 className="h-5 w-5" />
-              Established Relations
+              <Link2 className="h-5 w-5 text-primary" />
+              <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+                Established Relations
+              </span>
             </CardTitle>
-            <Button size="sm">
+            <Button size="sm" className="superhuman-gradient superhuman-hover shadow-md hover:shadow-lg">
               <Plus className="h-4 w-4 mr-2" />
               Add Relation
             </Button>
@@ -63,8 +65,10 @@ export function RelationsList({ noteId }: RelationsListProps) {
         </CardHeader>
         <CardContent>
           {!storedRelations || !Array.isArray(storedRelations) || storedRelations.length === 0 ? (
-            <div className="text-center py-8">
-              <Link2 className="h-8 w-8 text-muted-foreground mx-auto mb-2" />
+            <div className="text-center py-12">
+              <div className="w-16 h-16 mx-auto mb-4 bg-gradient-to-br from-primary/20 to-accent/20 rounded-full flex items-center justify-center">
+                <Link2 className="h-8 w-8 text-primary" />
+              </div>
               <p className="text-muted-foreground">No established relations yet</p>
             </div>
           ) : (
@@ -72,27 +76,28 @@ export function RelationsList({ noteId }: RelationsListProps) {
               {storedRelations.map((relation: any) => (
                 <div 
                   key={relation.id}
-                  className="flex items-center justify-between p-3 border rounded-lg hover:bg-muted/50"
+                  className="flex items-center justify-between p-4 border rounded-lg superhuman-gradient-subtle superhuman-hover border-primary/10 hover:border-primary/20"
                 >
                   <div className="flex-1">
-                    <h4 className="font-medium">{relation.targetNote?.title || 'Untitled'}</h4>
-                    <div className="flex items-center gap-2 mt-1">
-                      <Badge variant="outline" className="text-xs">
+                    <h4 className="font-medium text-foreground">{relation.targetNote?.title || 'Untitled'}</h4>
+                    <div className="flex items-center gap-2 mt-2">
+                      <Badge variant="outline" className="text-xs border-primary/30 bg-primary/5 text-primary">
                         {relation.relationshipType}
                       </Badge>
                       <span className="text-xs text-muted-foreground">
-                        Strength: {(relation.strength * 100).toFixed(0)}%
+                        Strength: <span className="text-primary font-medium">{(relation.strength * 100).toFixed(0)}%</span>
                       </span>
                     </div>
                   </div>
-                  <div className="flex gap-1">
-                    <Button variant="ghost" size="sm">
+                  <div className="flex gap-2">
+                    <Button variant="ghost" size="sm" className="superhuman-hover hover:bg-primary/10">
                       <Eye className="h-4 w-4" />
                     </Button>
                     <Button 
                       variant="ghost" 
                       size="sm"
                       onClick={() => handleDeleteRelation(relation.targetNoteId)}
+                      className="superhuman-hover hover:bg-destructive/10 hover:text-destructive"
                     >
                       <Trash2 className="h-4 w-4" />
                     </Button>
@@ -105,17 +110,21 @@ export function RelationsList({ noteId }: RelationsListProps) {
       </Card>
 
       {/* Suggested Relations */}
-      <Card>
+      <Card className="superhuman-glass superhuman-glow">
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            <List className="h-5 w-5" />
-            Suggested Relations
+            <List className="h-5 w-5 text-primary" />
+            <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+              Suggested Relations
+            </span>
           </CardTitle>
         </CardHeader>
         <CardContent>
           {!relatedNotes || !Array.isArray(relatedNotes) || relatedNotes.length === 0 ? (
-            <div className="text-center py-8">
-              <List className="h-8 w-8 text-muted-foreground mx-auto mb-2" />
+            <div className="text-center py-12">
+              <div className="w-16 h-16 mx-auto mb-4 bg-gradient-to-br from-muted/20 to-muted/10 rounded-full flex items-center justify-center">
+                <List className="h-8 w-8 text-muted-foreground" />
+              </div>
               <p className="text-muted-foreground">No suggested relations found</p>
             </div>
           ) : (
@@ -123,26 +132,26 @@ export function RelationsList({ noteId }: RelationsListProps) {
               {relatedNotes.map((note: any) => (
                 <div 
                   key={note.id}
-                  className="flex items-center justify-between p-3 border rounded-lg hover:bg-muted/50"
+                  className="flex items-center justify-between p-4 border rounded-lg superhuman-gradient-subtle superhuman-hover border-primary/10 hover:border-primary/20"
                 >
                   <div className="flex-1">
-                    <h4 className="font-medium">{note.title}</h4>
-                    <p className="text-sm text-muted-foreground line-clamp-1">
+                    <h4 className="font-medium text-foreground">{note.title}</h4>
+                    <p className="text-sm text-muted-foreground line-clamp-1 mt-1">
                       {note.content?.substring(0, 100)}...
                     </p>
-                    <div className="flex items-center gap-2 mt-1">
-                      <Badge variant="secondary" className="text-xs">
+                    <div className="flex items-center gap-2 mt-2">
+                      <Badge variant="secondary" className="text-xs bg-gradient-to-r from-primary/10 to-accent/10 text-primary border-primary/20">
                         Similarity: {(note.similarity * 100).toFixed(0)}%
                       </Badge>
                       {note.sharedTags && note.sharedTags.length > 0 && (
-                        <Badge variant="outline" className="text-xs">
+                        <Badge variant="outline" className="text-xs border-accent/30 bg-accent/5 text-accent">
                           {note.sharedTags.length} shared tags
                         </Badge>
                       )}
                     </div>
                   </div>
-                  <div className="flex gap-1">
-                    <Button variant="ghost" size="sm">
+                  <div className="flex gap-2">
+                    <Button variant="ghost" size="sm" className="superhuman-hover hover:bg-primary/10">
                       <Eye className="h-4 w-4" />
                     </Button>
                     <Button 
@@ -155,6 +164,7 @@ export function RelationsList({ noteId }: RelationsListProps) {
                         //   relationshipType: 'related'
                         // })
                       }}
+                      className="superhuman-hover border-primary/30 hover:bg-primary/10 hover:border-primary/50"
                     >
                       <Link2 className="h-4 w-4 mr-1" />
                       Connect
