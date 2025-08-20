@@ -115,7 +115,7 @@ export default function SummariesPage() {
                   </CardContent>
                 </Card>
               ))
-            ) : templates?.length === 0 ? (
+            ) : !Array.isArray(templates) || templates.length === 0 ? (
               <Card className="col-span-full">
                 <CardContent className="flex flex-col items-center justify-center py-12">
                   <FileText className="h-12 w-12 text-muted-foreground mb-4" />
@@ -126,7 +126,7 @@ export default function SummariesPage() {
                 </CardContent>
               </Card>
             ) : (
-              templates?.map((template) => (
+              (Array.isArray(templates) ? templates : []).map((template) => (
                 <SummaryTemplateCard key={template.id} template={template} />
               ))
             )}
@@ -162,7 +162,7 @@ export default function SummariesPage() {
               </CardHeader>
               <CardContent>
                 <div className="space-y-3">
-                  {templates?.slice(0, 5).map((template, index) => (
+                  {(Array.isArray(templates) ? templates.slice(0, 5) : []).map((template, index) => (
                     <div key={template.id} className="flex items-center justify-between">
                       <div className="flex items-center gap-2">
                         <Badge variant="secondary">{index + 1}</Badge>

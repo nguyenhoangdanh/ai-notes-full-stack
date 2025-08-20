@@ -112,7 +112,7 @@ export default function DuplicatesPage() {
         </TabsList>
 
         <TabsContent value="detected" className="mt-6">
-          {!detectionData || detectionData.length === 0 ? (
+          {!detectionData || !Array.isArray(detectionData) || detectionData.length === 0 ? (
             <Card>
               <CardContent className="flex flex-col items-center justify-center py-16">
                 <Copy className="h-16 w-16 text-muted-foreground mb-4" />
@@ -128,7 +128,7 @@ export default function DuplicatesPage() {
             </Card>
           ) : (
             <div className="space-y-4">
-              {detectionData.map((group: any, index: number) => (
+              {(Array.isArray(detectionData) ? detectionData : []).map((group: any, index: number) => (
                 <DuplicateGroupCard
                   key={group.id || index}
                   group={group}
@@ -143,7 +143,7 @@ export default function DuplicatesPage() {
         </TabsContent>
 
         <TabsContent value="reports" className="mt-6">
-          <DuplicateReportsList reports={reports || []} isLoading={reportsLoading} />
+          <DuplicateReportsList reports={Array.isArray(reports) ? reports : []} isLoading={reportsLoading} />
         </TabsContent>
 
         <TabsContent value="settings" className="mt-6">

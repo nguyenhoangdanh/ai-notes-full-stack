@@ -41,8 +41,8 @@ export function RelationsList({ noteId }: RelationsListProps) {
   }
 
   const allRelations = [
-    ...(storedRelations || []).map((r: any) => ({ ...r, type: 'stored' })),
-    ...(relatedNotes || []).map((r: any) => ({ ...r, type: 'suggested' }))
+    ...(Array.isArray(storedRelations) ? storedRelations : []).map((r: any) => ({ ...r, type: 'stored' })),
+    ...(Array.isArray(relatedNotes) ? relatedNotes : []).map((r: any) => ({ ...r, type: 'suggested' }))
   ]
 
   return (
@@ -62,7 +62,7 @@ export function RelationsList({ noteId }: RelationsListProps) {
           </div>
         </CardHeader>
         <CardContent>
-          {!storedRelations || storedRelations.length === 0 ? (
+          {!storedRelations || !Array.isArray(storedRelations) || storedRelations.length === 0 ? (
             <div className="text-center py-8">
               <Link2 className="h-8 w-8 text-muted-foreground mx-auto mb-2" />
               <p className="text-muted-foreground">No established relations yet</p>
@@ -113,7 +113,7 @@ export function RelationsList({ noteId }: RelationsListProps) {
           </CardTitle>
         </CardHeader>
         <CardContent>
-          {!relatedNotes || relatedNotes.length === 0 ? (
+          {!relatedNotes || !Array.isArray(relatedNotes) || relatedNotes.length === 0 ? (
             <div className="text-center py-8">
               <List className="h-8 w-8 text-muted-foreground mx-auto mb-2" />
               <p className="text-muted-foreground">No suggested relations found</p>

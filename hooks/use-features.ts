@@ -555,7 +555,17 @@ export function useDeleteCategory() {
 export function useDuplicateDetection() {
   return useQuery({
     queryKey: ['duplicates'],
-    queryFn: () => Promise.resolve([]),
+    queryFn: async () => {
+      try {
+        // Try to get real data from smart service
+        const { duplicatesService } = await import('../services/smart.service');
+        const response = await duplicatesService.detectDuplicates();
+        return Array.isArray(response) ? response : [];
+      } catch (error) {
+        console.error('Failed to detect duplicates, using fallback:', error);
+        return [];
+      }
+    },
     staleTime: 10 * 60 * 1000, // 10 minutes
   })
 }
@@ -563,7 +573,17 @@ export function useDuplicateDetection() {
 export function useSmartDuplicateReports() {
   return useQuery({
     queryKey: ['duplicate-reports'],
-    queryFn: () => Promise.resolve([]),
+    queryFn: async () => {
+      try {
+        // Try to get real data from smart service
+        const { duplicatesService } = await import('../services/smart.service');
+        const response = await duplicatesService.getReports();
+        return Array.isArray(response) ? response : [];
+      } catch (error) {
+        console.error('Failed to fetch duplicate reports, using fallback:', error);
+        return [];
+      }
+    },
     staleTime: 10 * 60 * 1000,
   })
 }
@@ -628,7 +648,43 @@ export function useSummaryStats() {
 export function useSummaryTemplates() {
   return useQuery({
     queryKey: ['summary-templates'],
-    queryFn: () => Promise.resolve([]),
+    queryFn: async () => {
+      try {
+        // Try to get real data from smart service
+        const { summariesService } = await import('../services/smart.service');
+        const response = await summariesService.getTemplates();
+        // Handle both array and object responses
+        if (Array.isArray(response)) {
+          return response;
+        } else if (response && typeof response === 'object' && 'templates' in response) {
+          return (response as any).templates || [];
+        }
+        return [];
+      } catch (error) {
+        console.error('Failed to fetch summary templates, using fallback:', error);
+        // Return fallback data
+        return [
+          {
+            id: 'executive',
+            name: 'Executive Summary',
+            description: 'Brief, high-level overview focusing on key decisions and outcomes',
+            prompt: 'Create a brief executive summary highlighting key decisions, outcomes, and action items.'
+          },
+          {
+            id: 'academic',
+            name: 'Academic Summary',
+            description: 'Structured summary with main arguments, evidence, and conclusions',
+            prompt: 'Provide an academic-style summary with main arguments, supporting evidence, and conclusions.'
+          },
+          {
+            id: 'meeting',
+            name: 'Meeting Summary',
+            description: 'Focus on decisions made, action items, and next steps',
+            prompt: 'Summarize this meeting content focusing on decisions made, action items, and next steps.'
+          }
+        ];
+      }
+    },
     staleTime: 10 * 60 * 1000,
   })
 }
