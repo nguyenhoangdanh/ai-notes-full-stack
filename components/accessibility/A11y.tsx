@@ -450,7 +450,7 @@ export function A11y() {
                       
                       <div className="space-y-3">
                         {issues.map((issue) => (
-                          <Card key={issue.id} variant="outline" className="p-4">
+                          <Card key={issue.id} variant="outlined" className="p-4">
                             <div className="flex items-start gap-3">
                               <div className={cn(
                                 "p-1.5 rounded-lg",
