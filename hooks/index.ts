@@ -8,26 +8,43 @@ export * from './use-notes';
 export * from './use-ai';
 export * from './use-workspaces';
 
-// Only export the non-conflicting functions from features
+// Feature-specific hooks from use-features
 export {
-  useRelatedNotes,
-  useNoteGraph,
-  useNoteSummary,
-  useGenerateSummary,
-  useStoredRelations,
-  useSaveRelation,
-  useDeleteRelation
+  // Export any other non-conflicting hooks from use-features if they exist
 } from './use-features';
 
 // Smart Features
 export {
   useCategories,
   useCategory,
+  useCreateCategory,
+  useUpdateCategory, 
+  useDeleteCategory,
   useCreateCategory as useSmartCreateCategory,
   useUpdateCategory as useSmartUpdateCategory,
   useDeleteCategory as useSmartDeleteCategory,
   useSuggestCategories,
-  useAutoCategorize
+  useAutoCategorize,
+  // Summary hooks
+  useNoteSummary,
+  useGenerateSummary,
+  useSummaryStats,
+  useSummaryTemplates,
+  useBatchGenerateSummaries,
+  // Relations hooks  
+  useRelatedNotes,
+  useRelatedNotes as useSmartRelatedNotes,
+  useNoteGraph,
+  useStoredRelations,
+  useSaveRelation,
+  useDeleteRelation,
+  useRelationsStats,
+  // Duplicate hooks
+  useDuplicateDetection,
+  useDuplicateReports as useSmartDuplicateReports,
+  useDuplicateStats,
+  useQueueDuplicateDetection,
+  useMergeDuplicates
 } from './use-smart';
 
 // New module hooks using the actual exported names

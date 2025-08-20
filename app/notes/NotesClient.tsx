@@ -114,10 +114,7 @@ export default function NotesClient() {
     data: searchResults = [], 
     isLoading: isSearching,
     error: searchError 
-  } = useSearchNotes(
-    { q: searchQuery },
-    { enabled: searchQuery.length > 0 }
-  )
+  } = useSearchNotes({ q: searchQuery })
   
   // Determine which data to display
   const displayNotes = searchQuery ? searchResults : notes

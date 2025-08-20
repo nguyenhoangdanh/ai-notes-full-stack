@@ -116,8 +116,9 @@ export default function NoteDetailPage() {
     try {
       await generateSummary.mutateAsync({
         noteId,
-        type: 'automatic',
-        content: note.content
+        options: {
+          includeKeyPoints: true
+        }
       })
       toast.success('Summary generated successfully')
     } catch (error) {
@@ -338,7 +339,7 @@ export default function NoteDetailPage() {
                   {summary && (
                     <div className="p-3 bg-muted/50 rounded-lg">
                       <p className="text-sm font-medium mb-1">Summary:</p>
-                      <p className="text-sm text-muted-foreground">{summary.content}</p>
+                      <p className="text-sm text-muted-foreground">{summary.summary}</p>
                     </div>
                   )}
                   

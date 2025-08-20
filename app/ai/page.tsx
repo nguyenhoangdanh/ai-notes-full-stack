@@ -48,6 +48,7 @@ export default function AIPage() {
   const [selectedSuggestion, setSelectedSuggestion] = useState<string | null>(null)
   const [searchQuery, setSearchQuery] = useState('')
   const [copiedMessageId, setCopiedMessageId] = useState<string | null>(null)
+  const [conversationId] = useState(() => `conv-${Date.now()}`) // Generate a conversation ID
 
   const streamChat = useStreamChat()
   const completeChat = useCompleteChat()
@@ -93,6 +94,7 @@ export default function AIPage() {
     try {
       // Use complete chat for now (streaming can be implemented later)
       const response = await completeChat.mutateAsync({
+        conversationId,
         message: input.trim()
       })
 
@@ -131,13 +133,13 @@ export default function AIPage() {
         limit: 5
       })
       
-      toast.success(`Found ${results.notes?.length || 0} semantically related notes`)
+      toast.success(`Found ${results?.length || 0} semantically related notes`)
       
       // Add search results as a message
       const searchMessage: Message = {
         id: Date.now().toString(),
         role: 'assistant',
-        content: `I found ${results.notes?.length || 0} notes related to "${searchQuery}". These notes have semantic similarity to your search query.`,
+        content: `I found ${results?.length || 0} notes related to "${searchQuery}". These notes have semantic similarity to your search query.`,
         timestamp: new Date()
       }
       
@@ -377,7 +379,6 @@ export default function AIPage() {
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     placeholder="Search concepts..."
-                    size="sm"
                     onKeyDown={(e) => {
                       if (e.key === 'Enter') {
                         handleSemanticSearch()

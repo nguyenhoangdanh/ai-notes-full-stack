@@ -1,4 +1,4 @@
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useQuery, useMutation, useQueryClient, UseQueryResult } from '@tanstack/react-query';
 import { 
   categoriesService, 
   summariesService, 
@@ -14,6 +14,7 @@ import {
   CreateDuplicateReportDto,
   MergeDuplicatesDto
 } from '../types';
+import { RelatedNote } from '../types/smart.types';
 
 // Query Keys
 export const smartQueryKeys = {
@@ -229,10 +230,10 @@ export const useDeleteSummary = () => {
 };
 
 // Relations Hooks
-export const useRelatedNotes = (noteId: string) => {
+export const useRelatedNotes = (noteId: string): UseQueryResult<RelatedNote[], Error> => {
   return useQuery({
     queryKey: smartQueryKeys.relations.related(noteId),
-    queryFn: async () => {
+    queryFn: async (): Promise<RelatedNote[]> => {
       try {
         const response = await relationsService.getRelatedNotes(noteId);
         // Ensure we always return an array

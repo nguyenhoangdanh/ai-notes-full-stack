@@ -10,6 +10,9 @@ export interface Note {
   workspaceId: string;
   ownerId: string;
   isDeleted: boolean;
+  starred?: boolean;
+  isShared?: boolean;
+  category?: string;
   createdAt: string;
   updatedAt: string;
 }
@@ -26,6 +29,7 @@ export interface UpdateNoteDto {
   content?: string;
   tags?: string[];
   workspaceId?: string;
+  starred?: boolean;
 }
 
 export interface SearchNotesDto {
@@ -74,6 +78,14 @@ export interface Vector {
 }
 
 export interface SearchResult {
+  id: string;
+  title: string;
+  content: string;
+  tags: string[];
+  starred?: boolean;
+  isShared?: boolean;
+  category?: string;
+  updatedAt: string;
   note: Note;
   relevanceScore: number;
   snippet: string;
