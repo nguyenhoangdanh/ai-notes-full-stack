@@ -372,17 +372,15 @@ export function useTemplates(includePublic?: boolean) {
 export function useTemplate(templateId: string) {
   return useQuery({
     queryKey: queryKeys.misc.template(templateId),
-    queryFn: () => Promise.resolve({
-      id: templateId,
-      name: 'Sample Template',
-      description: 'This is a sample template',
-      content: '# Sample Template\n\nThis is template content.',
-      tags: ['sample'],
-      category: 'general',
-      owner: 'Sample User',
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString()
-    }),
+    queryFn: async () => {
+      try {
+        const { templatesService } = await import('../services/templates.service');
+        return await templatesService.getTemplate(templateId);
+      } catch (error) {
+        console.error('Failed to fetch template:', error);
+        return null;
+      }
+    },
     enabled: !!templateId,
     staleTime: 10 * 60 * 1000,
   })

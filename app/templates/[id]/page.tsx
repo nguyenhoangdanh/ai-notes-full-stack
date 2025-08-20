@@ -203,7 +203,7 @@ export default function TemplateDetailPage() {
                     
                     <div className="flex items-center gap-1">
                       <UserIcon className="h-4 w-4" />
-                      <span>by {typeof template.owner === 'string' ? template.owner : 'Unknown'}</span>
+                      <span>by {typeof template.ownerId === 'string' ? template.ownerId : 'Unknown'}</span>
                     </div>
                     
                     <div className="flex items-center gap-1">
@@ -253,11 +253,11 @@ export default function TemplateDetailPage() {
                 </div>
               )}
 
-              {/* Category */}
-              {template.category && (
+              {/* Category - using metadata for category */}
+              {template.metadata?.category && (
                 <div className="flex items-center gap-2">
                   <Badge variant="outline" className="border-accent/30 text-accent">
-                    {template.category}
+                    {template.metadata.category}
                   </Badge>
                 </div>
               )}
