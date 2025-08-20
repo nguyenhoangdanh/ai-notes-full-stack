@@ -109,7 +109,7 @@ export function DashboardOverview() {
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--color-brand-100)_0%,_transparent_70%)] opacity-40" />
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_right,_var(--color-brand-200)_0%,_transparent_70%)] opacity-25" />
       
-      <ResponsiveContainer padding="md" mobilePadding="sm" className="py-8 xs:py-6 sm:py-12 space-y-12 xs:space-y-8 sm:space-y-16 relative z-10">
+      <ResponsiveContainer padding="responsive" className="py-8 xs:py-6 sm:py-12 space-y-12 xs:space-y-8 sm:space-y-16 relative z-10">
         
         {/* Hero Section */}
         <div className="relative text-center space-y-6 xs:space-y-4 sm:space-y-8 py-12 xs:py-8 sm:py-16">
