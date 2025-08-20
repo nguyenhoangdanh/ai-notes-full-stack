@@ -134,7 +134,7 @@ export function useDeleteTag() {
 
   return useMutation({
     mutationFn: (tagId: string) => tagsService.deleteTag(tagId),
-    onSuccess: (_, tagId) => {
+    onSuccess: (_: any, tagId: string) => {
       queryClient.setQueryData(
         queryKeys.tags.all(),
         (old: Tag[] = []) => old.filter(tag => tag.id !== tagId)

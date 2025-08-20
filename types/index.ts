@@ -131,9 +131,7 @@ export type {
 // Export specific attachments types to avoid conflicts
 export type {
   Attachment,
-  AttachmentAnalytics,
-  CreateAttachmentDto,
-  UpdateAttachmentDto
+  AttachmentAnalytics
 } from './attachments.types'
 
 // Export Enhanced Productivity types

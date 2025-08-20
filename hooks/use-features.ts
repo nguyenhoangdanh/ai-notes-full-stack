@@ -21,9 +21,9 @@ import type {
   CreateReminderDto,
   SavedSearch,
   CreateSavedSearchDto,
-  Template,
+  MiscTemplate as Template,
   AdvancedCreateTemplateDto as CreateTemplateDto,
-  UpdateTemplateDto,
+  MiscUpdateTemplateDto as UpdateTemplateDto,
   Tag,
 } from '../types'
 
