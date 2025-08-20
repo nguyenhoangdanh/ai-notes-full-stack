@@ -58,11 +58,15 @@ export const queryKeys = {
     advancedSearch: (query: any) => ['ai', 'advancedSearch', query] as const,
   },
 
-  // Tags
+  // Tags (Enhanced)
   tags: {
     all: () => ['tags'] as const,
     byId: (id: string) => ['tags', id] as const,
     popular: () => ['tags', 'popular'] as const,
+    hierarchy: () => ['tags', 'hierarchy'] as const,
+    analytics: () => ['tags', 'analytics'] as const,
+    suggestions: (noteId: string) => ['tags', 'suggestions', noteId] as const,
+    suggestionHistory: () => ['tags', 'suggestions', 'history'] as const,
   },
 
   // Categories
@@ -72,11 +76,24 @@ export const queryKeys = {
     auto: () => ['categories', 'auto'] as const,
   },
 
-  // Templates
+  // Templates (Enhanced)
   templates: {
     all: () => ['templates'] as const,
-    byId: (id: string) => ['templates', id] as const,
-    public: () => ['templates', 'public'] as const,
+    myTemplates: () => ['templates', 'my'] as const,
+    publicTemplates: () => ['templates', 'public'] as const,
+    template: (id: string) => ['templates', id] as const,
+    categories: () => ['templates', 'categories'] as const,
+    search: (params: any) => ['templates', 'search', params] as const,
+    stats: (id: string) => ['templates', 'stats', id] as const,
+    preview: (id: string, data?: any) => ['templates', 'preview', id, data] as const,
+  },
+
+  // Voice Notes
+  voiceNotes: {
+    all: () => ['voiceNotes'] as const,
+    byId: (id: string) => ['voiceNotes', id] as const,
+    stats: () => ['voiceNotes', 'stats'] as const,
+    transcription: (id: string) => ['voiceNotes', 'transcription', id] as const,
   },
 
   // Notifications
@@ -103,11 +120,13 @@ export const queryKeys = {
     calendarEvents: (filters?: any) => ['productivity', 'calendar', 'events', filters] as const,
   },
 
-  // Analytics
+  // Analytics (Enhanced)
   analytics: {
     overview: () => ['analytics', 'overview'] as const,
     trends: () => ['analytics', 'trends'] as const,
     wordcloud: () => ['analytics', 'wordcloud'] as const,
+    workspaces: () => ['analytics', 'workspaces'] as const,
+    content: () => ['analytics', 'content'] as const,
   },
 
   // Export
