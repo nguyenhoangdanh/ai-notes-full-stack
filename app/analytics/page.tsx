@@ -19,8 +19,8 @@ import {
 export default function AnalyticsPage() {
   // const { data: overview, isLoading: overviewLoading } = useDashboardAnalytics()
   // const { data: userActivity, isLoading: activityLoading } = useUserActivity()
-  const overview:any = {}
-  const userActivity:any = {};
+  const overview = null
+  const userActivity = null
 
   // TODO: Add proper analytics hooks to use-features.ts
   const workspaceStats = null
@@ -79,72 +79,70 @@ export default function AnalyticsPage() {
           </Badge>
         </div>
 
-        {/* Overview Cards */}
-        {overview && (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            <Card variant="glass" className="superhuman-hover border-border/30">
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Total Notes</CardTitle>
-                <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center">
-                  <FileText className="h-4 w-4 text-primary" />
-                </div>
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold">{formatNumber(overview.totalNotes)}</div>
-                <p className="text-xs text-muted-foreground flex items-center gap-1">
-                  <TrendingUp className="h-3 w-3 text-emerald-500" />
-                  +{overview.recentActivity} this week
-                </p>
-              </CardContent>
-            </Card>
+        {/* Overview Cards - Placeholder for now */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          <Card variant="glass" className="superhuman-hover border-border/30">
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">Total Notes</CardTitle>
+              <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center">
+                <FileText className="h-4 w-4 text-primary" />
+              </div>
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">--</div>
+              <p className="text-xs text-muted-foreground flex items-center gap-1">
+                <TrendingUp className="h-3 w-3 text-emerald-500" />
+                Connect backend for data
+              </p>
+            </CardContent>
+          </Card>
 
-            <Card variant="glass" className="superhuman-hover border-border/30">
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Workspaces</CardTitle>
-                <div className="h-8 w-8 rounded-full bg-blue-500/10 flex items-center justify-center">
-                  <FolderOpen className="h-4 w-4 text-blue-500" />
-                </div>
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold">{overview.totalWorkspaces}</div>
-                <p className="text-xs text-muted-foreground flex items-center gap-1">
-                  <Users className="h-3 w-3 text-blue-500" />
-                  {overview.collaborators} collaborators
-                </p>
-              </CardContent>
-            </Card>
+          <Card variant="glass" className="superhuman-hover border-border/30">
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">Workspaces</CardTitle>
+              <div className="h-8 w-8 rounded-full bg-blue-500/10 flex items-center justify-center">
+                <FolderOpen className="h-4 w-4 text-blue-500" />
+              </div>
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">--</div>
+              <p className="text-xs text-muted-foreground flex items-center gap-1">
+                <Users className="h-3 w-3 text-blue-500" />
+                Awaiting data
+              </p>
+            </CardContent>
+          </Card>
 
-            <Card variant="glass" className="superhuman-hover border-border/30">
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">AI Queries</CardTitle>
-                <div className="h-8 w-8 rounded-full bg-purple-500/10 flex items-center justify-center">
-                  <MessageSquare className="h-4 w-4 text-purple-500" />
-                </div>
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold">{formatNumber(overview.aiQueries)}</div>
-                <p className="text-xs text-muted-foreground">
-                  AI interactions
-                </p>
-              </CardContent>
-            </Card>
+          <Card variant="glass" className="superhuman-hover border-border/30">
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">AI Queries</CardTitle>
+              <div className="h-8 w-8 rounded-full bg-purple-500/10 flex items-center justify-center">
+                <MessageSquare className="h-4 w-4 text-purple-500" />
+              </div>
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">--</div>
+              <p className="text-xs text-muted-foreground">
+                AI interactions
+              </p>
+            </CardContent>
+          </Card>
 
-            <Card variant="glass" className="superhuman-hover border-border/30">
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Storage Used</CardTitle>
-                <div className="h-8 w-8 rounded-full bg-orange-500/10 flex items-center justify-center">
-                  <HardDrive className="h-4 w-4 text-orange-500" />
-                </div>
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold">{formatBytes(overview.storageUsed)}</div>
-                <p className="text-xs text-muted-foreground">
-                  {overview.totalTags} tags organized
-                </p>
-              </CardContent>
-            </Card>
-          </div>
-        )}
+          <Card variant="glass" className="superhuman-hover border-border/30">
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">Storage Used</CardTitle>
+              <div className="h-8 w-8 rounded-full bg-orange-500/10 flex items-center justify-center">
+                <HardDrive className="h-4 w-4 text-orange-500" />
+              </div>
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">--</div>
+              <p className="text-xs text-muted-foreground">
+                Data coming soon
+              </p>
+            </CardContent>
+          </Card>
+        </div>
 
         {/* Detailed Analytics */}
         <Tabs defaultValue="workspaces" className="space-y-6">
