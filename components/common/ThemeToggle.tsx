@@ -1,9 +1,11 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
 import { useTheme } from 'next-themes'
-import { Sun, Moon, Monitor, Sparkles } from 'lucide-react'
+import { Sun, Moon, Monitor, Palette, Check } from 'lucide-react'
 import { Button } from '../ui/button'
+import { QuickTooltip } from '../ui/tooltip'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -15,68 +17,42 @@ import {
 import { cn } from '../../lib/utils'
 
 interface ThemeOption {
-  name: string
   value: string
+  label: string
   icon: React.ComponentType<{ className?: string }>
   description: string
-  bgClass: string
-  iconColor: string
 }
-
-const themeOptions: ThemeOption[] = [
-  {
-    name: 'Light',
-    value: 'light',
-    icon: Sun,
-    description: 'Bright and clean',
-    bgClass: 'bg-amber-100 dark:bg-amber-900/30',
-    iconColor: 'text-amber-600 dark:text-amber-400'
-  },
-  {
-    name: 'Dark',
-    value: 'dark',
-    icon: Moon,
-    description: 'Easy on the eyes',
-    bgClass: 'bg-slate-100 dark:bg-slate-800',
-    iconColor: 'text-slate-600 dark:text-slate-400'
-  },
-  {
-    name: 'System',
-    value: 'system',
-    icon: Monitor,
-    description: 'Follows device setting',
-    bgClass: 'bg-brand-100 dark:bg-brand-900/30',
-    iconColor: 'text-brand-600 dark:text-brand-400'
-  }
-]
 
 export function ThemeToggle() {
   const { theme, setTheme, resolvedTheme } = useTheme()
   const [mounted, setMounted] = useState(false)
-  const [isChanging, setIsChanging] = useState(false)
 
+  // Ensure component is mounted to avoid hydration mismatch
   useEffect(() => {
     setMounted(true)
   }, [])
 
-  const handleThemeChange = (newTheme: string) => {
-    if (isChanging) return
-    
-    setIsChanging(true)
-    setTheme(newTheme)
-    
-    // Add visual feedback
-    setTimeout(() => setIsChanging(false), 300)
-  }
+  const themeOptions: ThemeOption[] = [
+    {
+      value: 'light',
+      label: 'Light',
+      icon: Sun,
+      description: 'Clean and bright interface'
+    },
+    {
+      value: 'dark', 
+      label: 'Dark',
+      icon: Moon,
+      description: 'Easy on the eyes in low light'
+    },
+    {
+      value: 'system',
+      label: 'System',
+      icon: Monitor,
+      description: 'Follows your device setting'
+    }
+  ]
 
-  const getCurrentThemeOption = () => {
-    return themeOptions.find(option => option.value === theme) || themeOptions[2]
-  }
-
-  const currentTheme = getCurrentThemeOption()
-  const CurrentIcon = currentTheme.icon
-
-  // Don't render until mounted to prevent hydration mismatch
   if (!mounted) {
     return (
       <Button
@@ -85,10 +61,12 @@ export function ThemeToggle() {
         className="rounded-xl opacity-50"
         disabled
       >
-        <Monitor className="h-4 w-4" />
+        <Sun className="h-4 w-4" />
       </Button>
     )
   }
+
+  const currentTheme = themeOptions.find(option => option.value === theme) || themeOptions[0]
 
   return (
     <DropdownMenu>
@@ -97,87 +75,126 @@ export function ThemeToggle() {
           variant="ghost"
           size="icon-sm"
           className={cn(
-            "rounded-xl transition-modern group relative overflow-hidden",
-            "hover:bg-surface-hover hover:scale-105 active:scale-95",
-            "shadow-1 hover:shadow-2 glass border border-border-subtle",
-            isChanging && "animate-pulse"
+            "rounded-xl transition-modern relative overflow-hidden",
+            "hover:bg-surface-hover hover:scale-110 hover:shadow-2",
+            "focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
           )}
-          aria-label={`Current theme: ${currentTheme.name}. Click to change theme`}
-          disabled={isChanging}
         >
-          <CurrentIcon className={cn(
-            "h-4 w-4 transition-modern",
-            "group-hover:scale-110 group-hover:rotate-12",
-            isChanging && "animate-spin"
-          )} />
+          <div className="relative">
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={resolvedTheme}
+                initial={{ rotate: -90, opacity: 0, scale: 0.8 }}
+                animate={{ rotate: 0, opacity: 1, scale: 1 }}
+                exit={{ rotate: 90, opacity: 0, scale: 0.8 }}
+                transition={{ 
+                  type: "spring", 
+                  stiffness: 200, 
+                  damping: 20,
+                  duration: 0.3 
+                }}
+                className="flex items-center justify-center"
+              >
+                {resolvedTheme === 'dark' ? (
+                  <Moon className="h-4 w-4 text-blue-400" />
+                ) : (
+                  <Sun className="h-4 w-4 text-yellow-500" />
+                )}
+              </motion.div>
+            </AnimatePresence>
+            
+            {/* Glow effect */}
+            <motion.div
+              className={cn(
+                "absolute inset-0 rounded-full",
+                resolvedTheme === 'dark' 
+                  ? "bg-blue-400/20" 
+                  : "bg-yellow-500/20"
+              )}
+              animate={{
+                scale: [1, 1.2, 1],
+                opacity: [0.5, 0.8, 0.5]
+              }}
+              transition={{
+                duration: 2,
+                repeat: Infinity,
+                ease: "easeInOut"
+              }}
+            />
+          </div>
           
-          {/* Theme indicator dot */}
-          <div className={cn(
-            "absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 rounded-full border border-surface transition-modern",
-            resolvedTheme === 'dark' 
-              ? 'bg-slate-700' 
-              : resolvedTheme === 'light' 
-              ? 'bg-amber-400' 
-              : 'bg-brand-500'
-          )} />
-
-          {/* Hover glow effect */}
-          <div className="absolute inset-0 bg-gradient-to-r from-brand-100/20 to-brand-200/20 opacity-0 group-hover:opacity-100 transition-opacity duration-200" />
+          <span className="sr-only">Toggle theme</span>
         </Button>
       </DropdownMenuTrigger>
-      
+
       <DropdownMenuContent 
-        align="end" 
-        className="w-56 p-2 glass border border-border-subtle shadow-3 animate-scale-in"
+        className="w-56 p-2 rounded-2xl glass border border-border-subtle shadow-5" 
+        align="end"
         sideOffset={8}
       >
-        <DropdownMenuLabel className="px-3 py-2 text-xs font-semibold text-text-muted uppercase tracking-wider flex items-center gap-2">
-          <Sparkles className="h-3 w-3" />
-          Choose Theme
+        <DropdownMenuLabel className="text-xs font-medium text-text-secondary uppercase tracking-wider px-3 py-2">
+          <div className="flex items-center gap-2">
+            <Palette className="h-3 w-3" />
+            Theme
+          </div>
         </DropdownMenuLabel>
-        <DropdownMenuSeparator className="opacity-60" />
         
-        {themeOptions.map((option) => (
-          <DropdownMenuItem
-            key={option.value}
-            onClick={() => handleThemeChange(option.value)}
-            className={cn(
-              "gap-3 rounded-lg px-3 py-2.5 cursor-pointer transition-modern",
-              "hover:bg-surface-hover focus:bg-surface-hover",
-              theme === option.value && "bg-brand-50 dark:bg-brand-950/50 text-brand-700 dark:text-brand-300"
-            )}
-          >
-            <div className={cn(
-              "flex items-center justify-center w-8 h-8 rounded-lg transition-modern",
-              option.bgClass
-            )}>
-              <option.icon className={cn("h-4 w-4", option.iconColor)} />
-            </div>
+        <div className="space-y-1">
+          {themeOptions.map((option) => {
+            const isSelected = theme === option.value
+            const Icon = option.icon
             
-            <div className="flex-1">
-              <div className="font-medium">{option.name}</div>
-              <div className="text-xs text-text-muted">
-                {option.value === 'system' && resolvedTheme 
-                  ? `${option.description} (${resolvedTheme})`
-                  : option.description
-                }
-              </div>
-            </div>
-            
-            {theme === option.value && (
-              <div className="w-2 h-2 bg-brand-500 rounded-full animate-pulse" />
-            )}
-          </DropdownMenuItem>
-        ))}
-        
-        {/* Quick preview */}
-        <DropdownMenuSeparator className="opacity-60 my-2" />
+            return (
+              <DropdownMenuItem
+                key={option.value}
+                onClick={() => setTheme(option.value)}
+                className={cn(
+                  "rounded-xl cursor-pointer transition-all duration-200 p-3",
+                  "hover:bg-surface-hover focus:bg-surface-hover",
+                  isSelected && "bg-brand-50 hover:bg-brand-100 text-brand-700"
+                )}
+              >
+                <div className="flex items-center gap-3 w-full">
+                  <div className={cn(
+                    "p-2 rounded-lg transition-transform duration-200",
+                    isSelected 
+                      ? "bg-brand-100 text-brand-600 scale-110" 
+                      : "bg-bg-muted text-text-muted"
+                  )}>
+                    <Icon className="h-4 w-4" />
+                  </div>
+                  
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2">
+                      <span className="font-medium">{option.label}</span>
+                      {isSelected && (
+                        <motion.div
+                          initial={{ scale: 0 }}
+                          animate={{ scale: 1 }}
+                          transition={{ type: "spring", stiffness: 300 }}
+                        >
+                          <Check className="h-3 w-3 text-brand-600" />
+                        </motion.div>
+                      )}
+                    </div>
+                    <p className="text-xs text-text-muted">
+                      {option.description}
+                    </p>
+                  </div>
+                </div>
+              </DropdownMenuItem>
+            )
+          })}
+        </div>
+
+        <DropdownMenuSeparator className="my-2" />
+
         <div className="px-3 py-2">
-          <div className="text-xs text-text-muted mb-2">Preview</div>
-          <div className="flex gap-2">
-            <div className="w-6 h-4 rounded bg-bg border border-border"></div>
-            <div className="w-6 h-4 rounded bg-surface border border-border"></div>
-            <div className="w-6 h-4 rounded bg-brand-100 border border-brand-200"></div>
+          <div className="text-xs text-text-subtle">
+            Current: <span className="font-medium text-text-muted">{currentTheme.label}</span>
+            {theme === 'system' && (
+              <span className="text-text-subtle"> ({resolvedTheme})</span>
+            )}
           </div>
         </div>
       </DropdownMenuContent>
@@ -185,53 +202,8 @@ export function ThemeToggle() {
   )
 }
 
-// Compact toggle for mobile or space-constrained layouts
-export function CompactThemeToggle() {
-  const { theme, setTheme } = useTheme()
-  const [mounted, setMounted] = useState(false)
-
-  useEffect(() => {
-    setMounted(true)
-  }, [])
-
-  const toggleTheme = () => {
-    const nextTheme = theme === 'light' ? 'dark' : theme === 'dark' ? 'system' : 'light'
-    setTheme(nextTheme)
-  }
-
-  const getCurrentIcon = () => {
-    const current = themeOptions.find(option => option.value === theme)
-    return current ? current.icon : Monitor
-  }
-
-  const Icon = getCurrentIcon()
-
-  if (!mounted) {
-    return (
-      <Button variant="ghost" size="icon-sm" className="rounded-lg opacity-50" disabled>
-        <Monitor className="h-4 w-4" />
-      </Button>
-    )
-  }
-
-  return (
-    <Button
-      variant="ghost"
-      size="icon-sm"
-      onClick={toggleTheme}
-      className={cn(
-        "rounded-lg transition-modern group",
-        "hover:bg-surface-hover hover:scale-105 active:scale-95"
-      )}
-      aria-label={`Switch to ${theme === 'light' ? 'dark' : theme === 'dark' ? 'system' : 'light'} theme`}
-    >
-      <Icon className="h-4 w-4 transition-transform duration-200 group-hover:scale-110 group-hover:rotate-12" />
-    </Button>
-  )
-}
-
-// Quick theme switcher for settings pages
-export function ThemeSwitcher() {
+// Simplified toggle for mobile/compact spaces
+export function SimpleThemeToggle() {
   const { theme, setTheme, resolvedTheme } = useTheme()
   const [mounted, setMounted] = useState(false)
 
@@ -241,51 +213,217 @@ export function ThemeSwitcher() {
 
   if (!mounted) {
     return (
-      <div className="flex gap-2">
-        {themeOptions.map((option) => (
-          <div key={option.value} className="w-16 h-16 rounded-xl bg-bg-muted animate-pulse" />
-        ))}
+      <Button variant="ghost" size="icon-sm" className="rounded-full opacity-50" disabled>
+        <Sun className="h-4 w-4" />
+      </Button>
+    )
+  }
+
+  const toggleTheme = () => {
+    if (theme === 'light') {
+      setTheme('dark')
+    } else if (theme === 'dark') {
+      setTheme('system')
+    } else {
+      setTheme('light')
+    }
+  }
+
+  return (
+    <QuickTooltip 
+      content={`Switch to ${theme === 'light' ? 'dark' : theme === 'dark' ? 'system' : 'light'} mode`}
+      variant="dark"
+    >
+      <Button
+        variant="ghost"
+        size="icon-sm"
+        onClick={toggleTheme}
+        className={cn(
+          "rounded-full transition-modern relative overflow-hidden",
+          "hover:bg-surface-hover hover:scale-110",
+          "active:scale-95"
+        )}
+      >
+        <div className="relative">
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={resolvedTheme}
+              initial={{ rotate: -180, opacity: 0 }}
+              animate={{ rotate: 0, opacity: 1 }}
+              exit={{ rotate: 180, opacity: 0 }}
+              transition={{ duration: 0.2 }}
+            >
+              {resolvedTheme === 'dark' ? (
+                <Moon className="h-4 w-4 text-blue-400" />
+              ) : (
+                <Sun className="h-4 w-4 text-yellow-500" />
+              )}
+            </motion.div>
+          </AnimatePresence>
+        </div>
+      </Button>
+    </QuickTooltip>
+  )
+}
+
+// Theme picker for settings pages
+interface ThemePickerProps {
+  className?: string
+}
+
+export function ThemePicker({ className }: ThemePickerProps) {
+  const { theme, setTheme, resolvedTheme } = useTheme()
+  const [mounted, setMounted] = useState(false)
+
+  useEffect(() => {
+    setMounted(true)
+  }, [])
+
+  if (!mounted) {
+    return (
+      <div className={cn("space-y-4", className)}>
+        <div className="grid grid-cols-3 gap-3">
+          {[1, 2, 3].map(i => (
+            <div key={i} className="aspect-video rounded-xl bg-bg-muted animate-pulse" />
+          ))}
+        </div>
       </div>
     )
   }
 
+  const themeOptions: ThemeOption[] = [
+    {
+      value: 'light',
+      label: 'Light',
+      icon: Sun,
+      description: 'Clean and bright'
+    },
+    {
+      value: 'dark',
+      label: 'Dark', 
+      icon: Moon,
+      description: 'Easy on the eyes'
+    },
+    {
+      value: 'system',
+      label: 'Auto',
+      icon: Monitor,
+      description: 'Follows system'
+    }
+  ]
+
   return (
-    <div className="space-y-3">
-      <div className="text-sm font-medium text-text">Theme Preference</div>
-      <div className="flex gap-3">
-        {themeOptions.map((option) => (
-          <button
-            key={option.value}
-            onClick={() => setTheme(option.value)}
-            className={cn(
-              "flex flex-col items-center gap-2 p-3 rounded-xl transition-modern",
-              "border-2 hover:scale-105 active:scale-95",
-              theme === option.value
-                ? "border-brand-500 bg-brand-50 dark:bg-brand-950/50"
-                : "border-border hover:border-brand-300 bg-surface hover:bg-surface-hover"
-            )}
-            aria-label={`Set theme to ${option.name}`}
-          >
-            <div className={cn(
-              "flex items-center justify-center w-8 h-8 rounded-lg",
-              option.bgClass
-            )}>
-              <option.icon className={cn("h-4 w-4", option.iconColor)} />
-            </div>
-            
-            <div className="text-center">
-              <div className="text-xs font-medium">{option.name}</div>
-              {option.value === 'system' && resolvedTheme && (
-                <div className="text-xs text-text-muted">({resolvedTheme})</div>
-              )}
-            </div>
-            
-            {theme === option.value && (
-              <div className="w-2 h-2 bg-brand-500 rounded-full" />
-            )}
-          </button>
-        ))}
+    <div className={cn("space-y-4", className)}>
+      <div>
+        <h3 className="font-semibold text-text mb-2">Theme</h3>
+        <p className="text-sm text-text-muted">
+          Choose how the interface looks and feels
+        </p>
       </div>
+
+      <div className="grid grid-cols-3 gap-3">
+        {themeOptions.map((option) => {
+          const isSelected = theme === option.value
+          const Icon = option.icon
+
+          return (
+            <motion.button
+              key={option.value}
+              onClick={() => setTheme(option.value)}
+              className={cn(
+                "relative p-4 rounded-xl border-2 transition-all duration-200",
+                "hover:scale-105 active:scale-95",
+                isSelected 
+                  ? "border-brand-500 bg-brand-50" 
+                  : "border-border hover:border-border-strong"
+              )}
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+            >
+              {/* Preview */}
+              <div className={cn(
+                "aspect-video rounded-lg mb-3 relative overflow-hidden",
+                option.value === 'light' && "bg-white border border-neutral-200",
+                option.value === 'dark' && "bg-neutral-900 border border-neutral-800", 
+                option.value === 'system' && "bg-gradient-to-br from-white via-neutral-100 to-neutral-900"
+              )}>
+                {/* Mock interface elements */}
+                <div className={cn(
+                  "absolute top-1 left-1 right-1 h-1.5 rounded-full",
+                  option.value === 'light' && "bg-neutral-100",
+                  option.value === 'dark' && "bg-neutral-800",
+                  option.value === 'system' && "bg-gradient-to-r from-neutral-200 to-neutral-700"
+                )} />
+                
+                <div className={cn(
+                  "absolute bottom-1 left-1 w-6 h-1 rounded-full",
+                  option.value === 'light' && "bg-neutral-300",
+                  option.value === 'dark' && "bg-neutral-600",
+                  option.value === 'system' && "bg-neutral-400"
+                )} />
+                
+                <div className={cn(
+                  "absolute bottom-1 right-1 w-4 h-1 rounded-full",
+                  option.value === 'light' && "bg-blue-500",
+                  option.value === 'dark' && "bg-blue-400",
+                  option.value === 'system' && "bg-blue-500"
+                )} />
+              </div>
+
+              {/* Label */}
+              <div className="text-center">
+                <div className="flex items-center justify-center gap-2 mb-1">
+                  <Icon className={cn(
+                    "h-4 w-4",
+                    isSelected ? "text-brand-600" : "text-text-muted"
+                  )} />
+                  <span className={cn(
+                    "font-medium text-sm",
+                    isSelected ? "text-brand-700" : "text-text"
+                  )}>
+                    {option.label}
+                  </span>
+                </div>
+                <p className="text-xs text-text-muted">
+                  {option.description}
+                </p>
+              </div>
+
+              {/* Selection indicator */}
+              <AnimatePresence>
+                {isSelected && (
+                  <motion.div
+                    initial={{ scale: 0 }}
+                    animate={{ scale: 1 }}
+                    exit={{ scale: 0 }}
+                    className="absolute top-2 right-2 w-5 h-5 bg-brand-500 rounded-full flex items-center justify-center"
+                  >
+                    <Check className="h-3 w-3 text-white" />
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </motion.button>
+          )
+        })}
+      </div>
+
+      {theme === 'system' && (
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="p-3 rounded-xl bg-surface border border-border-subtle"
+        >
+          <div className="flex items-center gap-2 text-sm">
+            <Monitor className="h-4 w-4 text-brand-600" />
+            <span className="text-text-muted">
+              Currently following system: 
+              <span className="font-medium text-text ml-1 capitalize">
+                {resolvedTheme}
+              </span>
+            </span>
+          </div>
+        </motion.div>
+      )}
     </div>
   )
 }
