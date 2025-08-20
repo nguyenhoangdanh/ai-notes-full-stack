@@ -474,24 +474,32 @@ export function useUserActivity(filters?: any) {
 // Categories
 export function useCategories() {
   return useQuery({
-    queryKey: ['categories'],
-    queryFn: () => Promise.resolve([]),
+    queryKey: queryKeys.categories.all(),
+    queryFn: async () => {
+      try {
+        const { categoriesService } = await import('../services/smart.service');
+        return await categoriesService.getAll();
+      } catch (error) {
+        console.error('Failed to fetch categories:', error);
+        return [];
+      }
+    },
     staleTime: 5 * 60 * 1000, // 5 minutes
   })
 }
 
 export function useCategory(categoryId: string) {
   return useQuery({
-    queryKey: ['category', categoryId],
-    queryFn: () => Promise.resolve({
-      id: categoryId,
-      name: 'Sample Category',
-      description: 'This is a sample category',
-      keywords: ['sample', 'test'],
-      isAuto: false,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString()
-    }),
+    queryKey: queryKeys.categories.byId(categoryId),
+    queryFn: async () => {
+      try {
+        const { categoriesService } = await import('../services/smart.service');
+        return await categoriesService.getById(categoryId);
+      } catch (error) {
+        console.error('Failed to fetch category:', error);
+        return null;
+      }
+    },
     enabled: !!categoryId,
     staleTime: 5 * 60 * 1000,
   })
@@ -500,7 +508,15 @@ export function useCategory(categoryId: string) {
 export function useCategoryNotes(categoryId: string) {
   return useQuery({
     queryKey: ['category-notes', categoryId],
-    queryFn: () => Promise.resolve([]),
+    queryFn: async () => {
+      try {
+        const { categoriesService } = await import('../services/smart.service');
+        return await categoriesService.getNoteCategories(categoryId);
+      } catch (error) {
+        console.error('Failed to fetch category notes:', error);
+        return [];
+      }
+    },
     enabled: !!categoryId,
     staleTime: 2 * 60 * 1000,
   })
@@ -510,9 +526,12 @@ export function useCreateCategory() {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: (data: any) => Promise.resolve({}),
+    mutationFn: async (data: any) => {
+      const { categoriesService } = await import('../services/smart.service');
+      return await categoriesService.create(data);
+    },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['categories'] })
+      queryClient.invalidateQueries({ queryKey: queryKeys.categories.all() })
       toast.success('Category created')
     },
     onError: (error: any) => {
@@ -525,9 +544,12 @@ export function useUpdateCategory() {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: ({ id, data }: { id: string; data: any }) => Promise.resolve({}),
+    mutationFn: async ({ id, data }: { id: string; data: any }) => {
+      const { categoriesService } = await import('../services/smart.service');
+      return await categoriesService.update(id, data);
+    },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['categories'] })
+      queryClient.invalidateQueries({ queryKey: queryKeys.categories.all() })
       toast.success('Category updated')
     },
     onError: (error: any) => {
@@ -540,9 +562,12 @@ export function useDeleteCategory() {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: (id: string) => Promise.resolve(),
+    mutationFn: async (id: string) => {
+      const { categoriesService } = await import('../services/smart.service');
+      return await categoriesService.delete(id);
+    },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['categories'] })
+      queryClient.invalidateQueries({ queryKey: queryKeys.categories.all() })
       toast.success('Category deleted')
     },
     onError: (error: any) => {
@@ -591,7 +616,15 @@ export function useSmartDuplicateReports() {
 export function useDuplicateStats() {
   return useQuery({
     queryKey: ['duplicate-stats'],
-    queryFn: () => Promise.resolve({}),
+    queryFn: async () => {
+      try {
+        const { duplicatesService } = await import('../services/smart.service');
+        return await duplicatesService.getStats();
+      } catch (error) {
+        console.error('Failed to fetch duplicate stats:', error);
+        return {};
+      }
+    },
     staleTime: 5 * 60 * 1000,
   })
 }
@@ -600,7 +633,10 @@ export function useQueueDuplicateDetection() {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: () => Promise.resolve(),
+    mutationFn: async () => {
+      const { duplicatesService } = await import('../services/smart.service');
+      return await duplicatesService.queueDetection();
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['duplicates'] })
       toast.success('Duplicate detection started')
@@ -615,7 +651,10 @@ export function useMergeDuplicates() {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: (data: any) => Promise.resolve(),
+    mutationFn: async (data: any) => {
+      const { duplicatesService } = await import('../services/smart.service');
+      return await duplicatesService.mergeDuplicates(data);
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['duplicates'] })
       toast.success('Duplicates merged')
@@ -630,7 +669,15 @@ export function useMergeDuplicates() {
 export function useRelationsStats(userId: string) {
   return useQuery({
     queryKey: ['relations-stats', userId],
-    queryFn: () => Promise.resolve({}),
+    queryFn: async () => {
+      try {
+        const { relationsService } = await import('../services/smart.service');
+        return await relationsService.getStats(userId);
+      } catch (error) {
+        console.error('Failed to fetch relations stats:', error);
+        return {};
+      }
+    },
     enabled: !!userId,
     staleTime: 5 * 60 * 1000,
   })
@@ -640,7 +687,15 @@ export function useRelationsStats(userId: string) {
 export function useSummaryStats() {
   return useQuery({
     queryKey: ['summary-stats'],
-    queryFn: () => Promise.resolve({}),
+    queryFn: async () => {
+      try {
+        const { summariesService } = await import('../services/smart.service');
+        return await summariesService.getUserStats();
+      } catch (error) {
+        console.error('Failed to fetch summary stats:', error);
+        return {};
+      }
+    },
     staleTime: 5 * 60 * 1000,
   })
 }
@@ -693,7 +748,10 @@ export function useBatchGenerateSummaries() {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: (data: any) => Promise.resolve(),
+    mutationFn: async (data: any) => {
+      const { summariesService } = await import('../services/smart.service');
+      return await summariesService.batchGenerate(data);
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['summary-stats'] })
       toast.success('Batch summary generation started')
