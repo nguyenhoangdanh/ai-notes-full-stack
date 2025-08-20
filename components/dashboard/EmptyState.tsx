@@ -4,11 +4,11 @@ import { motion } from 'framer-motion'
 import { Button } from '../ui/button'
 import { Card } from '../ui/card'
 import { Badge } from '../ui/badge'
-import { 
-  FileText, 
-  Plus, 
-  Sparkles, 
-  BookOpen, 
+import {
+  FileText,
+  Plus,
+  Sparkles,
+  BookOpen,
   PenTool,
   Lightbulb,
   Zap,
@@ -17,7 +17,12 @@ import {
   Download,
   Mic,
   Image,
-  Upload
+  Upload,
+  Users,
+  Search,
+  X,
+  Hash,
+  Calendar
 } from 'lucide-react'
 import { cn } from '../../lib/utils'
 
@@ -124,7 +129,7 @@ export function EmptyState({
   const finalTitle = title || config.title
   const finalDescription = description || config.description
   const finalAction = action || config.primaryAction
-  const finalSecondaryAction = secondaryAction || config.secondaryAction
+  const finalSecondaryAction = secondaryAction || (config as any).secondaryAction
 
   return (
     <motion.div
@@ -212,15 +217,15 @@ export function EmptyState({
         transition={{ delay: 0.6, duration: 0.5 }}
         className="flex flex-col sm:flex-row gap-4 mb-8"
       >
-        {finalAction && (
+        {finalAction && (finalAction as any).onClick && (
           <Button
-            onClick={finalAction.onClick}
-            variant={finalAction.variant || 'gradient'}
+            onClick={(finalAction as any).onClick}
+            variant={(finalAction as any).variant || 'gradient'}
             size="lg"
             className="gap-2 shadow-3 hover:shadow-4 rounded-xl px-8"
           >
-            {finalAction.icon}
-            {finalAction.label}
+            {(finalAction as any).icon}
+            {(finalAction as any).label}
           </Button>
         )}
         
@@ -238,7 +243,7 @@ export function EmptyState({
       </motion.div>
 
       {/* Quick Actions Grid */}
-      {showQuickActions && config.quickActions && (
+      {showQuickActions && (config as any).quickActions && (
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
@@ -247,7 +252,7 @@ export function EmptyState({
         >
           <h3 className="text-lg font-semibold text-text mb-4">Quick Actions</h3>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            {config.quickActions.map((quickAction, index) => (
+            {(config as any).quickActions.map((quickAction: any, index: number) => (
               <motion.div
                 key={quickAction.label}
                 initial={{ opacity: 0, y: 10 }}
@@ -273,7 +278,7 @@ export function EmptyState({
       )}
 
       {/* Tips Section */}
-      {showTips && config.tips && (
+      {showTips && (config as any).tips && (
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
@@ -282,7 +287,7 @@ export function EmptyState({
         >
           <h3 className="text-lg font-semibold text-text mb-6">Pro Tips</h3>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            {config.tips.map((tip, index) => (
+            {(config as any).tips.map((tip: any, index: number) => (
               <motion.div
                 key={tip.text}
                 initial={{ opacity: 0, x: index % 2 === 0 ? -10 : 10 }}
