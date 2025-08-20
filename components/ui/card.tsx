@@ -2,10 +2,11 @@ import { ComponentProps, forwardRef } from "react"
 import { cn } from "../../lib/utils"
 
 interface CardProps extends ComponentProps<"div"> {
-  variant?: "default" | "elevated" | "outlined" | "ghost" | "glass" | "solid" | "gradient"
+  variant?: "default" | "elevated" | "outlined" | "ghost" | "glass" | "solid" | "gradient" | "feature"
   padding?: "none" | "xs" | "sm" | "md" | "lg" | "xl"
   interactive?: boolean
   clickable?: boolean
+  hover?: "lift" | "glow" | "scale" | "none"
 }
 
 const Card = forwardRef<HTMLDivElement, CardProps>(
@@ -15,6 +16,7 @@ const Card = forwardRef<HTMLDivElement, CardProps>(
     padding = "md", 
     interactive = false,
     clickable = false,
+    hover = "lift",
     ...props 
   }, ref) => {
     return (
@@ -22,40 +24,53 @@ const Card = forwardRef<HTMLDivElement, CardProps>(
         ref={ref}
         data-slot="card"
         className={cn(
-          // Base Superhuman styles - rounded, clean, modern
-          "flex flex-col rounded-2xl border superhuman-transition group relative overflow-hidden",
-          "text-card-foreground will-change-transform",
+          // Base modern card styles
+          "flex flex-col rounded-2xl transition-modern group relative overflow-hidden",
+          "text-text will-change-transform",
 
           // Variant styles
           {
-            // Default Superhuman glass card
-            "bg-background/50 border-border/30 shadow-md superhuman-glass backdrop-blur-sm": variant === "default",
+            // Default glass card with subtle background
+            "bg-surface border border-border shadow-1 hover:shadow-2": variant === "default",
             
-            // Elevated with stronger shadow and glow
-            "bg-background/60 border-border/20 shadow-xl shadow-primary/5 superhuman-glass backdrop-blur-md": variant === "elevated",
+            // Elevated card with stronger shadow
+            "bg-surface-elevated border border-border-subtle shadow-2 hover:shadow-3": variant === "elevated",
             
             // Clean outlined card
-            "bg-background/30 border-2 border-border/40 hover:border-primary/30 hover:bg-background/50 backdrop-blur-sm": variant === "outlined",
+            "bg-surface border-2 border-border hover:border-brand-300": variant === "outlined",
             
             // Minimal ghost card
-            "bg-transparent border-transparent hover:bg-background/20 hover:backdrop-blur-sm": variant === "ghost",
+            "bg-transparent border-transparent hover:bg-surface-hover": variant === "ghost",
             
-            // Strong glass morphism
-            "bg-background/40 border-border/20 shadow-lg backdrop-blur-md superhuman-glass": variant === "glass",
+            // Glass morphism effect
+            "glass border border-border-subtle shadow-2": variant === "glass",
             
             // Solid background
-            "bg-background border-border/50 shadow-sm": variant === "solid",
+            "bg-surface border border-border shadow-1": variant === "solid",
             
-            // Superhuman gradient card
-            "bg-gradient-to-br from-background/90 via-background/50 to-primary/5 border-primary/20 shadow-lg superhuman-gradient-subtle": variant === "gradient",
+            // Gradient background for marketing appeal
+            "bg-gradient-to-br from-surface via-surface-elevated to-brand-50 border border-brand-200 shadow-2": variant === "gradient",
+            
+            // Feature card with enhanced styling
+            "bg-gradient-to-br from-brand-50 to-brand-100 border border-brand-200 shadow-3 relative before:absolute before:inset-0 before:bg-gradient-to-br before:from-brand-500/5 before:to-transparent before:pointer-events-none": variant === "feature",
           },
 
-          // Interactive states with Superhuman micro-interactions
-          interactive && [
-            "cursor-pointer hover:-translate-y-1 hover:scale-[1.01] hover:shadow-xl hover:shadow-primary/10",
-            "active:translate-y-0 active:scale-100 active:shadow-lg",
-            "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/30 focus-visible:ring-offset-2",
-            "superhuman-hover superhuman-glow",
+          // Hover effects
+          interactive && hover === "lift" && [
+            "cursor-pointer hover:-translate-y-1 hover:scale-[1.01]",
+            "active:translate-y-0 active:scale-100",
+            "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
+          ],
+
+          interactive && hover === "glow" && [
+            "cursor-pointer hover:shadow-glow transition-all duration-300",
+            "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
+          ],
+
+          interactive && hover === "scale" && [
+            "cursor-pointer hover:scale-[1.02] transition-transform duration-200",
+            "active:scale-[0.98]",
+            "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
           ],
 
           clickable && "cursor-pointer",
@@ -108,8 +123,7 @@ const CardTitle = forwardRef<HTMLHeadingElement, ComponentProps<"h3">>(
         ref={ref}
         data-slot="card-title"
         className={cn(
-          "text-xl font-semibold leading-tight tracking-tight",
-          "text-foreground",
+          "text-xl font-semibold leading-tight tracking-tight text-text",
           className
         )}
         {...props}
@@ -129,7 +143,7 @@ const CardDescription = forwardRef<HTMLParagraphElement, ComponentProps<"p">>(
         ref={ref}
         data-slot="card-description"
         className={cn(
-          "text-sm text-muted-foreground leading-relaxed",
+          "text-sm text-text-secondary leading-relaxed",
           className
         )}
         {...props}
@@ -181,7 +195,7 @@ const CardFooter = forwardRef<HTMLDivElement, ComponentProps<"div">>(
         data-slot="card-footer"
         className={cn(
           "flex items-center justify-between px-6 py-4 mt-auto",
-          "border-t border-border/30 bg-muted/10 backdrop-blur-sm",
+          "border-t border-border-subtle bg-bg-muted/50",
           className
         )}
         {...props}
@@ -192,7 +206,7 @@ const CardFooter = forwardRef<HTMLDivElement, ComponentProps<"div">>(
 
 CardFooter.displayName = "CardFooter"
 
-// Enhanced StatsCard with Superhuman styling
+// Enhanced StatsCard for marketing dashboards
 const StatsCard = forwardRef<HTMLDivElement, CardProps & {
   title: string
   value: string | number
@@ -200,6 +214,7 @@ const StatsCard = forwardRef<HTMLDivElement, CardProps & {
   icon?: React.ReactNode
   trend?: "up" | "down" | "neutral"
   trendValue?: string
+  color?: "brand" | "success" | "warning" | "danger" | "info"
 }>(({ 
   title, 
   value, 
@@ -207,13 +222,14 @@ const StatsCard = forwardRef<HTMLDivElement, CardProps & {
   icon, 
   trend, 
   trendValue,
+  color = "brand",
   className, 
   ...props 
 }, ref) => {
   const trendColors = {
-    up: "text-emerald-600 dark:text-emerald-400",
-    down: "text-red-600 dark:text-red-400",
-    neutral: "text-muted-foreground"
+    up: "text-success bg-success-bg border border-success-border",
+    down: "text-danger bg-danger-bg border border-danger-border",
+    neutral: "text-text-muted bg-bg-muted border border-border-subtle"
   }
 
   const trendIcons = {
@@ -222,42 +238,54 @@ const StatsCard = forwardRef<HTMLDivElement, CardProps & {
     neutral: "→"
   }
 
+  const colorClasses = {
+    brand: "text-brand-600 bg-brand-50 border border-brand-200",
+    success: "text-success bg-success-bg border border-success-border",
+    warning: "text-warning bg-warning-bg border border-warning-border",
+    danger: "text-danger bg-danger-bg border border-danger-border",
+    info: "text-info bg-info-bg border border-info-border"
+  }
+
   return (
     <Card
       ref={ref}
-      variant="glass"
+      variant="elevated"
       interactive
-      className={cn("hover:scale-[1.02] superhuman-hover superhuman-glow", className)}
+      hover="lift"
+      className={cn("group hover:border-brand-200", className)}
       {...props}
     >
       <CardContent className="p-6">
         <div className="flex items-start justify-between">
-          <div className="flex-1 space-y-2">
-            <p className="text-sm font-medium text-muted-foreground">
+          <div className="flex-1 space-y-3">
+            <p className="text-sm font-medium text-text-secondary">
               {title}
             </p>
-            <p className="text-3xl font-bold text-foreground tracking-tight">
+            <p className="text-3xl font-bold text-text tracking-tight">
               {value}
             </p>
             {description && (
-              <p className="text-xs text-muted-foreground leading-relaxed">
+              <p className="text-xs text-text-muted leading-relaxed">
                 {description}
               </p>
             )}
             {trend && trendValue && (
               <div className={cn(
-                "inline-flex items-center gap-1 text-xs font-medium px-2 py-1 rounded-full",
-                "bg-background/50 border border-border/30",
+                "inline-flex items-center gap-1.5 text-xs font-medium px-3 py-1.5 rounded-full",
                 trendColors[trend]
               )}>
-                <span className="text-sm">{trendIcons[trend]}</span>
+                <span className="text-sm font-semibold">{trendIcons[trend]}</span>
                 {trendValue}
               </div>
             )}
           </div>
           {icon && (
-            <div className="flex-shrink-0 h-12 w-12 rounded-xl bg-primary/10 flex items-center justify-center superhuman-transition hover:bg-primary/15">
-              <div className="text-primary [&_svg]:size-6">
+            <div className={cn(
+              "flex-shrink-0 h-12 w-12 rounded-xl flex items-center justify-center transition-modern",
+              "group-hover:scale-110",
+              colorClasses[color]
+            )}>
+              <div className="[&_svg]:size-6">
                 {icon}
               </div>
             </div>
@@ -270,7 +298,7 @@ const StatsCard = forwardRef<HTMLDivElement, CardProps & {
 
 StatsCard.displayName = "StatsCard"
 
-// New Superhuman MetricCard component
+// Modern MetricCard for key performance indicators
 const MetricCard = forwardRef<HTMLDivElement, CardProps & {
   label: string
   value: string | number
@@ -279,59 +307,84 @@ const MetricCard = forwardRef<HTMLDivElement, CardProps & {
     trend: "up" | "down" | "neutral"
   }
   icon?: React.ReactNode
-  color?: "primary" | "emerald" | "red" | "amber"
+  color?: "brand" | "success" | "warning" | "danger" | "info"
+  size?: "sm" | "default" | "lg"
 }>(({ 
   label,
   value,
   change,
   icon,
-  color = "primary",
+  color = "brand",
+  size = "default",
   className,
   ...props
 }, ref) => {
   const colorClasses = {
-    primary: "text-primary bg-primary/10",
-    emerald: "text-emerald-600 bg-emerald-100 dark:text-emerald-400 dark:bg-emerald-950/20",
-    red: "text-red-600 bg-red-100 dark:text-red-400 dark:bg-red-950/20",
-    amber: "text-amber-600 bg-amber-100 dark:text-amber-400 dark:bg-amber-950/20"
+    brand: "text-brand-600 bg-brand-50 border border-brand-200",
+    success: "text-success bg-success-bg border border-success-border",
+    warning: "text-warning bg-warning-bg border border-warning-border",
+    danger: "text-danger bg-danger-bg border border-danger-border",
+    info: "text-info bg-info-bg border border-info-border"
+  }
+
+  const sizeClasses = {
+    sm: {
+      padding: "p-4",
+      value: "text-xl",
+      icon: "h-8 w-8 [&_svg]:size-4"
+    },
+    default: {
+      padding: "p-6",
+      value: "text-2xl",
+      icon: "h-10 w-10 [&_svg]:size-5"
+    },
+    lg: {
+      padding: "p-8",
+      value: "text-3xl",
+      icon: "h-12 w-12 [&_svg]:size-6"
+    }
   }
 
   return (
     <Card
       ref={ref}
       variant="glass"
-      className={cn("superhuman-hover", className)}
+      interactive
+      hover="glow"
+      className={cn("group", className)}
       {...props}
     >
-      <CardContent className="p-6">
+      <CardContent className={sizeClasses[size].padding}>
         <div className="flex items-center justify-between">
-          <div className="space-y-2">
-            <p className="text-sm text-muted-foreground font-medium">{label}</p>
-            <p className="text-2xl font-bold tracking-tight">{value}</p>
+          <div className="space-y-2 min-w-0 flex-1">
+            <p className="text-sm text-text-secondary font-medium truncate">{label}</p>
+            <p className={cn("font-bold tracking-tight text-text", sizeClasses[size].value)}>
+              {value}
+            </p>
             {change && (
               <div className="flex items-center gap-1 text-xs">
                 <span className={cn(
                   "inline-flex items-center gap-1 px-2 py-1 rounded-full font-medium",
-                  change.trend === "up" && "text-emerald-600 bg-emerald-100 dark:text-emerald-400 dark:bg-emerald-950/20",
-                  change.trend === "down" && "text-red-600 bg-red-100 dark:text-red-400 dark:bg-red-950/20",
-                  change.trend === "neutral" && "text-muted-foreground bg-muted"
+                  change.trend === "up" && "text-success bg-success-bg border border-success-border",
+                  change.trend === "down" && "text-danger bg-danger-bg border border-danger-border",
+                  change.trend === "neutral" && "text-text-muted bg-bg-muted border border-border-subtle"
                 )}>
                   {change.trend === "up" && "↗"}
                   {change.trend === "down" && "↘"}
                   {change.trend === "neutral" && "→"}
-                  {change.value}
+                  <span className="font-semibold">{change.value}</span>
                 </span>
               </div>
             )}
           </div>
           {icon && (
             <div className={cn(
-              "flex-shrink-0 h-10 w-10 rounded-full flex items-center justify-center superhuman-transition",
+              "flex-shrink-0 rounded-xl flex items-center justify-center transition-modern",
+              "group-hover:scale-110 group-hover:rotate-3",
+              sizeClasses[size].icon,
               colorClasses[color]
             )}>
-              <div className="[&_svg]:size-5">
-                {icon}
-              </div>
+              {icon}
             </div>
           )}
         </div>
@@ -341,6 +394,80 @@ const MetricCard = forwardRef<HTMLDivElement, CardProps & {
 })
 
 MetricCard.displayName = "MetricCard"
+
+// Feature card for marketing pages
+const FeatureCard = forwardRef<HTMLDivElement, CardProps & {
+  title: string
+  description: string
+  icon?: React.ReactNode
+  badge?: string
+  href?: string
+}>(({ 
+  title,
+  description,
+  icon,
+  badge,
+  href,
+  className,
+  ...props
+}, ref) => {
+  const Comp = href ? "a" : "div"
+  
+  return (
+    <Card
+      ref={ref}
+      as={Comp}
+      href={href}
+      variant="feature"
+      interactive
+      hover="lift"
+      className={cn("group text-left", className)}
+      {...props}
+    >
+      <CardContent className="p-8">
+        <div className="space-y-4">
+          {badge && (
+            <div className="inline-block">
+              <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-brand-100 text-brand-700 border border-brand-200">
+                {badge}
+              </span>
+            </div>
+          )}
+          
+          {icon && (
+            <div className="h-12 w-12 rounded-xl bg-brand-100 flex items-center justify-center text-brand-600 group-hover:scale-110 transition-transform duration-200">
+              <div className="[&_svg]:size-6">
+                {icon}
+              </div>
+            </div>
+          )}
+          
+          <div className="space-y-2">
+            <h3 className="text-xl font-semibold text-text tracking-tight">
+              {title}
+            </h3>
+            <p className="text-text-secondary leading-relaxed">
+              {description}
+            </p>
+          </div>
+          
+          {href && (
+            <div className="pt-2">
+              <span className="inline-flex items-center text-sm font-medium text-brand-600 group-hover:text-brand-700">
+                Learn more
+                <svg className="ml-1 h-4 w-4 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                </svg>
+              </span>
+            </div>
+          )}
+        </div>
+      </CardContent>
+    </Card>
+  )
+})
+
+FeatureCard.displayName = "FeatureCard"
 
 export {
   Card,
@@ -352,5 +479,6 @@ export {
   CardContent,
   StatsCard,
   MetricCard,
+  FeatureCard,
   type CardProps,
 }

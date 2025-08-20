@@ -1,6 +1,7 @@
-import { Plus, BookOpen, Folder, Sparkles, ArrowRight, CheckCircle, Bell, Eye, EyeOff } from "lucide-react"
 import { ComponentProps, forwardRef, useState } from "react"
+import { Eye, EyeOff, X } from "lucide-react"
 import { cn } from "../../lib/utils"
+
 interface InputProps extends ComponentProps<"input"> {
   error?: boolean
   success?: boolean
@@ -9,7 +10,10 @@ interface InputProps extends ComponentProps<"input"> {
   rightIcon?: React.ReactNode
   clearable?: boolean
   onClear?: () => void
+  variant?: "default" | "filled" | "ghost"
+  size?: "sm" | "default" | "lg"
 }
+
 const Input = forwardRef<HTMLInputElement, InputProps>(
   ({ 
     className, 
@@ -22,68 +26,127 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
     clearable,
     onClear,
     placeholder,
+    variant = "default",
+    size = "default",
     ...props 
   }, ref) => {
     const [showPassword, setShowPassword] = useState(false)
     const [isFocused, setIsFocused] = useState(false)
+    
     const isPassword = type === "password"
     const inputType = isPassword ? (showPassword ? "text" : "password") : type
+    
     const handleClear = () => {
       if (onClear) {
         onClear()
       }
     }
+
+    const sizeClasses = {
+      sm: "h-9 text-sm",
+      default: "h-12 text-sm",
+      lg: "h-14 text-base"
+    }
+
+    const paddingClasses = {
+      sm: cn(
+        leftIcon ? "pl-9" : "pl-4",
+        rightIcon || clearable || isPassword ? "pr-9" : "pr-4"
+      ),
+      default: cn(
+        leftIcon ? "pl-12" : "pl-6",
+        rightIcon || clearable || isPassword ? "pr-12" : "pr-6"
+      ),
+      lg: cn(
+        leftIcon ? "pl-14" : "pl-8",
+        rightIcon || clearable || isPassword ? "pr-14" : "pr-8"
+      )
+    }
+
+    const iconSizes = {
+      sm: "size-4",
+      default: "size-4",
+      lg: "size-5"
+    }
+
+    const iconPositions = {
+      sm: { left: "left-3", right: "right-3" },
+      default: { left: "left-4", right: "right-4" },
+      lg: { left: "left-5", right: "right-5" }
+    }
+
     return (
       <div className="w-full">
         <div className="relative group">
           {/* Left icon */}
           {leftIcon && (
-            <div className="absolute left-4 top-1/2 -translate-y-1/2 z-10 text-muted-foreground group-focus-within:text-primary superhuman-transition">
-              <span className="flex items-center justify-center [&_svg]:size-4">
+            <div className={cn(
+              "absolute top-1/2 -translate-y-1/2 z-10 text-text-muted group-focus-within:text-brand-600 transition-fast",
+              iconPositions[size].left
+            )}>
+              <span className={cn("flex items-center justify-center", `[&_svg]:${iconSizes[size]}`)}>
                 {leftIcon}
               </span>
             </div>
           )}
+
           <input
             type={inputType}
             ref={ref}
             data-slot="input"
             placeholder={placeholder}
             className={cn(
-              // Base Superhuman styles - pill-shaped, clean
-              "flex h-12 w-full min-w-0 rounded-full border bg-background/50 text-sm superhuman-transition outline-none relative z-0",
-              "placeholder:text-muted-foreground/50 selection:bg-primary/20 selection:text-primary",
-              "backdrop-blur-sm",
-              // Padding adjustments for icons
-              leftIcon ? "pl-12" : "pl-6",
-              rightIcon || clearable || isPassword ? "pr-12" : "pr-6",
+              // Base modern styles
+              "flex w-full min-w-0 outline-none transition-modern relative z-0",
+              "placeholder:text-text-subtle selection:bg-brand-100 selection:text-brand-900",
+              sizeClasses[size],
+              paddingClasses[size],
               "py-3",
+              
               // File input styles
-              "file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground",
-              "file:mr-4 file:py-1.5 file:px-4 file:rounded-full file:bg-muted/30",
-              "hover:file:bg-muted/50 file:superhuman-transition",
-              // Normal state - Superhuman glass effect
-              "border-border/30 shadow-sm superhuman-glass",
-              "hover:border-border/50 hover:shadow-md hover:bg-background/70",
-              // Focus state - enhanced Superhuman glow
-              "focus:border-primary/50 focus:ring-4 focus:ring-primary/10",
-              "focus:bg-background/80 focus:shadow-lg focus:backdrop-blur-md",
-              "focus:superhuman-glow",
-              // Error state
+              "file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-text",
+              "file:mr-4 file:py-1.5 file:px-4 file:rounded-full file:bg-bg-muted",
+              "hover:file:bg-bg-subtle file:transition-fast",
+
+              // Variant styles
+              variant === "default" && [
+                "rounded-full border bg-surface text-text",
+                "border-border hover:border-border-strong",
+                "focus:border-brand-500 focus:ring-4 focus:ring-brand-100",
+                "shadow-1 hover:shadow-2 focus:shadow-2"
+              ],
+              
+              variant === "filled" && [
+                "rounded-xl border-0 bg-bg-muted text-text",
+                "hover:bg-bg-subtle",
+                "focus:bg-surface focus:ring-4 focus:ring-brand-100",
+                "shadow-none hover:shadow-1 focus:shadow-1"
+              ],
+              
+              variant === "ghost" && [
+                "rounded-lg border-0 bg-transparent text-text",
+                "hover:bg-bg-muted",
+                "focus:bg-surface focus:ring-2 focus:ring-brand-200",
+                "shadow-none"
+              ],
+
+              // State styles
               error && [
-                "border-red-400/60 bg-red-50/20 dark:bg-red-950/10",
-                "focus:border-red-500 focus:ring-red-500/10",
-                "shadow-sm shadow-red-500/10",
+                "border-danger-border bg-danger-bg text-text",
+                "focus:border-danger focus:ring-danger/20",
+                "shadow-1"
               ],
-              // Success state
+              
               success && [
-                "border-emerald-400/60 bg-emerald-50/20 dark:bg-emerald-950/10",
-                "focus:border-emerald-500 focus:ring-emerald-500/10",
-                "shadow-sm shadow-emerald-500/10",
+                "border-success-border bg-success-bg text-text",
+                "focus:border-success focus:ring-success/20",
+                "shadow-1"
               ],
+              
               // Disabled state
-              "disabled:cursor-not-allowed disabled:opacity-50 disabled:bg-muted/20",
-              "disabled:border-border/20 disabled:shadow-none",
+              "disabled:cursor-not-allowed disabled:opacity-50 disabled:bg-bg-muted",
+              "disabled:border-border-subtle disabled:shadow-none",
+              
               className
             )}
             aria-invalid={error}
@@ -98,60 +161,60 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
             }}
             {...props}
           />
+
           {/* Right side icons/actions */}
-          <div className="absolute right-4 top-1/2 -translate-y-1/2 z-10 flex items-center gap-1">
+          <div className={cn(
+            "absolute top-1/2 -translate-y-1/2 z-10 flex items-center gap-1",
+            iconPositions[size].right
+          )}>
             {/* Clear button */}
             {clearable && props.value && (
               <button
                 type="button"
                 onClick={handleClear}
-                className="p-1.5 text-muted-foreground hover:text-foreground superhuman-transition rounded-full hover:bg-muted/30"
+                className="p-1 text-text-muted hover:text-text transition-fast rounded-md hover:bg-bg-muted"
                 aria-label="Clear input"
               >
-                <svg className="size-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                </svg>
+                <X className={iconSizes[size]} />
               </button>
             )}
+            
             {/* Password toggle */}
             {isPassword && (
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="p-1.5 text-muted-foreground hover:text-foreground superhuman-transition rounded-full hover:bg-muted/30"
+                className="p-1 text-text-muted hover:text-text transition-fast rounded-md hover:bg-bg-muted"
                 aria-label={showPassword ? "Hide password" : "Show password"}
               >
                 {showPassword ? (
-                  <EyeOff className="size-4" />
+                  <EyeOff className={iconSizes[size]} />
                 ) : (
-                  <Eye className="size-4" />
+                  <Eye className={iconSizes[size]} />
                 )}
               </button>
             )}
+            
             {/* Custom right icon */}
             {rightIcon && !isPassword && (
-              <div className="text-muted-foreground group-focus-within:text-primary superhuman-transition">
-                <span className="flex items-center justify-center [&_svg]:size-4">
+              <div className="text-text-muted group-focus-within:text-brand-600 transition-fast">
+                <span className={cn("flex items-center justify-center", `[&_svg]:${iconSizes[size]}`)}>
                   {rightIcon}
                 </span>
               </div>
             )}
           </div>
-          {/* Enhanced focus ring animation */}
-          <div className={cn(
-            "absolute inset-0 rounded-full border-2 border-primary/30 opacity-0 scale-95 superhuman-transition pointer-events-none",
-            isFocused && "opacity-100 scale-100"
-          )} />
         </div>
+
         {/* Helper text */}
         {helperText && (
           <p
             id={props.id ? `${props.id}-helper` : undefined}
             className={cn(
-              "mt-2 text-sm superhuman-transition px-2",
-              error ? "text-red-600 dark:text-red-400" : 
-              success ? "text-emerald-600 dark:text-emerald-400" :
-              "text-muted-foreground"
+              "mt-2 text-sm transition-fast px-2",
+              error ? "text-danger" : 
+              success ? "text-success" :
+              "text-text-muted"
             )}
           >
             {helperText}
@@ -161,17 +224,31 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
     )
   }
 )
+
 Input.displayName = "Input"
-// Enhanced Textarea with Superhuman styling
+
+// Enhanced Textarea with modern styling
 const Textarea = forwardRef<
   HTMLTextAreaElement,
   ComponentProps<"textarea"> & {
     error?: boolean
     success?: boolean
     helperText?: string
+    variant?: "default" | "filled" | "ghost"
+    resize?: boolean
   }
->(({ className, error, success, helperText, placeholder, ...props }, ref) => {
+>(({ 
+  className, 
+  error, 
+  success, 
+  helperText, 
+  placeholder, 
+  variant = "default",
+  resize = true,
+  ...props 
+}, ref) => {
   const [isFocused, setIsFocused] = useState(false)
+  
   return (
     <div className="w-full">
       <div className="relative group">
@@ -180,29 +257,47 @@ const Textarea = forwardRef<
           data-slot="textarea"
           placeholder={placeholder}
           className={cn(
-            // Base Superhuman styles
-            "flex min-h-[120px] w-full rounded-2xl border bg-background/50 px-6 py-4 text-sm superhuman-transition outline-none resize-y",
-            "placeholder:text-muted-foreground/50 selection:bg-primary/20 selection:text-primary",
-            "backdrop-blur-sm",
-            // Normal state
-            "border-border/30 shadow-sm superhuman-glass",
-            "hover:border-border/50 hover:shadow-md hover:bg-background/70",
-            // Focus state
-            "focus:border-primary/50 focus:ring-4 focus:ring-primary/10",
-            "focus:bg-background/80 focus:shadow-lg focus:backdrop-blur-md",
-            "focus:superhuman-glow",
-            // Error state
+            // Base modern styles
+            "flex min-h-[120px] w-full px-6 py-4 text-sm transition-modern outline-none",
+            "placeholder:text-text-subtle selection:bg-brand-100 selection:text-brand-900",
+            resize ? "resize-y" : "resize-none",
+            
+            // Variant styles
+            variant === "default" && [
+              "rounded-2xl border bg-surface text-text",
+              "border-border hover:border-border-strong",
+              "focus:border-brand-500 focus:ring-4 focus:ring-brand-100",
+              "shadow-1 hover:shadow-2 focus:shadow-2"
+            ],
+            
+            variant === "filled" && [
+              "rounded-xl border-0 bg-bg-muted text-text",
+              "hover:bg-bg-subtle",
+              "focus:bg-surface focus:ring-4 focus:ring-brand-100",
+              "shadow-none hover:shadow-1 focus:shadow-1"
+            ],
+            
+            variant === "ghost" && [
+              "rounded-lg border-0 bg-transparent text-text",
+              "hover:bg-bg-muted",
+              "focus:bg-surface focus:ring-2 focus:ring-brand-200",
+              "shadow-none"
+            ],
+
+            // State styles
             error && [
-              "border-red-400/60 bg-red-50/20 dark:bg-red-950/10",
-              "focus:border-red-500 focus:ring-red-500/10",
+              "border-danger-border bg-danger-bg text-text",
+              "focus:border-danger focus:ring-danger/20"
             ],
-            // Success state
+            
             success && [
-              "border-emerald-400/60 bg-emerald-50/20 dark:bg-emerald-950/10",
-              "focus:border-emerald-500 focus:ring-emerald-500/10",
+              "border-success-border bg-success-bg text-text", 
+              "focus:border-success focus:ring-success/20"
             ],
+            
             // Disabled state
-            "disabled:cursor-not-allowed disabled:opacity-50 disabled:bg-muted/20",
+            "disabled:cursor-not-allowed disabled:opacity-50 disabled:bg-bg-muted",
+            
             className
           )}
           aria-invalid={error}
@@ -217,21 +312,17 @@ const Textarea = forwardRef<
           }}
           {...props}
         />
-        {/* Focus ring animation */}
-        <div className={cn(
-          "absolute inset-0 rounded-2xl border-2 border-primary/30 opacity-0 scale-95 superhuman-transition pointer-events-none",
-          isFocused && "opacity-100 scale-100"
-        )} />
       </div>
+      
       {/* Helper text */}
       {helperText && (
         <p
           id={props.id ? `${props.id}-helper` : undefined}
           className={cn(
-            "mt-2 text-sm superhuman-transition px-2",
-            error ? "text-red-600 dark:text-red-400" : 
-            success ? "text-emerald-600 dark:text-emerald-400" :
-            "text-muted-foreground"
+            "mt-2 text-sm transition-fast px-2",
+            error ? "text-danger" : 
+            success ? "text-success" :
+            "text-text-muted"
           )}
         >
           {helperText}
@@ -240,5 +331,7 @@ const Textarea = forwardRef<
     </div>
   )
 })
+
 Textarea.displayName = "Textarea"
+
 export { Input, Textarea, type InputProps }

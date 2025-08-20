@@ -51,10 +51,13 @@ export function Providers({ children }: { children: React.ReactNode }) {
     <ErrorBoundary FallbackComponent={ErrorFallback}>
       <QueryClientProvider client={queryClient}>
         <ThemeProvider
-          attribute="class"
+          attribute="data-theme"
           defaultTheme="system"
           enableSystem
-          disableTransitionOnChange
+          enableColorScheme
+          disableTransitionOnChange={false}
+          themes={['light', 'dark', 'system']}
+          storageKey="ai-notes-theme"
         >
           <AuthProvider>
             <NotesProvider>
@@ -65,13 +68,30 @@ export function Providers({ children }: { children: React.ReactNode }) {
                   position="top-right"
                   toastOptions={{
                     duration: 4000,
+                    className: "glass border border-border-subtle shadow-3",
+                    style: {
+                      background: 'var(--color-surface)',
+                      color: 'var(--color-text)',
+                      border: '1px solid var(--color-border-subtle)',
+                    },
                   }}
+                  theme="system"
                 />
               </AIProvider>
             </NotesProvider>
           </AuthProvider>
         </ThemeProvider>
-        <ReactQueryDevtools initialIsOpen={false} />
+        <ReactQueryDevtools 
+          initialIsOpen={false}
+          buttonPosition="bottom-left"
+          panelProps={{
+            style: {
+              background: 'var(--color-surface)',
+              color: 'var(--color-text)',
+              border: '1px solid var(--color-border)',
+            }
+          }}
+        />
       </QueryClientProvider>
     </ErrorBoundary>
   )
