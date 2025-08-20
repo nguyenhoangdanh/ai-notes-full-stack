@@ -14,7 +14,7 @@ export const useCreate = () => {
     mutationFn: ({ data: any }) => productivityService.create(data),
     onSuccess: () => {
       // Invalidate related queries
-      queryClient.invalidateQueries({ queryKey: queryKeys.productivity.all });
+      queryClient.invalidateQueries({ queryKey: queryKeys.productivity.all() });
     },
   });
 };
@@ -61,7 +61,7 @@ export const useUpdate = () => {
     mutationFn: ({ params: { id: string }, data: any }) => productivityService.update(params, data),
     onSuccess: () => {
       // Invalidate related queries
-      queryClient.invalidateQueries({ queryKey: queryKeys.productivity.all });
+      queryClient.invalidateQueries({ queryKey: queryKeys.productivity.all() });
     },
   });
 };
@@ -73,7 +73,7 @@ export const useRemove = () => {
     mutationFn: ({ params: { id: string } }) => productivityService.remove(params),
     onSuccess: () => {
       // Invalidate related queries
-      queryClient.invalidateQueries({ queryKey: queryKeys.productivity.all });
+      queryClient.invalidateQueries({ queryKey: queryKeys.productivity.all() });
     },
   });
 };
@@ -85,7 +85,7 @@ export const useStartSession = () => {
     mutationFn: ({ data: any }) => productivityService.startSession(data),
     onSuccess: () => {
       // Invalidate related queries
-      queryClient.invalidateQueries({ queryKey: queryKeys.productivity.all });
+      queryClient.invalidateQueries({ queryKey: queryKeys.productivity.all() });
     },
   });
 };
@@ -97,7 +97,7 @@ export const usePauseSession = () => {
     mutationFn: ({ data: any }) => productivityService.pauseSession(data),
     onSuccess: () => {
       // Invalidate related queries
-      queryClient.invalidateQueries({ queryKey: queryKeys.productivity.all });
+      queryClient.invalidateQueries({ queryKey: queryKeys.productivity.all() });
     },
   });
 };
@@ -109,7 +109,7 @@ export const useCompleteSession = () => {
     mutationFn: ({ data: any }) => productivityService.completeSession(data),
     onSuccess: () => {
       // Invalidate related queries
-      queryClient.invalidateQueries({ queryKey: queryKeys.productivity.all });
+      queryClient.invalidateQueries({ queryKey: queryKeys.productivity.all() });
     },
   });
 };
@@ -142,7 +142,7 @@ export const useUpdateSettings = () => {
     mutationFn: ({ data: any }) => productivityService.updateSettings(data),
     onSuccess: () => {
       // Invalidate related queries
-      queryClient.invalidateQueries({ queryKey: queryKeys.productivity.all });
+      queryClient.invalidateQueries({ queryKey: queryKeys.productivity.all() });
     },
   });
 };
@@ -161,7 +161,7 @@ export const useCreateEvent = () => {
     mutationFn: ({ data: any }) => productivityService.createEvent(data),
     onSuccess: () => {
       // Invalidate related queries
-      queryClient.invalidateQueries({ queryKey: queryKeys.productivity.all });
+      queryClient.invalidateQueries({ queryKey: queryKeys.productivity.all() });
     },
   });
 };
@@ -173,7 +173,7 @@ export const useUpdateEvent = () => {
     mutationFn: ({ params: { id: string }, data: any }) => productivityService.updateEvent(params, data),
     onSuccess: () => {
       // Invalidate related queries
-      queryClient.invalidateQueries({ queryKey: queryKeys.productivity.all });
+      queryClient.invalidateQueries({ queryKey: queryKeys.productivity.all() });
     },
   });
 };
@@ -185,7 +185,7 @@ export const useDeleteEvent = () => {
     mutationFn: ({ params: { id: string } }) => productivityService.deleteEvent(params),
     onSuccess: () => {
       // Invalidate related queries
-      queryClient.invalidateQueries({ queryKey: queryKeys.productivity.all });
+      queryClient.invalidateQueries({ queryKey: queryKeys.productivity.all() });
     },
   });
 };
@@ -225,7 +225,7 @@ export const useReviewNote = () => {
     mutationFn: ({ params: { noteId: string }, data: any }) => productivityService.reviewNote(params, data),
     onSuccess: () => {
       // Invalidate related queries
-      queryClient.invalidateQueries({ queryKey: queryKeys.productivity.all });
+      queryClient.invalidateQueries({ queryKey: queryKeys.productivity.all() });
     },
   });
 };
@@ -244,7 +244,7 @@ export const useSetupSpacedRepetition = () => {
     mutationFn: ({ data: any }) => productivityService.setupSpacedRepetition(data),
     onSuccess: () => {
       // Invalidate related queries
-      queryClient.invalidateQueries({ queryKey: queryKeys.productivity.all });
+      queryClient.invalidateQueries({ queryKey: queryKeys.productivity.all() });
     },
   });
 };

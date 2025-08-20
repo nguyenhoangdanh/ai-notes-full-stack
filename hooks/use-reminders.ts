@@ -21,7 +21,7 @@ export const useCreateReminder = () => {
     mutationFn: ({ data: any }) => remindersService.createReminder(data),
     onSuccess: () => {
       // Invalidate related queries
-      queryClient.invalidateQueries({ queryKey: queryKeys.reminders.all });
+      queryClient.invalidateQueries({ queryKey: queryKeys.reminders.all() });
     },
   });
 };
@@ -33,7 +33,7 @@ export const useUpdateReminder = () => {
     mutationFn: ({ params: { id: string }, data: any }) => remindersService.updateReminder(params, data),
     onSuccess: () => {
       // Invalidate related queries
-      queryClient.invalidateQueries({ queryKey: queryKeys.reminders.all });
+      queryClient.invalidateQueries({ queryKey: queryKeys.reminders.all() });
     },
   });
 };
@@ -45,7 +45,7 @@ export const useDeleteReminder = () => {
     mutationFn: ({ params: { id: string } }) => remindersService.deleteReminder(params),
     onSuccess: () => {
       // Invalidate related queries
-      queryClient.invalidateQueries({ queryKey: queryKeys.reminders.all });
+      queryClient.invalidateQueries({ queryKey: queryKeys.reminders.all() });
     },
   });
 };
@@ -71,7 +71,7 @@ export const useCompleteReminder = () => {
     mutationFn: ({ params: { id: string }, data: any }) => remindersService.completeReminder(params, data),
     onSuccess: () => {
       // Invalidate related queries
-      queryClient.invalidateQueries({ queryKey: queryKeys.reminders.all });
+      queryClient.invalidateQueries({ queryKey: queryKeys.reminders.all() });
     },
   });
 };

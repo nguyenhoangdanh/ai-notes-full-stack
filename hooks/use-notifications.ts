@@ -21,7 +21,7 @@ export const useCreateNotification = () => {
     mutationFn: ({ data: any }) => notificationsService.createNotification(data),
     onSuccess: () => {
       // Invalidate related queries
-      queryClient.invalidateQueries({ queryKey: queryKeys.notifications.all });
+      queryClient.invalidateQueries({ queryKey: queryKeys.notifications.all() });
     },
   });
 };
@@ -33,7 +33,7 @@ export const useUpdateNotification = () => {
     mutationFn: ({ params: { id: string }, data: any }) => notificationsService.updateNotification(params, data),
     onSuccess: () => {
       // Invalidate related queries
-      queryClient.invalidateQueries({ queryKey: queryKeys.notifications.all });
+      queryClient.invalidateQueries({ queryKey: queryKeys.notifications.all() });
     },
   });
 };
@@ -45,7 +45,7 @@ export const useDeleteNotification = () => {
     mutationFn: ({ params: { id: string } }) => notificationsService.deleteNotification(params),
     onSuccess: () => {
       // Invalidate related queries
-      queryClient.invalidateQueries({ queryKey: queryKeys.notifications.all });
+      queryClient.invalidateQueries({ queryKey: queryKeys.notifications.all() });
     },
   });
 };
@@ -64,7 +64,7 @@ export const useMarkAsRead = () => {
     mutationFn: ({ params: { id: string }, data: any }) => notificationsService.markAsRead(params, data),
     onSuccess: () => {
       // Invalidate related queries
-      queryClient.invalidateQueries({ queryKey: queryKeys.notifications.all });
+      queryClient.invalidateQueries({ queryKey: queryKeys.notifications.all() });
     },
   });
 };
@@ -76,7 +76,7 @@ export const useMarkAllAsRead = () => {
     mutationFn: ({ data: any }) => notificationsService.markAllAsRead(data),
     onSuccess: () => {
       // Invalidate related queries
-      queryClient.invalidateQueries({ queryKey: queryKeys.notifications.all });
+      queryClient.invalidateQueries({ queryKey: queryKeys.notifications.all() });
     },
   });
 };

@@ -39,7 +39,7 @@ export const useStartRecording = () => {
     mutationFn: ({ data: any }) => mobileService.startRecording(data),
     onSuccess: () => {
       // Invalidate related queries
-      queryClient.invalidateQueries({ queryKey: queryKeys.mobile.all });
+      queryClient.invalidateQueries({ queryKey: queryKeys.mobile.all() });
     },
   });
 };
@@ -51,7 +51,7 @@ export const useStopRecording = () => {
     mutationFn: ({ data: any }) => mobileService.stopRecording(data),
     onSuccess: () => {
       // Invalidate related queries
-      queryClient.invalidateQueries({ queryKey: queryKeys.mobile.all });
+      queryClient.invalidateQueries({ queryKey: queryKeys.mobile.all() });
     },
   });
 };
@@ -70,7 +70,7 @@ export const useTranscribeVoiceNote = () => {
     mutationFn: ({ params: { id: string }, data: any }) => mobileService.transcribeVoiceNote(params, data),
     onSuccess: () => {
       // Invalidate related queries
-      queryClient.invalidateQueries({ queryKey: queryKeys.mobile.all });
+      queryClient.invalidateQueries({ queryKey: queryKeys.mobile.all() });
     },
   });
 };
@@ -82,7 +82,7 @@ export const useCreateLocationNote = () => {
     mutationFn: ({ data: any }) => mobileService.createLocationNote(data),
     onSuccess: () => {
       // Invalidate related queries
-      queryClient.invalidateQueries({ queryKey: queryKeys.mobile.all });
+      queryClient.invalidateQueries({ queryKey: queryKeys.mobile.all() });
     },
   });
 };
@@ -101,7 +101,7 @@ export const useSyncOfflineData = () => {
     mutationFn: ({ data: any }) => mobileService.syncOfflineData(data),
     onSuccess: () => {
       // Invalidate related queries
-      queryClient.invalidateQueries({ queryKey: queryKeys.mobile.all });
+      queryClient.invalidateQueries({ queryKey: queryKeys.mobile.all() });
     },
   });
 };

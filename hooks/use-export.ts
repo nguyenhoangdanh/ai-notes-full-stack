@@ -9,7 +9,7 @@ import { queryKeys } from './query-keys';
 
 export const useDownload = (params: { id: string }) => {
   return useQuery({
-    queryKey: queryKeys.export.download(params.id),
+    queryKey: queryKeys.export.getUserExports(),
     queryFn: () => exportService.download(params),
   });
 };
@@ -18,10 +18,10 @@ export const useCreateExport = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: ({ data: any }) => exportService.createExport(data),
+    mutationFn: (data: any) => exportService.createExport(data),
     onSuccess: () => {
       // Invalidate related queries
-      queryClient.invalidateQueries({ queryKey: queryKeys.export.all });
+      queryClient.invalidateQueries({ queryKey: queryKeys.export.all() });
     },
   });
 };
@@ -37,10 +37,10 @@ export const useDeleteExport = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: ({ params: { id: string } }) => exportService.deleteExport(params),
+    mutationFn: (id: string) => exportService.deleteExport({ id }),
     onSuccess: () => {
       // Invalidate related queries
-      queryClient.invalidateQueries({ queryKey: queryKeys.export.all });
+      queryClient.invalidateQueries({ queryKey: queryKeys.export.all() });
     },
   });
 };
@@ -56,10 +56,11 @@ export const useQueueNoteExport = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: ({ params: { noteId: string }, data: any }) => exportService.queueNoteExport(params, data),
+    mutationFn: ({ noteId, data }: { noteId: string, data: any }) => 
+      exportService.queueNoteExport({ noteId }, data),
     onSuccess: () => {
       // Invalidate related queries
-      queryClient.invalidateQueries({ queryKey: queryKeys.export.all });
+      queryClient.invalidateQueries({ queryKey: queryKeys.export.all() });
     },
   });
 };
