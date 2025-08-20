@@ -3,25 +3,25 @@
 import { ComponentProps, forwardRef, useEffect, useRef, useState, useCallback } from 'react'
 import { cn } from '../../lib/utils'
 
-// Skip Links Component for keyboard navigation
+// Enhanced Skip Links Component for keyboard navigation
 export function SkipLinks() {
   return (
-    <div className="skip-links">
+    <div className="skip-links" role="navigation" aria-label="Skip navigation links">
       <a
         href="#main-content"
-        className="skip-link fixed top-2 left-2 z-[9999] bg-accent text-accent-contrast px-6 py-3 rounded-xl font-semibold shadow-lg transform -translate-y-16 focus:translate-y-0 transition-transform duration-200"
+        className="skip-link fixed top-4 left-4 z-[9999] bg-brand-600 text-white px-6 py-3 rounded-xl font-semibold shadow-3 transform -translate-y-20 focus:translate-y-0 transition-transform duration-200 focus:outline-none focus:ring-2 focus:ring-brand-300 focus:ring-offset-2"
       >
         Skip to main content
       </a>
       <a
         href="#navigation"
-        className="skip-link fixed top-2 left-44 z-[9999] bg-accent text-accent-contrast px-6 py-3 rounded-xl font-semibold shadow-lg transform -translate-y-16 focus:translate-y-0 transition-transform duration-200"
+        className="skip-link fixed top-4 left-48 z-[9999] bg-brand-600 text-white px-6 py-3 rounded-xl font-semibold shadow-3 transform -translate-y-20 focus:translate-y-0 transition-transform duration-200 focus:outline-none focus:ring-2 focus:ring-brand-300 focus:ring-offset-2"
       >
         Skip to navigation
       </a>
       <a
         href="#search"
-        className="skip-link fixed top-2 left-80 z-[9999] bg-accent text-accent-contrast px-6 py-3 rounded-xl font-semibold shadow-lg transform -translate-y-16 focus:translate-y-0 transition-transform duration-200"
+        className="skip-link fixed top-4 left-80 z-[9999] bg-brand-600 text-white px-6 py-3 rounded-xl font-semibold shadow-3 transform -translate-y-20 focus:translate-y-0 transition-transform duration-200 focus:outline-none focus:ring-2 focus:ring-brand-300 focus:ring-offset-2"
       >
         Skip to search
       </a>
@@ -29,7 +29,7 @@ export function SkipLinks() {
   )
 }
 
-// Screen Reader Only text
+// Screen Reader Only text with enhanced styling
 interface ScreenReaderOnlyProps extends ComponentProps<'span'> {
   children: React.ReactNode
 }
@@ -39,7 +39,11 @@ export const ScreenReaderOnly = forwardRef<HTMLSpanElement, ScreenReaderOnlyProp
     return (
       <span
         ref={ref}
-        className={cn('sr-only', className)}
+        className={cn(
+          'absolute -m-px h-px w-px overflow-hidden whitespace-nowrap border-0 p-0',
+          '[clip:rect(0,0,0,0)]',
+          className
+        )}
         {...props}
       >
         {children}
@@ -50,13 +54,14 @@ export const ScreenReaderOnly = forwardRef<HTMLSpanElement, ScreenReaderOnlyProp
 
 ScreenReaderOnly.displayName = 'ScreenReaderOnly'
 
-// Enhanced Focus Trap component
+// Enhanced Focus Trap component with improved accessibility
 interface FocusTrapProps {
   children: React.ReactNode
   enabled?: boolean
   initialFocus?: React.RefObject<HTMLElement>
   restoreFocus?: boolean
   onEscape?: () => void
+  className?: string
 }
 
 export function FocusTrap({ 
@@ -64,7 +69,8 @@ export function FocusTrap({
   enabled = true, 
   initialFocus, 
   restoreFocus = true,
-  onEscape 
+  onEscape,
+  className 
 }: FocusTrapProps) {
   const containerRef = useRef<HTMLDivElement>(null)
   const previouslyFocusedElement = useRef<HTMLElement | null>(null)
@@ -78,26 +84,42 @@ export function FocusTrap({
     // Store previously focused element
     previouslyFocusedElement.current = document.activeElement as HTMLElement
 
-    // Get all focusable elements
+    // Enhanced focusable elements selector
     const getFocusableElements = (): HTMLElement[] => {
       const selector = [
-        'button:not([disabled]):not([aria-hidden="true"])',
-        'input:not([disabled]):not([aria-hidden="true"])',
-        'textarea:not([disabled]):not([aria-hidden="true"])',
-        'select:not([disabled]):not([aria-hidden="true"])',
-        'a[href]:not([aria-hidden="true"])',
-        '[tabindex]:not([tabindex="-1"]):not([aria-hidden="true"])',
-        '[contenteditable="true"]:not([aria-hidden="true"])',
-        'summary:not([aria-hidden="true"])'
+        'button:not([disabled]):not([aria-hidden="true"]):not([inert])',
+        'input:not([disabled]):not([aria-hidden="true"]):not([inert])',
+        'textarea:not([disabled]):not([aria-hidden="true"]):not([inert])',
+        'select:not([disabled]):not([aria-hidden="true"]):not([inert])',
+        'a[href]:not([aria-hidden="true"]):not([inert])',
+        '[tabindex]:not([tabindex="-1"]):not([aria-hidden="true"]):not([inert])',
+        '[contenteditable="true"]:not([aria-hidden="true"]):not([inert])',
+        'summary:not([aria-hidden="true"]):not([inert])',
+        'audio[controls]:not([aria-hidden="true"]):not([inert])',
+        'video[controls]:not([aria-hidden="true"]):not([inert])',
+        'details:not([aria-hidden="true"]):not([inert])'
       ].join(',')
       
       return Array.from(container.querySelectorAll(selector)).filter(
-        el => (el as HTMLElement).offsetParent !== null && getComputedStyle(el).visibility !== 'hidden'
+        el => {
+          const element = el as HTMLElement
+          const isVisible = element.offsetParent !== null && 
+                          getComputedStyle(element).visibility !== 'hidden' &&
+                          getComputedStyle(element).display !== 'none'
+          
+          // Check if element is within viewport or scrollable container
+          const rect = element.getBoundingClientRect()
+          const isInViewport = rect.width > 0 && rect.height > 0
+          
+          return isVisible && isInViewport
+        }
       ) as HTMLElement[]
     }
 
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === 'Escape' && onEscape) {
+        event.preventDefault()
+        event.stopPropagation()
         onEscape()
         return
       }
@@ -105,28 +127,32 @@ export function FocusTrap({
       if (event.key !== 'Tab') return
 
       const focusableElements = getFocusableElements()
-      if (focusableElements.length === 0) return
+      if (focusableElements.length === 0) {
+        event.preventDefault()
+        return
+      }
 
       const firstElement = focusableElements[0]
       const lastElement = focusableElements[focusableElements.length - 1]
+      const activeElement = document.activeElement as HTMLElement
 
       if (event.shiftKey) {
-        // Shift + Tab
-        if (document.activeElement === firstElement) {
+        // Shift + Tab (backward)
+        if (activeElement === firstElement || !focusableElements.includes(activeElement)) {
           event.preventDefault()
           lastElement.focus()
         }
       } else {
-        // Tab
-        if (document.activeElement === lastElement) {
+        // Tab (forward)
+        if (activeElement === lastElement || !focusableElements.includes(activeElement)) {
           event.preventDefault()
           firstElement.focus()
         }
       }
     }
 
-    // Set initial focus
-    requestAnimationFrame(() => {
+    // Set initial focus with proper timing
+    const setInitialFocus = () => {
       if (initialFocus?.current) {
         initialFocus.current.focus()
       } else {
@@ -135,77 +161,123 @@ export function FocusTrap({
           focusableElements[0].focus()
         }
       }
-    })
+    }
 
-    document.addEventListener('keydown', handleKeyDown)
+    // Use requestAnimationFrame to ensure DOM is ready
+    const focusTimer = requestAnimationFrame(setInitialFocus)
+
+    document.addEventListener('keydown', handleKeyDown, { capture: true })
     
     return () => {
-      document.removeEventListener('keydown', handleKeyDown)
+      cancelAnimationFrame(focusTimer)
+      document.removeEventListener('keydown', handleKeyDown, { capture: true })
       
       // Restore focus to previously focused element
       if (restoreFocus && previouslyFocusedElement.current) {
-        requestAnimationFrame(() => {
-          previouslyFocusedElement.current?.focus()
-        })
+        const elementToFocus = previouslyFocusedElement.current
+        // Ensure element is still in DOM and focusable
+        if (document.contains(elementToFocus)) {
+          requestAnimationFrame(() => {
+            elementToFocus.focus()
+          })
+        }
       }
     }
   }, [enabled, initialFocus, restoreFocus, onEscape])
 
+  if (!enabled) {
+    return <>{children}</>
+  }
+
   return (
-    <div ref={containerRef} data-focus-trap={enabled}>
+    <div 
+      ref={containerRef} 
+      data-focus-trap={enabled}
+      className={className}
+      role="dialog"
+      aria-modal="true"
+    >
       {children}
     </div>
   )
 }
 
-// Live Region for announcements
+// Enhanced Live Region for announcements
 interface LiveRegionProps {
   message: string
   politeness?: 'polite' | 'assertive' | 'off'
   clearAfter?: number
+  atomic?: boolean
+  relevant?: 'additions' | 'removals' | 'text' | 'all'
+  busy?: boolean
 }
 
-export function LiveRegion({ message, politeness = 'polite', clearAfter }: LiveRegionProps) {
+export function LiveRegion({ 
+  message, 
+  politeness = 'polite', 
+  clearAfter,
+  atomic = true,
+  relevant = 'all',
+  busy = false
+}: LiveRegionProps) {
   const [currentMessage, setCurrentMessage] = useState(message)
+  const [isAnnouncing, setIsAnnouncing] = useState(false)
 
   useEffect(() => {
-    setCurrentMessage(message)
-    
-    if (clearAfter && message) {
-      const timer = setTimeout(() => {
-        setCurrentMessage('')
-      }, clearAfter)
+    if (message) {
+      setIsAnnouncing(true)
+      setCurrentMessage(message)
       
-      return () => clearTimeout(timer)
+      if (clearAfter) {
+        const timer = setTimeout(() => {
+          setCurrentMessage('')
+          setIsAnnouncing(false)
+        }, clearAfter)
+        
+        return () => clearTimeout(timer)
+      }
     }
   }, [message, clearAfter])
 
   return (
     <div
       aria-live={politeness}
-      aria-atomic="true"
-      role="status"
+      aria-atomic={atomic}
+      aria-relevant={relevant}
+      aria-busy={busy}
+      role={politeness === 'assertive' ? 'alert' : 'status'}
       className="sr-only"
     >
-      {currentMessage}
+      {isAnnouncing && currentMessage}
     </div>
   )
 }
 
-// Enhanced Loading Indicator
+// Enhanced Loading Indicator with better accessibility
 interface LoadingIndicatorProps {
   message?: string
   size?: 'sm' | 'md' | 'lg'
-  variant?: 'spinner' | 'dots' | 'pulse'
+  variant?: 'spinner' | 'dots' | 'pulse' | 'skeleton'
   className?: string
+  delay?: number
 }
 
 export function LoadingIndicator({ 
-  message = 'Loading...', 
+  message = 'Loading content, please wait...', 
   size = 'md', 
   variant = 'spinner',
-  className 
+  className,
+  delay = 0
 }: LoadingIndicatorProps) {
+  const [isVisible, setIsVisible] = useState(delay === 0)
+
+  useEffect(() => {
+    if (delay > 0) {
+      const timer = setTimeout(() => setIsVisible(true), delay)
+      return () => clearTimeout(timer)
+    }
+  }, [delay])
+
   const sizeClasses = {
     sm: 'w-4 h-4',
     md: 'w-6 h-6', 
@@ -215,7 +287,7 @@ export function LoadingIndicator({
   const SpinnerVariant = () => (
     <div
       className={cn(
-        'animate-spin rounded-full border-2 border-muted/40 border-t-accent',
+        'animate-spin rounded-full border-2 border-border border-t-brand-500',
         sizeClasses[size]
       )}
       aria-hidden="true"
@@ -228,12 +300,15 @@ export function LoadingIndicator({
         <div
           key={i}
           className={cn(
-            'rounded-full bg-accent animate-pulse',
-            size === 'sm' && 'w-2 h-2',
-            size === 'md' && 'w-3 h-3',
-            size === 'lg' && 'w-4 h-4'
+            'rounded-full bg-brand-500 animate-pulse',
+            size === 'sm' && 'w-1.5 h-1.5',
+            size === 'md' && 'w-2 h-2',
+            size === 'lg' && 'w-3 h-3'
           )}
-          style={{ animationDelay: `${i * 0.2}s` }}
+          style={{ 
+            animationDelay: `${i * 0.2}s`,
+            animationDuration: '1.4s'
+          }}
         />
       ))}
     </div>
@@ -242,8 +317,20 @@ export function LoadingIndicator({
   const PulseVariant = () => (
     <div
       className={cn(
-        'rounded-full bg-accent animate-pulse',
+        'rounded-full bg-brand-500 animate-pulse',
         sizeClasses[size]
+      )}
+      aria-hidden="true"
+    />
+  )
+
+  const SkeletonVariant = () => (
+    <div
+      className={cn(
+        'rounded-lg bg-bg-muted skeleton',
+        size === 'sm' && 'h-4 w-24',
+        size === 'md' && 'h-6 w-32',
+        size === 'lg' && 'h-8 w-40'
       )}
       aria-hidden="true"
     />
@@ -252,15 +339,21 @@ export function LoadingIndicator({
   const variants = {
     spinner: SpinnerVariant,
     dots: DotsVariant,
-    pulse: PulseVariant
+    pulse: PulseVariant,
+    skeleton: SkeletonVariant
   }
 
   const VariantComponent = variants[variant]
+
+  if (!isVisible) {
+    return null
+  }
 
   return (
     <div
       role="status"
       aria-live="polite"
+      aria-busy="true"
       aria-label={message}
       className={cn("flex items-center justify-center", className)}
     >
@@ -270,25 +363,34 @@ export function LoadingIndicator({
   )
 }
 
-// Progress indicator
+// Enhanced Progress indicator with better ARIA support
 interface ProgressIndicatorProps {
   value: number
   max?: number
   label?: string
+  description?: string
   showValue?: boolean
+  showPercentage?: boolean
   size?: 'sm' | 'md' | 'lg'
+  variant?: 'bar' | 'circle' | 'ring'
   className?: string
+  color?: 'brand' | 'success' | 'warning' | 'danger'
 }
 
 export function ProgressIndicator({
   value,
   max = 100,
   label,
+  description,
   showValue = true,
+  showPercentage = true,
   size = 'md',
-  className
+  variant = 'bar',
+  className,
+  color = 'brand'
 }: ProgressIndicatorProps) {
   const percentage = Math.min(Math.max((value / max) * 100, 0), 100)
+  const id = useRef(`progress-${Math.random().toString(36).substr(2, 9)}`)
   
   const heightClasses = {
     sm: 'h-2',
@@ -296,59 +398,192 @@ export function ProgressIndicator({
     lg: 'h-4'
   }
 
-  return (
+  const colorClasses = {
+    brand: 'bg-brand-500',
+    success: 'bg-success',
+    warning: 'bg-warning', 
+    danger: 'bg-danger'
+  }
+
+  const BarVariant = () => (
     <div className={cn("w-full", className)}>
-      {label && (
+      {(label || showValue || showPercentage) && (
         <div className="flex justify-between items-center mb-2">
-          <label className="text-sm font-medium text-foreground">{label}</label>
-          {showValue && (
-            <span className="text-sm text-muted-foreground">
-              {Math.round(percentage)}%
-            </span>
+          {label && (
+            <label htmlFor={id.current} className="text-sm font-medium text-text">
+              {label}
+            </label>
+          )}
+          {(showValue || showPercentage) && (
+            <div className="text-sm text-text-muted" aria-live="polite">
+              {showValue && showPercentage && `${value}/${max} (${Math.round(percentage)}%)`}
+              {showValue && !showPercentage && `${value}/${max}`}
+              {!showValue && showPercentage && `${Math.round(percentage)}%`}
+            </div>
           )}
         </div>
       )}
       <div
+        id={id.current}
         role="progressbar"
         aria-valuenow={value}
         aria-valuemin={0}
         aria-valuemax={max}
+        aria-valuetext={`${Math.round(percentage)} percent complete`}
         aria-label={label || `Progress: ${Math.round(percentage)}%`}
+        aria-describedby={description ? `${id.current}-desc` : undefined}
         className={cn(
-          "w-full bg-muted rounded-full overflow-hidden",
+          "w-full bg-bg-muted rounded-full overflow-hidden",
           heightClasses[size]
         )}
       >
         <div
-          className="h-full bg-accent transition-all duration-300 ease-out"
+          className={cn(
+            "h-full transition-all duration-500 ease-out",
+            colorClasses[color]
+          )}
           style={{ width: `${percentage}%` }}
         />
       </div>
+      {description && (
+        <p id={`${id.current}-desc`} className="text-xs text-text-muted mt-1">
+          {description}
+        </p>
+      )}
     </div>
   )
+
+  const CircleVariant = () => {
+    const radius = size === 'sm' ? 16 : size === 'md' ? 20 : 24
+    const strokeWidth = size === 'sm' ? 2 : size === 'md' ? 3 : 4
+    const normalizedRadius = radius - strokeWidth * 2
+    const circumference = normalizedRadius * 2 * Math.PI
+    const strokeDasharray = `${circumference} ${circumference}`
+    const strokeDashoffset = circumference - (percentage / 100) * circumference
+
+    return (
+      <div className={cn("inline-flex items-center justify-center", className)}>
+        <div className="relative">
+          <svg
+            width={radius * 2}
+            height={radius * 2}
+            className="transform -rotate-90"
+            role="img"
+            aria-labelledby={`${id.current}-title`}
+          >
+            <title id={`${id.current}-title`}>
+              {label || `Progress: ${Math.round(percentage)}%`}
+            </title>
+            <circle
+              stroke="currentColor"
+              className="text-bg-muted"
+              strokeWidth={strokeWidth}
+              fill="transparent"
+              r={normalizedRadius}
+              cx={radius}
+              cy={radius}
+            />
+            <circle
+              stroke="currentColor"
+              className={cn("transition-all duration-500 ease-out", 
+                color === 'brand' && 'text-brand-500',
+                color === 'success' && 'text-success',
+                color === 'warning' && 'text-warning',
+                color === 'danger' && 'text-danger'
+              )}
+              strokeWidth={strokeWidth}
+              strokeDasharray={strokeDasharray}
+              strokeDashoffset={strokeDashoffset}
+              strokeLinecap="round"
+              fill="transparent"
+              r={normalizedRadius}
+              cx={radius}
+              cy={radius}
+              role="progressbar"
+              aria-valuenow={value}
+              aria-valuemin={0}
+              aria-valuemax={max}
+              aria-valuetext={`${Math.round(percentage)} percent complete`}
+            />
+          </svg>
+          {showPercentage && (
+            <div className="absolute inset-0 flex items-center justify-center">
+              <span className="text-xs font-medium text-text" aria-live="polite">
+                {Math.round(percentage)}%
+              </span>
+            </div>
+          )}
+        </div>
+      </div>
+    )
+  }
+
+  const variants = {
+    bar: BarVariant,
+    circle: CircleVariant,
+    ring: CircleVariant
+  }
+
+  const VariantComponent = variants[variant]
+  return <VariantComponent />
 }
 
-// Accessible error boundary
+// Enhanced error component with better accessibility
 interface AccessibleErrorProps {
   error: Error
   retry?: () => void
   className?: string
+  severity?: 'error' | 'warning' | 'info'
 }
 
-export function AccessibleError({ error, retry, className }: AccessibleErrorProps) {
+export function AccessibleError({ 
+  error, 
+  retry, 
+  className,
+  severity = 'error' 
+}: AccessibleErrorProps) {
+  const id = useRef(`error-${Math.random().toString(36).substr(2, 9)}`)
+
+  const severityStyles = {
+    error: {
+      border: 'border-danger/20',
+      bg: 'bg-danger-bg',
+      icon: 'text-danger',
+      text: 'text-danger'
+    },
+    warning: {
+      border: 'border-warning/20', 
+      bg: 'bg-warning-bg',
+      icon: 'text-warning',
+      text: 'text-warning'
+    },
+    info: {
+      border: 'border-info/20',
+      bg: 'bg-info-bg', 
+      icon: 'text-info',
+      text: 'text-info'
+    }
+  }
+
+  const styles = severityStyles[severity]
+
   return (
     <div
       role="alert"
       aria-live="assertive"
+      aria-labelledby={`${id.current}-title`}
+      aria-describedby={`${id.current}-desc`}
       className={cn(
-        "flex flex-col items-center justify-center p-8 text-center space-y-4 border-2 border-destructive/20 rounded-xl bg-destructive/5",
+        "flex flex-col items-center justify-center p-8 text-center space-y-4 border-2 rounded-xl",
+        styles.border,
+        styles.bg,
         className
       )}
     >
-      <div className="space-y-2">
-        <div className="p-3 bg-destructive/10 rounded-full w-fit mx-auto">
+      <div className="space-y-3">
+        <div className={cn("p-3 rounded-full w-fit mx-auto", styles.bg)}>
           <svg
-            className="w-6 h-6 text-destructive"
+            className={cn("w-6 h-6", styles.icon)}
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
@@ -362,8 +597,14 @@ export function AccessibleError({ error, retry, className }: AccessibleErrorProp
             />
           </svg>
         </div>
-        <h2 className="text-lg font-semibold text-destructive">Something went wrong</h2>
-        <p className="text-sm text-muted-foreground max-w-md">
+        
+        <h2 id={`${id.current}-title`} className={cn("text-lg font-semibold", styles.text)}>
+          {severity === 'error' && 'Something went wrong'}
+          {severity === 'warning' && 'Warning'}
+          {severity === 'info' && 'Information'}
+        </h2>
+        
+        <p id={`${id.current}-desc`} className="text-sm text-text-muted max-w-md">
           {error.message || 'An unexpected error occurred. Please try again.'}
         </p>
       </div>
@@ -371,7 +612,7 @@ export function AccessibleError({ error, retry, className }: AccessibleErrorProp
       {retry && (
         <button
           onClick={retry}
-          className="px-6 py-3 bg-accent text-accent-contrast rounded-xl hover:bg-accent/90 focus:outline-none focus:ring-4 focus:ring-accent/40 focus:ring-offset-2 transition-all shadow-lg hover:shadow-xl font-medium"
+          className="px-6 py-3 bg-brand-600 text-white rounded-xl hover:bg-brand-700 focus:outline-none focus:ring-4 focus:ring-brand-200 focus:ring-offset-2 transition-modern shadow-2 hover:shadow-3 font-medium"
           aria-label="Retry the failed action"
         >
           Try Again
@@ -381,7 +622,7 @@ export function AccessibleError({ error, retry, className }: AccessibleErrorProp
   )
 }
 
-// Keyboard navigation helpers
+// Enhanced keyboard navigation helpers
 export const keyboardHelpers = {
   isEnterOrSpace: (event: React.KeyboardEvent) => 
     event.key === 'Enter' || event.key === ' ',
@@ -393,7 +634,7 @@ export const keyboardHelpers = {
     ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(event.key),
   
   isNavigationKey: (event: React.KeyboardEvent) =>
-    ['Tab', 'Enter', ' ', 'Escape', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(event.key),
+    ['Tab', 'Enter', ' ', 'Escape', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Home', 'End', 'PageUp', 'PageDown'].includes(event.key),
   
   preventDefault: (event: React.KeyboardEvent) => {
     event.preventDefault()
@@ -405,10 +646,41 @@ export const keyboardHelpers = {
       keyboardHelpers.preventDefault(event)
       onClick()
     }
+  },
+
+  handleMenuNavigation: (
+    event: React.KeyboardEvent, 
+    currentIndex: number, 
+    itemCount: number,
+    onSelect: (index: number) => void,
+    onClose?: () => void
+  ) => {
+    switch (event.key) {
+      case 'ArrowDown':
+        keyboardHelpers.preventDefault(event)
+        onSelect((currentIndex + 1) % itemCount)
+        break
+      case 'ArrowUp':
+        keyboardHelpers.preventDefault(event)
+        onSelect((currentIndex - 1 + itemCount) % itemCount)
+        break
+      case 'Home':
+        keyboardHelpers.preventDefault(event)
+        onSelect(0)
+        break
+      case 'End':
+        keyboardHelpers.preventDefault(event)
+        onSelect(itemCount - 1)
+        break
+      case 'Escape':
+        keyboardHelpers.preventDefault(event)
+        onClose?.()
+        break
+    }
   }
 }
 
-// Accessibility preferences hooks
+// Enhanced accessibility preference hooks
 export function useHighContrastMode() {
   const [isHighContrast, setIsHighContrast] = useState(false)
 
@@ -417,18 +689,11 @@ export function useHighContrastMode() {
     
     const handleChange = (e: MediaQueryListEvent) => {
       setIsHighContrast(e.matches)
-      if (e.matches) {
-        document.documentElement.classList.add('high-contrast')
-      } else {
-        document.documentElement.classList.remove('high-contrast')
-      }
+      document.documentElement.classList.toggle('high-contrast', e.matches)
     }
     
-    // Initial check
     setIsHighContrast(mediaQuery.matches)
-    if (mediaQuery.matches) {
-      document.documentElement.classList.add('high-contrast')
-    }
+    document.documentElement.classList.toggle('high-contrast', mediaQuery.matches)
     
     mediaQuery.addEventListener('change', handleChange)
     return () => mediaQuery.removeEventListener('change', handleChange)
@@ -445,18 +710,11 @@ export function useReducedMotion() {
     
     const handleChange = (e: MediaQueryListEvent) => {
       setPrefersReducedMotion(e.matches)
-      if (e.matches) {
-        document.documentElement.classList.add('reduce-motion')
-      } else {
-        document.documentElement.classList.remove('reduce-motion')
-      }
+      document.documentElement.classList.toggle('reduce-motion', e.matches)
     }
     
-    // Initial check
     setPrefersReducedMotion(mediaQuery.matches)
-    if (mediaQuery.matches) {
-      document.documentElement.classList.add('reduce-motion')
-    }
+    document.documentElement.classList.toggle('reduce-motion', mediaQuery.matches)
     
     mediaQuery.addEventListener('change', handleChange)
     return () => mediaQuery.removeEventListener('change', handleChange)
@@ -465,7 +723,7 @@ export function useReducedMotion() {
   return prefersReducedMotion
 }
 
-// Focus management hook
+// Enhanced focus management hook
 export function useFocusManagement() {
   const focusHistory = useRef<HTMLElement[]>([])
 
@@ -496,13 +754,14 @@ export function useFocusManagement() {
   }
 }
 
-// Announce messages to screen readers
+// Enhanced announcement hook
 export function useAnnounce() {
   const [message, setMessage] = useState('')
+  const [politeness, setPoliteness] = useState<'polite' | 'assertive'>('polite')
 
-  const announce = useCallback((text: string, politeness: 'polite' | 'assertive' = 'polite') => {
+  const announce = useCallback((text: string, level: 'polite' | 'assertive' = 'polite') => {
     setMessage('')
-    // Brief delay to ensure screen readers notice the change
+    setPoliteness(level)
     setTimeout(() => {
       setMessage(text)
     }, 100)
@@ -516,13 +775,22 @@ export function useAnnounce() {
     announce,
     clear,
     LiveRegion: () => (
-      <LiveRegion message={message} politeness="polite" clearAfter={5000} />
+      <LiveRegion 
+        message={message} 
+        politeness={politeness} 
+        clearAfter={5000}
+        atomic={true}
+      />
     )
   }
 }
 
-// Roving tabindex pattern for lists and grids
-export function useRovingTabindex(itemsLength: number, orientation: 'horizontal' | 'vertical' = 'vertical') {
+// Enhanced roving tabindex pattern
+export function useRovingTabindex(
+  itemsLength: number, 
+  orientation: 'horizontal' | 'vertical' | 'both' = 'vertical',
+  loop: boolean = true
+) {
   const [focusedIndex, setFocusedIndex] = useState(0)
 
   const handleKeyDown = useCallback((event: React.KeyboardEvent, index: number) => {
@@ -530,27 +798,27 @@ export function useRovingTabindex(itemsLength: number, orientation: 'horizontal'
 
     switch (event.key) {
       case 'ArrowDown':
-        if (orientation === 'vertical') {
+        if (orientation === 'vertical' || orientation === 'both') {
           event.preventDefault()
-          newIndex = (index + 1) % itemsLength
+          newIndex = loop ? (index + 1) % itemsLength : Math.min(index + 1, itemsLength - 1)
         }
         break
       case 'ArrowUp':
-        if (orientation === 'vertical') {
+        if (orientation === 'vertical' || orientation === 'both') {
           event.preventDefault()
-          newIndex = (index - 1 + itemsLength) % itemsLength
+          newIndex = loop ? (index - 1 + itemsLength) % itemsLength : Math.max(index - 1, 0)
         }
         break
       case 'ArrowRight':
-        if (orientation === 'horizontal') {
+        if (orientation === 'horizontal' || orientation === 'both') {
           event.preventDefault()
-          newIndex = (index + 1) % itemsLength
+          newIndex = loop ? (index + 1) % itemsLength : Math.min(index + 1, itemsLength - 1)
         }
         break
       case 'ArrowLeft':
-        if (orientation === 'horizontal') {
+        if (orientation === 'horizontal' || orientation === 'both') {
           event.preventDefault()
-          newIndex = (index - 1 + itemsLength) % itemsLength
+          newIndex = loop ? (index - 1 + itemsLength) % itemsLength : Math.max(index - 1, 0)
         }
         break
       case 'Home':
@@ -566,16 +834,43 @@ export function useRovingTabindex(itemsLength: number, orientation: 'horizontal'
     if (newIndex !== index) {
       setFocusedIndex(newIndex)
     }
-  }, [itemsLength, orientation])
+  }, [itemsLength, orientation, loop])
 
   const getTabIndex = useCallback((index: number) => {
     return index === focusedIndex ? 0 : -1
+  }, [focusedIndex])
+
+  const getAriaSelected = useCallback((index: number) => {
+    return index === focusedIndex
   }, [focusedIndex])
 
   return {
     focusedIndex,
     setFocusedIndex,
     handleKeyDown,
-    getTabIndex
+    getTabIndex,
+    getAriaSelected
+  }
+}
+
+// ARIA live region provider for global announcements
+export function AriaLiveProvider({ children }: { children: React.ReactNode }) {
+  return (
+    <>
+      {children}
+      <div aria-live="polite" aria-atomic="true" className="sr-only" id="polite-announcer" />
+      <div aria-live="assertive" aria-atomic="true" className="sr-only" id="assertive-announcer" />
+    </>
+  )
+}
+
+// Global announce function
+export function globalAnnounce(message: string, politeness: 'polite' | 'assertive' = 'polite') {
+  const announcer = document.getElementById(`${politeness}-announcer`)
+  if (announcer) {
+    announcer.textContent = ''
+    setTimeout(() => {
+      announcer.textContent = message
+    }, 100)
   }
 }
