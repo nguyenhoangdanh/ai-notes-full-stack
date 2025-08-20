@@ -6,24 +6,19 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Badge } from '@/components/ui/badge'
-import {
-  useDuplicateDetection,
-  useSmartDuplicateReports,
-  useDuplicateStats,
-  useQueueDuplicateDetection,
-  useMergeDuplicates
-} from '@/hooks'
+
 import { DuplicateStatsCard } from '@/components/duplicates/DuplicateStatsCard'
 import { DuplicateGroupCard } from '@/components/duplicates/DuplicateGroupCard'
 import { DuplicateReportsList } from '@/components/duplicates/DuplicateReportsList'
 import { MergeDialog } from '@/components/duplicates/MergeDialog'
+import { useDuplicateDetection, useDuplicateReports, useDuplicateStats, useMergeDuplicates, useQueueDuplicateDetection } from '@/hooks/use-smart'
 
 export default function DuplicatesPage() {
   const [selectedGroup, setSelectedGroup] = useState<any>(null)
   const [showMergeDialog, setShowMergeDialog] = useState(false)
 
   const { data: detectionData, isLoading: detectionLoading } = useDuplicateDetection()
-  const { data: reports, isLoading: reportsLoading } = useSmartDuplicateReports()
+  const { data: reports, isLoading: reportsLoading } = useDuplicateReports()
   const { data: stats, isLoading: statsLoading } = useDuplicateStats()
   const queueDetection = useQueueDuplicateDetection()
   const mergeDuplicates = useMergeDuplicates()

@@ -5,18 +5,12 @@ import { Plus, Folder, Hash, Edit, Trash2, Search } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
-import { Badge } from '@/components/ui/badge'
-import { 
-  useCategories, 
-  useCreateCategory, 
-  useUpdateCategory, 
-  useDeleteCategory 
-} from '@/hooks'
 import { CategoryCreateDialog } from '@/components/categories/CategoryCreateDialog'
 import { CategoryEditDialog } from '@/components/categories/CategoryEditDialog'
 import { DeleteDialog } from '@/components/ui/delete-dialog'
 import { CategoryCard } from '@/components/categories/CategoryCard'
 import { type Category } from '@/types'
+import { useCategories, useCreateCategory, useDeleteCategory, useUpdateCategory } from '@/hooks/use-smart'
 
 export default function CategoriesPage() {
   const [searchQuery, setSearchQuery] = useState('')

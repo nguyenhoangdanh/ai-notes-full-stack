@@ -2,30 +2,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { toast } from 'sonner'
 import { productivityService, mobileService, miscService } from '../services'
 import { queryKeys } from './query-keys'
-import type {
-  PomodoroSession,
-  CreatePomodoroSessionDto,
-  UpdatePomodoroSessionDto,
-  ProductivityTask as Task,
-  ProductivityCreateTaskDto as CreateTaskDto,
-  ProductivityUpdateTaskDto as UpdateTaskDto,
-  CalendarEvent,
-  ProductivityCreateCalendarEventDto as CreateCalendarEventDto,
-  ProductivityUpdateCalendarEventDto as UpdateCalendarEventDto,
-  VoiceNote,
-  CreateVoiceNoteDto,
-  LocationNote,
-  CreateLocationNoteDto,
-  Notification,
-  Reminder,
-  CreateReminderDto,
-  SavedSearch,
-  CreateSavedSearchDto,
-  Template,
-  AdvancedCreateTemplateDto as CreateTemplateDto,
-  UpdateTemplateDto,
-  Tag,
-} from '../types'
+
 
 // =============================================================================
 // PRODUCTIVITY HOOKS

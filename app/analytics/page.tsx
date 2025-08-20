@@ -15,12 +15,13 @@ import {
   Activity,
   Calendar
 } from 'lucide-react'
-import { useDashboardAnalytics, useUserActivity } from '@/hooks/use-features'
 
 export default function AnalyticsPage() {
-  const { data: overview, isLoading: overviewLoading } = useDashboardAnalytics()
-  const { data: userActivity, isLoading: activityLoading } = useUserActivity()
-  
+  // const { data: overview, isLoading: overviewLoading } = useDashboardAnalytics()
+  // const { data: userActivity, isLoading: activityLoading } = useUserActivity()
+  const overview:any = {}
+  const userActivity:any = {};
+
   // TODO: Add proper analytics hooks to use-features.ts
   const workspaceStats = null
   const workspaceLoading = false

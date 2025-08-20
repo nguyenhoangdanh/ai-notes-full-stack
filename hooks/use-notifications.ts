@@ -1,4 +1,4 @@
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useQuery, useMutation, useQueryClient, UseQueryOptions, UseMutationOptions } from '@tanstack/react-query';
 import { notificationsService } from '../services/notifications.service';
 import { queryKeys } from './query-keys';
 
@@ -7,77 +7,129 @@ import { queryKeys } from './query-keys';
  * Generated from backend analysis
  */
 
-export const useGetNotifications = () => {
+// Types for better type safety (should be moved to types/ directory later)
+interface NotificationCreateData {
+  title: string;
+  message: string;
+  type?: 'info' | 'warning' | 'error' | 'success';
+  userId?: string;
+}
+
+interface NotificationUpdateData {
+  title?: string;
+  message?: string;
+  type?: 'info' | 'warning' | 'error' | 'success';
+  isRead?: boolean;
+}
+
+interface NotificationResponse {
+  id: string;
+  title: string;
+  message: string;
+  type: string;
+  isRead: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
+interface UnreadCountResponse {
+  count: number;
+}
+
+export const useGetNotifications = (options?: Omit<UseQueryOptions<NotificationResponse[]>, 'queryKey' | 'queryFn'>) => {
   return useQuery({
     queryKey: queryKeys.notifications.getNotifications(),
     queryFn: () => notificationsService.getNotifications(),
+    ...options,
   });
 };
 
-export const useCreateNotification = () => {
+export const useCreateNotification = (options?: UseMutationOptions<NotificationResponse, Error, NotificationCreateData>) => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: ({ data: any }) => notificationsService.createNotification(data),
-    onSuccess: () => {
+    mutationFn: (data: NotificationCreateData) => notificationsService.createNotification(data),
+    onSuccess: (data) => {
       // Invalidate related queries
       queryClient.invalidateQueries({ queryKey: queryKeys.notifications.all });
+      options?.onSuccess?.(data, data as NotificationCreateData, undefined);
     },
+    onError: options?.onError,
+    ...options,
   });
 };
 
-export const useUpdateNotification = () => {
+export const useUpdateNotification = (options?: UseMutationOptions<NotificationResponse, Error, { params: { id: string }, data: NotificationUpdateData }>) => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: ({ params: { id: string }, data: any }) => notificationsService.updateNotification(params, data),
-    onSuccess: () => {
+    mutationFn: ({ params, data }: { params: { id: string }, data: NotificationUpdateData }) => 
+      notificationsService.updateNotification(params, data),
+    onSuccess: (data, variables) => {
       // Invalidate related queries
       queryClient.invalidateQueries({ queryKey: queryKeys.notifications.all });
+      // Update specific notification in cache
+      queryClient.invalidateQueries({ queryKey: queryKeys.notifications.getNotifications() });
+      options?.onSuccess?.(data, variables, undefined);
     },
+    onError: options?.onError,
+    ...options,
   });
 };
 
-export const useDeleteNotification = () => {
+export const useDeleteNotification = (options?: UseMutationOptions<void, Error, { id: string }>) => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: ({ params: { id: string } }) => notificationsService.deleteNotification(params),
-    onSuccess: () => {
+    mutationFn: (params: { id: string }) => notificationsService.deleteNotification(params),
+    onSuccess: (data, variables) => {
       // Invalidate related queries
       queryClient.invalidateQueries({ queryKey: queryKeys.notifications.all });
+      options?.onSuccess?.(data, variables, undefined);
     },
+    onError: options?.onError,
+    ...options,
   });
 };
 
-export const useGetUnreadCount = () => {
+export const useGetUnreadCount = (options?: Omit<UseQueryOptions<UnreadCountResponse>, 'queryKey' | 'queryFn'>) => {
   return useQuery({
     queryKey: queryKeys.notifications.getUnreadCount(),
     queryFn: () => notificationsService.getUnreadCount(),
+    ...options,
   });
 };
 
-export const useMarkAsRead = () => {
+export const useMarkAsRead = (options?: UseMutationOptions<NotificationResponse, Error, { params: { id: string }, data?: Record<string, unknown> }>) => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: ({ params: { id: string }, data: any }) => notificationsService.markAsRead(params, data),
-    onSuccess: () => {
+    mutationFn: ({ params, data = {} }: { params: { id: string }, data?: Record<string, unknown> }) => 
+      notificationsService.markAsRead(params, data),
+    onSuccess: (data, variables) => {
       // Invalidate related queries
       queryClient.invalidateQueries({ queryKey: queryKeys.notifications.all });
+      queryClient.invalidateQueries({ queryKey: queryKeys.notifications.getUnreadCount() });
+      options?.onSuccess?.(data, variables, undefined);
     },
+    onError: options?.onError,
+    ...options,
   });
 };
 
-export const useMarkAllAsRead = () => {
+export const useMarkAllAsRead = (options?: UseMutationOptions<void, Error, Record<string, unknown>>) => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: ({ data: any }) => notificationsService.markAllAsRead(data),
-    onSuccess: () => {
+    mutationFn: (data: Record<string, unknown> = {}) => notificationsService.markAllAsRead(data),
+    onSuccess: (data, variables) => {
       // Invalidate related queries
       queryClient.invalidateQueries({ queryKey: queryKeys.notifications.all });
+      queryClient.invalidateQueries({ queryKey: queryKeys.notifications.getUnreadCount() });
+      options?.onSuccess?.(data, variables, undefined);
     },
+    onError: options?.onError,
+    ...options,
   });
 };
 

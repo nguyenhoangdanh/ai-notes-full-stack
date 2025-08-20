@@ -20,11 +20,11 @@ import { Card, CardContent, CardHeader, CardTitle } from '../../../components/ui
 import { Badge } from '../../../components/ui/badge'
 import { Input } from '../../../components/ui/input'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../../../components/ui/tabs'
-import { useCategory, useCategoryNotes } from '../../../hooks/use-features'
 import { toast } from 'sonner'
 import { format } from 'date-fns'
 import { cn } from '../../../lib/utils'
 import Link from 'next/link'
+import { useCategory } from '@/hooks/use-smart'
 
 export default function CategoryDetailPage() {
   const params = useParams()
