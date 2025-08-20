@@ -75,5 +75,49 @@ export const mobileService = {
    */
   async getSyncStatus(): Promise<GetSyncStatusResponse> {
     return apiClient.get(`/offline-sync/status`);
+  },
+
+  // Additional methods needed by hooks
+  /**
+   * POST /voice-notes (alias for creating voice notes with audio file)
+   */
+  async createVoiceNote(data: any, audioFile?: File): Promise<any> {
+    // This would normally handle file upload
+    const formData = new FormData();
+    if (audioFile) {
+      formData.append('audio', audioFile);
+    }
+    Object.keys(data).forEach(key => {
+      formData.append(key, data[key]);
+    });
+    return apiClient.post(`/voice-notes`, formData);
+  },
+
+  /**
+   * GET /notes/:noteId/location
+   */
+  async getNoteLocation(noteId: string): Promise<any> {
+    return apiClient.get(`/notes/${noteId}/location`);
+  },
+
+  /**
+   * POST /notes/:noteId/location
+   */
+  async addLocationToNote(noteId: string, data: any): Promise<any> {
+    return apiClient.post(`/notes/${noteId}/location`, data);
+  },
+
+  /**
+   * GET /exports/history
+   */
+  async getExportHistory(): Promise<any> {
+    return apiClient.get(`/exports/history`);
+  },
+
+  /**
+   * POST /exports
+   */
+  async createExport(data: any): Promise<any> {
+    return apiClient.post(`/exports`, data);
   }
 };

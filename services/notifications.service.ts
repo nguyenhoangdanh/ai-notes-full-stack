@@ -32,14 +32,14 @@ export const notificationsService = {
    * POST /notifications
    */
   async createNotification(data: CreateNotificationRequest): Promise<CreateNotificationResponse> {
-    return apiClient.post(`/notifications`, data);
+    return apiClient.post(`/notifications`, { body: data });
   },
 
   /**
    * PATCH /notifications/:id
    */
   async updateNotification(params: UpdateNotificationParams, data: UpdateNotificationRequest): Promise<UpdateNotificationResponse> {
-    return apiClient.patch(`/notifications/${params.id}`, data);
+    return apiClient.patch(`/notifications/${params.id}`, { body: data });
   },
 
   /**
@@ -60,13 +60,13 @@ export const notificationsService = {
    * POST /notifications/:id/read
    */
   async markAsRead(params: MarkAsReadParams, data: MarkAsReadRequest): Promise<MarkAsReadResponse> {
-    return apiClient.post(`/notifications/${params.id}/read`, data);
+    return apiClient.post(`/notifications/${params.id}/read`, { body: data });
   },
 
   /**
    * POST /notifications/read-all
    */
   async markAllAsRead(data: MarkAllAsReadRequest): Promise<MarkAllAsReadResponse> {
-    return apiClient.post(`/notifications/read-all`, data);
+    return apiClient.post(`/notifications/read-all`, { body: data });
   }
 };

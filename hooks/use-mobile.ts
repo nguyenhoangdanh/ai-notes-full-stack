@@ -36,7 +36,7 @@ export const useStartRecording = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: ({ data: any }) => mobileService.startRecording(data),
+    mutationFn: (data: any) => mobileService.startRecording(data),
     onSuccess: () => {
       // Invalidate related queries
       queryClient.invalidateQueries({ queryKey: queryKeys.mobile.all() });
@@ -48,7 +48,7 @@ export const useStopRecording = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: ({ data: any }) => mobileService.stopRecording(data),
+    mutationFn: (data: any) => mobileService.stopRecording(data),
     onSuccess: () => {
       // Invalidate related queries
       queryClient.invalidateQueries({ queryKey: queryKeys.mobile.all() });
@@ -58,7 +58,7 @@ export const useStopRecording = () => {
 
 export const useGetVoiceNotes = () => {
   return useQuery({
-    queryKey: queryKeys.mobile.getVoiceNotes(),
+    queryKey: queryKeys.mobile.voiceNotes(),
     queryFn: () => mobileService.getVoiceNotes(),
   });
 };
@@ -67,7 +67,7 @@ export const useTranscribeVoiceNote = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: ({ params: { id: string }, data: any }) => mobileService.transcribeVoiceNote(params, data),
+    mutationFn: ({ params, data }: { params: { id: string }, data: any }) => mobileService.transcribeVoiceNote(params, data),
     onSuccess: () => {
       // Invalidate related queries
       queryClient.invalidateQueries({ queryKey: queryKeys.mobile.all() });
@@ -79,7 +79,7 @@ export const useCreateLocationNote = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: ({ data: any }) => mobileService.createLocationNote(data),
+    mutationFn: (data: any) => mobileService.createLocationNote(data),
     onSuccess: () => {
       // Invalidate related queries
       queryClient.invalidateQueries({ queryKey: queryKeys.mobile.all() });
@@ -98,7 +98,7 @@ export const useSyncOfflineData = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: ({ data: any }) => mobileService.syncOfflineData(data),
+    mutationFn: (data: any) => mobileService.syncOfflineData(data),
     onSuccess: () => {
       // Invalidate related queries
       queryClient.invalidateQueries({ queryKey: queryKeys.mobile.all() });

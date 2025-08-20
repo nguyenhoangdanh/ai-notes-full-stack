@@ -39,7 +39,10 @@ interface UnreadCountResponse {
 export const useGetNotifications = (options?: Omit<UseQueryOptions<NotificationResponse[]>, 'queryKey' | 'queryFn'>) => {
   return useQuery({
     queryKey: queryKeys.notifications.getNotifications(),
-    queryFn: () => notificationsService.getNotifications(),
+    queryFn: async () => {
+      const response = await notificationsService.getNotifications();
+      return response.data || [];
+    },
     ...options,
   });
 };
@@ -48,7 +51,10 @@ export const useCreateNotification = (options?: UseMutationOptions<NotificationR
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (data: NotificationCreateData) => notificationsService.createNotification(data),
+    mutationFn: async (data: NotificationCreateData) => {
+      const response = await notificationsService.createNotification(data);
+      return response.data;
+    },
     onSuccess: (data) => {
       // Invalidate related queries
       queryClient.invalidateQueries({ queryKey: queryKeys.notifications.all() });
@@ -63,8 +69,10 @@ export const useUpdateNotification = (options?: UseMutationOptions<NotificationR
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: ({ id, data }: { id: string; data: NotificationUpdateData }) => 
-      notificationsService.updateNotification({ id }, data),
+    mutationFn: async ({ id, data }: { id: string; data: NotificationUpdateData }) => {
+      const response = await notificationsService.updateNotification({ id }, data);
+      return response.data;
+    },
     onSuccess: (data, variables) => {
       // Invalidate related queries
       queryClient.invalidateQueries({ queryKey: queryKeys.notifications.all() });
@@ -81,7 +89,9 @@ export const useDeleteNotification = (options?: UseMutationOptions<void, Error, 
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (params: { id: string }) => notificationsService.deleteNotification(params),
+    mutationFn: async (params: { id: string }) => {
+      await notificationsService.deleteNotification(params);
+    },
     onSuccess: (data, variables) => {
       // Invalidate related queries
       queryClient.invalidateQueries({ queryKey: queryKeys.notifications.all() });
@@ -104,8 +114,10 @@ export const useMarkAsRead = (options?: UseMutationOptions<NotificationResponse,
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: ({ id, data = {} }: { id: string; data?: Record<string, unknown> }) => 
-      notificationsService.markAsRead({ id }, data),
+    mutationFn: async ({ id, data = {} }: { id: string; data?: Record<string, unknown> }) => {
+      const response = await notificationsService.markAsRead({ id }, data);
+      return response.data;
+    },
     onSuccess: (data, variables) => {
       // Invalidate related queries
       queryClient.invalidateQueries({ queryKey: queryKeys.notifications.all() });
@@ -121,7 +133,9 @@ export const useMarkAllAsRead = (options?: UseMutationOptions<void, Error, Recor
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (data: Record<string, unknown> = {}) => notificationsService.markAllAsRead(data),
+    mutationFn: async (data: Record<string, unknown> = {}) => {
+      await notificationsService.markAllAsRead(data);
+    },
     onSuccess: (data, variables) => {
       // Invalidate related queries
       queryClient.invalidateQueries({ queryKey: queryKeys.notifications.all() });
