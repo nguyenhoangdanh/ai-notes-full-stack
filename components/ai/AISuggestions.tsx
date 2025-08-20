@@ -67,7 +67,7 @@ export function AISuggestions({
   const [isGenerating, setIsGenerating] = useState(false)
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null)
   
-  const { askAI, isProcessing } = useAI()
+  const { sendMessage, isProcessing } = useAI()
   const { notes } = useNotes()
 
   // Generate contextual suggestions based on content and context
@@ -227,7 +227,7 @@ export function AISuggestions({
       setIsGenerating(true)
       
       // Apply the suggestion
-      await askAI(suggestion.action, noteId ? [noteId] : undefined)
+      await sendMessage(suggestion.action, noteId ? [noteId] : undefined)
       
       // Mark as applied
       setAppliedSuggestions(prev => new Set([...prev, suggestion.id]))
