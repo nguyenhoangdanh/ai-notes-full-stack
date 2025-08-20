@@ -58,6 +58,103 @@ export const queryKeys = {
     advancedSearch: (query: any) => ['ai', 'advancedSearch', query] as const,
   },
 
+  // Activities
+  activities: {
+    all: () => ['activities'] as const,
+    getActivities: () => ['activities', 'list'] as const,
+    getActivityInsights: () => ['activities', 'insights'] as const,
+    getActivityFeed: () => ['activities', 'feed'] as const,
+    getActivityStats: () => ['activities', 'stats'] as const,
+    getActivityHeatmap: () => ['activities', 'heatmap'] as const,
+    getProductivityMetrics: () => ['activities', 'productivity'] as const,
+  },
+
+  // Analytics  
+  analytics: {
+    all: () => ['analytics'] as const,
+    getUserAnalytics: () => ['analytics', 'overview'] as const,
+    getWorkspaceAnalytics: () => ['analytics', 'workspaces'] as const,
+    getContentAnalytics: () => ['analytics', 'content'] as const,
+    trends: () => ['analytics', 'trends'] as const,
+    wordcloud: () => ['analytics', 'wordcloud'] as const,
+  },
+
+  // Attachments
+  attachments: {
+    all: () => ['attachments'] as const,
+    getAttachments: (noteId: string) => ['attachments', noteId] as const,
+    getAttachmentAnalytics: () => ['attachments', 'analytics'] as const,
+    getSupportedTypes: () => ['attachments', 'types'] as const,
+    searchAttachments: (query: string) => ['attachments', 'search', query] as const,
+  },
+
+  // Export
+  export: {
+    all: () => ['export'] as const,
+    getUserExports: () => ['export', 'list'] as const,
+    getExportStats: () => ['export', 'stats'] as const,
+    history: () => ['export', 'history'] as const,
+  },
+
+  // Notifications
+  notifications: {
+    all: () => ['notifications'] as const,
+    getNotifications: () => ['notifications', 'list'] as const,
+    getUnreadCount: () => ['notifications', 'unread-count'] as const,
+    unread: () => ['notifications', 'unread'] as const,
+  },
+
+  // Reminders
+  reminders: {
+    all: () => ['reminders'] as const,
+    getReminders: () => ['reminders', 'list'] as const,
+    getDueReminders: () => ['reminders', 'due'] as const,
+    getUpcomingReminders: () => ['reminders', 'upcoming'] as const,
+    getReminderStats: () => ['reminders', 'stats'] as const,
+  },
+
+  // Productivity
+  productivity: {
+    all: () => ['productivity'] as const,
+    // Tasks
+    tasks: () => ['productivity', 'tasks'] as const,
+    getTasks: (status?: string, priority?: string) => 
+      ['productivity', 'tasks', { status, priority }] as const,
+    getTaskStats: () => ['productivity', 'tasks', 'stats'] as const,
+    getOverdueTasks: () => ['productivity', 'tasks', 'overdue'] as const,
+    getTasksByDueDate: (start: string, end: string) => 
+      ['productivity', 'tasks', 'due', { start, end }] as const,
+    // Pomodoro
+    pomodoro: () => ['productivity', 'pomodoro'] as const,
+    getActivePomodoroSession: () => ['productivity', 'pomodoro', 'active'] as const,
+    getPomodoroStats: () => ['productivity', 'pomodoro', 'stats'] as const,
+    getPomodoroHistory: (limit?: number) => 
+      ['productivity', 'pomodoro', 'history', { limit }] as const,
+    // Calendar
+    calendar: () => ['productivity', 'calendar'] as const,
+    getCalendarEvents: (start?: string, end?: string) => 
+      ['productivity', 'calendar', 'events', { start, end }] as const,
+    getUpcomingEvents: (days?: number) => 
+      ['productivity', 'calendar', 'upcoming', { days }] as const,
+    getTodayEvents: () => ['productivity', 'calendar', 'today'] as const,
+    getWeekEvents: () => ['productivity', 'calendar', 'week'] as const,
+    // Review
+    review: () => ['productivity', 'review'] as const,
+    getDueReviews: () => ['productivity', 'review', 'due'] as const,
+    getReviewStats: () => ['productivity', 'review', 'stats'] as const,
+    getReviewSchedule: (noteId: string) => 
+      ['productivity', 'review', 'schedule', noteId] as const,
+  },
+
+  // Mobile
+  mobile: {
+    all: () => ['mobile'] as const,
+    voiceNotes: () => ['mobile', 'voice-notes'] as const,
+    offlineSync: () => ['mobile', 'offline-sync'] as const,
+    location: (noteId: string) => ['mobile', 'location', noteId] as const,
+    exports: () => ['mobile', 'exports'] as const,
+  },
+
   // Tags (Enhanced)
   tags: {
     all: () => ['tags'] as const,
@@ -96,51 +193,11 @@ export const queryKeys = {
     transcription: (id: string) => ['voiceNotes', 'transcription', id] as const,
   },
 
-  // Notifications
-  notifications: {
-    all: () => ['notifications'] as const,
-    unread: () => ['notifications', 'unread'] as const,
-  },
-
   // Smart Features
   smart: {
     duplicates: () => ['smart', 'duplicates'] as const,
     related: (noteId: string) => ['smart', 'related', noteId] as const,
     summaries: (noteId: string) => ['smart', 'summaries', noteId] as const,
-  },
-
-  // Productivity
-  productivity: {
-    pomodoro: () => ['productivity', 'pomodoro'] as const,
-    pomodoroSessions: () => ['productivity', 'pomodoro', 'sessions'] as const,
-    tasks: () => ['productivity', 'tasks'] as const,
-    tasksWithFilters: (filters?: any) => ['productivity', 'tasks', filters] as const,
-    task: (taskId: string) => ['productivity', 'task', taskId] as const,
-    calendar: () => ['productivity', 'calendar'] as const,
-    calendarEvents: (filters?: any) => ['productivity', 'calendar', 'events', filters] as const,
-  },
-
-  // Analytics (Enhanced)
-  analytics: {
-    overview: () => ['analytics', 'overview'] as const,
-    trends: () => ['analytics', 'trends'] as const,
-    wordcloud: () => ['analytics', 'wordcloud'] as const,
-    workspaces: () => ['analytics', 'workspaces'] as const,
-    content: () => ['analytics', 'content'] as const,
-  },
-
-  // Export
-  export: {
-    history: () => ['export', 'history'] as const,
-    stats: () => ['export', 'stats'] as const,
-  },
-
-  // Mobile
-  mobile: {
-    voiceNotes: () => ['mobile', 'voice-notes'] as const,
-    offlineSync: () => ['mobile', 'offline-sync'] as const,
-    location: (noteId: string) => ['mobile', 'location', noteId] as const,
-    exports: () => ['mobile', 'exports'] as const,
   },
 
   // Misc features

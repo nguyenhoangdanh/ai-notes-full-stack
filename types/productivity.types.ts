@@ -1,53 +1,134 @@
-// Notifications types - Updated to match backend exactly
-export type NotificationType = 'MENTION' | 'COMMENT' | 'SHARE' | 'REMINDER' | 'SYSTEM' | 'UPDATE';
+/**
+ * Productivity Module Types
+ * Complete mapping with backend productivity features
+ */
 
-export interface CreateNotificationDto {
-  title: string;
-  message: string;
-  type: NotificationType;
-  noteId?: string;
-}
-
-export interface UpdateNotificationDto {
-  isRead?: boolean;
-}
-
-export interface Notification {
+// Tasks Types
+export interface Task {
   id: string;
   title: string;
-  message: string;
-  type: NotificationType;
+  description?: string;
+  status: 'TODO' | 'IN_PROGRESS' | 'COMPLETED';
+  priority: 'LOW' | 'MEDIUM' | 'HIGH' | 'URGENT';
+  dueDate?: string;
   noteId?: string;
-  isRead: boolean;
   userId: string;
   createdAt: string;
   updatedAt: string;
 }
 
-// Reminders types - Updated to match backend exactly  
-export interface CreateReminderDto {
-  noteId: string;
+export interface CreateTaskDto {
   title: string;
-  remindAt: string;
-  recurrence?: string; // daily, weekly, monthly
+  description?: string;
+  priority?: 'LOW' | 'MEDIUM' | 'HIGH' | 'URGENT';
+  dueDate?: string;
+  noteId?: string;
 }
 
-export interface UpdateReminderDto {
+export interface UpdateTaskDto {
   title?: string;
-  remindAt?: string;
-  isComplete?: boolean;
-  recurrence?: string;
+  description?: string;
+  status?: 'TODO' | 'IN_PROGRESS' | 'COMPLETED';
+  priority?: 'LOW' | 'MEDIUM' | 'HIGH' | 'URGENT';
+  dueDate?: string;
 }
 
-export interface Reminder {
+export interface TaskStats {
+  total: number;
+  completed: number;
+  pending: number;
+  overdue: number;
+  byPriority: Record<string, number>;
+  byStatus: Record<string, number>;
+}
+
+// Pomodoro Types
+export interface PomodoroSession {
   id: string;
-  noteId: string;
+  userId: string;
+  noteId?: string;
+  duration: number; // in minutes
+  status: 'ACTIVE' | 'PAUSED' | 'COMPLETED' | 'CANCELLED';
+  startedAt: string;
+  completedAt?: string;
+  pausedAt?: string;
+  type: 'WORK' | 'SHORT_BREAK' | 'LONG_BREAK';
+}
+
+export interface PomodoroStats {
+  totalSessions: number;
+  totalWorkTime: number; // in minutes
+  totalBreakTime: number;
+  streakDays: number;
+  averageSessionLength: number;
+  productivity: number; // percentage
+}
+
+export interface PomodoroSettings {
+  workDuration: number; // 25 minutes default
+  shortBreakDuration: number; // 5 minutes default
+  longBreakDuration: number; // 15 minutes default
+  sessionsUntilLongBreak: number; // 4 sessions default
+  autoStartBreaks: boolean;
+  notifications: boolean;
+}
+
+// Calendar Types
+export interface CalendarEvent {
+  id: string;
   title: string;
-  remindAt: string;
-  recurrence?: string;
-  isComplete: boolean;
+  description?: string;
+  startTime: string;
+  endTime: string;
+  noteId?: string;
   userId: string;
   createdAt: string;
+  updatedAt: string;
+}
+
+export interface CreateCalendarEventDto {
+  title: string;
+  description?: string;
+  startTime: string;
+  endTime: string;
+  noteId?: string;
+}
+
+export interface UpdateCalendarEventDto {
+  title?: string;
+  description?: string;
+  startTime?: string;
+  endTime?: string;
+}
+
+// Review Types (Spaced Repetition)
+export interface ReviewItem {
+  id: string;
+  noteId: string;
+  userId: string;
+  difficulty: 'EASY' | 'MEDIUM' | 'HARD';
+  interval: number; // days until next review
+  repetitions: number;
+  easeFactor: number;
+  nextReview: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface ReviewStats {
+  totalReviews: number;
+  dueToday: number;
+  overdue: number;
+  retentionRate: number;
+  averageEaseFactor: number;
+}
+
+export interface SpacedRepetitionSettings {
+  initialInterval: number; // 1 day default
+  easeFactor: number; // 2.5 default
+  minimumEaseFactor: number; // 1.3 default
+  maximumInterval: number; // 365 days default
+}
   updatedAt: string;
   note?: {
     id: string;

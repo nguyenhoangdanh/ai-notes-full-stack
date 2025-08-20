@@ -1,78 +1,79 @@
-import { apiClient } from '../lib/api-client'
-import type {
-  VoiceNote,
-  CreateVoiceNoteDto,
-  LocationNote,
-  CreateLocationNoteDto,
-  SyncOperationDto,
-  ConflictResolutionDto,
-  OfflineSync,
-  ExportHistory,
-  AdvancedCreateExportDto as CreateExportDto,
-} from '../types'
+import { apiClient } from '../lib/api-client';
+import {
+  StartRecordingResponse,
+  StartRecordingRequest,
+  StopRecordingResponse,
+  StopRecordingRequest,
+  GetVoiceNotesResponse,
+  TranscribeVoiceNoteResponse,
+  TranscribeVoiceNoteRequest,
+  TranscribeVoiceNoteParams,
+  CreateLocationNoteResponse,
+  CreateLocationNoteRequest,
+  GetNearbyNotesResponse,
+  SyncOfflineDataResponse,
+  SyncOfflineDataRequest,
+  GetSyncStatusResponse
+} from '../types/mobile.types';
 
+/**
+ * Mobile Service
+ * Generated from backend analysis
+ */
 export const mobileService = {
-  // Voice notes
-  async getVoiceNotes(): Promise<VoiceNote[]> {
-    return apiClient.get<VoiceNote[]>('/mobile/voice-notes')
+  /**
+   * POST /voice-notes/record
+   */
+  async startRecording(data: StartRecordingRequest): Promise<StartRecordingResponse> {
+    return apiClient.post(`/voice-notes/record`, data);
   },
 
-  async createVoiceNote(data: CreateVoiceNoteDto, audioFile: File): Promise<VoiceNote> {
-    const formData = new FormData()
-    formData.append('file', audioFile)
-    formData.append('metadata', JSON.stringify(data))
-    
-    return apiClient.post<VoiceNote>('/mobile/voice-notes', { body: formData })
+  /**
+   * POST /voice-notes/stop
+   */
+  async stopRecording(data: StopRecordingRequest): Promise<StopRecordingResponse> {
+    return apiClient.post(`/voice-notes/stop`, data);
   },
 
-  async getVoiceNoteTranscription(voiceNoteId: string): Promise<{ transcription?: string; status: string }> {
-    return apiClient.get(`/mobile/voice-notes/${voiceNoteId}/transcription`)
+  /**
+   * GET /voice-notes
+   */
+  async getVoiceNotes(): Promise<GetVoiceNotesResponse> {
+    return apiClient.get(`/voice-notes`);
   },
 
-  async deleteVoiceNote(voiceNoteId: string): Promise<void> {
-    return apiClient.delete<void>(`/mobile/voice-notes/${voiceNoteId}`)
+  /**
+   * POST /voice-notes/:id/transcribe
+   */
+  async transcribeVoiceNote(params: TranscribeVoiceNoteParams, data: TranscribeVoiceNoteRequest): Promise<TranscribeVoiceNoteResponse> {
+    return apiClient.post(`/voice-notes/${params.id}/transcribe`, data);
   },
 
-  // Location notes
-  async addLocationToNote(noteId: string, data: CreateLocationNoteDto): Promise<LocationNote> {
-    return apiClient.post<LocationNote>(`/mobile/location/notes/${noteId}`, { body: data })
+  /**
+   * POST /location-notes
+   */
+  async createLocationNote(data: CreateLocationNoteRequest): Promise<CreateLocationNoteResponse> {
+    return apiClient.post(`/location-notes`, data);
   },
 
-  async getNoteLocation(noteId: string): Promise<LocationNote> {
-    return apiClient.get<LocationNote>(`/mobile/location/notes/${noteId}`)
+  /**
+   * GET /location-notes/nearby
+   */
+  async getNearbyNotes(): Promise<GetNearbyNotesResponse> {
+    return apiClient.get(`/location-notes/nearby`);
   },
 
-  async removeLocationFromNote(noteId: string): Promise<void> {
-    return apiClient.delete<void>(`/mobile/location/notes/${noteId}`)
+  /**
+   * POST /offline-sync/sync
+   */
+  async syncOfflineData(data: SyncOfflineDataRequest): Promise<SyncOfflineDataResponse> {
+    return apiClient.post(`/offline-sync/sync`, data);
   },
 
-  // Offline sync
-  async getPendingSyncOperations(): Promise<OfflineSync[]> {
-    return apiClient.get<OfflineSync[]>('/mobile/sync/pending')
-  },
-
-  async submitSyncOperations(operations: SyncOperationDto): Promise<{ processed: number; conflicts: any[] }> {
-    return apiClient.post('/mobile/sync/operations', { body: operations })
-  },
-
-  async resolveSyncConflicts(resolutions: ConflictResolutionDto[]): Promise<{ resolved: number }> {
-    return apiClient.post('/mobile/sync/resolve-conflicts', { body: { resolutions } })
-  },
-
-  // Export functionality
-  async getExportHistory(): Promise<ExportHistory[]> {
-    return apiClient.get<ExportHistory[]>('/export/history')
-  },
-
-  async createExport(data: CreateExportDto): Promise<ExportHistory> {
-    return apiClient.post<ExportHistory>('/export/notes', { body: data })
-  },
-
-  async downloadExport(exportId: string): Promise<Blob> {
-    return apiClient.get<Blob>(`/export/${exportId}/download`)
-  },
-
-  async deleteExport(exportId: string): Promise<void> {
-    return apiClient.delete<void>(`/export/${exportId}`)
-  },
-}
+  /**
+   * GET /offline-sync/status
+   */
+  async getSyncStatus(): Promise<GetSyncStatusResponse> {
+    return apiClient.get(`/offline-sync/status`);
+  }
+};
