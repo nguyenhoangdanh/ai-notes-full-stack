@@ -24,7 +24,7 @@ import { toast } from 'sonner'
 import { format } from 'date-fns'
 import { cn } from '../../../lib/utils'
 import Link from 'next/link'
-import { useCategory } from '@/hooks/use-smart'
+import { useCategory, useCategoryNotes } from '@/hooks/use-smart'
 
 export default function CategoryDetailPage() {
   const params = useParams()

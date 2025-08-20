@@ -1,24 +1,47 @@
-// /**
-//  * Barrel export for all React Query hooks
-//  */
+/**
+ * Barrel export for all React Query hooks
+ */
 
-// // Core hooks - avoid conflicts
-// export * from './use-auth';
-// export * from './use-notes';
-// export * from './use-ai';
-// export * from './use-workspaces';
+// Core hooks - avoid conflicts
+export * from './use-auth';
+export * from './use-notes';
+export * from './use-ai';
+export * from './use-workspaces';
 
-
-// // Smart Features
-// export {
-//   useCategories,
-//   useCategory,
-//   useCreateCategory ,
-//   useUpdateCategory ,
-//   useDeleteCategory,
-//   useSuggestCategories,
-//   useAutoCategorize
-// } from './use-smart';
+// Smart Features
+export {
+  useCategories,
+  useCategory,
+  useCategoryNotes,
+  useCreateCategory,
+  useUpdateCategory,
+  useDeleteCategory,
+  useSuggestCategories,
+  useAutoCategorize,
+  useNoteCategories,
+  useAssignCategory,
+  useUnassignCategory,
+  useNoteSummary,
+  useSummaryStats,
+  useSummaryTemplates,
+  useSummaryVersions,
+  useGenerateSummary,
+  useBatchGenerateSummaries,
+  useDeleteSummary,
+  useRelatedNotes,
+  useStoredRelations,
+  useNoteGraph,
+  useRelationsStats,
+  useSaveRelation,
+  useAnalyzeRelations,
+  useDeleteRelation,
+  useDuplicateDetection,
+  useDuplicateReports,
+  useDuplicateStats,
+  useCreateDuplicateReport,
+  useMergeDuplicates,
+  useQueueDuplicateDetection
+} from './use-smart';
 
 // // New module hooks using the actual exported names
 // export {

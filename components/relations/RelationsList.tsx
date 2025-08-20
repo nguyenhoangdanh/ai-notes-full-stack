@@ -2,7 +2,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { List, Eye, Link2, Trash2, Plus } from 'lucide-react'
-import { useStoredRelations, useSmartRelatedNotes, useSaveRelation, useDeleteRelation } from '@/hooks'
+import { useStoredRelations, useRelatedNotes, useSaveRelation, useDeleteRelation } from '@/hooks'
 
 interface RelationsListProps {
   noteId: string
@@ -10,7 +10,7 @@ interface RelationsListProps {
 
 export function RelationsList({ noteId }: RelationsListProps) {
   const { data: storedRelations, isLoading: storedLoading } = useStoredRelations(noteId)
-  const { data: relatedNotes, isLoading: relatedLoading } = useSmartRelatedNotes(noteId)
+  const { data: relatedNotes, isLoading: relatedLoading } = useRelatedNotes(noteId)
   const saveRelation = useSaveRelation()
   const deleteRelation = useDeleteRelation()
 

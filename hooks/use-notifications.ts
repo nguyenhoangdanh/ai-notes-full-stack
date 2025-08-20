@@ -51,7 +51,7 @@ export const useCreateNotification = (options?: UseMutationOptions<NotificationR
     mutationFn: (data: NotificationCreateData) => notificationsService.createNotification(data),
     onSuccess: (data) => {
       // Invalidate related queries
-      queryClient.invalidateQueries({ queryKey: queryKeys.notifications.all });
+      queryClient.invalidateQueries({ queryKey: queryKeys.notifications.all() });
       options?.onSuccess?.(data, data as NotificationCreateData, undefined);
     },
     onError: options?.onError,
@@ -67,7 +67,7 @@ export const useUpdateNotification = (options?: UseMutationOptions<NotificationR
       notificationsService.updateNotification(params, data),
     onSuccess: (data, variables) => {
       // Invalidate related queries
-      queryClient.invalidateQueries({ queryKey: queryKeys.notifications.all });
+      queryClient.invalidateQueries({ queryKey: queryKeys.notifications.all() });
       // Update specific notification in cache
       queryClient.invalidateQueries({ queryKey: queryKeys.notifications.getNotifications() });
       options?.onSuccess?.(data, variables, undefined);
@@ -84,7 +84,7 @@ export const useDeleteNotification = (options?: UseMutationOptions<void, Error, 
     mutationFn: (params: { id: string }) => notificationsService.deleteNotification(params),
     onSuccess: (data, variables) => {
       // Invalidate related queries
-      queryClient.invalidateQueries({ queryKey: queryKeys.notifications.all });
+      queryClient.invalidateQueries({ queryKey: queryKeys.notifications.all() });
       options?.onSuccess?.(data, variables, undefined);
     },
     onError: options?.onError,
@@ -108,7 +108,7 @@ export const useMarkAsRead = (options?: UseMutationOptions<NotificationResponse,
       notificationsService.markAsRead(params, data),
     onSuccess: (data, variables) => {
       // Invalidate related queries
-      queryClient.invalidateQueries({ queryKey: queryKeys.notifications.all });
+      queryClient.invalidateQueries({ queryKey: queryKeys.notifications.all() });
       queryClient.invalidateQueries({ queryKey: queryKeys.notifications.getUnreadCount() });
       options?.onSuccess?.(data, variables, undefined);
     },
@@ -124,7 +124,7 @@ export const useMarkAllAsRead = (options?: UseMutationOptions<void, Error, Recor
     mutationFn: (data: Record<string, unknown> = {}) => notificationsService.markAllAsRead(data),
     onSuccess: (data, variables) => {
       // Invalidate related queries
-      queryClient.invalidateQueries({ queryKey: queryKeys.notifications.all });
+      queryClient.invalidateQueries({ queryKey: queryKeys.notifications.all() });
       queryClient.invalidateQueries({ queryKey: queryKeys.notifications.getUnreadCount() });
       options?.onSuccess?.(data, variables, undefined);
     },

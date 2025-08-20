@@ -14,7 +14,7 @@ export const useUploadNoteAttachment = () => {
     mutationFn: ({ params, data }: { params: { noteId: string }, data: any }) => attachmentsService.uploadAttachment(params, data),
     onSuccess: () => {
       // Invalidate related queries
-      queryClient.invalidateQueries({ queryKey: queryKeys.attachments.all });
+      queryClient.invalidateQueries({ queryKey: queryKeys.attachments.all() });
     },
   });
 };
@@ -33,14 +33,14 @@ export const useDeleteNoteAttachment = () => {
     mutationFn: (params: { attachmentId: string }) => attachmentsService.deleteAttachment(params),
     onSuccess: () => {
       // Invalidate related queries
-      queryClient.invalidateQueries({ queryKey: queryKeys.attachments.all });
+      queryClient.invalidateQueries({ queryKey: queryKeys.attachments.all() });
     },
   });
 };
 
 export const useDownloadAttachment = (params: { attachmentId: string }) => {
   return useQuery({
-    queryKey: queryKeys.attachments.downloadAttachment(params.attachmentId),
+    queryKey: [...queryKeys.attachments.all(), 'download', params.attachmentId] as const,
     queryFn: () => attachmentsService.downloadAttachment(params),
   });
 };
@@ -63,10 +63,11 @@ export const useRequestOCR = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: ({ params: { attachmentId: string }, data: any }) => attachmentsService.requestOCR(params, data),
+    mutationFn: ({ attachmentId, data }: { attachmentId: string; data: any }) => 
+      attachmentsService.requestOCR({ attachmentId }, data),
     onSuccess: () => {
       // Invalidate related queries
-      queryClient.invalidateQueries({ queryKey: queryKeys.attachments.all });
+      queryClient.invalidateQueries({ queryKey: queryKeys.attachments.all() });
     },
   });
 };

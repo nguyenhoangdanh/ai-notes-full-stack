@@ -39,10 +39,10 @@ export const useTrackActivity = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: ({ data: any }) => activitiesService.trackActivity(data),
+    mutationFn: (data: any) => activitiesService.trackActivity(data),
     onSuccess: () => {
       // Invalidate related queries
-      queryClient.invalidateQueries({ queryKey: queryKeys.activities.all });
+      queryClient.invalidateQueries({ queryKey: queryKeys.activities.all() });
     },
   });
 };
@@ -54,14 +54,14 @@ export const useCleanupOldActivities = () => {
     mutationFn: () => activitiesService.cleanupOldActivities(),
     onSuccess: () => {
       // Invalidate related queries
-      queryClient.invalidateQueries({ queryKey: queryKeys.activities.all });
+      queryClient.invalidateQueries({ queryKey: queryKeys.activities.all() });
     },
   });
 };
 
 export const useExportActivities = () => {
   return useQuery({
-    queryKey: queryKeys.activities.exportActivities(),
+    queryKey: [...queryKeys.activities.all(), 'export'] as const,
     queryFn: () => activitiesService.exportActivities(),
   });
 };

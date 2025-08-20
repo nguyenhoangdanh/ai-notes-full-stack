@@ -32,10 +32,11 @@ export const useTrackNoteAction = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: ({ params: { noteId: string }, data: any }) => analyticsService.trackNoteAction(params, data),
+    mutationFn: ({ noteId, data }: { noteId: string; data: any }) => 
+      analyticsService.trackNoteAction({ noteId }, data),
     onSuccess: () => {
       // Invalidate related queries
-      queryClient.invalidateQueries({ queryKey: queryKeys.analytics.all });
+      queryClient.invalidateQueries({ queryKey: queryKeys.analytics.all() });
     },
   });
 };
