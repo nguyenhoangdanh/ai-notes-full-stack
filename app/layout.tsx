@@ -1,7 +1,7 @@
 import type { Metadata, Viewport } from 'next'
 import './globals.css'
 import { Providers } from './providers'
-import { SkipLinks } from '../components/accessibility/A11y'
+import { A11y } from '../components/accessibility/A11y'
 
 export const viewport: Viewport = {
   width: 'device-width',
