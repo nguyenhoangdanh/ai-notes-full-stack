@@ -1,0 +1,33 @@
+name: CI
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+env:
+  NEXT_TELEMETRY_DISABLED: "1"
+  NO_UPDATE_NOTIFIER: "1"
+  ADBLOCK: "1"
+  DISABLE_OPENCOLLECTIVE: "1"
+  CI: "true"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Enable Corepack
+        run: corepack enable || true
+
+      - name: Install deps and build (zero-network)
+        run: bash scripts/ci-build.sh
