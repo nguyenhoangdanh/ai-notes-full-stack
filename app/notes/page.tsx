@@ -1,4 +1,25 @@
 import { PageMeta } from '../../components/seo/PageMeta'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../../components/ui/card'
+import { Button } from '../../components/ui/button'
+import { Input } from '../../components/ui/input'
+import { Badge } from '../../components/ui/badge'
+import { Separator } from '../../components/ui/separator'
+import { 
+  Plus, 
+  Search, 
+  Filter, 
+  Grid3X3, 
+  List, 
+  BookOpen, 
+  Calendar, 
+  Tag, 
+  Sparkles,
+  Clock,
+  Star,
+  MoreHorizontal
+} from 'lucide-react'
+import Link from 'next/link'
+import NotesClient from './NotesClient'
 
 export const metadata = {
   title: 'Notes - AI Notes',
@@ -20,12 +41,7 @@ export default function NotesPage() {
         keywords={['notes', 'note taking', 'AI organization', 'search notes', 'productivity', 'knowledge management']}
         type="website"
       />
-      <div role="main" aria-label="Notes management">
-        <h1 className="text-3xl font-bold mb-6">Your Notes</h1>
-        <p className="text-muted-foreground">
-          Manage and organize your notes with AI-powered features.
-        </p>
-      </div>
+      <NotesClient />
     </>
   )
 }
