@@ -7,26 +7,21 @@ import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { FileText, Plus, Search, Star, Globe, User } from 'lucide-react'
-import { useTemplates, useCreateTemplate } from '@/hooks/use-features'
+import { useTemplates, usePublicTemplates, useTemplateCategories, useCreateTemplate } from '@/hooks/use-templates'
 
 export default function TemplatesPage() {
   const [searchQuery, setSearchQuery] = useState('')
   
   const { data: myTemplates, isLoading: loadingMyTemplates } = useTemplates()
-  // TODO: Add usePublicTemplates to use-features.ts
-  const publicTemplates: any[] = []
-  const loadingPublicTemplates = false
-  
-  // TODO: Add useTemplateCategories to use-features.ts  
-  const categories: any[] = []
-  const loadingCategories = false
+  const { data: publicTemplates, isLoading: loadingPublicTemplates } = usePublicTemplates()
+  const { data: categories, isLoading: loadingCategories } = useTemplateCategories()
 
   const filteredMyTemplates = myTemplates?.filter(template =>
     template.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
     template.description?.toLowerCase().includes(searchQuery.toLowerCase())
   ) || []
 
-  const filteredPublicTemplates = publicTemplates?.filter((template: any) =>
+  const filteredPublicTemplates = publicTemplates?.filter(template =>
     template.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
     template.description?.toLowerCase().includes(searchQuery.toLowerCase())
   ) || []
