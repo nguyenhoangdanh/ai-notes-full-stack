@@ -7,9 +7,9 @@ import type {
   SavedSearch,
   CreateSavedSearchDto,
   Activity,
-  Template,
+  MiscTemplate as Template,
   AdvancedCreateTemplateDto as CreateTemplateDto,
-  UpdateTemplateDto,
+  MiscUpdateTemplateDto as UpdateTemplateDto,
   Tag,
 } from '../types'
 

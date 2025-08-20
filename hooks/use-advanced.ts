@@ -8,7 +8,7 @@ import {
 } from '../services/advanced.service';
 import {
   AdvancedCreateTemplateDto as CreateTemplateDto,
-  UpdateTemplateDto,
+  AdvancedUpdateTemplateDto as UpdateTemplateDto,
   ProcessTemplateDto,
   AdvancedSearchDto,
   QuickSearchDto,

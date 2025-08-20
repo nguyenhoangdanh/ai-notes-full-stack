@@ -49,7 +49,7 @@ export const activitiesService = {
    * POST /activities/track
    */
   async trackActivity(data: TrackActivityRequest): Promise<TrackActivityResponse> {
-    return apiClient.post(`/activities/track`, data);
+    return apiClient.post(`/activities/track`, { body: data });
   },
 
   /**

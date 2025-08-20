@@ -38,6 +38,6 @@ export const analyticsService = {
    * POST /analytics/note/:noteId/track
    */
   async trackNoteAction(params: TrackNoteActionParams, data: TrackNoteActionRequest): Promise<TrackNoteActionResponse> {
-    return apiClient.post(`/analytics/note/${params.noteId}/track`, data);
+    return apiClient.post(`/analytics/note/${params.noteId}/track`, { body: data });
   }
 };

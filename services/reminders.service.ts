@@ -38,15 +38,15 @@ export const remindersService = {
   /**
    * PATCH /reminders/:id
    */
-  async updateReminder(params: UpdateReminderParams, data: UpdateReminderRequest): Promise<UpdateReminderResponse> {
-    return apiClient.patch(`/reminders/${params.id}`, data);
+  async updateReminder(id: string, data: any): Promise<any> {
+    return apiClient.patch(`/reminders/${id}`, { body: data });
   },
 
   /**
    * DELETE /reminders/:id
    */
-  async deleteReminder(params: DeleteReminderParams): Promise<DeleteReminderResponse> {
-    return apiClient.delete(`/reminders/${params.id}`);
+  async deleteReminder(id: string): Promise<void> {
+    return apiClient.delete(`/reminders/${id}`);
   },
 
   /**
@@ -66,8 +66,8 @@ export const remindersService = {
   /**
    * POST /reminders/:id/complete
    */
-  async completeReminder(params: CompleteReminderParams, data: CompleteReminderRequest): Promise<CompleteReminderResponse> {
-    return apiClient.post(`/reminders/${params.id}/complete`, data);
+  async completeReminder(id: string, data: any): Promise<any> {
+    return apiClient.post(`/reminders/${id}/complete`, { body: data });
   },
 
   /**

@@ -12,9 +12,9 @@ import {
 } from '../services/tags-analytics.service'
 import { queryKeys } from './query-keys'
 import type {
-  AnalyticsOverview,
-  WorkspaceAnalytics,
-  ContentAnalytics
+  AdvancedAnalyticsOverview as AnalyticsOverview,
+  AdvancedWorkspaceAnalytics as WorkspaceAnalytics,
+  AdvancedContentAnalytics as ContentAnalytics
 } from '../types'
 import type { TrackNoteActionDto } from '../types/misc.types'
 
@@ -134,7 +134,7 @@ export function useDeleteTag() {
 
   return useMutation({
     mutationFn: (tagId: string) => tagsService.deleteTag(tagId),
-    onSuccess: (_, tagId) => {
+    onSuccess: (_: any, tagId: string) => {
       queryClient.setQueryData(
         queryKeys.tags.all(),
         (old: Tag[] = []) => old.filter(tag => tag.id !== tagId)
@@ -178,7 +178,7 @@ export function useBulkTagOperation() {
  */
 export function useAnalyticsOverview() {
   return useQuery({
-    queryKey: queryKeys.analytics.overview(),
+    queryKey: queryKeys.analytics.getUserAnalytics(),
     queryFn: analyticsService.getOverview,
     staleTime: 10 * 60 * 1000, // 10 minutes
   })
@@ -189,7 +189,7 @@ export function useAnalyticsOverview() {
  */
 export function useWorkspaceAnalytics() {
   return useQuery({
-    queryKey: queryKeys.analytics.workspaces(),
+    queryKey: queryKeys.analytics.getWorkspaceAnalytics(),
     queryFn: analyticsService.getWorkspaceAnalytics,
     staleTime: 15 * 60 * 1000, // 15 minutes
   })
@@ -200,7 +200,7 @@ export function useWorkspaceAnalytics() {
  */
 export function useContentAnalytics() {
   return useQuery({
-    queryKey: queryKeys.analytics.content(),
+    queryKey: queryKeys.analytics.getContentAnalytics(),
     queryFn: analyticsService.getContentAnalytics,
     staleTime: 10 * 60 * 1000, // 10 minutes
   })
