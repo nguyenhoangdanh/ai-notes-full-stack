@@ -72,13 +72,15 @@ export default function DuplicatesPage() {
   }
 
   return (
-    <div className="container mx-auto py-8">
+    <div className="container mx-auto py-8 superhuman-scrollbar">
       {/* Header */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
         <div>
           <h1 className="text-3xl font-bold flex items-center gap-2">
-            <Copy className="h-8 w-8" />
-            Duplicates
+            <Copy className="h-8 w-8 text-primary" />
+            <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+              Duplicates
+            </span>
           </h1>
           <p className="text-muted-foreground">
             Detect and manage duplicate notes using AI analysis
@@ -89,12 +91,12 @@ export default function DuplicatesPage() {
             variant="outline"
             onClick={handleStartDetection}
             disabled={queueDetection.isPending}
-            className="flex items-center gap-2"
+            className="flex items-center gap-2 superhuman-hover superhuman-glow border-primary/20 hover:border-primary/40 hover:bg-primary/5"
           >
             <Search className="h-4 w-4" />
             {queueDetection.isPending ? 'Scanning...' : 'Scan for Duplicates'}
           </Button>
-          <Button className="flex items-center gap-2">
+          <Button className="flex items-center gap-2 superhuman-gradient superhuman-hover shadow-lg hover:shadow-xl">
             <BarChart3 className="h-4 w-4" />
             View Report
           </Button>
@@ -105,30 +107,38 @@ export default function DuplicatesPage() {
       {stats && <DuplicateStatsCard stats={stats} />}
 
       <Tabs defaultValue="detected" className="mt-8">
-        <TabsList className="grid w-full grid-cols-3">
-          <TabsTrigger value="detected">Detected Groups</TabsTrigger>
-          <TabsTrigger value="reports">Detection Reports</TabsTrigger>
-          <TabsTrigger value="settings">Settings</TabsTrigger>
+        <TabsList className="grid w-full grid-cols-3 superhuman-glass">
+          <TabsTrigger value="detected" className="superhuman-transition data-[state=active]:superhuman-gradient data-[state=active]:text-white">Detected Groups</TabsTrigger>
+          <TabsTrigger value="reports" className="superhuman-transition data-[state=active]:superhuman-gradient data-[state=active]:text-white">Detection Reports</TabsTrigger>
+          <TabsTrigger value="settings" className="superhuman-transition data-[state=active]:superhuman-gradient data-[state=active]:text-white">Settings</TabsTrigger>
         </TabsList>
 
         <TabsContent value="detected" className="mt-6">
-          {!detectionData || detectionData.length === 0 ? (
-            <Card>
+          {!detectionData || !Array.isArray(detectionData) || detectionData.length === 0 ? (
+            <Card className="superhuman-glass superhuman-glow">
               <CardContent className="flex flex-col items-center justify-center py-16">
-                <Copy className="h-16 w-16 text-muted-foreground mb-4" />
-                <h3 className="text-xl font-semibold mb-2">No Duplicates Found</h3>
-                <p className="text-muted-foreground text-center mb-4">
-                  Great! No duplicate notes detected in your workspace
+                <div className="w-20 h-20 mx-auto mb-6 bg-gradient-to-br from-primary/20 to-accent/20 rounded-full flex items-center justify-center">
+                  <Copy className="h-10 w-10 text-primary" />
+                </div>
+                <h3 className="text-xl font-semibold mb-3 bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+                  No Duplicates Found
+                </h3>
+                <p className="text-muted-foreground text-center mb-6 max-w-md">
+                  Great! No duplicate notes detected in your workspace. Your content is well-organized.
                 </p>
-                <Button onClick={handleStartDetection} disabled={queueDetection.isPending}>
+                <Button 
+                  onClick={handleStartDetection} 
+                  disabled={queueDetection.isPending}
+                  className="superhuman-gradient superhuman-hover shadow-lg hover:shadow-xl"
+                >
                   <Search className="h-4 w-4 mr-2" />
                   Run Detection
                 </Button>
               </CardContent>
             </Card>
           ) : (
-            <div className="space-y-4">
-              {detectionData.map((group: any, index: number) => (
+            <div className="space-y-6">
+              {(Array.isArray(detectionData) ? detectionData : []).map((group: any, index: number) => (
                 <DuplicateGroupCard
                   key={group.id || index}
                   group={group}
@@ -143,65 +153,71 @@ export default function DuplicatesPage() {
         </TabsContent>
 
         <TabsContent value="reports" className="mt-6">
-          <DuplicateReportsList reports={reports || []} isLoading={reportsLoading} />
+          <DuplicateReportsList reports={Array.isArray(reports) ? reports : []} isLoading={reportsLoading} />
         </TabsContent>
 
         <TabsContent value="settings" className="mt-6">
-          <Card>
+          <Card className="superhuman-glass superhuman-glow">
             <CardHeader>
-              <CardTitle>Detection Settings</CardTitle>
+              <CardTitle className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+                Detection Settings
+              </CardTitle>
             </CardHeader>
-            <CardContent className="space-y-6">
+            <CardContent className="space-y-8">
               <div>
-                <h4 className="font-medium mb-2">Similarity Threshold</h4>
+                <h4 className="font-medium mb-3 text-primary">Similarity Threshold</h4>
                 <p className="text-sm text-muted-foreground mb-4">
                   Minimum similarity percentage to consider notes as duplicates
                 </p>
-                <div className="flex items-center gap-4">
+                <div className="flex items-center gap-4 p-4 rounded-lg superhuman-gradient-subtle border border-primary/10">
                   <input
                     type="range"
                     min="50"
                     max="95"
                     defaultValue="80"
-                    className="flex-1"
+                    className="flex-1 superhuman-focus"
                   />
-                  <Badge variant="outline">80%</Badge>
+                  <Badge variant="outline" className="border-primary/30 bg-primary/5 text-primary font-medium">
+                    80%
+                  </Badge>
                 </div>
               </div>
 
               <div>
-                <h4 className="font-medium mb-2">Detection Method</h4>
+                <h4 className="font-medium mb-3 text-primary">Detection Method</h4>
                 <p className="text-sm text-muted-foreground mb-4">
                   Choose how duplicates should be detected
                 </p>
-                <div className="space-y-2">
-                  <label className="flex items-center gap-2">
-                    <input type="radio" name="method" value="content" defaultChecked />
-                    <span className="text-sm">Content similarity</span>
+                <div className="space-y-3">
+                  <label className="flex items-center gap-3 p-3 rounded-lg superhuman-gradient-subtle border border-primary/10 superhuman-hover cursor-pointer">
+                    <input type="radio" name="method" value="content" defaultChecked className="text-primary superhuman-focus" />
+                    <span className="text-sm font-medium">Content similarity</span>
                   </label>
-                  <label className="flex items-center gap-2">
-                    <input type="radio" name="method" value="title" />
-                    <span className="text-sm">Title similarity</span>
+                  <label className="flex items-center gap-3 p-3 rounded-lg superhuman-gradient-subtle border border-primary/10 superhuman-hover cursor-pointer">
+                    <input type="radio" name="method" value="title" className="text-primary superhuman-focus" />
+                    <span className="text-sm font-medium">Title similarity</span>
                   </label>
-                  <label className="flex items-center gap-2">
-                    <input type="radio" name="method" value="both" />
-                    <span className="text-sm">Both content and title</span>
+                  <label className="flex items-center gap-3 p-3 rounded-lg superhuman-gradient-subtle border border-primary/10 superhuman-hover cursor-pointer">
+                    <input type="radio" name="method" value="both" className="text-primary superhuman-focus" />
+                    <span className="text-sm font-medium">Both content and title</span>
                   </label>
                 </div>
               </div>
 
               <div>
-                <h4 className="font-medium mb-2">Auto-merge</h4>
+                <h4 className="font-medium mb-3 text-primary">Auto-merge</h4>
                 <p className="text-sm text-muted-foreground mb-4">
                   Automatically merge duplicates with very high similarity
                 </p>
-                <label className="flex items-center gap-2">
-                  <input type="checkbox" />
-                  <span className="text-sm">Enable auto-merge for 95%+ similarity</span>
+                <label className="flex items-center gap-3 p-4 rounded-lg superhuman-gradient-subtle border border-primary/10 superhuman-hover cursor-pointer">
+                  <input type="checkbox" className="text-primary superhuman-focus" />
+                  <span className="text-sm font-medium">Enable auto-merge for 95%+ similarity</span>
                 </label>
               </div>
 
-              <Button>Save Settings</Button>
+              <Button className="superhuman-gradient superhuman-hover shadow-lg hover:shadow-xl">
+                Save Settings
+              </Button>
             </CardContent>
           </Card>
         </TabsContent>

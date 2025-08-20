@@ -167,7 +167,21 @@ export const useSummaryStats = () => {
 export const useSummaryTemplates = () => {
   return useQuery({
     queryKey: smartQueryKeys.summaries.templates(),
-    queryFn: () => summariesService.getTemplates(),
+    queryFn: async () => {
+      try {
+        const response = await summariesService.getTemplates();
+        // Handle both array and object responses
+        if (Array.isArray(response)) {
+          return response;
+        } else if (response && typeof response === 'object' && 'templates' in response) {
+          return (response as any).templates || [];
+        }
+        return [];
+      } catch (error) {
+        console.error('Failed to fetch summary templates:', error);
+        return [];
+      }
+    },
   });
 };
 
@@ -218,7 +232,16 @@ export const useDeleteSummary = () => {
 export const useRelatedNotes = (noteId: string) => {
   return useQuery({
     queryKey: smartQueryKeys.relations.related(noteId),
-    queryFn: () => relationsService.getRelatedNotes(noteId),
+    queryFn: async () => {
+      try {
+        const response = await relationsService.getRelatedNotes(noteId);
+        // Ensure we always return an array
+        return Array.isArray(response) ? response : [];
+      } catch (error) {
+        console.error('Failed to fetch related notes:', error);
+        return [];
+      }
+    },
     enabled: !!noteId,
   });
 };
@@ -226,7 +249,16 @@ export const useRelatedNotes = (noteId: string) => {
 export const useStoredRelations = (noteId: string) => {
   return useQuery({
     queryKey: smartQueryKeys.relations.stored(noteId),
-    queryFn: () => relationsService.getStoredRelations(noteId),
+    queryFn: async () => {
+      try {
+        const response = await relationsService.getStoredRelations(noteId);
+        // Ensure we always return an array
+        return Array.isArray(response) ? response : [];
+      } catch (error) {
+        console.error('Failed to fetch stored relations:', error);
+        return [];
+      }
+    },
     enabled: !!noteId,
   });
 };
@@ -291,14 +323,32 @@ export const useDeleteRelation = () => {
 export const useDuplicateDetection = () => {
   return useQuery({
     queryKey: smartQueryKeys.duplicates.detect(),
-    queryFn: () => duplicatesService.detectDuplicates(),
+    queryFn: async () => {
+      try {
+        const response = await duplicatesService.detectDuplicates();
+        // Ensure we always return an array
+        return Array.isArray(response) ? response : [];
+      } catch (error) {
+        console.error('Failed to detect duplicates:', error);
+        return [];
+      }
+    },
   });
 };
 
 export const useDuplicateReports = () => {
   return useQuery({
     queryKey: smartQueryKeys.duplicates.reports(),
-    queryFn: () => duplicatesService.getReports(),
+    queryFn: async () => {
+      try {
+        const response = await duplicatesService.getReports();
+        // Ensure we always return an array
+        return Array.isArray(response) ? response : [];
+      } catch (error) {
+        console.error('Failed to fetch duplicate reports:', error);
+        return [];
+      }
+    },
   });
 };
 
