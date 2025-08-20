@@ -3,45 +3,6 @@
  * Complete mapping with backend productivity features
  */
 
-// Tasks Types
-export interface Task {
-  id: string;
-  title: string;
-  description?: string;
-  status: 'TODO' | 'IN_PROGRESS' | 'COMPLETED';
-  priority: 'LOW' | 'MEDIUM' | 'HIGH' | 'URGENT';
-  dueDate?: string;
-  noteId?: string;
-  userId: string;
-  createdAt: string;
-  updatedAt: string;
-}
-
-export interface CreateTaskDto {
-  title: string;
-  description?: string;
-  priority?: 'LOW' | 'MEDIUM' | 'HIGH' | 'URGENT';
-  dueDate?: string;
-  noteId?: string;
-}
-
-export interface UpdateTaskDto {
-  title?: string;
-  description?: string;
-  status?: 'TODO' | 'IN_PROGRESS' | 'COMPLETED';
-  priority?: 'LOW' | 'MEDIUM' | 'HIGH' | 'URGENT';
-  dueDate?: string;
-}
-
-export interface TaskStats {
-  total: number;
-  completed: number;
-  pending: number;
-  overdue: number;
-  byPriority: Record<string, number>;
-  byStatus: Record<string, number>;
-}
-
 // Pomodoro Types
 export interface PomodoroSession {
   id: string;
@@ -129,6 +90,31 @@ export interface SpacedRepetitionSettings {
   minimumEaseFactor: number; // 1.3 default
   maximumInterval: number; // 365 days default
 }
+
+// Reminders types - matching backend structure
+export interface CreateReminderDto {
+  noteId: string;
+  title: string;
+  remindAt: string;
+  recurrence?: string; // daily, weekly, monthly
+}
+
+export interface UpdateReminderDto {
+  title?: string;
+  remindAt?: string;
+  isComplete?: boolean;
+  recurrence?: string;
+}
+
+export interface Reminder {
+  id: string;
+  noteId: string;
+  userId: string;
+  title: string;
+  remindAt: string;
+  isComplete: boolean;
+  recurrence?: string;
+  createdAt: string;
   updatedAt: string;
   note?: {
     id: string;
