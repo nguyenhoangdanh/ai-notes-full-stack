@@ -1,136 +1,241 @@
-import { apiClient } from '../lib/api-client'
-import type {
-  PomodoroSession,
-  CreatePomodoroSessionDto,
-  UpdatePomodoroSessionDto,
-  ProductivityTask as Task,
-  ProductivityCreateTaskDto as CreateTaskDto,
-  ProductivityUpdateTaskDto as UpdateTaskDto,
-  CalendarEvent,
-  ProductivityCreateCalendarEventDto as CreateCalendarEventDto,
-  ProductivityUpdateCalendarEventDto as UpdateCalendarEventDto,
-  ReviewPrompt,
-} from '../types'
+import { apiClient } from '../lib/api-client';
+import {
+  CreateResponse,
+  CreateRequest,
+  FindAllResponse,
+  GetStatsResponse,
+  GetOverdueResponse,
+  GetTasksByDueDateResponse,
+  FindOneResponse,
+  FindOneParams,
+  UpdateResponse,
+  UpdateRequest,
+  UpdateParams,
+  RemoveResponse,
+  RemoveParams,
+  StartSessionResponse,
+  StartSessionRequest,
+  PauseSessionResponse,
+  PauseSessionRequest,
+  CompleteSessionResponse,
+  CompleteSessionRequest,
+  GetActiveSessionResponse,
+  GetHistoryResponse,
+  UpdateSettingsResponse,
+  UpdateSettingsRequest,
+  GetEventsResponse,
+  CreateEventResponse,
+  CreateEventRequest,
+  UpdateEventResponse,
+  UpdateEventRequest,
+  UpdateEventParams,
+  DeleteEventResponse,
+  DeleteEventParams,
+  GetUpcomingEventsResponse,
+  GetTodayEventsResponse,
+  GetWeekEventsResponse,
+  GetDueReviewsResponse,
+  ReviewNoteResponse,
+  ReviewNoteRequest,
+  ReviewNoteParams,
+  GetReviewStatsResponse,
+  SetupSpacedRepetitionResponse,
+  SetupSpacedRepetitionRequest,
+  GetReviewScheduleResponse,
+  GetReviewScheduleParams
+} from '../types/productivity.types';
 
+/**
+ * Productivity Service
+ * Generated from backend analysis
+ */
 export const productivityService = {
-  // Pomodoro sessions
-  async getPomodoroSessions(): Promise<PomodoroSession[]> {
-    return apiClient.get<PomodoroSession[]>('/pomodoro')
+  /**
+   * POST /tasks
+   */
+  async create(data: CreateRequest): Promise<CreateResponse> {
+    return apiClient.post(`/tasks`, data);
   },
 
-  async getActivePomodoroSession(): Promise<PomodoroSession | null> {
-    return apiClient.get<PomodoroSession | null>('/pomodoro/active')
+  /**
+   * GET /tasks
+   */
+  async findAll(): Promise<FindAllResponse> {
+    return apiClient.get(`/tasks`);
   },
 
-  async getPomodoroStats(): Promise<any> {
-    return apiClient.get<any>('/pomodoro/stats')
+  /**
+   * GET /tasks/stats
+   */
+  async getStats(): Promise<GetStatsResponse> {
+    return apiClient.get(`/tasks/stats`);
   },
 
-  async getTodayPomodoroStats(): Promise<any> {
-    return apiClient.get<any>('/pomodoro/stats/today')
+  /**
+   * GET /tasks/overdue
+   */
+  async getOverdue(): Promise<GetOverdueResponse> {
+    return apiClient.get(`/tasks/overdue`);
   },
 
-  async createPomodoroSession(data: CreatePomodoroSessionDto): Promise<PomodoroSession> {
-    return apiClient.post<PomodoroSession>('/pomodoro', { body: data })
+  /**
+   * GET /tasks/due
+   */
+  async getTasksByDueDate(): Promise<GetTasksByDueDateResponse> {
+    return apiClient.get(`/tasks/due`);
   },
 
-  async updatePomodoroSession(sessionId: string, data: UpdatePomodoroSessionDto): Promise<PomodoroSession> {
-    return apiClient.patch<PomodoroSession>(`/pomodoro/${sessionId}`, { body: data })
+  /**
+   * GET /tasks/:id
+   */
+  async findOne(params: FindOneParams): Promise<FindOneResponse> {
+    return apiClient.get(`/tasks/${params.id}`);
   },
 
-  async deletePomodoroSession(sessionId: string): Promise<void> {
-    return apiClient.delete<void>(`/pomodoro/${sessionId}`)
+  /**
+   * PATCH /tasks/:id
+   */
+  async update(params: UpdateParams, data: UpdateRequest): Promise<UpdateResponse> {
+    return apiClient.patch(`/tasks/${params.id}`, data);
   },
 
-  // Tasks
-  async getTasks(): Promise<Task[]> {
-    return apiClient.get<Task[]>('/tasks')
+  /**
+   * DELETE /tasks/:id
+   */
+  async remove(params: RemoveParams): Promise<RemoveResponse> {
+    return apiClient.delete(`/tasks/${params.id}`);
   },
 
-  async getTaskStats(): Promise<any> {
-    return apiClient.get<any>('/tasks/stats')
+  /**
+   * POST /pomodoro/start
+   */
+  async startSession(data: StartSessionRequest): Promise<StartSessionResponse> {
+    return apiClient.post(`/pomodoro/start`, data);
   },
 
-  async getOverdueTasks(): Promise<Task[]> {
-    return apiClient.get<Task[]>('/tasks/overdue')
+  /**
+   * POST /pomodoro/pause
+   */
+  async pauseSession(data: PauseSessionRequest): Promise<PauseSessionResponse> {
+    return apiClient.post(`/pomodoro/pause`, data);
   },
 
-  async getDueTasks(): Promise<Task[]> {
-    return apiClient.get<Task[]>('/tasks/due')
+  /**
+   * POST /pomodoro/complete
+   */
+  async completeSession(data: CompleteSessionRequest): Promise<CompleteSessionResponse> {
+    return apiClient.post(`/pomodoro/complete`, data);
   },
 
-  async getTask(taskId: string): Promise<Task> {
-    return apiClient.get<Task>(`/tasks/${taskId}`)
+  /**
+   * GET /pomodoro/active
+   */
+  async getActiveSession(): Promise<GetActiveSessionResponse> {
+    return apiClient.get(`/pomodoro/active`);
   },
 
-  async createTask(data: CreateTaskDto): Promise<Task> {
-    return apiClient.post<Task>('/tasks', { body: data })
+  /**
+   * GET /pomodoro/stats
+   */
+  async getStats(): Promise<GetStatsResponse> {
+    return apiClient.get(`/pomodoro/stats`);
   },
 
-  async updateTask(taskId: string, data: UpdateTaskDto): Promise<Task> {
-    return apiClient.patch<Task>(`/tasks/${taskId}`, { body: data })
+  /**
+   * GET /pomodoro/history
+   */
+  async getHistory(): Promise<GetHistoryResponse> {
+    return apiClient.get(`/pomodoro/history`);
   },
 
-  async deleteTask(taskId: string): Promise<void> {
-    return apiClient.delete<void>(`/tasks/${taskId}`)
+  /**
+   * POST /pomodoro/settings
+   */
+  async updateSettings(data: UpdateSettingsRequest): Promise<UpdateSettingsResponse> {
+    return apiClient.post(`/pomodoro/settings`, data);
   },
 
-  // Calendar events
-  async getCalendarEvents(): Promise<CalendarEvent[]> {
-    return apiClient.get<CalendarEvent[]>('/calendar')
+  /**
+   * GET /calendar/events
+   */
+  async getEvents(): Promise<GetEventsResponse> {
+    return apiClient.get(`/calendar/events`);
   },
 
-  async getUpcomingEvents(): Promise<CalendarEvent[]> {
-    return apiClient.get<CalendarEvent[]>('/calendar/upcoming')
+  /**
+   * POST /calendar/events
+   */
+  async createEvent(data: CreateEventRequest): Promise<CreateEventResponse> {
+    return apiClient.post(`/calendar/events`, data);
   },
 
-  async getTodayEvents(): Promise<CalendarEvent[]> {
-    return apiClient.get<CalendarEvent[]>('/calendar/today')
+  /**
+   * PATCH /calendar/events/:id
+   */
+  async updateEvent(params: UpdateEventParams, data: UpdateEventRequest): Promise<UpdateEventResponse> {
+    return apiClient.patch(`/calendar/events/${params.id}`, data);
   },
 
-  async getWeekEvents(): Promise<CalendarEvent[]> {
-    return apiClient.get<CalendarEvent[]>('/calendar/week')
+  /**
+   * DELETE /calendar/events/:id
+   */
+  async deleteEvent(params: DeleteEventParams): Promise<DeleteEventResponse> {
+    return apiClient.delete(`/calendar/events/${params.id}`);
   },
 
-  async getCalendarEvent(eventId: string): Promise<CalendarEvent> {
-    return apiClient.get<CalendarEvent>(`/calendar/${eventId}`)
+  /**
+   * GET /calendar/events/upcoming
+   */
+  async getUpcomingEvents(): Promise<GetUpcomingEventsResponse> {
+    return apiClient.get(`/calendar/events/upcoming`);
   },
 
-  async createCalendarEvent(data: CreateCalendarEventDto): Promise<CalendarEvent> {
-    return apiClient.post<CalendarEvent>('/calendar', { body: data })
+  /**
+   * GET /calendar/events/today
+   */
+  async getTodayEvents(): Promise<GetTodayEventsResponse> {
+    return apiClient.get(`/calendar/events/today`);
   },
 
-  async updateCalendarEvent(eventId: string, data: UpdateCalendarEventDto): Promise<CalendarEvent> {
-    return apiClient.patch<CalendarEvent>(`/calendar/${eventId}`, { body: data })
+  /**
+   * GET /calendar/events/week
+   */
+  async getWeekEvents(): Promise<GetWeekEventsResponse> {
+    return apiClient.get(`/calendar/events/week`);
   },
 
-  async deleteCalendarEvent(eventId: string): Promise<void> {
-    return apiClient.delete<void>(`/calendar/${eventId}`)
+  /**
+   * GET /review/due
+   */
+  async getDueReviews(): Promise<GetDueReviewsResponse> {
+    return apiClient.get(`/review/due`);
   },
 
-  // Review prompts
-  async getReviewPrompts(): Promise<ReviewPrompt[]> {
-    return apiClient.get<ReviewPrompt[]>('/productivity/review-prompts')
+  /**
+   * POST /review/:noteId/review
+   */
+  async reviewNote(params: ReviewNoteParams, data: ReviewNoteRequest): Promise<ReviewNoteResponse> {
+    return apiClient.post(`/review/${params.noteId}/review`, data);
   },
 
-  async createReviewPrompt(data: {
-    type: string
-    title: string
-    questions: string[]
-    frequency: string
-  }): Promise<ReviewPrompt> {
-    return apiClient.post<ReviewPrompt>('/productivity/review-prompts', { body: data })
+  /**
+   * GET /review/stats
+   */
+  async getReviewStats(): Promise<GetReviewStatsResponse> {
+    return apiClient.get(`/review/stats`);
   },
 
-  async updateReviewPrompt(promptId: string, data: Partial<ReviewPrompt>): Promise<ReviewPrompt> {
-    return apiClient.patch<ReviewPrompt>(`/productivity/review-prompts/${promptId}`, { body: data })
+  /**
+   * POST /review/setup
+   */
+  async setupSpacedRepetition(data: SetupSpacedRepetitionRequest): Promise<SetupSpacedRepetitionResponse> {
+    return apiClient.post(`/review/setup`, data);
   },
 
-  async deleteReviewPrompt(promptId: string): Promise<void> {
-    return apiClient.delete<void>(`/productivity/review-prompts/${promptId}`)
-  },
-
-  async markReviewPromptCompleted(promptId: string): Promise<ReviewPrompt> {
-    return apiClient.post<ReviewPrompt>(`/productivity/review-prompts/${promptId}/complete`)
-  },
-}
+  /**
+   * GET /review/schedule/:noteId
+   */
+  async getReviewSchedule(params: GetReviewScheduleParams): Promise<GetReviewScheduleResponse> {
+    return apiClient.get(`/review/schedule/${params.noteId}`);
+  }
+};

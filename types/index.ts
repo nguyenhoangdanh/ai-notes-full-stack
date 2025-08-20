@@ -4,6 +4,14 @@ export * from './workspace.types'
 export * from './note.types'
 export * from './ai.types'
 
+// Export new module types
+export * from './activities.types'
+export * from './analytics.types'
+export * from './attachments.types'
+export * from './export.types'
+export * from './notifications.types'
+export * from './reminders.types'
+
 // Export specific items from auth to avoid conflicts with user.types
 export type { 
   GoogleOAuthUser,
@@ -71,7 +79,7 @@ export type {
   VersionStatistics,
   VersionTimeline,
   // Activities
-  Activity,
+  Activity as CollabActivity,
   ActivityInsights,
   ActivityFeed,
   ActivityStats,
@@ -97,9 +105,9 @@ export type {
   TemplateStats,
   TemplatePreview,
   TemplateVariable,
-  // Attachments
-  Attachment,
-  AttachmentAnalytics,
+  // Attachments - use alias to avoid conflict with new module
+  Attachment as AdvancedAttachment,
+  AttachmentAnalytics as AdvancedAttachmentAnalytics,
   OCRResult,
   // Search
   AdvancedSearchDto,
@@ -108,49 +116,34 @@ export type {
   SavedSearch as AdvancedSavedSearch,
   SearchAnalytics,
   QuickSearchDto,
-  // Analytics
-  AnalyticsOverview,
-  WorkspaceAnalytics,
-  ContentAnalytics,
+  // Analytics - use alias to avoid conflict
+  AnalyticsOverview as AdvancedAnalyticsOverview,
+  WorkspaceAnalytics as AdvancedWorkspaceAnalytics,
+  ContentAnalytics as AdvancedContentAnalytics,
   TrackNoteViewDto,
-  // Export
+  // Export - use alias to avoid conflict
   ExportJob,
   CreateExportDto as AdvancedCreateExportDto,
-  ExportStats,
+  ExportStats as AdvancedExportStats,
   ExportSettings
 } from './advanced.types'
 
 // Export Enhanced Productivity types
 export type { 
-  // Notifications
-  Notification,
-  CreateNotificationDto,
-  UpdateNotificationDto,
-  // Reminders  
-  Reminder,
-  CreateReminderDto,
-  UpdateReminderDto,
-  ReminderStats,
-  // Tasks - avoid conflicts
-  Task as ProductivityTask, 
-  CreateTaskDto as ProductivityCreateTaskDto,
-  UpdateTaskDto as ProductivityUpdateTaskDto,
+  // Tasks, Pomodoro, Calendar, Review
+  Task,
+  CreateTaskDto,
+  UpdateTaskDto,
   TaskStats,
-  // Calendar
-  CalendarEvent,
-  CreateCalendarEventDto as ProductivityCreateCalendarEventDto,
-  UpdateCalendarEventDto as ProductivityUpdateCalendarEventDto,
-  // Pomodoro
   PomodoroSession,
-  CreatePomodoroSessionDto,
-  UpdatePomodoroSessionDto,
   PomodoroStats,
-  // Review
-  ReviewPrompt,
-  CreateReviewPromptDto,
-  UpdateReviewPromptDto,
-  AnswerReviewDto,
-  ReviewSession
+  PomodoroSettings,
+  CalendarEvent,
+  CreateCalendarEventDto,
+  UpdateCalendarEventDto,
+  ReviewItem,
+  ReviewStats,
+  SpacedRepetitionSettings
 } from './productivity.types'
 
 // Export specific items from mobile to avoid conflicts  

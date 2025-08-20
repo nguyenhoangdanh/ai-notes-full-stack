@@ -209,7 +209,7 @@ export default function VoiceNotesPage() {
             </div>
           ) : (
             <div className="space-y-3">
-              {voiceNotes.map((note, index) => (
+              {voiceNotes.map((note: any, index: number) => (
                 <Card 
                   key={note.id} 
                   className="group cursor-pointer superhuman-hover animate-superhuman-fade-in border"

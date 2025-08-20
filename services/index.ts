@@ -6,6 +6,16 @@ export { aiService } from './ai.service'
 export { userService } from './user.service'
 export { demoModeService } from './demo.service'
 
+// New comprehensive services for expanded modules
+export { activitiesService } from './activities.service'
+export { analyticsService } from './analytics.service'
+export { attachmentsService } from './attachments.service'
+export { exportService } from './export.service'
+export { notificationsService } from './notifications.service'
+export { remindersService } from './reminders.service'
+export { productivityService } from './productivity.service'
+export { mobileService } from './mobile.service'
+
 // Smart Features
 export { 
   categoriesService, 
@@ -18,16 +28,13 @@ export {
 export { 
   collaborationService, 
   shareService, 
-  versionsService, 
-  activitiesService
+  versionsService
 } from './collaboration.service'
 
-// Advanced Features
+// Advanced Features (legacy - use specific services above for new features)
 export { 
   templatesService, 
-  attachmentsService, 
-  searchService, 
-  exportService 
+  searchService
 } from './advanced.service'
 
 // Templates (new dedicated service)
@@ -37,19 +44,7 @@ export { templatesService as newTemplatesService } from './templates.service'
 export { voiceNotesService } from './voice-notes.service'
 
 // Tags and Analytics (new comprehensive services)
-export { tagsService, analyticsService } from './tags-analytics.service'
+export { tagsService } from './tags-analytics.service'
 
-// Productivity & Notifications
-export { 
-  notificationsService, 
-  remindersService, 
-  tasksService, 
-  calendarService, 
-  pomodoroService, 
-  reviewService 
-} from './notifications.service'
-
-// Legacy exports for backward compatibility
-export { productivityService } from './productivity.service'
-export { mobileService } from './mobile.service'
+// Legacy compatibility
 export { miscService } from './misc.service'
