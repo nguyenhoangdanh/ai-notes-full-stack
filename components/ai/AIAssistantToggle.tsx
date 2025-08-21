@@ -3,8 +3,8 @@
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Button } from '../ui/Button'
-import { Card } from '../ui/card'
-import { Badge } from '../ui/badge'
+import { Card } from '../ui/Card'
+import { Badge } from '../ui/Badge'
 import { QuickTooltip } from '../ui/tooltip'
 import { 
   Bot, 
@@ -114,7 +114,7 @@ export function AIAssistantToggle({ selectedNoteId, className }: AIAssistantTogg
                   >
                     <Button
                       variant="ghost"
-                      size="icon-lg"
+                      size="lg"
                       onClick={action.action}
                       className={cn(
                         "h-12 w-12 rounded-full shadow-3",
@@ -180,7 +180,7 @@ export function AIAssistantToggle({ selectedNoteId, className }: AIAssistantTogg
             }}
             onMouseEnter={() => !isOpen && setShowQuickActions(true)}
             variant="gradient"
-            size="icon-xl"
+            size="lg"
             className={cn(
               "h-16 w-16 rounded-full shadow-4 relative overflow-hidden",
               "hover:shadow-5 hover:scale-105 transition-all duration-300",
