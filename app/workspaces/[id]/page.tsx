@@ -145,12 +145,12 @@ export default function WorkspaceDetailPage() {
             </Button>
             
             <div className="flex items-center gap-2">
-              <Button variant="ghost" size="icon" onClick={handleShare}>
+              <Button variant="ghost" size="icon-sm" onClick={handleShare}>
                 <ShareIcon className="h-4 w-4" />
               </Button>
               <Button 
                 variant="ghost" 
-                size="icon" 
+                size="icon-sm" 
                 onClick={handleInviteCollaborators}
               >
                 <UsersIcon className="h-4 w-4" />
@@ -160,7 +160,7 @@ export default function WorkspaceDetailPage() {
               </Button>
               <Button 
                 variant="ghost" 
-                size="icon" 
+                size="icon-sm" 
                 onClick={handleDelete}
                 className="text-destructive hover:bg-destructive/10"
               >
@@ -288,7 +288,7 @@ export default function WorkspaceDetailPage() {
                   />
                   <DocumentTextIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                 </div>
-                <Button variant="outline" size="icon">
+                <Button variant="secondary" size="icon-sm">
                   <AdjustmentsHorizontalIcon className="h-4 w-4" />
                 </Button>
               </div>
