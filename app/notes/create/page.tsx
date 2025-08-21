@@ -127,7 +127,7 @@ export default function CreateNotePage() {
           
           <div className="flex items-center gap-3 flex-shrink-0">
             <Button 
-              variant="outline" 
+              variant="secondary" 
               onClick={() => setIsPreview(!isPreview)}
               className="hidden sm:flex"
             >
@@ -179,7 +179,7 @@ export default function CreateNotePage() {
                             key={tag} 
                             variant="secondary" 
                             className="cursor-pointer hover:bg-destructive/10 hover:text-destructive transition-colors px-3 py-1"
-                            onClick={() => handleRemoveTag(tag)}
+                            onClick={(e) => { e.preventDefault(); handleRemoveTag(tag); }}
                           >
                             #{tag} 
                             <span className="ml-1 text-xs opacity-70">×</span>
@@ -330,7 +330,7 @@ export default function CreateNotePage() {
                 </div>
                 
                 <div className="pt-3 border-t border-border/50">
-                  <Button variant="outline" size="sm" className="w-full" disabled>
+                  <Button variant="secondary" size="sm" className="w-full" disabled>
                     <Sparkles className="h-4 w-4 mr-2" />
                     AI Assistance Coming Soon
                   </Button>
