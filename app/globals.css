@@ -111,6 +111,21 @@
   --input: var(--panel);
   --ring: var(--ring);
   --radius: var(--radius-md);
+
+  /* Additional surface mappings */
+  --surface: var(--panel);
+  --bg-overlay: rgba(10, 13, 26, 0.8);
+  --bg-inset: var(--bg-elev-1);
+  --bg-muted: var(--bg-elev-2);
+  --focus-ring: var(--ring);
+
+  /* Semantic color backgrounds for alert states */
+  --danger-bg: rgba(239, 68, 68, 0.1);
+  --warning-bg: rgba(245, 158, 11, 0.1);
+  --info-bg: rgba(59, 130, 246, 0.1);
+
+  /* Additional text variants */
+  --text-muted-foreground: var(--text-muted);
 }
 
 /* Light Mode Override (keeping dark as primary based on screenshots) */
