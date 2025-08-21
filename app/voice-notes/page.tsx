@@ -1,9 +1,9 @@
 'use client'
 
 import { useState, useRef } from 'react'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { Badge } from '@/components/ui/badge'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/Card'
+import { Button } from '@/components/ui/Button'
+import { Badge } from '@/components/ui/Badge'
 import { Input } from '@/components/ui/input'
 import { Mic, Upload, Play, Pause, Download, Trash2, Clock, FileAudio } from 'lucide-react'
 import { useVoiceNotes, useCreateVoiceNote } from '@/hooks/use-features'
