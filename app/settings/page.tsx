@@ -247,8 +247,8 @@ export default function SettingsPage() {
                   Your notes are automatically synced across all your devices. Last sync: Just now
                 </div>
                 <div className="flex space-x-2">
-                  <Button variant="outline">Force Sync</Button>
-                  <Button variant="outline">Export All Data</Button>
+                  <Button variant="secondary">Force Sync</Button>
+                  <Button variant="secondary">Export All Data</Button>
                 </div>
               </CardContent>
             </Card>

@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Button } from '../ui/Button'
-import { Card } from '../ui/card'
+import { Card } from '../ui/Card'
 import { Badge, StatusBadge } from '../ui/Badge'
 import { QuickTooltip } from '../ui/tooltip'
 import { Separator } from '../ui/separator'

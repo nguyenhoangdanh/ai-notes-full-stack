@@ -2,9 +2,9 @@
 
 import React, { useState, useEffect, useCallback, useMemo } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Button } from '../ui/button'
-import { Card } from '../ui/card'
-import { Badge } from '../ui/badge'
+import { Button } from '../ui/Button'
+import { Card } from '../ui/Card'
+import { Badge } from '../ui/Badge'
 import { Input } from '../ui/input'
 import { 
   Plus, 

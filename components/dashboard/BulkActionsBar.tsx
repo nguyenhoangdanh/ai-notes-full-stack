@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import { Trash2, Archive, Tag, Share2, Download, X } from 'lucide-react';
-import { Button } from '../ui/button';
-import { Card } from '../ui/card';
+import { Button } from '../ui/Button';
+import { Card } from '../ui/Card';
 import { Separator } from '../ui/separator';
-import { Badge } from '../ui/badge';
+import { Badge } from '../ui/Badge';
 
 interface BulkActionsBarProps {
   selectedCount: number;

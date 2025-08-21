@@ -151,7 +151,7 @@ export function CategoryCreateDialog({
                 onChange={(e) => setKeywordInput(e.target.value)}
                 onKeyPress={handleKeywordKeyPress}
               />
-              <Button type="button" onClick={addKeyword} variant="outline">
+              <Button type="button" onClick={addKeyword} variant="secondary">
                 Add
               </Button>
             </div>
@@ -185,7 +185,7 @@ export function CategoryCreateDialog({
           </div>
 
           <DialogFooter>
-            <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
+            <Button type="button" variant="secondary" onClick={() => onOpenChange(false)}>
               Cancel
             </Button>
             <Button type="submit" disabled={isLoading || !formData.name.trim()}>

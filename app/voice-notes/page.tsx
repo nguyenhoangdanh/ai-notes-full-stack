@@ -148,7 +148,7 @@ export default function VoiceNotesPage() {
                 {uploadMutation.isPending ? 'Uploading...' : 'Upload Audio File'}
               </Button>
               <Button 
-                variant="outline"
+                variant="secondary"
                 onClick={() => setIsRecording(!isRecording)}
                 className="flex-1 gap-2 rounded-full superhuman-glass border-border/30"
               >

@@ -1,11 +1,11 @@
 import { useState } from 'react'
 import { motion } from 'framer-motion'
-import { Button } from '../ui/button'
-import { Card, CardContent, CardHeader, CardTitle } from '../ui/card'
+import { Button } from '../ui/Button'
+import { Card, CardContent, CardHeader, CardTitle } from '../ui/Card'
 import { Switch } from '../ui/switch'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select'
 import { Slider } from '../ui/slider'
-import { Badge } from '../ui/badge'
+import { Badge } from '../ui/Badge'
 import { Separator } from '../ui/separator'
 import { 
   Brain, 

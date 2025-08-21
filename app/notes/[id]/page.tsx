@@ -144,10 +144,10 @@ export default function NoteDetailPage() {
               >
                 <BookmarkIcon className="h-4 w-4" />
               </Button>
-              <Button variant="ghost" size="icon" onClick={handleShare}>
+              <Button variant="ghost" size="icon-sm" onClick={handleShare}>
                 <ShareIcon className="h-4 w-4" />
               </Button>
-              <Button variant="ghost" size="icon" onClick={handleEdit}>
+              <Button variant="ghost" size="icon-sm" onClick={handleEdit}>
                 <PencilIcon className="h-4 w-4" />
               </Button>
               <Button 

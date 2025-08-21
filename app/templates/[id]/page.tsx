@@ -142,7 +142,7 @@ export default function TemplateDetailPage() {
             <div className="flex items-center gap-2">
               <Button 
                 variant="ghost" 
-                size="icon"
+                size="icon-sm"
                 onClick={toggleStar}
                 className={cn(
                   "hover:bg-primary/10",
@@ -151,21 +151,21 @@ export default function TemplateDetailPage() {
               >
                 <StarIcon className="h-4 w-4" />
               </Button>
-              <Button variant="ghost" size="icon" onClick={handleShare}>
+              <Button variant="ghost" size="icon-sm" onClick={handleShare}>
                 <ShareIcon className="h-4 w-4" />
               </Button>
-              <Button variant="ghost" size="icon" onClick={handleDuplicate}>
+              <Button variant="ghost" size="icon-sm" onClick={handleDuplicate}>
                 <DocumentDuplicateIcon className="h-4 w-4" />
               </Button>
               {/* Always show edit/delete for now since we don't have proper owner check */}
               {(
                 <>
-                  <Button variant="ghost" size="icon" onClick={handleEdit}>
+                  <Button variant="ghost" size="icon-sm" onClick={handleEdit}>
                     <PencilIcon className="h-4 w-4" />
                   </Button>
                   <Button 
                     variant="ghost" 
-                    size="icon" 
+                    size="icon-sm" 
                     onClick={handleDelete}
                     className="text-destructive hover:bg-destructive/10"
                   >
@@ -344,7 +344,7 @@ export default function TemplateDetailPage() {
                     Create Note from Template
                   </Button>
                   <Button 
-                    variant="outline" 
+                    variant="secondary" 
                     onClick={handleDuplicate}
                     className="w-full justify-start"
                   >
@@ -352,7 +352,7 @@ export default function TemplateDetailPage() {
                     Duplicate Template
                   </Button>
                   <Button 
-                    variant="outline" 
+                    variant="secondary" 
                     onClick={handleShare}
                     className="w-full justify-start"
                   >
