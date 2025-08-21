@@ -2,11 +2,11 @@
 
 import { useState, useRef, useEffect } from 'react'
 import { Send, Sparkles } from 'lucide-react'
-import { Button } from '../../../components/ui/button'
+import { Button } from '../../../components/ui/Button'
 import { Input } from '../../../components/ui/input'
-import { Card, CardContent, CardHeader, CardTitle } from '../../../components/ui/card'
+import { Card, CardContent, CardHeader, CardTitle } from '../../../components/ui/Card'
 import { ScrollArea } from '../../../components/ui/scroll-area'
-import { Badge } from '../../../components/ui/badge'
+import { Badge } from '../../../components/ui/Badge'
 import { useCompleteChat } from '../../../hooks/use-ai'
 
 interface ChatMessage {
