@@ -198,12 +198,7 @@ export function AppLayout({ children }: AppLayoutProps) {
           tabIndex={-1}
         >
           {/* Content container with responsive padding */}
-          <div className={cn(
-            "w-full mx-auto min-h-full",
-            "px-4 xs:px-3 sm:px-6 lg:px-8",
-            "py-6 xs:py-4 sm:py-8",
-            "max-w-7xl"
-          )}>
+          <div className="container-modern min-h-full py-6">
             <div className="w-full h-full animate-fade-in">
               {children}
             </div>
