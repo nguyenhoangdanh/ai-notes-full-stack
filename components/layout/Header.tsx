@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useRef, useEffect } from 'react'
-import { Menu, X, Search, Bell, Settings, Sparkles } from 'lucide-react'
+import { Menu, X, Search, Bell, Settings, Sparkles, GitPullRequest } from 'lucide-react'
 import { Button, IconButton } from '../ui/Button'
 import { ThemeToggle } from '../common/ThemeToggle'
 import { UserMenu } from '../header/UserMenu'
