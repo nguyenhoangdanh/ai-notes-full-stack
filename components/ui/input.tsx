@@ -2,7 +2,7 @@ import { ComponentProps, forwardRef, useState } from "react"
 import { Eye, EyeOff, X } from "lucide-react"
 import { cn } from "../../lib/utils"
 
-interface InputProps extends ComponentProps<"input"> {
+interface InputProps extends Omit<ComponentProps<"input">, "size"> {
   error?: boolean
   success?: boolean
   helperText?: string
