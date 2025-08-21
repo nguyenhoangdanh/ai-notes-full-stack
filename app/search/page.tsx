@@ -133,21 +133,21 @@ function SearchContent() {
           <div className="flex items-center gap-2 flex-wrap">
             <span className="text-sm font-medium text-text-muted">Search in:</span>
             <Badge
-              variant={searchType === 'all' ? 'primary' : 'default'}
+              variant={searchType === 'all' ? 'ai' : 'default'}
               className="cursor-pointer"
               onClick={() => setSearchType('all')}
             >
               All
             </Badge>
             <Badge
-              variant={searchType === 'notes' ? 'primary' : 'default'}
+              variant={searchType === 'notes' ? 'ai' : 'default'}
               className="cursor-pointer"
               onClick={() => setSearchType('notes')}
             >
               Notes
             </Badge>
             <Badge
-              variant={searchType === 'workspaces' ? 'primary' : 'default'}
+              variant={searchType === 'workspaces' ? 'ai' : 'default'}
               className="cursor-pointer"
               onClick={() => setSearchType('workspaces')}
             >
@@ -212,7 +212,7 @@ function SearchContent() {
                         <h3 className="font-semibold text-text hover:text-primary-600 transition-colors">
                           {result.title}
                         </h3>
-                        <Badge variant={result.type === 'note' ? 'primary' : 'success'} size="sm">
+                        <Badge variant={result.type === 'note' ? 'ai' : 'success'} size="sm">
                           {result.type}
                         </Badge>
                         <div className="flex items-center gap-1 text-xs text-text-subtle">
