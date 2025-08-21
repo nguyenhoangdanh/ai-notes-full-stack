@@ -348,15 +348,13 @@ export default function WorkspaceDetailPage() {
                               <span>{format(new Date(note.updatedAt), 'MMM d')}</span>
                             </div>
                           </div>
-                          <Button 
-                            variant="ghost" 
+                          <Button
+                            variant="ghost"
                             size="icon-sm"
                             className="opacity-0 group-hover:opacity-100 transition-opacity"
-                            asChild
+                            onClick={() => window.location.href = `/notes/${note.id}`}
                           >
-                            <Link href={`/notes/${note.id}`}>
-                              <EyeIcon className="h-4 w-4" />
-                            </Link>
+                            <EyeIcon className="h-4 w-4" />
                           </Button>
                         </div>
                       </CardHeader>
