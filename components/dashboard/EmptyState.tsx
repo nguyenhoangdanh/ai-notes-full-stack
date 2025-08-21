@@ -243,7 +243,7 @@ export function EmptyState({
       </motion.div>
 
       {/* Quick Actions Grid */}
-      {showQuickActions && config.quickActions && (
+      {showQuickActions && 'quickActions' in config && config.quickActions && (
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
