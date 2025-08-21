@@ -259,10 +259,8 @@ export function NoteEditor({ noteId, onClose }: NoteEditorProps) {
             <div className="p-4 border-b border-border">
               <AISuggestions
                 noteId={noteId}
-                noteTitle={title}
-                noteContent={content}
-                noteTags={tags}
-                onApplySuggestion={handleApplySuggestion}
+                content={content}
+                context="note"
               />
             </div>
 
