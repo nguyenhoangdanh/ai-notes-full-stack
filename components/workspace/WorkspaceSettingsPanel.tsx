@@ -2,13 +2,13 @@
 
 import { useState } from 'react';
 import { Settings, Users, Shield, Trash2, Save } from 'lucide-react';
-import { Button } from '../ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../ui/card';
+import { Button } from '../ui/Button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../ui/Card';
 import { Input } from '../ui/input';
 import { Label } from '../ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
 import { Separator } from '../ui/separator';
-import { Badge } from '../ui/badge';
+import { Badge } from '../ui/Badge';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '../ui/alert-dialog';
 import { useWorkspaces } from '../../hooks/use-workspaces';
 import { toast } from 'sonner';
