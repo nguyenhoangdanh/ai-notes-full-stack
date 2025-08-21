@@ -6,7 +6,7 @@ import { cn } from '../../lib/utils'
 
 interface CardProps extends HTMLAttributes<HTMLDivElement> {
   children: ReactNode
-  variant?: 'default' | 'glass' | 'elevated'
+  variant?: 'default' | 'glass' | 'elevated' | 'outlined'
   interactive?: boolean
   loading?: boolean
 }
