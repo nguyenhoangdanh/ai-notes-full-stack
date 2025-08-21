@@ -3,8 +3,8 @@ import { Play, Pause, Square } from 'lucide-react'
 
 import { useState, useEffect } from 'react'
 
-import { Card, CardContent, CardHeader, CardTitle } from '../../../components/ui/card'
-import { Button } from '../../../components/ui/button'
+import { Card, CardContent, CardHeader, CardTitle } from '../../../components/ui/Card'
+import { Button } from '../../../components/ui/Button'
 import { Progress } from '../../../components/ui/progress'
 
 export default function PomodoroPage() {
