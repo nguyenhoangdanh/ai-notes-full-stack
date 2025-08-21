@@ -287,7 +287,7 @@ export default function CategoriesPage() {
                         {category.name}
                       </h3>
                       <p className="text-sm text-text-muted">
-                        {category.noteCount || 0} notes
+                        {category._count?.notes || 0} notes
                       </p>
                     </div>
                   </div>
