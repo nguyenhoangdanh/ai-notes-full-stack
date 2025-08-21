@@ -142,7 +142,7 @@ export default function TemplateDetailPage() {
             <div className="flex items-center gap-2">
               <Button 
                 variant="ghost" 
-                size="icon"
+                size="icon-sm"
                 onClick={toggleStar}
                 className={cn(
                   "hover:bg-primary/10",
@@ -165,7 +165,7 @@ export default function TemplateDetailPage() {
                   </Button>
                   <Button 
                     variant="ghost" 
-                    size="icon" 
+                    size="icon-sm" 
                     onClick={handleDelete}
                     className="text-destructive hover:bg-destructive/10"
                   >
@@ -344,7 +344,7 @@ export default function TemplateDetailPage() {
                     Create Note from Template
                   </Button>
                   <Button 
-                    variant="outline" 
+                    variant="secondary" 
                     onClick={handleDuplicate}
                     className="w-full justify-start"
                   >
@@ -352,7 +352,7 @@ export default function TemplateDetailPage() {
                     Duplicate Template
                   </Button>
                   <Button 
-                    variant="outline" 
+                    variant="secondary" 
                     onClick={handleShare}
                     className="w-full justify-start"
                   >
