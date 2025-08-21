@@ -1,11 +1,11 @@
 import { useState, useEffect } from 'react'
 import { useNotes } from '../../contexts/NotesContext'
-import { Button } from '../ui/button'
+import { Button } from '../ui/Button'
 import { Input } from '../ui/input'
 import { Textarea } from '../ui/textarea'
-import { Badge } from '../ui/badge'
+import { Badge } from '../ui/Badge'
 import { Separator } from '../ui/separator'
-import { Card, CardContent, CardHeader, CardTitle } from '../ui/card'
+import { Card, CardContent, CardHeader } from '../ui/Card'
 import { AISuggestions } from '../ai/AISuggestions'
 import { 
   X, 
