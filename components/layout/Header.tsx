@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useRef, useEffect } from 'react'
-import { Menu, X, Search, Bell, Settings, Sparkles } from 'lucide-react'
+import { Menu, X, Search, Bell, Settings, Sparkles, GitPullRequest } from 'lucide-react'
 import { Button, IconButton } from '../ui/Button'
 import { ThemeToggle } from '../common/ThemeToggle'
 import { UserMenu } from '../header/UserMenu'
@@ -139,9 +139,24 @@ export function Header({ onMenuClick, sidebarOpen, isMobile }: HeaderProps) {
             {/* Desktop actions */}
             {!isMobile && (
               <div className="flex items-center gap-1">
+                {/* Send PR / Push Code Button */}
+                <Button
+                  variant="gradient"
+                  size="sm"
+                  icon={GitPullRequest}
+                  onClick={() => {
+                    // This will trigger the platform's PR creation flow
+                    window.parent?.postMessage({ type: 'create-pr' }, '*')
+                  }}
+                  className="rounded-xl transition-modern hover-lift shadow-lg hover:shadow-xl"
+                  aria-label="Create Pull Request"
+                >
+                  Send PR
+                </Button>
+
                 <ThemeToggle />
                 <NotificationBell />
-                
+
                 {/* Quick settings */}
                 <IconButton
                   variant="ghost"
@@ -156,6 +171,19 @@ export function Header({ onMenuClick, sidebarOpen, isMobile }: HeaderProps) {
             {/* Mobile quick actions */}
             {isMobile && (
               <div className="flex items-center gap-1">
+                {/* Mobile Send PR Button */}
+                <IconButton
+                  variant="gradient"
+                  size="md"
+                  icon={GitPullRequest}
+                  onClick={() => {
+                    // This will trigger the platform's PR creation flow
+                    window.parent?.postMessage({ type: 'create-pr' }, '*')
+                  }}
+                  className="rounded-xl transition-modern hover-lift shadow-lg hover:shadow-xl"
+                  aria-label="Create Pull Request"
+                />
+
                 <IconButton
                   variant="ghost"
                   size="md"
@@ -164,7 +192,7 @@ export function Header({ onMenuClick, sidebarOpen, isMobile }: HeaderProps) {
                   aria-label="Search"
                   onClick={() => setIsSearchFocused(true)}
                 />
-                
+
                 <NotificationBell />
               </div>
             )}
