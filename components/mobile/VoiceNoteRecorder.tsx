@@ -5,25 +5,25 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { Button } from '../ui/button'
 import { Card } from '../ui/card'
 import { Badge } from '../ui/badge'
-import { 
-  Mic, 
-  Square, 
-  Play, 
-  Pause, 
-  Trash, 
-  Save, 
+import {
+  Mic,
+  Square,
+  Play,
+  Pause,
+  Trash,
+  Save,
   ArrowLeft,
   Volume2,
   FileAudio,
   Clock,
-  Waveform,
   Settings,
   Download,
   Share,
   X,
   RotateCcw,
   PenTool,
-  Sparkles
+  Sparkles,
+  Activity
 } from 'lucide-react'
 import { cn } from '../../lib/utils'
 import { toast } from 'sonner'
@@ -437,7 +437,7 @@ export function VoiceNoteRecorder({ onBack, onSave, className }: VoiceNoteRecord
 
                   <Button
                     onClick={stopRecording}
-                    variant="danger"
+                    variant="destructive"
                     size="xl"
                     className="h-20 w-20 rounded-full"
                   >

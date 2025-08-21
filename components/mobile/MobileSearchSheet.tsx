@@ -80,13 +80,13 @@ export function MobileSearchSheet({
   const sheetRef = useRef<HTMLDivElement>(null)
 
   // Mock search results
-  const searchResults: SearchResult[] = useMemo(() => {
+  const searchResults = useMemo((): SearchResult[] => {
     if (!localQuery.trim()) return []
-    
+
     return [
       {
         id: '1',
-        type: 'note',
+        type: 'note' as const,
         title: 'Project Kickoff Meeting',
         content: 'Discussion about the new AI features and timeline for implementation...',
         metadata: {
@@ -97,8 +97,8 @@ export function MobileSearchSheet({
         relevance: 95
       },
       {
-        id: '2', 
-        type: 'note',
+        id: '2',
+        type: 'note' as const,
         title: 'Ideas for Mobile App',
         content: 'Voice recording feature, offline sync, gesture controls...',
         metadata: {
@@ -110,7 +110,7 @@ export function MobileSearchSheet({
       },
       {
         id: '3',
-        type: 'workspace',
+        type: 'workspace' as const,
         title: 'Personal Projects',
         content: 'Collection of personal development and side projects',
         metadata: {

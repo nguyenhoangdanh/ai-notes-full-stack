@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Download, Smartphone, X, Check, ArrowDown, Share } from 'lucide-react'
+import { Download, Smartphone, X, Check, ArrowDown, Share, ArrowRight } from 'lucide-react'
 import { Button } from '../ui/button'
 import { Card } from '../ui/card'
 import { Badge } from '../ui/badge'

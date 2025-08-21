@@ -271,6 +271,9 @@ interface ThemePickerProps {
   className?: string
 }
 
+// Alias for backward compatibility
+export const CompactThemeToggle = SimpleThemeToggle
+
 export function ThemePicker({ className }: ThemePickerProps) {
   const { theme, setTheme, resolvedTheme } = useTheme()
   const [mounted, setMounted] = useState(false)

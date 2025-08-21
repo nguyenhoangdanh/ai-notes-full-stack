@@ -9,7 +9,7 @@ interface AIContextType {
   isSearching: boolean
   semanticSearch: (params: SemanticSearchDto) => Promise<SemanticSearchResult[]>
   clearSearchResults: () => void
-  
+
   // Chat/Conversation Management
   activeConversation: AIConversation | null
   conversations: AIConversation[]
@@ -18,6 +18,9 @@ interface AIContextType {
   deleteConversation: (conversationId: string) => void
   isProcessing: boolean
   startNewChat: () => void
+
+  // AI Assistant
+  askAI: (prompt: string, context?: string[]) => Promise<string>
 }
 
 const AIContext = createContext<AIContextType | null>(null)
@@ -147,6 +150,21 @@ export const AIProvider: React.FC<{ children: React.ReactNode }> = ({ children }
     setActiveConversation(null)
   }, [])
 
+  const askAI = useCallback(async (prompt: string, context?: string[]): Promise<string> => {
+    try {
+      const response = await completeChatMutation.mutateAsync({
+        message: prompt,
+        conversationId: `temp_${Date.now()}`,
+        context: context || []
+      })
+      return response.response || 'I apologize, but I couldn\'t generate a response.'
+    } catch (error) {
+      console.error('askAI failed:', error)
+      toast.error('Failed to get AI response')
+      throw new Error('AI request failed')
+    }
+  }, [completeChatMutation])
+
   const contextValue: AIContextType = {
     searchResults,
     isSearching: semanticSearchMutation.isPending,
@@ -158,7 +176,8 @@ export const AIProvider: React.FC<{ children: React.ReactNode }> = ({ children }
     createConversation,
     deleteConversation,
     isProcessing: completeChatMutation.isPending,
-    startNewChat
+    startNewChat,
+    askAI
   }
 
   return (
