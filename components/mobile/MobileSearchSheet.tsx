@@ -97,8 +97,8 @@ export function MobileSearchSheet({
         relevance: 95
       },
       {
-        id: '2', 
-        type: 'note',
+        id: '2',
+        type: 'note' as const,
         title: 'Ideas for Mobile App',
         content: 'Voice recording feature, offline sync, gesture controls...',
         metadata: {
