@@ -55,7 +55,7 @@ const workspaceSchema = z.object({
   }).optional()
 })
 
-type WorkspaceFormData = z.infer<typeof workspaceSchema>
+export type WorkspaceFormData = z.infer<typeof workspaceSchema>
 
 interface WorkspaceFormProps {
   initialData?: Partial<WorkspaceFormData>
