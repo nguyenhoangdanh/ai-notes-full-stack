@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import type { MouseEvent } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Button } from '../ui/Button'
 import { ScrollArea } from '../ui/scroll-area'
@@ -118,7 +119,7 @@ export function AIChatHistory({
       }
     })
 
-  const deleteConversation = (conversationId: string, e: React.MouseEvent) => {
+  const deleteConversation = (conversationId: string, e: MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation()
     setConversations(prev => prev.filter(conv => conv.id !== conversationId))
     toast.success('Conversation deleted')
