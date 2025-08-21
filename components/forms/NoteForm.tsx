@@ -41,7 +41,7 @@ const noteSchema = z.object({
   priority: z.enum(['low', 'medium', 'high']).default('medium')
 })
 
-type NoteFormData = z.infer<typeof noteSchema>
+export type NoteFormData = z.infer<typeof noteSchema>
 
 interface NoteFormProps {
   initialData?: Partial<NoteFormData>
