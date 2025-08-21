@@ -219,7 +219,7 @@ export function EmptyState({
       >
         {finalAction && (
           <Button
-            onClick={finalAction && 'onClick' in finalAction ? finalAction.onClick : undefined}
+            onClick={finalAction.onClick}
             variant={finalAction.variant || 'gradient'}
             size="lg"
             className="gap-2 shadow-3 hover:shadow-4 rounded-xl px-8"
@@ -228,7 +228,7 @@ export function EmptyState({
             {finalAction.label}
           </Button>
         )}
-        
+
         {finalSecondaryAction && (
           <Button
             onClick={finalSecondaryAction.onClick}
