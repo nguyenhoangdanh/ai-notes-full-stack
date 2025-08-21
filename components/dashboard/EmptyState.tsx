@@ -108,9 +108,9 @@ export function EmptyState({
         icon: <X className="h-4 w-4" />
       },
       tips: [
-        { icon: Sparkles, text: 'Use AI search for semantic matching' },
-        { icon: Hash, text: 'Search by tags with #tag-name' },
-        { icon: Calendar, text: 'Filter by date ranges' }
+        { icon: Sparkles, text: 'Use AI search for semantic matching', highlight: true },
+        { icon: Hash, text: 'Search by tags with #tag-name', highlight: false },
+        { icon: Calendar, text: 'Filter by date ranges', highlight: false }
       ]
     },
     generic: {
