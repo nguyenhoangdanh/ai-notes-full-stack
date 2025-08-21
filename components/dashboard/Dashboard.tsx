@@ -5,15 +5,22 @@ import { useAuth } from '../../hooks/use-auth'
 import { useNotes } from '../../contexts/NotesContext'
 import { NotesList } from './NotesList'
 import { NoteEditor } from './NoteEditor'
-import { SearchBar } from './SearchBar'
 import { EmptyState } from './EmptyState'
 import { BulkActionsBar } from './BulkActionsBar'
 import { AIAssistantToggle } from '../ai/AIAssistantToggle'
 import { InstallPWAButton } from '../common/InstallPWAButton'
 import { SyncStatusIndicator } from '../dev/SyncStatusIndicator'
-import { Button } from '../ui/button'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle, MetricCard, FeatureCard } from '../ui/card'
-import { Badge, StatusBadge, TrendBadge } from '../ui/badge'
+
+// Import new UI components
+import { PageHeader } from '../ui/PageHeader'
+import { StatCard } from '../ui/StatCard'
+import { Panel } from '../ui/Panel'
+import { Button } from '../ui/Button'
+import { Badge } from '../ui/Badge'
+import { SearchInput } from '../ui/SearchInput'
+import { GradientCallout } from '../ui/GradientCallout'
+import { EmptyState as UIEmptyState } from '../ui/EmptyState'
+
 import { 
   Plus, 
   Search,
@@ -34,7 +41,12 @@ import {
   Star,
   Lightbulb,
   BrainCircuit,
-  Workflow
+  Workflow,
+  MessageSquare,
+  Activity,
+  ChevronRight,
+  Eye,
+  CheckCircle
 } from 'lucide-react'
 import { useIsMobile } from '../../hooks/use-mobile'
 import { cn } from '../../lib/utils'
@@ -58,11 +70,11 @@ export function Dashboard() {
   const [filterBy, setFilterBy] = useState<'all' | 'recent' | 'starred' | 'shared'>('all')
   const isMobile = useIsMobile()
 
-  // Enhanced stats calculation with marketing metrics
+  // Enhanced stats calculation
   const stats: DashboardStats = useMemo(() => ({
     totalNotes: notes.length,
-    totalWorkspaces: 3,
-    recentActivity: 12,
+    totalWorkspaces: 1,
+    recentActivity: notes.length > 0 ? 89 : 0,
     aiSuggestions: 5,
     weeklyGrowth: 23,
     completedTasks: 8,
@@ -96,286 +108,296 @@ export function Dashboard() {
   }, [])
 
   return (
-    <div className="min-h-screen bg-bg relative">
-      {/* Modern background */}
-      <div className="absolute inset-0 bg-gradient-to-br from-bg via-bg-elevated to-brand-50/20" />
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_left,_var(--color-brand-100)_0%,_transparent_50%)] opacity-30" />
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_right,_var(--color-brand-200)_0%,_transparent_50%)] opacity-20" />
-
-      <div className="relative z-10 space-y-8 px-4 sm:px-6 lg:px-8 py-8 max-w-7xl mx-auto">
-        {/* Modern Welcome Header */}
-        <div className="space-y-6">
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-            <div className="space-y-2">
-              <div className="flex items-center gap-3">
-                <h1 className="text-3xl sm:text-4xl font-bold text-gradient">
-                  Welcome back, {user?.name || 'User'}!
-                </h1>
-                <StatusBadge status="active" showDot={true} />
-              </div>
-              <p className="text-text-secondary text-lg leading-relaxed">
-                Here's your productivity overview and latest updates.
-              </p>
-            </div>
-            
-            <div className="flex items-center gap-3">
-              <Button
-                variant="outline"
-                size="lg"
-                className="gap-2 rounded-xl"
-                onClick={() => setSearchQuery('')}
-              >
-                <Search className="h-4 w-4" />
-                <span className="hidden sm:inline">Search</span>
-              </Button>
-              
-              <Button
-                onClick={handleCreateNote}
-                size="lg"
-                variant="gradient"
-                className="gap-2 rounded-xl shadow-3"
-              >
-                <Plus className="h-4 w-4" />
-                New Note
-              </Button>
-            </div>
-          </div>
-          
-          {/* Search Bar */}
-          <div className="max-w-2xl">
-            <SearchBar
-              value={searchQuery}
-              onChange={setSearchQuery}
-              placeholder="Search notes, workspaces, and more..."
-              className="h-12 text-base"
-            />
-          </div>
-        </div>
-
-        {/* Enhanced Stats Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          <MetricCard
-            label="Total Notes"
-            value={stats.totalNotes}
-            change={{ value: `+${stats.weeklyGrowth}%`, trend: "up" }}
-            icon={<BookOpen />}
-            color="brand"
-            size="default"
-          />
-          
-          <MetricCard
-            label="Workspaces"
-            value={stats.totalWorkspaces}
-            change={{ value: "+2 this week", trend: "up" }}
-            icon={<Users />}
-            color="success"
-            size="default"
-          />
-          
-          <MetricCard
-            label="AI Insights"
-            value={stats.aiSuggestions}
-            change={{ value: "5 ready", trend: "neutral" }}
-            icon={<BrainCircuit />}
-            color="info"
-            size="default"
-          />
-          
-          <MetricCard
-            label="Tasks Done"
-            value={stats.completedTasks}
-            change={{ value: "+60%", trend: "up" }}
-            icon={<Target />}
-            color="success"
-            size="default"
-          />
-        </div>
-
-        {/* Quick Actions Grid */}
-        <Card variant="elevated" className="p-6">
-          <CardHeader className="pb-4">
-            <CardTitle className="flex items-center gap-2 text-xl">
-              <Zap className="h-5 w-5 text-brand-600" />
-              Quick Actions
-            </CardTitle>
-            <CardDescription>
-              Start your most common tasks instantly
-            </CardDescription>
-          </CardHeader>
-          
-          <CardContent className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            <Button
-              variant="outline"
-              className="h-auto p-4 flex flex-col items-start gap-3 rounded-xl hover-lift"
+    <div className="min-h-screen space-y-8">
+      {/* Page Header */}
+      <PageHeader
+        title="Dashboard"
+        subtitle={`Welcome back, ${user?.name || 'User'}!`}
+        description="Here's your productivity overview and latest updates from your AI-powered workspace."
+        icon={BarChart3}
+        badge={{ text: 'Live', variant: 'success' }}
+        actions={
+          <div className="flex items-center gap-3">
+            <Button variant="secondary" icon={Search} size="md">
+              Search
+            </Button>
+            <Button 
+              variant="cta" 
+              icon={Plus} 
+              size="md"
               onClick={handleCreateNote}
             >
-              <div className="flex items-center gap-2 w-full">
-                <div className="p-2 bg-brand-100 rounded-lg">
-                  <Plus className="h-4 w-4 text-brand-600" />
-                </div>
-                <span className="font-semibold">Create Note</span>
-              </div>
-              <p className="text-xs text-text-muted text-left">
-                Start writing with AI assistance
-              </p>
+              New Note
             </Button>
+          </div>
+        }
+      />
 
-            <Button
-              variant="outline"
-              className="h-auto p-4 flex flex-col items-start gap-3 rounded-xl hover-lift"
-            >
-              <div className="flex items-center gap-2 w-full">
-                <div className="p-2 bg-success-bg rounded-lg">
-                  <BarChart3 className="h-4 w-4 text-success" />
-                </div>
-                <span className="font-semibold">View Analytics</span>
-              </div>
-              <p className="text-xs text-text-muted text-left">
-                Track your productivity trends
-              </p>
-            </Button>
-
-            <Button
-              variant="outline"
-              className="h-auto p-4 flex flex-col items-start gap-3 rounded-xl hover-lift"
-            >
-              <div className="flex items-center gap-2 w-full">
-                <div className="p-2 bg-info-bg rounded-lg">
-                  <Workflow className="h-4 w-4 text-info" />
-                </div>
-                <span className="font-semibold">AI Assistant</span>
-              </div>
-              <p className="text-xs text-text-muted text-left">
-                Get intelligent writing help
-              </p>
-            </Button>
-          </CardContent>
-        </Card>
-
-        {/* Feature Highlights */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <FeatureCard
-            title="AI-Powered Insights"
-            description="Get intelligent suggestions and automated organization for your notes based on content analysis and usage patterns."
-            icon={<Lightbulb />}
-            badge="Smart"
-          />
-          
-          <FeatureCard
-            title="Real-time Collaboration"
-            description="Work together seamlessly with your team using real-time editing, comments, and shared workspaces."
-            icon={<Users />}
-            badge="Team"
-          />
-        </div>
-
-        {/* Recent Activity */}
-        <Card variant="elevated" className="p-6">
-          <CardHeader className="pb-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <CardTitle className="flex items-center gap-2 text-xl">
-                  <Clock className="h-5 w-5 text-brand-600" />
-                  Recent Activity
-                </CardTitle>
-                <CardDescription>
-                  Your latest notes and updates
-                </CardDescription>
-              </div>
-              
-              <div className="flex items-center gap-2">
-                <Button variant="ghost" size="sm" className="gap-2">
-                  <Filter className="h-4 w-4" />
-                  Filter
-                </Button>
-                <Button variant="outline" size="sm" className="rounded-xl">
-                  View All
-                </Button>
-              </div>
-            </div>
-          </CardHeader>
-          
-          <CardContent>
-            <div className="space-y-4">
-              {notes.length > 0 ? (
-                notes.slice(0, 5).map((note, index) => (
-                  <div key={note.id} className="flex items-center gap-4 p-4 rounded-xl hover:bg-surface-hover transition-modern cursor-pointer">
-                    <div className="h-10 w-10 rounded-xl bg-brand-100 flex items-center justify-center flex-shrink-0">
-                      <BookOpen className="h-4 w-4 text-brand-600" />
-                    </div>
-                    
-                    <div className="flex-1 min-w-0">
-                      <p className="font-medium truncate">{note.title}</p>
-                      <p className="text-sm text-text-muted">Updated 2 hours ago</p>
-                    </div>
-                    
-                    <div className="flex items-center gap-2 flex-shrink-0">
-                      <Badge variant="outline" size="sm">
-                        Note
-                      </Badge>
-                      {index === 0 && <Badge variant="success" size="sm">New</Badge>}
-                    </div>
-                  </div>
-                ))
-              ) : (
-                <EmptyState />
-              )}
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Productivity Insights */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <Card variant="feature" className="p-6">
-            <CardHeader className="pb-4">
-              <CardTitle className="flex items-center gap-2">
-                <TrendingUp className="h-5 w-5 text-success" />
-                Growth
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-3">
-                <div className="text-3xl font-bold text-text">+{stats.weeklyGrowth}%</div>
-                <p className="text-sm text-text-muted">Notes created this week</p>
-                <TrendBadge trend="up" value="vs last week" />
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card variant="glass" className="p-6">
-            <CardHeader className="pb-4">
-              <CardTitle className="flex items-center gap-2">
-                <Calendar className="h-5 w-5 text-brand-600" />
-                Schedule
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-3">
-                <div className="text-lg font-semibold">3 tasks today</div>
-                <p className="text-sm text-text-muted">2 meetings, 1 deadline</p>
-                <Button variant="outline" size="sm" className="w-full">
-                  View Calendar
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card variant="gradient" className="p-6">
-            <CardHeader className="pb-4">
-              <CardTitle className="flex items-center gap-2">
-                <Star className="h-5 w-5 text-warning" />
-                Pro Tip
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-sm mb-3">Use keyboard shortcuts to speed up your workflow.</p>
-              <Button variant="ghost" size="sm" className="text-xs">
-                Learn shortcuts
-              </Button>
-            </CardContent>
-          </Card>
-        </div>
+      {/* Search Bar */}
+      <div className="max-w-2xl">
+        <SearchInput
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          placeholder="Search notes, workspaces, and more..."
+          size="lg"
+          variant="glass"
+        />
       </div>
+
+      {/* Stats Grid - 4 StatCards as per reference */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <StatCard
+          title="Total Notes"
+          value={stats.totalNotes}
+          subtitle="All time created"
+          delta={{
+            value: stats.weeklyGrowth,
+            type: 'increase',
+            period: 'this week'
+          }}
+          icon={BookOpen}
+          iconColor="text-primary-600"
+        />
+        
+        <StatCard
+          title="Workspaces"
+          value={stats.totalWorkspaces}
+          subtitle="Active workspace"
+          delta={{
+            value: 1,
+            type: 'neutral',
+            period: 'created'
+          }}
+          icon={Users}
+          iconColor="text-accent"
+        />
+        
+        <StatCard
+          title="Categories"
+          value="0"
+          subtitle="Auto-generated"
+          icon={Target}
+          iconColor="text-purple"
+          loading={false}
+        />
+        
+        <StatCard
+          title="Activity Score"
+          value={stats.recentActivity}
+          subtitle="Your productivity"
+          delta={{
+            value: 15,
+            type: 'increase',
+            period: 'this week'
+          }}
+          icon={TrendingUp}
+          iconColor="text-info"
+        />
+      </div>
+
+      {/* Three Panels Layout as per reference screenshots */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* Recent Activity Panel */}
+        <Panel
+          title="Recent Activity"
+          subtitle="Latest updates"
+          icon={Activity}
+          toolbar={
+            <Button variant="ghost" size="sm" icon={Eye}>
+              View All
+            </Button>
+          }
+          className="lg:col-span-1"
+        >
+          <div className="space-y-4">
+            {notes.length > 0 ? (
+              notes.slice(0, 3).map((note, index) => (
+                <div 
+                  key={note.id} 
+                  className="flex items-center gap-3 p-3 rounded-lg hover:bg-bg-elev-1 transition-fast cursor-pointer"
+                  onClick={() => setSelectedNoteId(note.id)}
+                >
+                  <div className="w-8 h-8 rounded-lg bg-primary-600/10 flex items-center justify-center flex-shrink-0">
+                    <BookOpen className="w-4 h-4 text-primary-600" />
+                  </div>
+                  
+                  <div className="flex-1 min-w-0">
+                    <p className="font-medium text-sm truncate text-text">{note.title}</p>
+                    <p className="text-xs text-text-muted">Updated 2 hours ago</p>
+                  </div>
+                  
+                  <div className="flex items-center gap-1">
+                    {index === 0 && <Badge variant="success" size="sm">New</Badge>}
+                    <ChevronRight className="w-4 h-4 text-text-subtle" />
+                  </div>
+                </div>
+              ))
+            ) : (
+              <UIEmptyState
+                icon={BookOpen}
+                title="No recent activity"
+                description="Start creating notes to see your activity here."
+                size="sm"
+              />
+            )}
+          </div>
+        </Panel>
+
+        {/* Today's Goals Panel */}
+        <Panel
+          title="Today's Goals"
+          subtitle="Stay focused"
+          icon={Target}
+          toolbar={
+            <Button variant="ghost" size="sm" icon={CheckCircle}>
+              Manage
+            </Button>
+          }
+          className="lg:col-span-1"
+        >
+          <div className="space-y-4">
+            <div className="text-center py-6">
+              <div className="text-2xl font-bold text-text mb-1">3</div>
+              <p className="text-sm text-text-muted">Tasks for today</p>
+            </div>
+            
+            <div className="space-y-3">
+              <div className="flex items-center gap-3 p-3 rounded-lg bg-bg-elev-1">
+                <CheckCircle className="w-4 h-4 text-accent" />
+                <span className="text-sm text-text">Review weekly notes</span>
+              </div>
+              <div className="flex items-center gap-3 p-3 rounded-lg border border-border-soft">
+                <div className="w-4 h-4 rounded border border-border" />
+                <span className="text-sm text-text-muted">Organize workspace</span>
+              </div>
+              <div className="flex items-center gap-3 p-3 rounded-lg border border-border-soft">
+                <div className="w-4 h-4 rounded border border-border" />
+                <span className="text-sm text-text-muted">Update categories</span>
+              </div>
+            </div>
+          </div>
+        </Panel>
+
+        {/* Smart Insights Panel */}
+        <Panel
+          title="Smart Insights"
+          subtitle="AI-powered"
+          icon={BrainCircuit}
+          toolbar={
+            <Badge variant="ai" size="sm">AI</Badge>
+          }
+          className="lg:col-span-1"
+        >
+          <div className="space-y-4">
+            <div className="text-center py-4">
+              <Sparkles className="w-8 h-8 text-primary-600 mx-auto mb-2 animate-pulse" />
+              <p className="text-sm text-text-muted">AI insights will appear here as you create more notes</p>
+            </div>
+            
+            <Button 
+              variant="secondary" 
+              size="sm" 
+              className="w-full"
+              icon={MessageSquare}
+            >
+              Ask AI Assistant
+            </Button>
+          </div>
+        </Panel>
+      </div>
+
+      {/* AI Features Callout - from reference screenshots */}
+      <GradientCallout
+        variant="ai"
+        size="md"
+        title="Intelligent Note Assistant"
+        description="Our AI assistant can help summarize your notes, find connections between your ideas, and generate insights to accelerate your learning and productivity."
+        badge={{ text: "AI-Powered", variant: "ai" }}
+        action={{
+          label: "Start Chatting",
+          onClick: () => window.location.href = '/ai/chat',
+          icon: MessageSquare,
+          variant: "primary"
+        }}
+        secondaryAction={{
+          label: "Learn More",
+          onClick: () => {}
+        }}
+      />
+
+      {/* Recent Notes Panel */}
+      <Panel
+        title="Recent Notes"
+        subtitle={`${notes.length} notes`}
+        icon={BookOpen}
+        toolbar={
+          <div className="flex items-center gap-2">
+            <SearchInput
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="Search notes..."
+              size="sm"
+              className="w-48"
+            />
+            <Button variant="secondary" size="sm" icon={Plus} onClick={handleCreateNote}>
+              New Note
+            </Button>
+          </div>
+        }
+      >
+        {notes.length > 0 ? (
+          <div className="space-y-2">
+            {notes.slice(0, 8).map((note) => (
+              <div 
+                key={note.id}
+                className="flex items-center gap-4 p-4 rounded-lg hover:bg-bg-elev-1 transition-fast cursor-pointer interactive"
+                onClick={() => setSelectedNoteId(note.id)}
+              >
+                <div className="w-10 h-10 rounded-lg bg-primary-600/10 flex items-center justify-center flex-shrink-0">
+                  <BookOpen className="w-5 h-5 text-primary-600" />
+                </div>
+                
+                <div className="flex-1 min-w-0">
+                  <h3 className="font-medium truncate text-text">{note.title}</h3>
+                  <p className="text-sm text-text-muted truncate">
+                    {note.content || 'No content yet...'}
+                  </p>
+                  <div className="flex items-center gap-2 mt-1">
+                    <span className="text-xs text-text-subtle">Updated 2 hours ago</span>
+                    {note.tags && note.tags.length > 0 && (
+                      <Badge variant="default" size="sm">
+                        {note.tags[0]}
+                      </Badge>
+                    )}
+                  </div>
+                </div>
+                
+                <ChevronRight className="w-5 h-5 text-text-subtle" />
+              </div>
+            ))}
+            
+            {notes.length > 8 && (
+              <div className="pt-4 text-center">
+                <Button variant="ghost" size="sm">
+                  View All {notes.length} Notes
+                </Button>
+              </div>
+            )}
+          </div>
+        ) : (
+          <UIEmptyState
+            icon={BookOpen}
+            title="No notes found"
+            description="Create your first note to get started with AI-powered insights and organization."
+            action={{
+              label: "Create Note",
+              onClick: handleCreateNote,
+              icon: Plus,
+              variant: "primary"
+            }}
+          />
+        )}
+      </Panel>
 
       {/* Note Editor Overlay */}
       {selectedNoteId && (
