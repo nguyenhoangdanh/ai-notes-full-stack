@@ -4,11 +4,11 @@ import { motion } from 'framer-motion'
 import { Button } from '../ui/button'
 import { Card } from '../ui/card'
 import { Badge } from '../ui/badge'
-import { 
-  FileText, 
-  Plus, 
-  Sparkles, 
-  BookOpen, 
+import {
+  FileText,
+  Plus,
+  Sparkles,
+  BookOpen,
   PenTool,
   Lightbulb,
   Zap,
@@ -17,7 +17,12 @@ import {
   Download,
   Mic,
   Image,
-  Upload
+  Upload,
+  Users,
+  Search,
+  X,
+  Hash,
+  Calendar
 } from 'lucide-react'
 import { cn } from '../../lib/utils'
 
