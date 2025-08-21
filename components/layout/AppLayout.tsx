@@ -209,10 +209,10 @@ export function AppLayout({ children }: AppLayoutProps) {
             className={cn(
               "fixed bottom-6 right-6 z-30",
               "w-12 h-12 rounded-2xl",
-              "glass border border-border-subtle",
+              "glass border border-glass-border",
               "flex items-center justify-center",
-              "text-text-muted hover:text-brand-600",
-              "shadow-3 hover:shadow-4 hover-lift",
+              "text-text-muted hover:text-primary-600",
+              "shadow-2 hover:shadow-3 hover-lift",
               "transition-modern",
               "opacity-0 pointer-events-none scale-90",
               isScrolled && "opacity-100 pointer-events-auto scale-100"
