@@ -107,25 +107,27 @@ function SearchContent() {
       >
         <div className="space-y-6">
           {/* Search Input */}
-          <SearchInput
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
-            placeholder={useAI ? "Try: 'notes about project planning' or 'meeting notes from last week'" : "Search everything..."}
-            size="lg"
-            variant="glass"
-            loading={isLoading}
-            actionButton={
-              <Button
-                onClick={handleSearch}
-                disabled={!query.trim() || isLoading}
-                variant="primary"
-                icon={useAI ? Sparkles : Search}
-              >
-                {isLoading ? 'Searching...' : 'Search'}
-              </Button>
-            }
-          />
+          <div className="flex gap-3">
+            <SearchInput
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
+              placeholder={useAI ? "Try: 'notes about project planning' or 'meeting notes from last week'" : "Search everything..."}
+              size="lg"
+              variant="glass"
+              loading={isLoading}
+              className="flex-1"
+            />
+            <Button
+              onClick={handleSearch}
+              disabled={!query.trim() || isLoading}
+              variant="primary"
+              icon={useAI ? Sparkles : Search}
+              size="lg"
+            >
+              {isLoading ? 'Searching...' : 'Search'}
+            </Button>
+          </div>
 
           {/* Search Type Filters */}
           <div className="flex items-center gap-2 flex-wrap">
