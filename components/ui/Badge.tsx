@@ -35,7 +35,8 @@ export function Badge({
     purple: 'bg-purple/10 text-purple border border-purple/20',
     secondary: 'bg-neutral-100 text-neutral-700 border border-neutral-200',
     destructive: 'bg-red-100 text-red-700 border border-red-200',
-    gradient: 'bg-gradient-to-r from-brand-500 to-brand-600 text-white border border-brand-600/20'
+    gradient: 'bg-gradient-to-r from-brand-500 to-brand-600 text-white border border-brand-600/20',
+    outline: 'bg-transparent text-neutral-700 border border-neutral-300'
   }
 
   const sizes = {
