@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useState, useCallback, useRef } from 'react'
+import type { ReactNode } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { 
   Eye, 
@@ -667,11 +668,11 @@ export function SkipLinks() {
   )
 }
 
-export function ScreenReaderOnly({ children }: { children: React.ReactNode }) {
+export function ScreenReaderOnly({ children }: { children: ReactNode }) {
   return <span className="sr-only">{children}</span>
 }
 
-export function FocusTrap({ children, enabled = true }: { children: React.ReactNode; enabled?: boolean }) {
+export function FocusTrap({ children, enabled = true }: { children: ReactNode; enabled?: boolean }) {
   const containerRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
@@ -684,7 +685,7 @@ export function FocusTrap({ children, enabled = true }: { children: React.ReactN
   return <div ref={containerRef}>{children}</div>
 }
 
-export function LiveRegion({ children, level = 'polite' }: { children: React.ReactNode; level?: 'polite' | 'assertive' }) {
+export function LiveRegion({ children, level = 'polite' }: { children: ReactNode; level?: 'polite' | 'assertive' }) {
   return (
     <div
       aria-live={level}
@@ -705,7 +706,7 @@ export function LoadingIndicator({ label = 'Loading...' }: { label?: string }) {
   )
 }
 
-export function AccessibleError({ children }: { children: React.ReactNode }) {
+export function AccessibleError({ children }: { children: ReactNode }) {
   return (
     <div role="alert" className="text-danger">
       {children}
