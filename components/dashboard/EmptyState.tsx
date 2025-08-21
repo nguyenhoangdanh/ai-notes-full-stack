@@ -287,7 +287,7 @@ export function EmptyState({
         >
           <h3 className="text-lg font-semibold text-text mb-6">Pro Tips</h3>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            {config.tips.map((tip, index) => (
+            {'tips' in config && config.tips.map((tip, index) => (
               <motion.div
                 key={tip.text}
                 initial={{ opacity: 0, x: index % 2 === 0 ? -10 : 10 }}
