@@ -129,7 +129,7 @@ export function EmptyState({
   const finalTitle = title || config.title
   const finalDescription = description || config.description
   const finalAction = action || config.primaryAction
-  const finalSecondaryAction = secondaryAction || config.secondaryAction
+  const finalSecondaryAction = secondaryAction || ('secondaryAction' in config ? config.secondaryAction : undefined)
 
   return (
     <motion.div
