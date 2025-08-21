@@ -4,8 +4,8 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { Badge } from '../ui/badge'
-import { Button } from '../ui/button'
+import { Badge } from '../ui/Badge'
+import { Button } from '../ui/Button'
 import { Info, RotateCcw, X } from 'lucide-react'
 import { demoModeService } from '../../services/demo.service'
 import { toast } from 'sonner'
