@@ -80,9 +80,9 @@ export function MobileSearchSheet({
   const sheetRef = useRef<HTMLDivElement>(null)
 
   // Mock search results
-  const searchResults: SearchResult[] = useMemo(() => {
+  const searchResults = useMemo((): SearchResult[] => {
     if (!localQuery.trim()) return []
-    
+
     return [
       {
         id: '1',
