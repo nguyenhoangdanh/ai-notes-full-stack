@@ -83,12 +83,12 @@ export default function PomodoroPage() {
                   Start
                 </Button>
               ) : (
-                <Button onClick={handlePause} size="lg" variant="outline">
+                <Button onClick={handlePause} size="lg" variant="secondary">
                   <Pause className="h-5 w-5 mr-2" />
                   Pause
                 </Button>
               )}
-              <Button onClick={handleReset} size="lg" variant="outline">
+              <Button onClick={handleReset} size="lg" variant="secondary">
                 <Square className="h-5 w-5 mr-2" />
                 Reset
               </Button>
