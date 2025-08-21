@@ -34,7 +34,7 @@ export const ErrorFallback: React.FC<ErrorFallbackProps> = ({ error, resetErrorB
         <Button 
           onClick={resetErrorBoundary} 
           className="w-full"
-          variant="outline"
+          variant="secondary"
         >
           <RefreshCw />
           Try Again
