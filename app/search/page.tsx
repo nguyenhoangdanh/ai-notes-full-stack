@@ -132,27 +132,30 @@ function SearchContent() {
           {/* Search Type Filters */}
           <div className="flex items-center gap-2 flex-wrap">
             <span className="text-sm font-medium text-text-muted">Search in:</span>
-            <Badge
-              variant={searchType === 'all' ? 'ai' : 'default'}
-              className="cursor-pointer"
+            <button
+              className="focus-ring rounded-lg"
               onClick={() => setSearchType('all')}
             >
-              All
-            </Badge>
-            <Badge
-              variant={searchType === 'notes' ? 'ai' : 'default'}
-              className="cursor-pointer"
+              <Badge variant={searchType === 'all' ? 'ai' : 'default'}>
+                All
+              </Badge>
+            </button>
+            <button
+              className="focus-ring rounded-lg"
               onClick={() => setSearchType('notes')}
             >
-              Notes
-            </Badge>
-            <Badge
-              variant={searchType === 'workspaces' ? 'ai' : 'default'}
-              className="cursor-pointer"
+              <Badge variant={searchType === 'notes' ? 'ai' : 'default'}>
+                Notes
+              </Badge>
+            </button>
+            <button
+              className="focus-ring rounded-lg"
               onClick={() => setSearchType('workspaces')}
             >
-              Workspaces
-            </Badge>
+              <Badge variant={searchType === 'workspaces' ? 'ai' : 'default'}>
+                Workspaces
+              </Badge>
+            </button>
           </div>
         </div>
       </Panel>
