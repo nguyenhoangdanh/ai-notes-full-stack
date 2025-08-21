@@ -6,8 +6,8 @@ import { cn } from '../../lib/utils'
 
 interface BadgeProps {
   children: ReactNode
-  variant?: 'default' | 'ai' | 'success' | 'warning' | 'danger' | 'info' | 'purple'
-  size?: 'sm' | 'md' | 'lg'
+  variant?: 'default' | 'ai' | 'success' | 'warning' | 'danger' | 'info' | 'purple' | 'secondary' | 'destructive' | 'gradient'
+  size?: 'xs' | 'sm' | 'md' | 'lg'
   icon?: LucideIcon
   iconPosition?: 'left' | 'right'
   dot?: boolean
