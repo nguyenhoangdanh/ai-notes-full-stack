@@ -63,7 +63,7 @@ export default function TemplatesPage() {
             />
           </div>
           <Button
-            variant="outline"
+            variant="secondary"
             size="sm"
             className="gap-2 superhuman-glass border-border/30 rounded-full"
           >
