@@ -119,17 +119,18 @@ export function CountBadge({
   )
 }
 
-export function StatusBadge({ 
+export function StatusBadge({
   status,
-  ...props 
+  ...props
 }: Omit<BadgeProps, 'children' | 'variant' | 'dot'> & {
-  status: 'online' | 'offline' | 'away' | 'busy'
+  status: 'online' | 'offline' | 'away' | 'busy' | 'active'
 }) {
   const statusConfig = {
     online: { variant: 'success' as const, text: 'Online' },
     offline: { variant: 'default' as const, text: 'Offline' },
     away: { variant: 'warning' as const, text: 'Away' },
-    busy: { variant: 'danger' as const, text: 'Busy' }
+    busy: { variant: 'danger' as const, text: 'Busy' },
+    active: { variant: 'success' as const, text: 'Active' }
   }
   
   const config = statusConfig[status]
