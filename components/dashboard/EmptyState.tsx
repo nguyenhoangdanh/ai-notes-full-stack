@@ -26,16 +26,18 @@ import {
 } from 'lucide-react'
 import { cn } from '../../lib/utils'
 
+export type Action = {
+  label: string;
+  onClick?: () => void;
+  variant?: 'default' | 'outline' | 'gradient';
+  icon?: React.ReactNode;
+};
+
 interface EmptyStateProps {
   variant?: 'notes' | 'workspace' | 'search' | 'generic'
   title?: string
   description?: string
-  action?: {
-    label: string
-    onClick?: () => void
-    variant?: 'default' | 'outline' | 'gradient'
-    icon?: React.ReactNode
-  }
+  action?: Action
   secondaryAction?: {
     label: string
     onClick?: () => void
@@ -64,8 +66,9 @@ export function EmptyState({
       primaryAction: {
         label: 'Create Your First Note',
         variant: 'gradient' as const,
-        icon: <Plus className="h-4 w-4" />
-      },
+        icon: <Plus className="h-4 w-4" />,
+        onClick: undefined
+      } as Action,
       secondaryAction: {
         label: 'Import Notes',
         icon: <Upload className="h-4 w-4" />
@@ -90,8 +93,9 @@ export function EmptyState({
       primaryAction: {
         label: 'Add First Note',
         variant: 'default' as const,
-        icon: <Plus className="h-4 w-4" />
-      },
+        icon: <Plus className="h-4 w-4" />,
+        onClick: undefined
+      } as Action,
       tips: [
         { icon: BookOpen, text: 'Workspaces keep your projects organized', highlight: false },
         { icon: Users, text: 'Invite team members to collaborate', highlight: false },
@@ -105,8 +109,9 @@ export function EmptyState({
       primaryAction: {
         label: 'Clear Search',
         variant: 'outline' as const,
-        icon: <X className="h-4 w-4" />
-      },
+        icon: <X className="h-4 w-4" />,
+        onClick: undefined
+      } as Action,
       tips: [
         { icon: Sparkles, text: 'Use AI search for semantic matching', highlight: true },
         { icon: Hash, text: 'Search by tags with #tag-name', highlight: false },
@@ -120,8 +125,9 @@ export function EmptyState({
       primaryAction: {
         label: 'Get Started',
         variant: 'default' as const,
-        icon: <Plus className="h-4 w-4" />
-      }
+        icon: <Plus className="h-4 w-4" />,
+        onClick: undefined
+      } as Action
     }
   }
 
@@ -151,18 +157,18 @@ export function EmptyState({
         <div className="relative">
           {/* Background Glow */}
           <div className="absolute inset-0 bg-gradient-to-r from-brand-200/30 to-brand-300/30 rounded-full blur-3xl scale-150" />
-          
+
           {/* Main Icon Container */}
           <div className="relative p-8 bg-gradient-to-br from-brand-50 to-brand-100 rounded-3xl border border-brand-200 shadow-3">
             <config.icon className="h-16 w-16 text-brand-600 mx-auto" />
-            
+
             {/* Floating Elements */}
             <motion.div
-              animate={{ 
+              animate={{
                 y: [-2, 2, -2],
                 rotate: [0, 5, 0, -5, 0]
               }}
-              transition={{ 
+              transition={{
                 duration: 4,
                 repeat: Infinity,
                 ease: "easeInOut"
@@ -173,13 +179,13 @@ export function EmptyState({
                 <Sparkles className="h-4 w-4 text-brand-700" />
               </div>
             </motion.div>
-            
+
             <motion.div
-              animate={{ 
+              animate={{
                 y: [2, -2, 2],
                 rotate: [0, -3, 0, 3, 0]
               }}
-              transition={{ 
+              transition={{
                 duration: 3,
                 repeat: Infinity,
                 ease: "easeInOut",
@@ -229,7 +235,7 @@ export function EmptyState({
           </Button>
         )}
 
-        {finalSecondaryAction && (
+        {finalSecondaryAction && 'onClick' in finalSecondaryAction && finalSecondaryAction.onClick && (
           <Button
             onClick={finalSecondaryAction.onClick}
             variant="outline"
@@ -295,15 +301,15 @@ export function EmptyState({
                 transition={{ delay: 1.1 + index * 0.1, duration: 0.4 }}
                 className={cn(
                   "flex items-center gap-3 p-4 rounded-xl border transition-modern",
-                  tip.highlight 
-                    ? "bg-gradient-to-r from-brand-50 to-brand-100 border-brand-200" 
+                  tip.highlight
+                    ? "bg-gradient-to-r from-brand-50 to-brand-100 border-brand-200"
                     : "bg-surface border-border hover:border-border-strong"
                 )}
               >
                 <div className={cn(
                   "p-2 rounded-lg flex-shrink-0",
-                  tip.highlight 
-                    ? "bg-brand-200 text-brand-700" 
+                  tip.highlight
+                    ? "bg-brand-200 text-brand-700"
                     : "bg-bg-muted text-text-muted"
                 )}>
                   <tip.icon className="h-4 w-4" />
@@ -338,12 +344,12 @@ export function EmptyState({
               <Play className="h-4 w-4" />
               Watch Tutorial
             </Button>
-            
+
             <Button variant="ghost" size="sm" className="gap-2 text-text-muted hover:text-text">
               <Download className="h-4 w-4" />
               Import Sample Notes
             </Button>
-            
+
             <Button variant="ghost" size="sm" className="gap-2 text-text-muted hover:text-text">
               <Lightbulb className="h-4 w-4" />
               View Examples

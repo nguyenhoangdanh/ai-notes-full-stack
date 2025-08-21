@@ -6,9 +6,10 @@ import { cn } from '../../lib/utils'
 
 interface CardProps extends HTMLAttributes<HTMLDivElement> {
   children: ReactNode
-  variant?: 'default' | 'glass' | 'elevated' | 'outlined'
+  variant?: 'default' | 'glass' | 'elevated' | 'outlined' | 'feature' | 'ghost' | 'gradient'
   interactive?: boolean
   loading?: boolean
+  hover?: string
 }
 
 export function Card({
@@ -17,21 +18,26 @@ export function Card({
   interactive = false,
   loading = false,
   className,
+  hover,
   ...props
 }: CardProps) {
   const variants = {
     default: 'card-modern',
     glass: 'glass border border-glass-border shadow-2',
     elevated: 'panel shadow-3 hover:shadow-4',
-    outlined: 'border border-border-soft bg-bg rounded-lg'
+    outlined: 'border border-border-soft bg-bg rounded-lg',
+    feature: 'border border-primary/20 bg-primary/5 rounded-lg',
+    ghost: 'bg-transparent border-none',
+    gradient: 'bg-gradient-to-br from-primary/10 to-accent/10 border border-primary/20 rounded-lg'
   }
-  
+
   return (
     <div
       className={cn(
         variants[variant],
         interactive && 'interactive cursor-pointer',
         loading && 'opacity-50 pointer-events-none',
+        hover === 'lift' && 'hover:transform hover:-translate-y-1 hover:shadow-lg transition-all duration-200',
         className
       )}
       {...props}
@@ -66,7 +72,7 @@ export function CardHeader({
             <Icon className="w-5 h-5 text-primary-600" />
           </div>
         )}
-        
+
         <div className="flex-1">
           {title && (
             <h3 className="text-lg font-semibold text-text">
@@ -81,7 +87,7 @@ export function CardHeader({
           {children}
         </div>
       </div>
-      
+
       {actions && (
         <div className="flex items-center gap-2 flex-shrink-0">
           {actions}
@@ -188,7 +194,7 @@ export function FeatureCard({
           <div className="p-3 rounded-xl bg-gradient-to-br from-primary-600/10 to-purple/10 border border-primary-600/20">
             <Icon className="w-6 h-6 text-primary-600" />
           </div>
-          
+
           <div className="flex-1 space-y-2">
             <div className="flex items-center gap-2">
               <h3 className="font-semibold text-text">{title}</h3>
@@ -204,13 +210,13 @@ export function FeatureCard({
                 </span>
               )}
             </div>
-            
+
             <p className="text-sm text-text-muted leading-relaxed">
               {description}
             </p>
           </div>
         </div>
-        
+
         {action && (
           <div className="pt-2">
             <span className="text-sm text-primary-600 font-medium group-hover:text-primary-700 transition-colors">
@@ -253,10 +259,10 @@ export function MetricCard({
             </div>
           )}
         </div>
-        
+
         <div className="space-y-1">
           <p className="text-2xl font-bold text-text">{value}</p>
-          
+
           {change && (
             <div className="flex items-center gap-1 text-xs">
               <span className={cn(
@@ -305,12 +311,12 @@ export function ActionCard({
         <div className="mx-auto w-16 h-16 rounded-full bg-gradient-to-br from-bg-elev-1 to-bg-elev-2 flex items-center justify-center">
           <Icon className="w-8 h-8 text-primary-600" />
         </div>
-        
+
         <div className="space-y-2">
           <h3 className="text-lg font-semibold text-text">{title}</h3>
           <p className="text-sm text-text-muted leading-relaxed">{description}</p>
         </div>
-        
+
         <button
           onClick={action.onClick}
           className={cn(

@@ -1,17 +1,20 @@
 'use client'
 
-import { ReactNode } from 'react'
+import { ReactNode, MouseEvent } from 'react'
 import type { LucideIcon } from 'lucide-react'
 import { cn } from '../../lib/utils'
 
 interface BadgeProps {
   children: ReactNode
-  variant?: 'default' | 'ai' | 'success' | 'warning' | 'danger' | 'info' | 'purple' | 'secondary' | 'destructive' | 'gradient' | 'outline'
+  variant?: 'default' | 'ai' | 'success' | 'warning' | 'danger' | 'info' | 'purple' | 'secondary' | 'destructive' | 'gradient' | 'outline' | 'feature'
   size?: 'xs' | 'sm' | 'md' | 'lg'
   icon?: LucideIcon
   iconPosition?: 'left' | 'right'
   dot?: boolean
   className?: string
+  onClick?: (event: MouseEvent<HTMLSpanElement>) => void
+  leftIcon?: ReactNode
+  showDot?: boolean
 }
 
 export function Badge({
@@ -21,10 +24,13 @@ export function Badge({
   icon: Icon,
   iconPosition = 'left',
   dot = false,
-  className
+  className,
+  onClick,
+  leftIcon,
+  showDot = false
 }: BadgeProps) {
   const baseClasses = 'badge inline-flex items-center font-medium whitespace-nowrap'
-  
+
   const variants = {
     default: 'badge-primary',
     ai: 'badge-ai animate-pulse-glow',
@@ -36,7 +42,8 @@ export function Badge({
     secondary: 'bg-neutral-100 text-neutral-700 border border-neutral-200',
     destructive: 'bg-red-100 text-red-700 border border-red-200',
     gradient: 'bg-gradient-to-r from-brand-500 to-brand-600 text-white border border-brand-600/20',
-    outline: 'bg-transparent text-neutral-700 border border-neutral-300'
+    outline: 'bg-transparent text-neutral-700 border border-neutral-300',
+    feature: 'bg-primary/10 text-primary border border-primary/20'
   }
 
   const sizes = {
@@ -45,7 +52,7 @@ export function Badge({
     md: 'px-2.5 py-1 text-xs gap-1.5',
     lg: 'px-3 py-1.5 text-sm gap-2'
   }
-  
+
   const iconSizes = {
     xs: 'w-2 h-2',
     sm: 'w-2.5 h-2.5',
@@ -59,26 +66,31 @@ export function Badge({
     md: 'w-2 h-2',
     lg: 'w-2.5 h-2.5'
   }
-  
+
   const badgeClasses = cn(
     baseClasses,
     variants[variant],
     sizes[size],
+    onClick && 'cursor-pointer hover:opacity-80',
     className
   )
-  
+
   return (
-    <span className={badgeClasses}>
-      {dot && (
+    <span className={badgeClasses} onClick={onClick}>
+      {(dot || showDot) && (
         <span className={`status-dot ${dotSizes[size]} flex-shrink-0`} />
       )}
-      
+
+      {leftIcon && (
+        <span className="flex-shrink-0">{leftIcon}</span>
+      )}
+
       {Icon && iconPosition === 'left' && (
         <Icon className={`${iconSizes[size]} flex-shrink-0`} />
       )}
-      
+
       <span className="truncate">{children}</span>
-      
+
       {Icon && iconPosition === 'right' && (
         <Icon className={`${iconSizes[size]} flex-shrink-0`} />
       )}
@@ -103,16 +115,16 @@ export function DangerBadge({ children, ...props }: Omit<BadgeProps, 'variant'>)
   return <Badge variant="danger" {...props}>{children}</Badge>
 }
 
-export function CountBadge({ 
-  count, 
+export function CountBadge({
+  count,
   max = 99,
-  ...props 
-}: Omit<BadgeProps, 'children'> & { 
+  ...props
+}: Omit<BadgeProps, 'children'> & {
   count: number
-  max?: number 
+  max?: number
 }) {
   const displayCount = count > max ? `${max}+` : count.toString()
-  
+
   return (
     <Badge variant="danger" size="sm" {...props}>
       {displayCount}
@@ -133,9 +145,9 @@ export function StatusBadge({
     busy: { variant: 'danger' as const, text: 'Busy' },
     active: { variant: 'success' as const, text: 'Active' }
   }
-  
+
   const config = statusConfig[status]
-  
+
   return (
     <Badge variant={config.variant} dot {...props}>
       {config.text}
