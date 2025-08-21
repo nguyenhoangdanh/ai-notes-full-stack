@@ -110,7 +110,7 @@ export function MobileSearchSheet({
       },
       {
         id: '3',
-        type: 'workspace',
+        type: 'workspace' as const,
         title: 'Personal Projects',
         content: 'Collection of personal development and side projects',
         metadata: {
