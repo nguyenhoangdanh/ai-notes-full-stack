@@ -2,10 +2,10 @@
 
 import React, { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
-import { Button } from '../ui/button'
-import { Card } from '../ui/card'
+import { Button } from '../ui/Button'
+import { Card } from '../ui/Card'
 import { Switch } from '../ui/switch'
-import { Badge } from '../ui/badge'
+import { Badge } from '../ui/Badge'
 import { Progress } from '../ui/progress'
 import { 
   ArrowLeft, 
