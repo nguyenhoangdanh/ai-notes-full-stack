@@ -123,12 +123,12 @@ export default function CategoryDetailPage() {
             </Button>
             
             <div className="flex items-center gap-2">
-              <Button variant="ghost" size="icon" onClick={handleEdit}>
+              <Button variant="ghost" size="icon-sm" onClick={handleEdit}>
                 <PencilIcon className="h-4 w-4" />
               </Button>
               <Button 
                 variant="ghost" 
-                size="icon" 
+                size="icon-sm" 
                 onClick={handleDelete}
                 className="text-destructive hover:bg-destructive/10"
               >
@@ -281,7 +281,7 @@ export default function CategoryDetailPage() {
                   />
                   <DocumentTextIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                 </div>
-                <Button variant="outline" size="icon">
+                <Button variant="secondary" size="icon-sm">
                   <AdjustmentsHorizontalIcon className="h-4 w-4" />
                 </Button>
               </div>
@@ -351,7 +351,7 @@ export default function CategoryDetailPage() {
                             variant="ghost" 
                             size="icon-sm"
                             className="opacity-0 group-hover:opacity-100 transition-opacity"
-                            asChild
+                            onClick={() => window.location.href = `/notes/${note.id}`}
                           >
                             <Link href={`/notes/${note.id}`}>
                               <EyeIcon className="h-4 w-4" />

@@ -127,7 +127,7 @@ export default function CreateNotePage() {
           
           <div className="flex items-center gap-3 flex-shrink-0">
             <Button 
-              variant="outline" 
+              variant="secondary" 
               onClick={() => setIsPreview(!isPreview)}
               className="hidden sm:flex"
             >
@@ -175,15 +175,14 @@ export default function CreateNotePage() {
                     <div className="space-y-3">
                       <div className="flex flex-wrap gap-2 min-h-[32px]">
                         {tags.map((tag) => (
-                          <Badge 
-                            key={tag} 
-                            variant="secondary" 
-                            className="cursor-pointer hover:bg-destructive/10 hover:text-destructive transition-colors px-3 py-1"
-                            onClick={() => handleRemoveTag(tag)}
+                          <button
+                            key={tag}
+                            className="inline-flex items-center px-2.5 py-1 text-xs font-medium bg-neutral-100 text-neutral-700 border border-neutral-200 rounded cursor-pointer hover:bg-destructive/10 hover:text-destructive transition-colors px-3 py-1"
+                            onClick={(e) => { e.preventDefault(); handleRemoveTag(tag); }}
                           >
-                            #{tag} 
+                            #{tag}
                             <span className="ml-1 text-xs opacity-70">×</span>
-                          </Badge>
+                          </button>
                         ))}
                       </div>
                       <Input
@@ -330,7 +329,7 @@ export default function CreateNotePage() {
                 </div>
                 
                 <div className="pt-3 border-t border-border/50">
-                  <Button variant="outline" size="sm" className="w-full" disabled>
+                  <Button variant="secondary" size="sm" className="w-full" disabled>
                     <Sparkles className="h-4 w-4 mr-2" />
                     AI Assistance Coming Soon
                   </Button>

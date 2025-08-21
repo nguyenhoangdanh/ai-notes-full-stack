@@ -135,7 +135,7 @@ export default function NoteDetailPage() {
             <div className="flex items-center gap-2">
               <Button 
                 variant="ghost" 
-                size="icon"
+                size="icon-sm"
                 onClick={toggleBookmark}
                 className={cn(
                   "hover:bg-primary/10",
@@ -152,7 +152,7 @@ export default function NoteDetailPage() {
               </Button>
               <Button 
                 variant="ghost" 
-                size="icon" 
+                size="icon-sm" 
                 onClick={handleDelete}
                 className="text-destructive hover:bg-destructive/10"
               >
@@ -255,7 +255,7 @@ export default function NoteDetailPage() {
               <CardContent>
                 <div className="space-y-3">
                   <Button 
-                    variant="outline" 
+                    variant="secondary" 
                     size="sm" 
                     className="w-full justify-start"
                   >
@@ -263,7 +263,7 @@ export default function NoteDetailPage() {
                     Generate Summary
                   </Button>
                   <Button 
-                    variant="outline" 
+                    variant="secondary" 
                     size="sm" 
                     className="w-full justify-start"
                   >
@@ -271,7 +271,7 @@ export default function NoteDetailPage() {
                     Find Relations
                   </Button>
                   <Button 
-                    variant="outline" 
+                    variant="secondary" 
                     size="sm" 
                     className="w-full justify-start"
                   >
