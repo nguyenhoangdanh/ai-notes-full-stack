@@ -86,7 +86,7 @@ export function MobileSearchSheet({
     return [
       {
         id: '1',
-        type: 'note',
+        type: 'note' as const,
         title: 'Project Kickoff Meeting',
         content: 'Discussion about the new AI features and timeline for implementation...',
         metadata: {
