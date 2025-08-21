@@ -139,9 +139,24 @@ export function Header({ onMenuClick, sidebarOpen, isMobile }: HeaderProps) {
             {/* Desktop actions */}
             {!isMobile && (
               <div className="flex items-center gap-1">
+                {/* Send PR / Push Code Button */}
+                <Button
+                  variant="gradient"
+                  size="sm"
+                  icon={GitPullRequest}
+                  onClick={() => {
+                    // This will trigger the platform's PR creation flow
+                    window.parent?.postMessage({ type: 'create-pr' }, '*')
+                  }}
+                  className="rounded-xl transition-modern hover-lift shadow-lg hover:shadow-xl"
+                  aria-label="Create Pull Request"
+                >
+                  Send PR
+                </Button>
+
                 <ThemeToggle />
                 <NotificationBell />
-                
+
                 {/* Quick settings */}
                 <IconButton
                   variant="ghost"
