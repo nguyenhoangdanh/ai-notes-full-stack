@@ -4,7 +4,7 @@ import { ArrowLeft, Upload } from 'lucide-react'
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 
-import { Button } from '../../../components/ui/button'
+import { Button } from '../../../components/ui/Button'
 import { Input } from '../../../components/ui/input'
 import { Textarea } from '../../../components/ui/textarea'
 import { 
@@ -14,7 +14,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '../../../components/ui/select'
-import { Card, CardContent, CardHeader, CardTitle } from '../../../components/ui/card'
+import { Card, CardContent, CardHeader, CardTitle } from '../../../components/ui/Card'
 import { useWorkspaces, useCreateWorkspace } from '../../../hooks/use-workspaces'
 import { toast } from 'sonner'
 
