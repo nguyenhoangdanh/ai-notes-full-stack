@@ -269,10 +269,10 @@ export function NoteEditor({ noteId, onClose }: NoteEditorProps) {
               <div className="flex-1 p-4 overflow-y-auto">
                 <Card>
                   <CardHeader className="pb-3">
-                    <CardTitle className="text-sm flex items-center space-x-2">
+                    <h3 className="text-sm font-semibold flex items-center space-x-2">
                       <Sparkle className="h-4 w-4 text-accent" />
                       <span>Related Notes</span>
-                    </CardTitle>
+                    </h3>
                   </CardHeader>
                   <CardContent className="space-y-3">
                     {relatedNotes.map((relatedNote) => (
