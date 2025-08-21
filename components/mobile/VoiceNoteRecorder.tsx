@@ -437,7 +437,7 @@ export function VoiceNoteRecorder({ onBack, onSave, className }: VoiceNoteRecord
 
                   <Button
                     onClick={stopRecording}
-                    variant="danger"
+                    variant="destructive"
                     size="xl"
                     className="h-20 w-20 rounded-full"
                   >
