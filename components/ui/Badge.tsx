@@ -46,12 +46,14 @@ export function Badge({
   }
   
   const iconSizes = {
+    xs: 'w-2 h-2',
     sm: 'w-2.5 h-2.5',
     md: 'w-3 h-3',
     lg: 'w-3.5 h-3.5'
   }
-  
+
   const dotSizes = {
+    xs: 'w-1 h-1',
     sm: 'w-1.5 h-1.5',
     md: 'w-2 h-2',
     lg: 'w-2.5 h-2.5'
