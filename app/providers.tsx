@@ -83,7 +83,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
         </ThemeProvider>
         <ReactQueryDevtools
           initialIsOpen={false}
-          position="bottom-left"
+          position="bottom"
         />
       </QueryClientProvider>
     </ErrorBoundary>
