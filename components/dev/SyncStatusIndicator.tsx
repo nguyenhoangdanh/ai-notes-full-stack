@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
 import { Wifi, WifiOff, CloudOff, Cloud, AlertCircle, CheckCircle } from 'lucide-react';
-import { Badge } from '../ui/badge';
-import { Button } from '../ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../ui/card';
+import { Badge } from '../ui/Badge';
+import { Button } from '../ui/Button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../ui/Card';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '../ui/collapsible';
 import { syncService, SyncStatus } from '../../lib/sync-service';
 
