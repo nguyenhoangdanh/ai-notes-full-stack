@@ -125,38 +125,6 @@ export function CardFooter({
   )
 }
 
-interface CardTitleProps {
-  children: ReactNode
-  className?: string
-}
-
-export function CardTitle({
-  children,
-  className = ''
-}: CardTitleProps) {
-  return (
-    <h3 className={cn('text-lg font-semibold text-fg', className)}>
-      {children}
-    </h3>
-  )
-}
-
-interface CardDescriptionProps {
-  children: ReactNode
-  className?: string
-}
-
-export function CardDescription({
-  children,
-  className = ''
-}: CardDescriptionProps) {
-  return (
-    <p className={cn('text-sm text-fg-secondary mt-0.5', className)}>
-      {children}
-    </p>
-  )
-}
-
 // Specialized card components
 interface FeatureCardProps {
   title: string

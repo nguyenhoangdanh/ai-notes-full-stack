@@ -1,11 +1,11 @@
 import { useState, useEffect } from 'react'
 import { useNotes } from '../../contexts/NotesContext'
-import { Button } from '../ui/button'
+import { Button } from '../ui/Button'
 import { Input } from '../ui/input'
 import { Textarea } from '../ui/textarea'
-import { Badge } from '../ui/badge'
+import { Badge } from '../ui/Badge'
 import { Separator } from '../ui/separator'
-import { Card, CardContent, CardHeader, CardTitle } from '../ui/card'
+import { Card, CardContent, CardHeader } from '../ui/Card'
 import { AISuggestions } from '../ai/AISuggestions'
 import { 
   X, 
@@ -269,10 +269,10 @@ export function NoteEditor({ noteId, onClose }: NoteEditorProps) {
               <div className="flex-1 p-4 overflow-y-auto">
                 <Card>
                   <CardHeader className="pb-3">
-                    <CardTitle className="text-sm flex items-center space-x-2">
+                    <h3 className="text-sm font-semibold flex items-center space-x-2">
                       <Sparkle className="h-4 w-4 text-accent" />
                       <span>Related Notes</span>
-                    </CardTitle>
+                    </h3>
                   </CardHeader>
                   <CardContent className="space-y-3">
                     {relatedNotes.map((relatedNote) => (

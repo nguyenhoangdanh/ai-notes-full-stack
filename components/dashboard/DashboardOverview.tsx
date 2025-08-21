@@ -2,8 +2,8 @@
 
 import { Plus, BookOpen, Folder, Sparkles, ArrowRight, CheckCircle, Zap, Target, Users, BarChart3, BrainCircuit, Workflow } from "lucide-react"
 import { Card, CardContent, CardHeader, CardTitle, FeatureCard } from '../ui/card'
-import { Button } from '../ui/button'
-import { Badge } from '../ui/badge'
+import { Button } from '../ui/Button'
+import { Badge } from '../ui/Badge'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { cn } from '../../lib/utils'
