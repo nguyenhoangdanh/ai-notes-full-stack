@@ -3,7 +3,7 @@ import { motion } from 'framer-motion'
 import { Button } from '../ui/Button'
 import { Input } from '../ui/input'
 import { Textarea } from '../ui/textarea'
-import { Badge } from '../ui/badge'
+import { Badge } from '../ui/Badge'
 import { 
   ArrowLeft, 
   Check, 

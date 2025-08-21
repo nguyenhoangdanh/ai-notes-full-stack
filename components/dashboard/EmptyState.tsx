@@ -3,7 +3,7 @@
 import { motion } from 'framer-motion'
 import { Button } from '../ui/Button'
 import { Card } from '../ui/Card'
-import { Badge } from '../ui/badge'
+import { Badge } from '../ui/Badge'
 import {
   FileText,
   Plus,
