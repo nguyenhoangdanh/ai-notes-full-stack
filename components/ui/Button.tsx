@@ -35,7 +35,8 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       ghost: 'btn-ghost hover:text-text',
       cta: 'btn-cta text-white shadow-lg hover:shadow-xl',
       danger: 'bg-danger text-white border-none hover:bg-red-600 hover:shadow-lg',
-      gradient: 'bg-gradient-to-r from-brand-500 to-brand-600 text-white shadow-lg hover:shadow-xl hover:from-brand-600 hover:to-brand-700'
+      gradient: 'bg-gradient-to-r from-brand-500 to-brand-600 text-white shadow-lg hover:shadow-xl hover:from-brand-600 hover:to-brand-700',
+      outline: 'bg-transparent border border-neutral-300 text-neutral-700 hover:bg-neutral-50'
     }
     
     const sizes = {
