@@ -1,8 +1,8 @@
 'use client'
 
 import { CheckCircle, Clock, Calendar, BookOpen } from 'lucide-react'
-import { Card, CardContent, CardHeader, CardTitle } from '../../components/ui/card'
-import { Button } from '../../components/ui/button'
+import { Card, CardContent, CardHeader, CardTitle } from '../../components/ui/Card'
+import { Button } from '../../components/ui/Button'
 import Link from 'next/link'
 
 export default function ProductivityPage() {

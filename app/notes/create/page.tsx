@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { ArrowLeft, Upload, Eye, Tag, Folder, Sparkles, BookOpen } from 'lucide-react'
-import { Button } from '../../../components/ui/button'
+import { Button } from '../../../components/ui/Button'
 import { Input } from '../../../components/ui/input'
 import { Textarea } from '../../../components/ui/textarea'
 import { 
@@ -13,8 +13,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from '../../../components/ui/select'
-import { Card, CardContent, CardHeader, CardTitle } from '../../../components/ui/card'
-import { Badge } from '../../../components/ui/badge'
+import { Card, CardContent, CardHeader, CardTitle } from '../../../components/ui/Card'
+import { Badge } from '../../../components/ui/Badge'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../../../components/ui/tabs'
 import { useNotes, useCreateNote } from '../../../hooks/use-notes'
 import { useWorkspaces } from '../../../hooks/use-workspaces'
