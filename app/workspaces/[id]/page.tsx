@@ -155,7 +155,7 @@ export default function WorkspaceDetailPage() {
               >
                 <UsersIcon className="h-4 w-4" />
               </Button>
-              <Button variant="ghost" size="icon" onClick={handleEdit}>
+              <Button variant="ghost" size="icon-sm" onClick={handleEdit}>
                 <PencilIcon className="h-4 w-4" />
               </Button>
               <Button 
