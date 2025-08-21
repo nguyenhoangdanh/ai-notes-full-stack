@@ -213,7 +213,7 @@ export function SimpleThemeToggle() {
 
   if (!mounted) {
     return (
-      <Button variant="ghost" size="icon-sm" className="rounded-full opacity-50" disabled>
+      <Button variant="ghost" size="sm" className="rounded-full opacity-50" disabled>
         <Sun className="h-4 w-4" />
       </Button>
     )
