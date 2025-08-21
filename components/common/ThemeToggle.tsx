@@ -236,7 +236,7 @@ export function SimpleThemeToggle() {
     >
       <Button
         variant="ghost"
-        size="icon-sm"
+        size="sm"
         onClick={toggleTheme}
         className={cn(
           "rounded-full transition-modern relative overflow-hidden",
