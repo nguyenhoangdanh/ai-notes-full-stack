@@ -278,7 +278,7 @@ export function EmptyState({
       )}
 
       {/* Tips Section */}
-      {showTips && config.tips && (
+      {showTips && 'tips' in config && config.tips && (
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
