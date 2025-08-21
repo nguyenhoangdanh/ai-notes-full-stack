@@ -5,7 +5,7 @@ import { LucideIcon } from 'lucide-react'
 import { cn } from '../../lib/utils'
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: 'primary' | 'secondary' | 'ghost' | 'cta' | 'danger' | 'gradient'
+  variant?: 'primary' | 'secondary' | 'ghost' | 'cta' | 'danger' | 'gradient' | 'outline'
   size?: 'sm' | 'md' | 'lg'
   loading?: boolean
   icon?: LucideIcon
