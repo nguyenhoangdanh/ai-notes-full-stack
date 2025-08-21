@@ -72,9 +72,9 @@ export function EmptyState({
       },
       tips: [
         { icon: Sparkles, text: 'Use AI to enhance your writing', highlight: true },
-        { icon: Mic, text: 'Try voice notes for quick capture' },
-        { icon: BookOpen, text: 'Organize with workspaces and tags' },
-        { icon: Zap, text: 'Sync across all your devices' }
+        { icon: Mic, text: 'Try voice notes for quick capture', highlight: false },
+        { icon: BookOpen, text: 'Organize with workspaces and tags', highlight: false },
+        { icon: Zap, text: 'Sync across all your devices', highlight: false }
       ],
       quickActions: [
         { icon: FileText, label: 'Blank Note', description: 'Start from scratch' },
