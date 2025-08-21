@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useTheme } from 'next-themes'
 import { Sun, Moon, Monitor, Palette, Check } from 'lucide-react'
-import { Button } from '../ui/button'
+import { Button } from '../ui/Button'
 import { QuickTooltip } from '../ui/tooltip'
 import {
   DropdownMenu,
