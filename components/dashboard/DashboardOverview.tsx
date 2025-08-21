@@ -1,7 +1,7 @@
 'use client'
 
 import { Plus, BookOpen, Folder, Sparkles, ArrowRight, CheckCircle, Zap, Target, Users, BarChart3, BrainCircuit, Workflow } from "lucide-react"
-import { Card, CardContent, CardHeader, CardTitle, FeatureCard } from '../ui/card'
+import { Card, CardContent, CardHeader, CardTitle, FeatureCard } from '../ui/Card'
 import { Button } from '../ui/Button'
 import { Badge } from '../ui/Badge'
 import Link from 'next/link'
@@ -139,7 +139,7 @@ export function DashboardOverview() {
           
           <div className="flex flex-col xs:flex-row gap-4 xs:gap-6 justify-center items-center pt-6 xs:pt-8 px-4 xs:px-0 animate-slide-up">
             <Button 
-              size="xl" 
+              size="lg" 
               variant="gradient"
               onClick={() => router.push('/notes/create')}
               className="w-full xs:w-auto px-8 py-4 text-lg group shadow-4"
@@ -152,7 +152,7 @@ export function DashboardOverview() {
             
             <Button 
               variant="outline" 
-              size="xl"
+              size="lg"
               onClick={() => router.push('/notes')}
               className="w-full xs:w-auto px-8 py-4 text-lg glass"
             >
@@ -323,7 +323,7 @@ export function DashboardOverview() {
               
               <div className="flex flex-col xs:flex-row gap-4 xs:gap-6 justify-center items-center pt-6">
                 <Button 
-                  size="xl" 
+                  size="lg" 
                   variant="gradient"
                   onClick={() => router.push('/notes/create')}
                   className="w-full xs:w-auto px-10 py-4 text-lg group shadow-4"
@@ -336,7 +336,7 @@ export function DashboardOverview() {
                 
                 <Button 
                   variant="outline" 
-                  size="xl"
+                  size="lg"
                   onClick={() => router.push('/ai/chat')}
                   className="w-full xs:w-auto px-10 py-4 text-lg glass"
                 >
