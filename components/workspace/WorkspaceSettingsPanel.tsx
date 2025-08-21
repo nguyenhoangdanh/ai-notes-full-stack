@@ -1,3 +1,5 @@
+'use client'
+
 import { useState } from 'react';
 import { Settings, Users, Shield, Trash2, Save } from 'lucide-react';
 import { Button } from '../ui/button';
