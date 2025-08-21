@@ -252,7 +252,7 @@ export function EmptyState({
         >
           <h3 className="text-lg font-semibold text-text mb-4">Quick Actions</h3>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            {config.quickActions.map((quickAction, index) => (
+            {'quickActions' in config && config.quickActions.map((quickAction, index) => (
               <motion.div
                 key={quickAction.label}
                 initial={{ opacity: 0, y: 10 }}
