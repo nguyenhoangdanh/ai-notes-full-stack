@@ -4,7 +4,7 @@ import { forwardRef, InputHTMLAttributes, useState } from 'react'
 import { Search, X, Loader2 } from 'lucide-react'
 import { cn } from '../../lib/utils'
 
-interface SearchInputProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 'type'> {
+interface SearchInputProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 'type' | 'size'> {
   loading?: boolean
   onClear?: () => void
   showClearButton?: boolean

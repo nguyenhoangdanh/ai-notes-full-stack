@@ -32,13 +32,13 @@ interface EmptyStateProps {
   description?: string
   action?: {
     label: string
-    onClick: () => void
+    onClick?: () => void
     variant?: 'default' | 'outline' | 'gradient'
     icon?: React.ReactNode
   }
   secondaryAction?: {
     label: string
-    onClick: () => void
+    onClick?: () => void
     icon?: React.ReactNode
   }
   showTips?: boolean
@@ -72,9 +72,9 @@ export function EmptyState({
       },
       tips: [
         { icon: Sparkles, text: 'Use AI to enhance your writing', highlight: true },
-        { icon: Mic, text: 'Try voice notes for quick capture' },
-        { icon: BookOpen, text: 'Organize with workspaces and tags' },
-        { icon: Zap, text: 'Sync across all your devices' }
+        { icon: Mic, text: 'Try voice notes for quick capture', highlight: false },
+        { icon: BookOpen, text: 'Organize with workspaces and tags', highlight: false },
+        { icon: Zap, text: 'Sync across all your devices', highlight: false }
       ],
       quickActions: [
         { icon: FileText, label: 'Blank Note', description: 'Start from scratch' },
@@ -93,9 +93,9 @@ export function EmptyState({
         icon: <Plus className="h-4 w-4" />
       },
       tips: [
-        { icon: BookOpen, text: 'Workspaces keep your projects organized' },
-        { icon: Users, text: 'Invite team members to collaborate' },
-        { icon: FileText, text: 'Create templates for consistent notes' }
+        { icon: BookOpen, text: 'Workspaces keep your projects organized', highlight: false },
+        { icon: Users, text: 'Invite team members to collaborate', highlight: false },
+        { icon: FileText, text: 'Create templates for consistent notes', highlight: false }
       ]
     },
     search: {
@@ -108,9 +108,9 @@ export function EmptyState({
         icon: <X className="h-4 w-4" />
       },
       tips: [
-        { icon: Sparkles, text: 'Use AI search for semantic matching' },
-        { icon: Hash, text: 'Search by tags with #tag-name' },
-        { icon: Calendar, text: 'Filter by date ranges' }
+        { icon: Sparkles, text: 'Use AI search for semantic matching', highlight: true },
+        { icon: Hash, text: 'Search by tags with #tag-name', highlight: false },
+        { icon: Calendar, text: 'Filter by date ranges', highlight: false }
       ]
     },
     generic: {
@@ -219,7 +219,7 @@ export function EmptyState({
       >
         {finalAction && (
           <Button
-            onClick={finalAction && 'onClick' in finalAction ? finalAction.onClick : undefined}
+            onClick={finalAction.onClick}
             variant={finalAction.variant || 'gradient'}
             size="lg"
             className="gap-2 shadow-3 hover:shadow-4 rounded-xl px-8"
@@ -228,7 +228,7 @@ export function EmptyState({
             {finalAction.label}
           </Button>
         )}
-        
+
         {finalSecondaryAction && (
           <Button
             onClick={finalSecondaryAction.onClick}

@@ -5,7 +5,7 @@ import { LucideIcon } from 'lucide-react'
 import { cn } from '../../lib/utils'
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: 'primary' | 'secondary' | 'ghost' | 'cta' | 'danger'
+  variant?: 'primary' | 'secondary' | 'ghost' | 'cta' | 'danger' | 'gradient'
   size?: 'sm' | 'md' | 'lg'
   loading?: boolean
   icon?: LucideIcon
@@ -34,7 +34,8 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       secondary: 'btn-secondary hover:text-text',
       ghost: 'btn-ghost hover:text-text',
       cta: 'btn-cta text-white shadow-lg hover:shadow-xl',
-      danger: 'bg-danger text-white border-none hover:bg-red-600 hover:shadow-lg'
+      danger: 'bg-danger text-white border-none hover:bg-red-600 hover:shadow-lg',
+      gradient: 'bg-gradient-to-r from-brand-500 to-brand-600 text-white shadow-lg hover:shadow-xl hover:from-brand-600 hover:to-brand-700'
     }
     
     const sizes = {

@@ -19,9 +19,9 @@ import {
   Star
 } from 'lucide-react'
 import { Input } from '../ui/input'
-import { Button } from '../ui/button'
-import { Card } from '../ui/card'
-import { Badge } from '../ui/badge'
+import { Button } from '../ui/Button'
+import { Card } from '../ui/Card'
+import { Badge } from '../ui/Badge'
 import { Separator } from '../ui/separator'
 import { ScrollArea } from '../ui/scroll-area'
 import { useNotes } from '../../contexts/NotesContext'
