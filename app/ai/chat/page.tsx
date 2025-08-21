@@ -212,14 +212,13 @@ export default function AIChatPage() {
               'Find notes about a specific topic',
               'Generate ideas for my project'
             ].map((suggestion) => (
-              <Badge
+              <button
                 key={suggestion}
-                variant="outline"
-                className="cursor-pointer hover:bg-muted"
+                className="inline-flex items-center px-2.5 py-1 text-xs font-medium bg-transparent text-neutral-700 border border-neutral-300 rounded cursor-pointer hover:bg-muted transition-colors"
                 onClick={() => setInput(suggestion)}
               >
                 {suggestion}
-              </Badge>
+              </button>
             ))}
           </div>
         </div>
