@@ -62,7 +62,7 @@ export default function RelationsPage() {
           </p>
         </div>
         <div className="flex gap-2">
-          <Button variant="outline" className="flex items-center gap-2">
+          <Button variant="secondary" className="flex items-center gap-2">
             <BarChart3 className="h-4 w-4" />
             Analytics
           </Button>
