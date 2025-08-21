@@ -1,12 +1,12 @@
 import { useState } from 'react';
 import { UserPlus, Mail, Send, Copy, Check } from 'lucide-react';
-import { Button } from '../ui/button';
+import { Button } from '../ui/Button';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '../ui/dialog';
 import { Input } from '../ui/input';
 import { Label } from '../ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
-import { Card, CardContent } from '../ui/card';
-import { Badge } from '../ui/badge';
+import { Card, CardContent } from '../ui/Card';
+import { Badge } from '../ui/Badge';
 import { toast } from 'sonner';
 
 interface InviteDialogProps {
