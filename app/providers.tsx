@@ -81,16 +81,9 @@ export function Providers({ children }: { children: React.ReactNode }) {
             </NotesProvider>
           </AuthProvider>
         </ThemeProvider>
-        <ReactQueryDevtools 
+        <ReactQueryDevtools
           initialIsOpen={false}
-          buttonPosition="bottom-left"
-          panelProps={{
-            style: {
-              background: 'var(--color-surface)',
-              color: 'var(--color-text)',
-              border: '1px solid var(--color-border)',
-            }
-          }}
+          position="bottom-left"
         />
       </QueryClientProvider>
     </ErrorBoundary>
