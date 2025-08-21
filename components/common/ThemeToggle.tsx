@@ -73,7 +73,7 @@ export function ThemeToggle() {
       <DropdownMenuTrigger asChild>
         <Button
           variant="ghost"
-          size="icon-sm"
+          size="sm"
           className={cn(
             "rounded-xl transition-modern relative overflow-hidden",
             "hover:bg-surface-hover hover:scale-110 hover:shadow-2",
