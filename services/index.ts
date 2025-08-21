@@ -31,6 +31,15 @@ export {
   exportService 
 } from './advanced.service'
 
+// Templates (new dedicated service)
+export { templatesService as newTemplatesService } from './templates.service'
+
+// Voice Notes (new mobile feature)  
+export { voiceNotesService } from './voice-notes.service'
+
+// Tags and Analytics (new comprehensive services)
+export { tagsService, analyticsService } from './tags-analytics.service'
+
 // Productivity & Notifications
 export { 
   notificationsService, 

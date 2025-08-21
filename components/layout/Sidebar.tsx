@@ -98,7 +98,7 @@ const navigation: NavigationItem[] = [
     icon: MicrophoneIcon,
     description: 'Mobile-specific features',
     children: [
-      { name: 'Voice Notes', href: '/mobile/voice-notes', icon: MicrophoneIcon },
+      { name: 'Voice Notes', href: '/voice-notes', icon: MicrophoneIcon },
       { name: 'Location Notes', href: '/mobile/location-notes', icon: MapPinIcon },
       { name: 'Sync', href: '/mobile/sync', icon: CloudArrowUpIcon },
     ]

@@ -80,10 +80,22 @@ class ApiClient {
 
     const token = this.tokenGetter?.();
     if (token) {
+      // Set both Authorization header (fallback) and X-Access-Token (iOS compatibility)
       headers.Authorization = `Bearer ${token}`;
+      headers['X-Access-Token'] = token;
+      // Add iOS-specific headers for better compatibility
+      headers['X-iOS-Fallback'] = 'true';
     }
 
     return headers;
+  }
+
+  private getRequestConfig(): RequestInit {
+    return {
+      credentials: 'include', // Essential for cookies to be sent cross-origin
+      // Additional options for iOS/Safari compatibility
+      mode: 'cors',
+    };
   }
 
   private async handleResponse<T>(response: Response, url: string): Promise<T> {
@@ -120,6 +132,7 @@ class ApiClient {
       method: 'GET',
       headers: this.buildHeaders(headers),
       signal,
+      ...this.getRequestConfig(),
     });
 
     return this.handleResponse<T>(response, url);
@@ -134,6 +147,7 @@ class ApiClient {
       headers: this.buildHeaders(headers),
       body: body instanceof FormData ? body : JSON.stringify(body),
       signal,
+      ...this.getRequestConfig(),
     });
 
     return this.handleResponse<T>(response, url);
@@ -148,6 +162,7 @@ class ApiClient {
       headers: this.buildHeaders(headers),
       body: body instanceof FormData ? body : JSON.stringify(body),
       signal,
+      ...this.getRequestConfig(),
     });
 
     return this.handleResponse<T>(response, url);
@@ -162,6 +177,7 @@ class ApiClient {
       headers: this.buildHeaders(headers),
       body: body instanceof FormData ? body : JSON.stringify(body),
       signal,
+      ...this.getRequestConfig(),
     });
 
     return this.handleResponse<T>(response, url);
@@ -175,6 +191,7 @@ class ApiClient {
       method: 'DELETE',
       headers: this.buildHeaders(headers),
       signal,
+      ...this.getRequestConfig(),
     });
 
     return this.handleResponse<T>(response, url);
@@ -183,5 +200,5 @@ class ApiClient {
 
 // Create singleton instance
 export const apiClient = new ApiClient(
-  process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:3001'
+  process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:3001/api'
 );

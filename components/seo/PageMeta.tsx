@@ -34,13 +34,13 @@ export function PageMeta({
 }: PageMetaProps) {
   const router = useRouter()
   const pathname = usePathname()
-  const currentUrl = `${process.env.NEXT_PUBLIC_APP_URL || 'https://localhost:5000'}${pathname || ''}`
+  const currentUrl = `${process.env.NEXT_PUBLIC_APP_URL || 'https://localhost:3000'}${pathname || ''}`
   
   const fullTitle = title 
     ? `${title} | AI Notes - Intelligent Note Taking Platform`
     : 'AI Notes - Intelligent Note Taking Platform'
   
-  const fullImage = image.startsWith('http') ? image : `${process.env.NEXT_PUBLIC_APP_URL || 'https://localhost:5000'}${image}`
+  const fullImage = image.startsWith('http') ? image : `${process.env.NEXT_PUBLIC_APP_URL || 'https://localhost:3000'}${image}`
   
   const allKeywords = [
     'AI notes',
@@ -70,7 +70,7 @@ export function PageMeta({
         name: 'AI Notes',
         logo: {
           '@type': 'ImageObject',
-          url: `${process.env.NEXT_PUBLIC_APP_URL || 'https://localhost:5000'}/icon-512.png`,
+          url: `${process.env.NEXT_PUBLIC_APP_URL || 'https://localhost:3000'}/icon-512.png`,
         },
       },
       datePublished: publishedTime,

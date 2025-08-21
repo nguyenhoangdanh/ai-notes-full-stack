@@ -31,7 +31,7 @@ export const authService = {
    */
   async googleLogin(): Promise<void> {
     // This will redirect to Google OAuth
-    window.location.href = `${process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:3001'}/auth/google`;
+    window.location.href = `${process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:3001/api'}/auth/google`;
   },
 
   /**
@@ -81,5 +81,12 @@ export const authService = {
    */
   async getUsage(days: number = 30): Promise<any> {
     return apiClient.get('/settings/usage', { query: { days: days.toString() } });
+  },
+
+  /**
+   * Logout user (clears server-side cookie)
+   */
+  async logout(): Promise<{ message: string }> {
+    return apiClient.post('/auth/logout');
   }
 };

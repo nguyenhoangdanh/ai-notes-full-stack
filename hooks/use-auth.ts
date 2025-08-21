@@ -170,12 +170,27 @@ export function useAuth() {
   // Logout mutation
   const logoutMutation = useMutation({
     mutationFn: async () => {
+      try {
+        // Call server logout endpoint to clear server-side cookie
+        await authService.logout()
+      } catch (error) {
+        // Continue with client-side cleanup even if server call fails
+        console.warn('Server logout failed, proceeding with client-side cleanup:', error)
+      }
+      // Clear client-side storage
       clearAuthToken()
       return Promise.resolve()
     },
     onSuccess: () => {
       queryClient.clear()
       toast.success('Logged out successfully')
+    },
+    onError: (error: any) => {
+      // Even if logout fails, clear client-side data
+      clearAuthToken()
+      queryClient.clear()
+      const message = error?.response?.message || 'Logout completed locally'
+      toast.success(message)
     },
   })
 
