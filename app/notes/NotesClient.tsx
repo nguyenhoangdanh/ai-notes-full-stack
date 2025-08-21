@@ -1,11 +1,17 @@
 'use client'
 
 import { useState } from 'react'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../../components/ui/card'
-import { Button } from '../../components/ui/button'
-import { Input } from '../../components/ui/input'
-import { Badge } from '../../components/ui/badge'
-import { Separator } from '../../components/ui/separator'
+import Link from 'next/link'
+
+// Import new UI components
+import { PageHeader } from '../../components/ui/PageHeader'
+import { Panel } from '../../components/ui/Panel'
+import { Button } from '../../components/ui/Button'
+import { Badge } from '../../components/ui/Badge'
+import { SearchInput } from '../../components/ui/SearchInput'
+import { EmptyState } from '../../components/ui/EmptyState'
+import { Toolbar, ToolbarSection } from '../../components/ui/Toolbar'
+
 import { 
   Plus, 
   Search, 
@@ -18,9 +24,9 @@ import {
   Sparkles,
   Clock,
   Star,
-  MoreHorizontal
+  MoreHorizontal,
+  ChevronRight
 } from 'lucide-react'
-import Link from 'next/link'
 
 export default function NotesClient() {
   const [searchQuery, setSearchQuery] = useState('')
@@ -61,202 +67,244 @@ export default function NotesClient() {
     }
   ]
 
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-background/98 to-primary/2 relative overflow-hidden">
-      {/* Superhuman background decorations */}
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--primary)_0%,_transparent_70%)] opacity-3" />
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_right,_var(--accent)_0%,_transparent_70%)] opacity-2" />
-      
-      <div className="container mx-auto px-4 sm:px-6 py-6 sm:py-8 space-y-6 sm:space-y-8 relative z-10">
-        {/* Superhuman Header */}
-        <div className="space-y-4">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-            <div className="space-y-2">
-              <div className="flex items-center gap-3">
-                <h1 className="text-3xl sm:text-4xl font-bold bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text text-transparent">
-                  Your Notes
-                </h1>
-                <Sparkles className="h-6 w-6 text-primary" />
-              </div>
-              <p className="text-muted-foreground text-lg leading-relaxed">
-                Manage and organize your notes with AI-powered features.
-              </p>
-            </div>
-            
-            <Link href="/notes/create">
-              <Button 
-                size="lg" 
-                className="gap-2 rounded-full superhuman-gradient superhuman-glow px-6 py-3"
-              >
-                <Plus className="h-5 w-5" />
-                Create Note
-              </Button>
-            </Link>
-          </div>
-          
-          {/* Search and Filters */}
-          <Card variant="glass" className="p-4 border-border/30">
-            <div className="flex flex-col lg:flex-row gap-4">
-              <div className="flex-1 relative">
-                <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                <Input
-                  placeholder="Search notes, tags, or content..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="pl-11 bg-background/50 border-border/30"
-                />
-              </div>
-              
-              <div className="flex items-center gap-2">
-                {/* View Mode Toggle */}
-                <div className="flex bg-muted/30 rounded-full p-1 border border-border/30">
-                  <Button
-                    variant={viewMode === 'grid' ? 'default' : 'ghost'}
-                    size="icon-sm"
-                    onClick={() => setViewMode('grid')}
-                    className="rounded-full"
-                  >
-                    <Grid3X3 className="h-4 w-4" />
-                  </Button>
-                  <Button
-                    variant={viewMode === 'list' ? 'default' : 'ghost'}
-                    size="icon-sm"
-                    onClick={() => setViewMode('list')}
-                    className="rounded-full"
-                  >
-                    <List className="h-4 w-4" />
-                  </Button>
-                </div>
-                
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="gap-2 superhuman-glass border-border/30 rounded-full"
-                >
-                  <Filter className="h-4 w-4" />
-                  Filter
-                </Button>
-              </div>
-            </div>
-          </Card>
-        </div>
+  const filteredNotes = notes.filter(note => {
+    if (searchQuery) {
+      return note.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+             note.content.toLowerCase().includes(searchQuery.toLowerCase()) ||
+             note.tags.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase()))
+    }
+    
+    switch (filterBy) {
+      case 'starred':
+        return note.starred
+      case 'recent':
+        return new Date(note.updatedAt) > new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)
+      default:
+        return true
+    }
+  })
 
+  return (
+    <div className="space-y-8">
+      {/* Page Header */}
+      <PageHeader
+        title="Notes"
+        subtitle="Manage your AI-powered notes"
+        description="Browse, search, and organize all your notes with intelligent features. Create, edit, and discover insights from your knowledge base."
+        icon={BookOpen}
+        badge={{ text: 'AI Enhanced', variant: 'ai' }}
+        actions={
+          <Link href="/notes/create">
+            <Button variant="cta" icon={Plus}>
+              New Note
+            </Button>
+          </Link>
+        }
+      />
+
+      {/* Search and Filters */}
+      <div className="space-y-4">
+        <SearchInput
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          placeholder="Search notes, tags, or content..."
+          size="lg"
+          variant="glass"
+        />
+        
         {/* Filter Tabs */}
         <div className="flex flex-wrap gap-2">
           {[
-            { key: 'all', label: 'All Notes' },
-            { key: 'recent', label: 'Recent' },
-            { key: 'starred', label: 'Starred' },
-            { key: 'shared', label: 'Shared' }
+            { key: 'all', label: 'All Notes', count: notes.length },
+            { key: 'recent', label: 'Recent', count: notes.filter(n => new Date(n.updatedAt) > new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)).length },
+            { key: 'starred', label: 'Starred', count: notes.filter(n => n.starred).length },
+            { key: 'shared', label: 'Shared', count: 0 }
           ].map((filter) => (
             <Button
               key={filter.key}
-              variant={filterBy === filter.key ? 'default' : 'outline'}
+              variant={filterBy === filter.key ? 'primary' : 'secondary'}
               size="sm"
               onClick={() => setFilterBy(filter.key as any)}
-              className="rounded-full superhuman-transition"
+              className="gap-2"
             >
               {filter.label}
+              <Badge variant="default" size="sm">{filter.count}</Badge>
             </Button>
           ))}
         </div>
+      </div>
 
-        {/* Notes Grid/List */}
-        {notes.length > 0 ? (
-          <div className={`grid gap-4 ${
+      {/* Notes Panel */}
+      <Panel
+        title="Your Notes"
+        subtitle={`${filteredNotes.length} notes`}
+        icon={BookOpen}
+        toolbar={
+          <Toolbar size="sm" justify="end">
+            <ToolbarSection>
+              {/* View Mode Toggle */}
+              <div className="flex bg-bg-elev-1 rounded-lg p-1 border border-border-soft">
+                <Button
+                  variant={viewMode === 'grid' ? 'primary' : 'ghost'}
+                  size="sm"
+                  icon={Grid3X3}
+                  onClick={() => setViewMode('grid')}
+                  className="rounded-md"
+                  aria-label="Grid view"
+                />
+                <Button
+                  variant={viewMode === 'list' ? 'primary' : 'ghost'}
+                  size="sm"
+                  icon={List}
+                  onClick={() => setViewMode('list')}
+                  className="rounded-md"
+                  aria-label="List view"
+                />
+              </div>
+            </ToolbarSection>
+            
+            <ToolbarSection>
+              <Button variant="secondary" size="sm" icon={Filter}>
+                Filter
+              </Button>
+            </ToolbarSection>
+
+            <ToolbarSection>
+              <Link href="/notes/create">
+                <Button variant="cta" size="sm" icon={Plus}>
+                  New Note
+                </Button>
+              </Link>
+            </ToolbarSection>
+          </Toolbar>
+        }
+      >
+        {/* Notes Content */}
+        {filteredNotes.length > 0 ? (
+          <div className={`${
             viewMode === 'grid' 
-              ? 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3' 
-              : 'grid-cols-1'
+              ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6' 
+              : 'space-y-4'
           }`}>
-            {notes.map((note, index) => (
-              <Card 
-                key={note.id} 
-                variant="glass"
-                className="group cursor-pointer superhuman-hover border-border/30 animate-superhuman-fade-in"
+            {filteredNotes.map((note, index) => (
+              <div
+                key={note.id}
+                className={`panel p-4 hover-lift transition-modern cursor-pointer group animate-fade-in ${
+                  viewMode === 'list' ? 'flex items-center gap-4' : 'space-y-4'
+                }`}
                 style={{ animationDelay: `${index * 100}ms` }}
+                onClick={() => window.location.href = `/notes/${note.id}`}
               >
-                <CardHeader className="pb-3">
+                {/* Note Icon */}
+                <div className={`${viewMode === 'list' ? 'w-12 h-12' : 'w-10 h-10'} rounded-lg bg-primary-600/10 flex items-center justify-center flex-shrink-0`}>
+                  <BookOpen className={`${viewMode === 'list' ? 'w-6 h-6' : 'w-5 h-5'} text-primary-600`} />
+                </div>
+                
+                {/* Note Content */}
+                <div className={`${viewMode === 'list' ? 'flex-1 min-w-0' : 'space-y-3'}`}>
                   <div className="flex items-start justify-between gap-3">
                     <div className="flex-1 min-w-0">
-                      <CardTitle className="text-lg font-semibold truncate group-hover:text-primary superhuman-transition">
-                        {note.title}
-                      </CardTitle>
-                      <CardDescription className="text-sm mt-1 line-clamp-2">
-                        {note.content}
-                      </CardDescription>
-                    </div>
-                    <div className="flex items-center gap-1 flex-shrink-0">
-                      {note.starred && (
-                        <Star className="h-4 w-4 text-amber-500 fill-amber-500" />
-                      )}
-                      <Button variant="ghost" size="icon-sm" className="opacity-0 group-hover:opacity-100 superhuman-transition rounded-full">
-                        <MoreHorizontal className="h-4 w-4" />
-                      </Button>
-                    </div>
-                  </div>
-                </CardHeader>
-                
-                <CardContent className="pt-0">
-                  <div className="space-y-3">
-                    {/* Tags */}
-                    {note.tags.length > 0 && (
-                      <div className="flex flex-wrap gap-1">
-                        {note.tags.slice(0, 3).map((tag) => (
-                          <Badge key={tag} variant="outline" className="text-xs rounded-full">
-                            {tag}
-                          </Badge>
-                        ))}
-                        {note.tags.length > 3 && (
-                          <Badge variant="outline" className="text-xs rounded-full">
-                            +{note.tags.length - 3}
-                          </Badge>
+                      <div className="flex items-center gap-2 mb-1">
+                        <h3 className="font-semibold text-text group-hover:text-primary-600 transition-colors truncate">
+                          {note.title}
+                        </h3>
+                        {note.starred && (
+                          <Star className="w-4 h-4 text-warning fill-warning flex-shrink-0" />
                         )}
                       </div>
-                    )}
+                      <p className="text-sm text-text-muted line-clamp-2">
+                        {note.content}
+                      </p>
+                    </div>
                     
-                    <Separator className="opacity-50" />
-                    
-                    {/* Meta info */}
-                    <div className="flex items-center justify-between text-xs text-muted-foreground">
-                      <div className="flex items-center gap-4">
-                        <div className="flex items-center gap-1">
-                          <Calendar className="h-3 w-3" />
-                          <span>{new Date(note.updatedAt).toLocaleDateString()}</span>
-                        </div>
-                        <div className="flex items-center gap-1">
-                          <Tag className="h-3 w-3" />
-                          <span className="capitalize">{note.category}</span>
-                        </div>
-                      </div>
-                      <div className="flex items-center gap-1">
-                        <Clock className="h-3 w-3" />
-                        <span>2 min read</span>
-                      </div>
+                    <div className="flex items-center gap-1 flex-shrink-0">
+                      <Button 
+                        variant="ghost" 
+                        size="sm" 
+                        icon={MoreHorizontal}
+                        className="opacity-0 group-hover:opacity-100 transition-opacity"
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          // Show context menu
+                        }}
+                      />
+                      <ChevronRight className="w-4 h-4 text-text-subtle" />
                     </div>
                   </div>
-                </CardContent>
-              </Card>
+                  
+                  {/* Tags */}
+                  {note.tags.length > 0 && (
+                    <div className="flex flex-wrap gap-1">
+                      {note.tags.slice(0, 3).map((tag) => (
+                        <Badge key={tag} variant="default" size="sm">
+                          {tag}
+                        </Badge>
+                      ))}
+                      {note.tags.length > 3 && (
+                        <Badge variant="default" size="sm">
+                          +{note.tags.length - 3}
+                        </Badge>
+                      )}
+                    </div>
+                  )}
+                  
+                  {/* Meta info */}
+                  <div className="flex items-center justify-between text-xs text-text-subtle">
+                    <div className="flex items-center gap-4">
+                      <div className="flex items-center gap-1">
+                        <Calendar className="w-3 h-3" />
+                        <span>{new Date(note.updatedAt).toLocaleDateString()}</span>
+                      </div>
+                      <div className="flex items-center gap-1">
+                        <Tag className="w-3 h-3" />
+                        <span className="capitalize">{note.category}</span>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <Clock className="w-3 h-3" />
+                      <span>2 min read</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
             ))}
           </div>
         ) : (
-          <Card variant="glass" className="p-12 text-center border-border/30">
-            <BookOpen className="h-16 w-16 mx-auto text-muted-foreground/50 mb-6" />
-            <h3 className="text-xl font-semibold mb-3">No notes found</h3>
-            <p className="text-muted-foreground mb-6 max-w-md mx-auto">
-              {searchQuery 
-                ? "No notes match your search criteria. Try adjusting your search terms." 
-                : "Start creating notes to see them here. Your ideas and thoughts deserve a smart home."
+          <div className="py-8">
+            <EmptyState
+              icon={searchQuery ? Search : BookOpen}
+              title={searchQuery ? "No notes found" : "No notes yet"}
+              description={
+                searchQuery 
+                  ? "No notes match your search criteria. Try adjusting your search terms or create a new note with this content."
+                  : "Start creating notes to see them here. Your ideas and thoughts deserve a smart, organized home."
               }
-            </p>
-            <Link href="/notes/create">
-              <Button className="gap-2 rounded-full superhuman-gradient">
-                <Plus className="h-4 w-4" />
-                Create Your First Note
-              </Button>
-            </Link>
-          </Card>
+              action={{
+                label: searchQuery ? "Create Note" : "Create Your First Note",
+                onClick: () => window.location.href = '/notes/create',
+                icon: Plus,
+                variant: "primary"
+              }}
+              secondaryAction={
+                searchQuery ? {
+                  label: "Clear Search",
+                  onClick: () => setSearchQuery(''),
+                  icon: Search
+                } : undefined
+              }
+            />
+          </div>
         )}
-      </div>
+        
+        {/* Pagination or Load More */}
+        {filteredNotes.length > 0 && (
+          <div className="pt-6 text-center">
+            <Button variant="ghost" size="sm">
+              Load More Notes
+            </Button>
+          </div>
+        )}
+      </Panel>
     </div>
   )
 }
