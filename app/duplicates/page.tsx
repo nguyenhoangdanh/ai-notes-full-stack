@@ -83,7 +83,7 @@ export default function DuplicatesPage() {
         </div>
         <div className="flex gap-2">
           <Button 
-            variant="outline"
+            variant="secondary"
             onClick={handleStartDetection}
             disabled={queueDetection.isPending}
             className="flex items-center gap-2 superhuman-hover superhuman-glow border-primary/20 hover:border-primary/40 hover:bg-primary/5"
