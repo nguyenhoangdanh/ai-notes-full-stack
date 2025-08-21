@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useTheme } from 'next-themes'
 import { Sun, Moon, Monitor, Palette, Check } from 'lucide-react'
-import { Button } from '../ui/button'
+import { Button } from '../ui/Button'
 import { QuickTooltip } from '../ui/tooltip'
 import {
   DropdownMenu,
@@ -57,7 +57,7 @@ export function ThemeToggle() {
     return (
       <Button
         variant="ghost"
-        size="icon-sm"
+        size="sm"
         className="rounded-xl opacity-50"
         disabled
       >
@@ -73,7 +73,7 @@ export function ThemeToggle() {
       <DropdownMenuTrigger asChild>
         <Button
           variant="ghost"
-          size="icon-sm"
+          size="sm"
           className={cn(
             "rounded-xl transition-modern relative overflow-hidden",
             "hover:bg-surface-hover hover:scale-110 hover:shadow-2",
@@ -213,7 +213,7 @@ export function SimpleThemeToggle() {
 
   if (!mounted) {
     return (
-      <Button variant="ghost" size="icon-sm" className="rounded-full opacity-50" disabled>
+      <Button variant="ghost" size="sm" className="rounded-full opacity-50" disabled>
         <Sun className="h-4 w-4" />
       </Button>
     )
@@ -236,7 +236,7 @@ export function SimpleThemeToggle() {
     >
       <Button
         variant="ghost"
-        size="icon-sm"
+        size="sm"
         onClick={toggleTheme}
         className={cn(
           "rounded-full transition-modern relative overflow-hidden",

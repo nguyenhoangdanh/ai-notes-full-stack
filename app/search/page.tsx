@@ -107,50 +107,55 @@ function SearchContent() {
       >
         <div className="space-y-6">
           {/* Search Input */}
-          <SearchInput
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
-            placeholder={useAI ? "Try: 'notes about project planning' or 'meeting notes from last week'" : "Search everything..."}
-            size="lg"
-            variant="glass"
-            loading={isLoading}
-            actionButton={
-              <Button
-                onClick={handleSearch}
-                disabled={!query.trim() || isLoading}
-                variant="primary"
-                icon={useAI ? Sparkles : Search}
-              >
-                {isLoading ? 'Searching...' : 'Search'}
-              </Button>
-            }
-          />
+          <div className="flex gap-3">
+            <SearchInput
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
+              placeholder={useAI ? "Try: 'notes about project planning' or 'meeting notes from last week'" : "Search everything..."}
+              size="lg"
+              variant="glass"
+              loading={isLoading}
+              className="flex-1"
+            />
+            <Button
+              onClick={handleSearch}
+              disabled={!query.trim() || isLoading}
+              variant="primary"
+              icon={useAI ? Sparkles : Search}
+              size="lg"
+            >
+              {isLoading ? 'Searching...' : 'Search'}
+            </Button>
+          </div>
 
           {/* Search Type Filters */}
           <div className="flex items-center gap-2 flex-wrap">
             <span className="text-sm font-medium text-text-muted">Search in:</span>
-            <Badge
-              variant={searchType === 'all' ? 'primary' : 'default'}
-              className="cursor-pointer"
+            <button
+              className="focus-ring rounded-lg"
               onClick={() => setSearchType('all')}
             >
-              All
-            </Badge>
-            <Badge
-              variant={searchType === 'notes' ? 'primary' : 'default'}
-              className="cursor-pointer"
+              <Badge variant={searchType === 'all' ? 'ai' : 'default'}>
+                All
+              </Badge>
+            </button>
+            <button
+              className="focus-ring rounded-lg"
               onClick={() => setSearchType('notes')}
             >
-              Notes
-            </Badge>
-            <Badge
-              variant={searchType === 'workspaces' ? 'primary' : 'default'}
-              className="cursor-pointer"
+              <Badge variant={searchType === 'notes' ? 'ai' : 'default'}>
+                Notes
+              </Badge>
+            </button>
+            <button
+              className="focus-ring rounded-lg"
               onClick={() => setSearchType('workspaces')}
             >
-              Workspaces
-            </Badge>
+              <Badge variant={searchType === 'workspaces' ? 'ai' : 'default'}>
+                Workspaces
+              </Badge>
+            </button>
           </div>
         </div>
       </Panel>
@@ -210,7 +215,7 @@ function SearchContent() {
                         <h3 className="font-semibold text-text hover:text-primary-600 transition-colors">
                           {result.title}
                         </h3>
-                        <Badge variant={result.type === 'note' ? 'primary' : 'success'} size="sm">
+                        <Badge variant={result.type === 'note' ? 'ai' : 'success'} size="sm">
                           {result.type}
                         </Badge>
                         <div className="flex items-center gap-1 text-xs text-text-subtle">

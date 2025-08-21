@@ -2,8 +2,8 @@
 
 import { Bell } from "lucide-react"
 import { useState } from 'react'
-import { Button } from '../ui/button'
-import { Badge } from '../ui/badge'
+import { Button } from '../ui/Button'
+import { Badge } from '../ui/Badge'
 import {
   Popover,
   PopoverContent,

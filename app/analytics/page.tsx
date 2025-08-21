@@ -9,13 +9,13 @@ import { Badge } from '../../components/ui/Badge'
 import { EmptyState } from '../../components/ui/EmptyState'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../../components/ui/tabs'
 
-import { 
-  BarChart3, 
-  TrendingUp, 
-  Users, 
-  FileText, 
-  FolderOpen, 
-  Tags, 
+import {
+  BarChart3,
+  TrendingUp,
+  Users,
+  FileText,
+  FolderOpen,
+  Tags,
   MessageSquare,
   HardDrive,
   Activity,
@@ -23,7 +23,8 @@ import {
   Brain,
   Zap,
   Clock,
-  Star
+  Star,
+  Lightbulb
 } from 'lucide-react'
 
 export default function AnalyticsPage() {
