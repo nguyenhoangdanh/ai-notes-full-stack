@@ -45,7 +45,7 @@ const categorySchema = z.object({
   isAuto: z.boolean().default(false)
 })
 
-type CategoryFormData = z.infer<typeof categorySchema>
+export type CategoryFormData = z.infer<typeof categorySchema>
 
 interface CategoryFormProps {
   initialData?: Partial<CategoryFormData>
