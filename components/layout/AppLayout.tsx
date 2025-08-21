@@ -144,7 +144,7 @@ export function AppLayout({ children }: AppLayoutProps) {
       {/* Mobile overlay with improved backdrop */}
       {isMobile && sidebarOpen && (
         <div
-          className="fixed inset-0 z-40 bg-bg-overlay backdrop-blur-xl lg:hidden animate-fade-in"
+          className="fixed inset-0 z-40 glass-bg backdrop-blur-xl lg:hidden animate-fade-in"
           onClick={() => setSidebarOpen(false)}
           aria-hidden="true"
         />
