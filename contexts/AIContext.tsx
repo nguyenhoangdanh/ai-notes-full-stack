@@ -9,7 +9,7 @@ interface AIContextType {
   isSearching: boolean
   semanticSearch: (params: SemanticSearchDto) => Promise<SemanticSearchResult[]>
   clearSearchResults: () => void
-  
+
   // Chat/Conversation Management
   activeConversation: AIConversation | null
   conversations: AIConversation[]
@@ -18,6 +18,9 @@ interface AIContextType {
   deleteConversation: (conversationId: string) => void
   isProcessing: boolean
   startNewChat: () => void
+
+  // AI Assistant
+  askAI: (prompt: string, context?: string[]) => Promise<string>
 }
 
 const AIContext = createContext<AIContextType | null>(null)
