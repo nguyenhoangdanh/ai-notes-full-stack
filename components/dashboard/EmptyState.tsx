@@ -93,9 +93,9 @@ export function EmptyState({
         icon: <Plus className="h-4 w-4" />
       },
       tips: [
-        { icon: BookOpen, text: 'Workspaces keep your projects organized' },
-        { icon: Users, text: 'Invite team members to collaborate' },
-        { icon: FileText, text: 'Create templates for consistent notes' }
+        { icon: BookOpen, text: 'Workspaces keep your projects organized', highlight: false },
+        { icon: Users, text: 'Invite team members to collaborate', highlight: false },
+        { icon: FileText, text: 'Create templates for consistent notes', highlight: false }
       ]
     },
     search: {
