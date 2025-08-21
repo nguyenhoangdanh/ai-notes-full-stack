@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Button } from '../ui/Button'
-import { Card } from '../ui/card'
+import { Card } from '../ui/Card'
 import { Badge } from '../ui/badge'
 import { Input } from '../ui/input'
 import { 
