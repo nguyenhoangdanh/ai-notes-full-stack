@@ -151,16 +151,16 @@ export default function TemplateDetailPage() {
               >
                 <StarIcon className="h-4 w-4" />
               </Button>
-              <Button variant="ghost" size="icon" onClick={handleShare}>
+              <Button variant="ghost" size="icon-sm" onClick={handleShare}>
                 <ShareIcon className="h-4 w-4" />
               </Button>
-              <Button variant="ghost" size="icon" onClick={handleDuplicate}>
+              <Button variant="ghost" size="icon-sm" onClick={handleDuplicate}>
                 <DocumentDuplicateIcon className="h-4 w-4" />
               </Button>
               {/* Always show edit/delete for now since we don't have proper owner check */}
               {(
                 <>
-                  <Button variant="ghost" size="icon" onClick={handleEdit}>
+                  <Button variant="ghost" size="icon-sm" onClick={handleEdit}>
                     <PencilIcon className="h-4 w-4" />
                   </Button>
                   <Button 
