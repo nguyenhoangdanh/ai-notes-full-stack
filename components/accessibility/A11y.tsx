@@ -20,9 +20,9 @@ import {
   Zap,
   Shield
 } from 'lucide-react'
-import { Button } from '../ui/button'
-import { Card } from '../ui/card'
-import { Badge } from '../ui/badge'
+import { Button } from '../ui/Button'
+import { Card } from '../ui/Card'
+import { Badge } from '../ui/Badge'
 import { Separator } from '../ui/separator'
 import { cn } from '../../lib/utils'
 
