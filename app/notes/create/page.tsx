@@ -175,15 +175,14 @@ export default function CreateNotePage() {
                     <div className="space-y-3">
                       <div className="flex flex-wrap gap-2 min-h-[32px]">
                         {tags.map((tag) => (
-                          <Badge 
-                            key={tag} 
-                            variant="secondary" 
-                            className="cursor-pointer hover:bg-destructive/10 hover:text-destructive transition-colors px-3 py-1"
+                          <button
+                            key={tag}
+                            className="inline-flex items-center px-2.5 py-1 text-xs font-medium bg-neutral-100 text-neutral-700 border border-neutral-200 rounded cursor-pointer hover:bg-destructive/10 hover:text-destructive transition-colors px-3 py-1"
                             onClick={(e) => { e.preventDefault(); handleRemoveTag(tag); }}
                           >
-                            #{tag} 
+                            #{tag}
                             <span className="ml-1 text-xs opacity-70">×</span>
-                          </Badge>
+                          </button>
                         ))}
                       </div>
                       <Input
