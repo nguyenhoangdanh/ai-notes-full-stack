@@ -129,17 +129,17 @@ export function AppLayout({ children }: AppLayoutProps) {
       role="application" 
       aria-label="AI Notes Application"
     >
-      {/* Enhanced modern background layers */}
-      <div className="absolute inset-0 bg-gradient-to-br from-bg via-bg-elevated to-bg" />
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_left,_var(--color-brand-50)_0%,_transparent_50%)] opacity-50" />
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_right,_var(--color-brand-100)_0%,_transparent_50%)] opacity-30" />
-      
+      {/* Enhanced modern background layers with new tokens */}
+      <div className="absolute inset-0 bg-gradient-to-br from-bg via-bg-elev-1 to-bg-elev-2" />
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_left,_var(--primary-600)_0%,_transparent_60%)] opacity-20" />
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_right,_var(--purple)_0%,_transparent_60%)] opacity-15" />
+
       {/* Modern grid pattern */}
-      <div className="absolute inset-0 bg-grid-white/[0.01] bg-[size:60px_60px]" />
-      
+      <div className={"absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg width=\"60\" height=\"60\" viewBox=\"0 0 60 60\" xmlns=\"http://www.w3.org/2000/svg\"%3E%3Cg fill=\"none\" fill-rule=\"evenodd\"%3E%3Cg fill=\"%23ffffff\" fill-opacity=\"0.015\"%3E%3Ccircle cx=\"30\" cy=\"30\" r=\"1\"/%3E%3C/g%3E%3C/g%3E%3C/svg%3E')] bg-[size:60px_60px]"} />
+
       {/* Subtle animated elements for visual interest */}
-      <div className="absolute top-1/3 right-1/3 w-48 h-48 bg-brand-50/50 rounded-full blur-3xl animate-pulse opacity-50" />
-      <div className="absolute bottom-1/3 left-1/3 w-64 h-64 bg-brand-100/30 rounded-full blur-3xl animate-pulse delay-1000 opacity-50" />
+      <div className="absolute top-1/3 right-1/3 w-48 h-48 bg-primary-600/10 rounded-full blur-3xl animate-float-subtle opacity-50" />
+      <div className="absolute bottom-1/3 left-1/3 w-64 h-64 bg-purple/10 rounded-full blur-3xl animate-float opacity-30" />
 
       {/* Mobile overlay with improved backdrop */}
       {isMobile && sidebarOpen && (
