@@ -450,7 +450,7 @@ export function A11y() {
                       
                       <div className="space-y-3">
                         {issues.map((issue) => (
-                          <Card key={issue.id} variant="outline" className="p-4">
+                          <Card key={issue.id} variant="outlined" className="p-4">
                             <div className="flex items-start gap-3">
                               <div className={cn(
                                 "p-1.5 rounded-lg",
@@ -649,4 +649,149 @@ export function restoreFocus(previousElement?: HTMLElement) {
       mainContent.focus()
     }
   }
+}
+
+// Additional exports for components index
+export function SkipLinks() {
+  return (
+    <a
+      href="#main-content"
+      className={cn(
+        "sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 z-50",
+        "bg-brand-600 text-white px-4 py-2 rounded-lg font-medium",
+        "focus:outline-none focus:ring-2 focus:ring-brand-200"
+      )}
+    >
+      Skip to main content
+    </a>
+  )
+}
+
+export function ScreenReaderOnly({ children }: { children: React.ReactNode }) {
+  return <span className="sr-only">{children}</span>
+}
+
+export function FocusTrap({ children, enabled = true }: { children: React.ReactNode; enabled?: boolean }) {
+  const containerRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    if (!enabled || !containerRef.current) return
+
+    const cleanup = trapFocus(containerRef.current)
+    return cleanup
+  }, [enabled])
+
+  return <div ref={containerRef}>{children}</div>
+}
+
+export function LiveRegion({ children, level = 'polite' }: { children: React.ReactNode; level?: 'polite' | 'assertive' }) {
+  return (
+    <div
+      aria-live={level}
+      aria-atomic="true"
+      className="sr-only"
+    >
+      {children}
+    </div>
+  )
+}
+
+export function LoadingIndicator({ label = 'Loading...' }: { label?: string }) {
+  return (
+    <div className="flex items-center gap-2" role="status" aria-label={label}>
+      <div className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
+      <span className="sr-only">{label}</span>
+    </div>
+  )
+}
+
+export function AccessibleError({ children }: { children: React.ReactNode }) {
+  return (
+    <div role="alert" className="text-danger">
+      {children}
+    </div>
+  )
+}
+
+// Keyboard helpers
+export const keyboardHelpers = {
+  isEnterOrSpace: (event: KeyboardEvent) => event.key === 'Enter' || event.key === ' ',
+  handleEnterOrSpace: (event: KeyboardEvent, callback: () => void) => {
+    if (keyboardHelpers.isEnterOrSpace(event)) {
+      event.preventDefault()
+      callback()
+    }
+  }
+}
+
+// Custom hooks
+export function useHighContrastMode() {
+  const [highContrast, setHighContrast] = useState(false)
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia('(prefers-contrast: high)')
+    setHighContrast(mediaQuery.matches)
+
+    const listener = (e: MediaQueryListEvent) => setHighContrast(e.matches)
+    mediaQuery.addEventListener('change', listener)
+    return () => mediaQuery.removeEventListener('change', listener)
+  }, [])
+
+  return highContrast
+}
+
+export function useReducedMotion() {
+  const [reducedMotion, setReducedMotion] = useState(false)
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)')
+    setReducedMotion(mediaQuery.matches)
+
+    const listener = (e: MediaQueryListEvent) => setReducedMotion(e.matches)
+    mediaQuery.addEventListener('change', listener)
+    return () => mediaQuery.removeEventListener('change', listener)
+  }, [])
+
+  return reducedMotion
+}
+
+export function useAnnounce() {
+  return useCallback((message: string, priority: 'polite' | 'assertive' = 'polite') => {
+    announceToScreenReader(message, priority)
+  }, [])
+}
+
+export function useRovingTabindex(items: HTMLElement[]) {
+  const [currentIndex, setCurrentIndex] = useState(0)
+
+  useEffect(() => {
+    items.forEach((item, index) => {
+      item.tabIndex = index === currentIndex ? 0 : -1
+    })
+  }, [items, currentIndex])
+
+  const handleKeyDown = useCallback((event: KeyboardEvent) => {
+    switch (event.key) {
+      case 'ArrowDown':
+      case 'ArrowRight':
+        event.preventDefault()
+        setCurrentIndex((prev) => (prev + 1) % items.length)
+        break
+      case 'ArrowUp':
+      case 'ArrowLeft':
+        event.preventDefault()
+        setCurrentIndex((prev) => (prev - 1 + items.length) % items.length)
+        break
+      case 'Home':
+        event.preventDefault()
+        setCurrentIndex(0)
+        break
+      case 'End':
+        event.preventDefault()
+        setCurrentIndex(items.length - 1)
+        break
+    }
+  }, [items])
+
+  return { currentIndex, handleKeyDown }
 }
