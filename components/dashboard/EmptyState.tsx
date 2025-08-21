@@ -32,13 +32,13 @@ interface EmptyStateProps {
   description?: string
   action?: {
     label: string
-    onClick: () => void
+    onClick?: () => void
     variant?: 'default' | 'outline' | 'gradient'
     icon?: React.ReactNode
   }
   secondaryAction?: {
     label: string
-    onClick: () => void
+    onClick?: () => void
     icon?: React.ReactNode
   }
   showTips?: boolean
