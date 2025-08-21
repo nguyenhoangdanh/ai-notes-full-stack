@@ -190,7 +190,7 @@ export function AppLayout({ children }: AppLayoutProps) {
           id="main-content"
           className={cn(
             "flex-1 overflow-auto focus:outline-none relative",
-            "bg-bg-muted/20",
+            "bg-bg-elev-1/30",
             "safe-area-inset safe-area-inset-bottom"
           )}
           role="main"
