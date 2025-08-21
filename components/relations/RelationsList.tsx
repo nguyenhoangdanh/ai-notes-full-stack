@@ -1,6 +1,6 @@
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { Badge } from '@/components/ui/badge'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card'
+import { Button } from '@/components/ui/Button'
+import { Badge } from '@/components/ui/Badge'
 import { List, Eye, Link2, Trash2, Plus } from 'lucide-react'
 import { useStoredRelations, useRelatedNotes, useSaveRelation, useDeleteRelation } from '@/hooks'
 
