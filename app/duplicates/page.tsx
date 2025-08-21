@@ -2,10 +2,10 @@
 
 import { useState } from 'react'
 import { Copy, Search, Zap, AlertTriangle, Merge, BarChart3 } from 'lucide-react'
-import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Button } from '@/components/ui/Button'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { Badge } from '@/components/ui/badge'
+import { Badge } from '@/components/ui/Badge'
 
 import { DuplicateStatsCard } from '@/components/duplicates/DuplicateStatsCard'
 import { DuplicateGroupCard } from '@/components/duplicates/DuplicateGroupCard'
