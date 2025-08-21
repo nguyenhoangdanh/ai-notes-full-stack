@@ -6,7 +6,7 @@ import { cn } from '../../lib/utils'
 
 interface CardProps extends HTMLAttributes<HTMLDivElement> {
   children: ReactNode
-  variant?: 'default' | 'glass' | 'elevated'
+  variant?: 'default' | 'glass' | 'elevated' | 'outlined'
   interactive?: boolean
   loading?: boolean
 }
@@ -22,7 +22,8 @@ export function Card({
   const variants = {
     default: 'card-modern',
     glass: 'glass border border-glass-border shadow-2',
-    elevated: 'panel shadow-3 hover:shadow-4'
+    elevated: 'panel shadow-3 hover:shadow-4',
+    outlined: 'border border-border-soft bg-bg rounded-lg'
   }
   
   return (
