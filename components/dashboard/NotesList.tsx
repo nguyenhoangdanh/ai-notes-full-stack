@@ -1,7 +1,7 @@
 import { useNotes, Note } from '../../contexts/NotesContext'
 import { Card, CardContent } from '../ui/card'
 import { Badge } from '../ui/badge'
-import { Button } from '../ui/button'
+import { Button } from '../ui/Button'
 import { Separator } from '../ui/separator'
 import { 
   Calendar, 
