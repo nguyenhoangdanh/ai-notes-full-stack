@@ -3,9 +3,9 @@ import { useNotes } from '../../contexts/NotesContext'
 import { SearchBar } from './SearchBar'
 import { UserMenu } from '../header/UserMenu'
 import { ThemeToggle } from '../common/ThemeToggle'
-import { Button } from '../ui/button'
+import { Button } from '../ui/Button'
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar'
-import { Badge } from '../ui/badge'
+import { Badge } from '../ui/Badge'
 import { Separator } from '../ui/separator'
 import {
   Brain,
