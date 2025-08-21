@@ -130,7 +130,7 @@ export default function RootLayout({
         />
         <link rel="dns-prefetch" href="//api.ainotes.app" />
       </head>
-      <body className="h-full font-sans antialiased bg-background text-foreground overflow-x-hidden">
+      <body className="h-full font-sans antialiased bg-bg text-text overflow-x-hidden">
         <SkipLinks />
         <div id="root" className="h-full">
           <div id="spark-app" className="h-full">
