@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Button } from '../ui/button'
+import { Button } from '../ui/Button'
 import { Card } from '../ui/card'
 import { Badge, StatusBadge } from '../ui/badge'
 import { QuickTooltip } from '../ui/tooltip'
