@@ -79,7 +79,7 @@ export function DashboardOverview() {
     }
   ]
 
-  const colorClasses = {
+  const colorClasses: Record<string, { bg: string; text: string; gradient: string }> = {
     brand: {
       bg: 'bg-brand-100',
       text: 'text-brand-600',
@@ -91,7 +91,7 @@ export function DashboardOverview() {
       gradient: 'from-success to-emerald-600'
     },
     info: {
-      bg: 'bg-info-bg', 
+      bg: 'bg-info-bg',
       text: 'text-info',
       gradient: 'from-info to-blue-600'
     },
