@@ -101,18 +101,17 @@ export function AppLayout({ children }: AppLayoutProps) {
   if (!user) {
     return (
       <div className="min-h-screen bg-bg relative overflow-hidden">
-        {/* Enhanced modern auth background */}
-        <div className="absolute inset-0 bg-gradient-to-br from-bg via-bg-elevated to-brand-50" />
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--color-brand-100)_0%,_transparent_70%)] opacity-30" />
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_right,_var(--color-brand-200)_0%,_transparent_70%)] opacity-20" />
-        
+        {/* Enhanced modern auth background with new tokens */}
+        <div className="absolute inset-0 bg-gradient-to-br from-bg via-bg-elev-1 to-bg-elev-2" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--primary-600)_0%,_transparent_50%)] opacity-20" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_right,_var(--purple)_0%,_transparent_60%)] opacity-15" />
+
         {/* Modern geometric patterns */}
-        <div className="absolute inset-0 bg-grid-white/[0.02] bg-[size:50px_50px]" />
-        <div className="absolute inset-0 bg-gradient-to-t from-bg via-transparent to-transparent" />
-        
+        <div className={"absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg width=\"60\" height=\"60\" viewBox=\"0 0 60 60\" xmlns=\"http://www.w3.org/2000/svg\"%3E%3Cg fill=\"none\" fill-rule=\"evenodd\"%3E%3Cg fill=\"%23ffffff\" fill-opacity=\"0.02\"%3E%3Ccircle cx=\"30\" cy=\"30\" r=\"1\"/%3E%3C/g%3E%3C/g%3E%3C/svg%3E')] bg-[size:60px_60px]"} />
+
         {/* Floating geometric shapes for modern appeal */}
-        <div className="absolute top-1/4 left-1/4 w-64 h-64 bg-brand-100/30 rounded-full blur-3xl animate-pulse" />
-        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-brand-200/20 rounded-full blur-3xl animate-pulse delay-700" />
+        <div className="absolute top-1/4 left-1/4 w-64 h-64 bg-primary-600/10 rounded-full blur-3xl animate-float-subtle" />
+        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-purple/10 rounded-full blur-3xl animate-float" />
         
         <div className="relative z-10">
           {children}
