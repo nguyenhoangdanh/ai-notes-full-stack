@@ -25,11 +25,11 @@ function AuthProvider({ children }: { children: React.ReactNode }) {
   // Check for existing token on mount
   useEffect(() => {
     const token = getAuthToken()
-    if (token && !auth.user) {
+    if (token && !auth.user && !auth.isLoading) {
       // Verify the token
       auth.verifyToken()
     }
-  }, [])
+  }, [auth.user, auth.isLoading]) // Added dependencies to trigger when auth state changes
 
   // Handle OAuth callback
   useEffect(() => {
@@ -38,7 +38,7 @@ function AuthProvider({ children }: { children: React.ReactNode }) {
 
     const urlParams = new URLSearchParams(window.location.search)
     const token = urlParams.get('token')
-    
+
     if (token) {
       setAuthToken(token)
       auth.verifyToken()
