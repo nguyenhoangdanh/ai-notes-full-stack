@@ -60,8 +60,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
           storageKey="ai-notes-theme"
         >
           <AuthProvider>
-            <NotesProvider>
-              <AIProvider>
+            <AIProvider>
                 {children}
                 <DemoModeIndicator />
                 <Toaster
@@ -77,8 +76,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
                   }}
                   theme="system"
                 />
-              </AIProvider>
-            </NotesProvider>
+            </AIProvider>
           </AuthProvider>
         </ThemeProvider>
         <ReactQueryDevtools
