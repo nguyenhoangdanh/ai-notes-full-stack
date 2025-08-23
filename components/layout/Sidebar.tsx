@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useRef, useCallback } from 'react'
+import { useState, useRef, useCallback, useMemo, memo } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import {
@@ -43,11 +43,12 @@ interface SidebarProps {
   isMobile?: boolean
 }
 
-export function Sidebar({ collapsed, onToggle, isMobile = false }: SidebarProps) {
+// Memoized Sidebar component to prevent unnecessary re-renders
+const Sidebar = memo(function Sidebar({ collapsed, onToggle, isMobile = false }: SidebarProps) {
   const pathname = usePathname()
 
-  // Determine active section based on pathname
-  const getActiveId = () => {
+  // Memoized active ID calculation to prevent recalculation on every render
+  const activeId = useMemo(() => {
     if (pathname.startsWith('/dashboard')) return 'dashboard'
     if (pathname.startsWith('/notes')) return 'notes'
     if (pathname.startsWith('/workspaces')) return 'workspaces'
@@ -60,16 +61,19 @@ export function Sidebar({ collapsed, onToggle, isMobile = false }: SidebarProps)
     if (pathname.startsWith('/productivity')) return 'productivity'
     if (pathname.startsWith('/settings')) return 'settings'
     return 'dashboard'
-  }
+  }, [pathname])
 
-  const activeId = getActiveId()
-
-  // Create navigation groups
-  const navGroups = [
+  // Memoized navigation groups to prevent recreation on every render
+  const navGroups = useMemo(() => [
     createMainNavGroup(activeId),
     createAINavGroup(activeId),
     createAccountNavGroup(activeId)
-  ]
+  ], [activeId])
+
+  // Memoized navigation handler to prevent re-creation
+  const handleNavigation = useCallback((href: string) => {
+    window.location.href = href
+  }, [])
 
   return (
     <div className="h-full panel border-r border-border flex flex-col shadow-2 relative overflow-hidden">
@@ -121,7 +125,7 @@ export function Sidebar({ collapsed, onToggle, isMobile = false }: SidebarProps)
               icon={Plus}
               className="w-full h-8 rounded-xl transition-modern hover-lift hover:bg-bg-elev-1"
               aria-label="Create new note"
-              onClick={() => window.location.href = '/notes/create'}
+              onClick={() => handleNavigation('/notes/create')}
             />
           </div>
         )}
@@ -176,4 +180,6 @@ export function Sidebar({ collapsed, onToggle, isMobile = false }: SidebarProps)
       )}
     </div>
   )
-}
+})
+
+export { Sidebar }
