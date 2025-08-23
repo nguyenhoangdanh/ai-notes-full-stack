@@ -2,7 +2,7 @@
 
 import { ProtectedLayout } from '../../components/layout/ProtectedLayout'
 
-export default function AILayout({
+export default function ProtectedGroupLayout({
   children,
 }: {
   children: React.ReactNode
