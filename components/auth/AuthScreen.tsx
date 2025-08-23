@@ -250,7 +250,7 @@ export function AuthScreen() {
                   <p className="text-xs text-neutral-11">{stat.label}</p>
                 </div>
               ))}
-            </div>
+            </motion.div>
           </motion.div>
         </div>
       </div>
