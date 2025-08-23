@@ -68,7 +68,15 @@ export function AISuggestions({
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null)
   
   const { askAI, isProcessing } = useAI()
-  const { notes } = useNotes()
+
+  // Add error handling for notes context
+  let notes: any[] = []
+  try {
+    const notesContext = useNotes()
+    notes = notesContext.notes || []
+  } catch (error) {
+    console.warn('Notes context not available in AISuggestions:', error)
+  }
 
   // Generate contextual suggestions based on content and context
   const generateSuggestions = useMemo(() => {
