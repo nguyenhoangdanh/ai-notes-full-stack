@@ -23,11 +23,8 @@ import {
   Users,
   CheckCircle2,
   ArrowRight,
-  Globe,
   Github,
   Chrome,
-  Smartphone,
-  Download,
   Star,
   TrendingUp,
   Award,
@@ -91,8 +88,6 @@ export function AuthScreen() {
     }
   })
 
-  const currentForm = isLogin ? loginForm : registerForm
-
   const handleLogin = async (data: LoginFormData) => {
     try {
       await loginMutation.mutateAsync(data)
@@ -149,31 +144,27 @@ export function AuthScreen() {
     setShowConfirmPassword(false)
   }
 
-  // Features for marketing
+  // Features for marketing side
   const features = [
     { 
       icon: Brain, 
       title: 'AI-Powered', 
-      description: 'Smart categorization and insights',
-      color: 'text-purple-600'
+      description: 'Smart categorization and insights'
     },
     { 
       icon: Shield, 
       title: 'Offline Ready', 
-      description: 'Works without internet connection',
-      color: 'text-green-600'
+      description: 'Works without internet connection'
     },
     { 
       icon: Users, 
       title: 'Team Collaboration', 
-      description: 'Real-time collaborative editing',
-      color: 'text-blue-600'
+      description: 'Real-time collaborative editing'
     },
     { 
       icon: Zap, 
       title: 'Lightning Fast', 
-      description: 'Instant search and sync',
-      color: 'text-yellow-600'
+      description: 'Instant search and sync'
     }
   ]
 
@@ -185,140 +176,116 @@ export function AuthScreen() {
   ]
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-bg via-bg-inset to-brand-50/30 flex">
-      {/* Background Elements */}
-      <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-brand-200/20 rounded-full blur-3xl" />
-        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-brand-300/20 rounded-full blur-3xl" />
-        <div className="absolute top-3/4 left-1/2 w-64 h-64 bg-brand-100/30 rounded-full blur-2xl" />
-      </div>
-
+    <div className="min-h-screen bg-neutral-1 flex">
       {/* Left Panel - Marketing Content */}
-      <div className="hidden lg:flex flex-1 relative z-10 flex-col justify-center p-16 max-w-2xl">
-        <motion.div
-          initial={{ opacity: 0, x: -50 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.8, ease: "easeOut" }}
-          className="space-y-8"
-        >
-          {/* Logo */}
-          <div className="flex items-center gap-3 mb-8">
-            <div className="p-3 bg-gradient-to-br from-brand-500 to-brand-600 rounded-2xl shadow-3">
-              <Brain className="h-8 w-8 text-white" />
+      <div className="hidden lg:flex flex-1 relative overflow-hidden">
+        {/* Background gradient */}
+        <div className="absolute inset-0 bg-gradient-to-br from-neutral-2 via-neutral-3 to-neutral-4"></div>
+        
+        {/* Content */}
+        <div className="relative z-10 flex flex-col justify-center p-12 max-w-xl mx-auto">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            className="space-y-8"
+          >
+            {/* Logo */}
+            <div className="space-y-2">
+              <div className="flex items-center gap-3 mb-6">
+                <div className="p-2.5 bg-accent-9 rounded-xl">
+                  <Brain className="h-7 w-7 text-white" />
+                </div>
+                <span className="text-xl font-semibold text-neutral-12">AI Notes</span>
+              </div>
+              <p className="text-neutral-11 text-sm">Intelligent note-taking platform</p>
             </div>
-            <div>
-              <h1 className="text-2xl font-bold bg-gradient-to-r from-brand-600 to-brand-700 bg-clip-text text-transparent">
-                AI Notes
-              </h1>
-              <p className="text-fg-secondary text-sm">Intelligent note-taking platform</p>
-            </div>
-          </div>
 
-          {/* Headline */}
-          <div className="space-y-6">
-            <div className="space-y-4">
-              <Badge variant="secondary" className="inline-flex">
-                <Sparkles className="h-3 w-3 mr-1" />
-                New: AI Writing Assistant
-              </Badge>
-              
-              <h2 className="text-5xl font-bold leading-tight">
+            {/* Headline */}
+            <div className="space-y-6">
+              <h1 className="text-4xl lg:text-5xl font-bold text-neutral-12 leading-tight">
                 Your thoughts,{' '}
-                <span className="bg-gradient-to-r from-brand-600 to-brand-700 bg-clip-text text-transparent">
-                  amplified
-                </span>{' '}
-                by AI
-              </h2>
+                <span className="text-accent-11">by AI</span>
+              </h1>
               
-              <p className="text-xl text-fg-secondary leading-relaxed max-w-lg">
+              <p className="text-lg text-neutral-11 leading-relaxed">
                 Transform the way you capture, organize, and discover insights from your notes with intelligent AI assistance.
               </p>
             </div>
 
-            {/* Features Grid */}
-            <div className="grid grid-cols-2 gap-6 mt-12">
+            {/* Features */}
+            <div className="space-y-6">
               {features.map((feature, index) => (
                 <motion.div
                   key={feature.title}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.3 + index * 0.1, duration: 0.5 }}
-                  className="space-y-3"
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.2 + index * 0.1, duration: 0.5 }}
+                  className="flex items-center gap-4"
                 >
-                  <div className={cn("p-3 rounded-xl w-fit", 
-                    feature.color === 'text-purple-600' && "bg-purple-100",
-                    feature.color === 'text-green-600' && "bg-green-100",
-                    feature.color === 'text-blue-600' && "bg-blue-100",
-                    feature.color === 'text-yellow-600' && "bg-yellow-100"
-                  )}>
-                    <feature.icon className={cn("h-6 w-6", feature.color)} />
+                  <div className="flex-shrink-0 p-2 bg-neutral-4 rounded-lg">
+                    <feature.icon className="h-5 w-5 text-accent-11" />
                   </div>
                   <div>
-                    <h3 className="font-semibold text-fg">{feature.title}</h3>
-                    <p className="text-sm text-fg-secondary">{feature.description}</p>
+                    <h3 className="font-semibold text-neutral-12">{feature.title}</h3>
+                    <p className="text-sm text-neutral-11">{feature.description}</p>
                   </div>
                 </motion.div>
               ))}
             </div>
 
-            {/* Social Proof */}
+            {/* Stats */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.8, duration: 0.5 }}
-              className="pt-8 border-t border-neutral-3"
+              className="grid grid-cols-3 gap-6 pt-8 border-t border-neutral-5"
             >
-              <div className="grid grid-cols-3 gap-8">
-                {stats.map((stat, index) => (
-                  <div key={stat.label} className="text-center space-y-2">
-                    <div className="flex items-center justify-center gap-2">
-                      <stat.icon className="h-4 w-4 text-brand-600" />
-                      <span className="text-2xl font-bold text-fg">{stat.value}</span>
-                    </div>
-                    <p className="text-sm text-fg-secondary">{stat.label}</p>
+              {stats.map((stat) => (
+                <div key={stat.label} className="text-center">
+                  <div className="flex items-center justify-center gap-1 mb-1">
+                    <stat.icon className="h-4 w-4 text-accent-11" />
+                    <span className="text-lg font-bold text-neutral-12">{stat.value}</span>
                   </div>
-                ))}
-              </div>
-            </motion.div>
-          </div>
-        </motion.div>
+                  <p className="text-xs text-neutral-11">{stat.label}</p>
+                </div>
+              ))}
+            </div>
+          </motion.div>
+        </div>
       </div>
 
       {/* Right Panel - Auth Form */}
-      <div className="flex-1 lg:max-w-lg flex items-center justify-center p-8 relative z-10">
+      <div className="flex-1 lg:max-w-md flex items-center justify-center p-8 bg-neutral-1">
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, ease: "easeOut" }}
-          className="w-full max-w-md"
+          initial={{ opacity: 0, x: 20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.6 }}
+          className="w-full max-w-sm"
         >
           {/* Mobile Logo */}
           <div className="lg:hidden text-center mb-8">
-            <div className="inline-flex items-center gap-3 mb-4">
-              <div className="p-3 bg-gradient-to-br from-brand-500 to-brand-600 rounded-2xl shadow-3">
+            <div className="flex items-center justify-center gap-3 mb-4">
+              <div className="p-2.5 bg-accent-9 rounded-xl">
                 <Brain className="h-6 w-6 text-white" />
               </div>
-              <div className="text-left">
-                <h1 className="text-xl font-bold bg-gradient-to-r from-brand-600 to-brand-700 bg-clip-text text-transparent">
-                  AI Notes
-                </h1>
-                <p className="text-fg-secondary text-sm">Intelligent note-taking</p>
-              </div>
+              <span className="text-xl font-semibold text-neutral-12">AI Notes</span>
             </div>
+            <p className="text-neutral-11 text-sm">Intelligent note-taking platform</p>
           </div>
 
           {/* Auth Card */}
-          <Card className="p-8 shadow-lg border border-neutral-3">
-            <div className="space-y-6">
+          <Card className="border border-neutral-6 bg-neutral-2 shadow-lg">
+            <div className="p-6 space-y-6">
               {/* Header */}
               <div className="text-center space-y-2">
-                <h2 className="text-2xl font-bold text-fg">
-                  {isLogin ? 'Welcome back' : 'Create your account'}
+                <h2 className="text-2xl font-semibold text-neutral-12">
+                  {isLogin ? 'Welcome back' : 'Create account'}
                 </h2>
-                <p className="text-fg-secondary">
+                <p className="text-neutral-11 text-sm">
                   {isLogin 
                     ? 'Continue your AI-powered note-taking journey' 
-                    : 'Join thousands of users enhancing their productivity'
+                    : 'Join thousands enhancing their productivity'
                   }
                 </p>
               </div>
@@ -328,7 +295,7 @@ export function AuthScreen() {
                 <Button
                   variant="secondary"
                   onClick={() => handleSocialAuth('google')}
-                  className="w-full h-12 gap-3 rounded-xl"
+                  className="w-full h-11 gap-3 border border-neutral-6 hover:border-neutral-7 bg-neutral-3 hover:bg-neutral-4"
                   disabled={isLoading}
                 >
                   <Chrome className="h-4 w-4" />
@@ -339,7 +306,7 @@ export function AuthScreen() {
                   <Button
                     variant="secondary"
                     onClick={() => handleSocialAuth('github')}
-                    className="h-12 gap-2 rounded-xl"
+                    className="h-11 gap-2 border border-neutral-6 hover:border-neutral-7 bg-neutral-3 hover:bg-neutral-4"
                     disabled={isLoading}
                   >
                     <Github className="h-4 w-4" />
@@ -349,10 +316,12 @@ export function AuthScreen() {
                   <Button
                     variant="secondary"
                     onClick={() => handleSocialAuth('microsoft')}
-                    className="h-12 gap-2 rounded-xl"
+                    className="h-11 gap-2 border border-neutral-6 hover:border-neutral-7 bg-neutral-3 hover:bg-neutral-4"
                     disabled={isLoading}
                   >
-                    <Globe className="h-4 w-4" />
+                    <svg className="h-4 w-4" viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M11.4 24H0V12.6h11.4V24zM24 24H12.6V12.6H24V24zM11.4 11.4H0V0h11.4v11.4zM24 11.4H12.6V0H24v11.4z"/>
+                    </svg>
                     Microsoft
                   </Button>
                 </div>
@@ -360,9 +329,9 @@ export function AuthScreen() {
 
               {/* Divider */}
               <div className="relative">
-                <Separator />
+                <Separator className="bg-neutral-6" />
                 <div className="absolute inset-0 flex items-center justify-center">
-                  <span className="bg-bg px-4 text-sm text-fg-secondary">or continue with email</span>
+                  <span className="bg-neutral-2 px-3 text-xs text-neutral-11">or continue with email</span>
                 </div>
               </div>
 
@@ -371,83 +340,80 @@ export function AuthScreen() {
                 {isLogin ? (
                   <motion.form
                     key="login"
-                    initial={{ opacity: 0, x: -20 }}
+                    initial={{ opacity: 0, x: -10 }}
                     animate={{ opacity: 1, x: 0 }}
-                    exit={{ opacity: 0, x: 20 }}
+                    exit={{ opacity: 0, x: 10 }}
                     onSubmit={loginForm.handleSubmit(handleLogin)}
                     className="space-y-4"
                   >
                     {/* Email field */}
                     <div className="space-y-2">
-                      <Label htmlFor="login-email" className="text-fg-secondary">
-                        Email Address <span className="text-red-500">*</span>
+                      <Label htmlFor="login-email" className="text-neutral-12 text-sm">
+                        Email Address *
                       </Label>
-                      <Input
-                        id="login-email"
-                        type="email"
-                        placeholder="Enter your email"
-                        leftIcon={<Mail className="h-4 w-4" />}
-                        className="h-12"
-                        disabled={isLoading}
-                        error={!!loginForm.formState.errors.email}
-                        {...loginForm.register('email')}
-                      />
+                      <div className="relative">
+                        <Input
+                          id="login-email"
+                          type="email"
+                          placeholder="your@email.com"
+                          className="h-11 bg-neutral-3 border-neutral-6 text-neutral-12 placeholder:text-neutral-10"
+                          disabled={isLoading}
+                          error={!!loginForm.formState.errors.email}
+                          {...loginForm.register('email')}
+                        />
+                        <Mail className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-neutral-10" />
+                      </div>
                       {loginForm.formState.errors.email && (
-                        <div className="flex items-center gap-1 text-sm text-red-600">
-                          <AlertCircle className="h-4 w-4" />
+                        <p className="text-xs text-red-10 flex items-center gap-1">
+                          <AlertCircle className="h-3 w-3" />
                           {loginForm.formState.errors.email.message}
-                        </div>
+                        </p>
                       )}
                     </div>
 
                     {/* Password field */}
                     <div className="space-y-2">
                       <div className="flex items-center justify-between">
-                        <Label htmlFor="login-password" className="text-fg-secondary">
-                          Password <span className="text-red-500">*</span>
+                        <Label htmlFor="login-password" className="text-neutral-12 text-sm">
+                          Password *
                         </Label>
-                        <Button
+                        <button
                           type="button"
-                          variant="ghost"
-                          className="text-xs text-brand-600 hover:text-brand-700 p-0 h-auto"
+                          className="text-xs text-accent-11 hover:text-accent-12"
                         >
                           Forgot password?
-                        </Button>
+                        </button>
                       </div>
                       <div className="relative">
                         <Input
                           id="login-password"
                           type={showPassword ? 'text' : 'password'}
-                          placeholder="Enter your password"
-                          leftIcon={<Lock className="h-4 w-4" />}
-                          className="h-12"
+                          placeholder="••••••••"
+                          className="h-11 bg-neutral-3 border-neutral-6 text-neutral-12 placeholder:text-neutral-10 pr-10"
                           disabled={isLoading}
                           error={!!loginForm.formState.errors.password}
                           {...loginForm.register('password')}
                         />
-                        <Button
+                        <button
                           type="button"
-                          variant="ghost"
-                          size="sm"
                           onClick={() => setShowPassword(!showPassword)}
-                          className="absolute right-2 top-1/2 -translate-y-1/2 h-8 w-8 p-0"
+                          className="absolute right-3 top-1/2 -translate-y-1/2 text-neutral-10 hover:text-neutral-12"
                         >
                           {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                        </Button>
+                        </button>
                       </div>
                       {loginForm.formState.errors.password && (
-                        <div className="flex items-center gap-1 text-sm text-red-600">
-                          <AlertCircle className="h-4 w-4" />
+                        <p className="text-xs text-red-10 flex items-center gap-1">
+                          <AlertCircle className="h-3 w-3" />
                           {loginForm.formState.errors.password.message}
-                        </div>
+                        </p>
                       )}
                     </div>
 
                     {/* Submit button */}
                     <Button
                       type="submit"
-                      variant="primary"
-                      className="w-full h-12 rounded-xl gap-2 mt-6"
+                      className="w-full h-11 bg-accent-9 hover:bg-accent-10 text-white font-medium gap-2 mt-6"
                       disabled={isLoading}
                       loading={isLoading}
                     >
@@ -458,157 +424,159 @@ export function AuthScreen() {
                 ) : (
                   <motion.form
                     key="register"
-                    initial={{ opacity: 0, x: 20 }}
+                    initial={{ opacity: 0, x: 10 }}
                     animate={{ opacity: 1, x: 0 }}
-                    exit={{ opacity: 0, x: -20 }}
+                    exit={{ opacity: 0, x: -10 }}
                     onSubmit={registerForm.handleSubmit(handleRegister)}
                     className="space-y-4"
                   >
                     {/* Name field */}
                     <div className="space-y-2">
-                      <Label htmlFor="register-name" className="text-fg-secondary">
-                        Full Name <span className="text-red-500">*</span>
+                      <Label htmlFor="register-name" className="text-neutral-12 text-sm">
+                        Full Name *
                       </Label>
                       <Input
                         id="register-name"
                         type="text"
-                        placeholder="Enter your full name"
-                        className="h-12"
+                        placeholder="Your full name"
+                        className="h-11 bg-neutral-3 border-neutral-6 text-neutral-12 placeholder:text-neutral-10"
                         disabled={isLoading}
                         error={!!registerForm.formState.errors.name}
                         {...registerForm.register('name')}
                       />
                       {registerForm.formState.errors.name && (
-                        <div className="flex items-center gap-1 text-sm text-red-600">
-                          <AlertCircle className="h-4 w-4" />
+                        <p className="text-xs text-red-10 flex items-center gap-1">
+                          <AlertCircle className="h-3 w-3" />
                           {registerForm.formState.errors.name.message}
-                        </div>
+                        </p>
                       )}
                     </div>
 
                     {/* Email field */}
                     <div className="space-y-2">
-                      <Label htmlFor="register-email" className="text-fg-secondary">
-                        Email Address <span className="text-red-500">*</span>
+                      <Label htmlFor="register-email" className="text-neutral-12 text-sm">
+                        Email Address *
                       </Label>
-                      <Input
-                        id="register-email"
-                        type="email"
-                        placeholder="Enter your email"
-                        leftIcon={<Mail className="h-4 w-4" />}
-                        className="h-12"
-                        disabled={isLoading}
-                        error={!!registerForm.formState.errors.email}
-                        {...registerForm.register('email')}
-                      />
+                      <div className="relative">
+                        <Input
+                          id="register-email"
+                          type="email"
+                          placeholder="your@email.com"
+                          className="h-11 bg-neutral-3 border-neutral-6 text-neutral-12 placeholder:text-neutral-10"
+                          disabled={isLoading}
+                          error={!!registerForm.formState.errors.email}
+                          {...registerForm.register('email')}
+                        />
+                        <Mail className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-neutral-10" />
+                      </div>
                       {registerForm.formState.errors.email && (
-                        <div className="flex items-center gap-1 text-sm text-red-600">
-                          <AlertCircle className="h-4 w-4" />
+                        <p className="text-xs text-red-10 flex items-center gap-1">
+                          <AlertCircle className="h-3 w-3" />
                           {registerForm.formState.errors.email.message}
-                        </div>
+                        </p>
                       )}
                     </div>
 
-                    {/* Password field */}
-                    <div className="space-y-2">
-                      <Label htmlFor="register-password" className="text-fg-secondary">
-                        Password <span className="text-red-500">*</span>
-                      </Label>
-                      <div className="relative">
-                        <Input
-                          id="register-password"
-                          type={showPassword ? 'text' : 'password'}
-                          placeholder="Create a strong password"
-                          leftIcon={<Lock className="h-4 w-4" />}
-                          className="h-12"
-                          disabled={isLoading}
-                          error={!!registerForm.formState.errors.password}
-                          {...registerForm.register('password')}
-                        />
-                        <Button
-                          type="button"
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => setShowPassword(!showPassword)}
-                          className="absolute right-2 top-1/2 -translate-y-1/2 h-8 w-8 p-0"
-                        >
-                          {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                        </Button>
-                      </div>
-                      {registerForm.formState.errors.password && (
-                        <div className="flex items-center gap-1 text-sm text-red-600">
-                          <AlertCircle className="h-4 w-4" />
-                          {registerForm.formState.errors.password.message}
+                    {/* Password fields */}
+                    <div className="grid grid-cols-2 gap-3">
+                      <div className="space-y-2">
+                        <Label htmlFor="register-password" className="text-neutral-12 text-sm">
+                          Password *
+                        </Label>
+                        <div className="relative">
+                          <Input
+                            id="register-password"
+                            type={showPassword ? 'text' : 'password'}
+                            placeholder="••••••••"
+                            className="h-11 bg-neutral-3 border-neutral-6 text-neutral-12 placeholder:text-neutral-10 pr-10"
+                            disabled={isLoading}
+                            error={!!registerForm.formState.errors.password}
+                            {...registerForm.register('password')}
+                          />
+                          <button
+                            type="button"
+                            onClick={() => setShowPassword(!showPassword)}
+                            className="absolute right-2 top-1/2 -translate-y-1/2 text-neutral-10 hover:text-neutral-12"
+                          >
+                            {showPassword ? <EyeOff className="h-3 w-3" /> : <Eye className="h-3 w-3" />}
+                          </button>
                         </div>
-                      )}
+                      </div>
+
+                      <div className="space-y-2">
+                        <Label htmlFor="register-confirm-password" className="text-neutral-12 text-sm">
+                          Confirm *
+                        </Label>
+                        <div className="relative">
+                          <Input
+                            id="register-confirm-password"
+                            type={showConfirmPassword ? 'text' : 'password'}
+                            placeholder="••••••••"
+                            className="h-11 bg-neutral-3 border-neutral-6 text-neutral-12 placeholder:text-neutral-10 pr-10"
+                            disabled={isLoading}
+                            error={!!registerForm.formState.errors.confirmPassword}
+                            {...registerForm.register('confirmPassword')}
+                          />
+                          <button
+                            type="button"
+                            onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                            className="absolute right-2 top-1/2 -translate-y-1/2 text-neutral-10 hover:text-neutral-12"
+                          >
+                            {showConfirmPassword ? <EyeOff className="h-3 w-3" /> : <Eye className="h-3 w-3" />}
+                          </button>
+                        </div>
+                      </div>
                     </div>
 
-                    {/* Confirm Password field */}
-                    <div className="space-y-2">
-                      <Label htmlFor="register-confirm-password" className="text-fg-secondary">
-                        Confirm Password <span className="text-red-500">*</span>
-                      </Label>
-                      <div className="relative">
-                        <Input
-                          id="register-confirm-password"
-                          type={showConfirmPassword ? 'text' : 'password'}
-                          placeholder="Confirm your password"
-                          leftIcon={<Lock className="h-4 w-4" />}
-                          className="h-12"
-                          disabled={isLoading}
-                          error={!!registerForm.formState.errors.confirmPassword}
-                          {...registerForm.register('confirmPassword')}
-                        />
-                        <Button
-                          type="button"
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                          className="absolute right-2 top-1/2 -translate-y-1/2 h-8 w-8 p-0"
-                        >
-                          {showConfirmPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                        </Button>
+                    {/* Error messages for passwords */}
+                    {(registerForm.formState.errors.password || registerForm.formState.errors.confirmPassword) && (
+                      <div className="space-y-1">
+                        {registerForm.formState.errors.password && (
+                          <p className="text-xs text-red-10 flex items-center gap-1">
+                            <AlertCircle className="h-3 w-3" />
+                            {registerForm.formState.errors.password.message}
+                          </p>
+                        )}
+                        {registerForm.formState.errors.confirmPassword && (
+                          <p className="text-xs text-red-10 flex items-center gap-1">
+                            <AlertCircle className="h-3 w-3" />
+                            {registerForm.formState.errors.confirmPassword.message}
+                          </p>
+                        )}
                       </div>
-                      {registerForm.formState.errors.confirmPassword && (
-                        <div className="flex items-center gap-1 text-sm text-red-600">
-                          <AlertCircle className="h-4 w-4" />
-                          {registerForm.formState.errors.confirmPassword.message}
-                        </div>
-                      )}
-                    </div>
+                    )}
 
                     {/* Terms checkbox */}
                     <div className="flex items-start gap-3 pt-2">
                       <input
                         type="checkbox"
                         id="terms"
-                        className="mt-0.5 h-4 w-4 rounded border-neutral-6 text-brand-600 focus:ring-brand-500"
+                        className="mt-0.5 h-4 w-4 rounded border-neutral-6 text-accent-9 focus:ring-accent-9 bg-neutral-3"
                         disabled={isLoading}
                         {...registerForm.register('agreedToTerms')}
                       />
-                      <Label htmlFor="terms" className="text-sm text-fg-secondary leading-relaxed cursor-pointer">
+                      <Label htmlFor="terms" className="text-xs text-neutral-11 leading-relaxed cursor-pointer">
                         I agree to the{' '}
-                        <Button variant="ghost" className="text-brand-600 hover:text-brand-700 p-0 h-auto text-sm underline">
+                        <button type="button" className="text-accent-11 hover:text-accent-12 underline">
                           Terms of Service
-                        </Button>{' '}
+                        </button>{' '}
                         and{' '}
-                        <Button variant="ghost" className="text-brand-600 hover:text-brand-700 p-0 h-auto text-sm underline">
+                        <button type="button" className="text-accent-11 hover:text-accent-12 underline">
                           Privacy Policy
-                        </Button>
+                        </button>
                       </Label>
                     </div>
                     {registerForm.formState.errors.agreedToTerms && (
-                      <div className="flex items-center gap-1 text-sm text-red-600 -mt-2">
-                        <AlertCircle className="h-4 w-4" />
+                      <p className="text-xs text-red-10 flex items-center gap-1">
+                        <AlertCircle className="h-3 w-3" />
                         {registerForm.formState.errors.agreedToTerms.message}
-                      </div>
+                      </p>
                     )}
 
                     {/* Submit button */}
                     <Button
                       type="submit"
-                      variant="primary"
-                      className="w-full h-12 rounded-xl gap-2 mt-6"
+                      className="w-full h-11 bg-accent-9 hover:bg-accent-10 text-white font-medium gap-2 mt-6"
                       disabled={isLoading}
                       loading={isLoading}
                     >
@@ -622,9 +590,9 @@ export function AuthScreen() {
               {/* Demo Login */}
               <div className="space-y-4">
                 <div className="relative">
-                  <Separator />
+                  <Separator className="bg-neutral-6" />
                   <div className="absolute inset-0 flex items-center justify-center">
-                    <span className="bg-bg px-4 text-sm text-fg-secondary">Try demo</span>
+                    <span className="bg-neutral-2 px-3 text-xs text-neutral-11">Try demo</span>
                   </div>
                 </div>
                 
@@ -632,7 +600,7 @@ export function AuthScreen() {
                   variant="secondary"
                   onClick={handleDemoLogin}
                   disabled={isLoading}
-                  className="w-full h-12 gap-2 rounded-xl border-brand-200 text-brand-700 hover:bg-brand-50"
+                  className="w-full h-11 gap-2 border border-accent-6 text-accent-11 hover:bg-accent-3"
                 >
                   <Sparkles className="h-4 w-4" />
                   Explore Demo Version
@@ -640,53 +608,21 @@ export function AuthScreen() {
               </div>
 
               {/* Toggle between login/register */}
-              <div className="text-center pt-4 border-t border-neutral-3">
-                <p className="text-sm text-fg-secondary">
+              <div className="text-center pt-4 border-t border-neutral-6">
+                <p className="text-sm text-neutral-11">
                   {isLogin ? "Don't have an account?" : 'Already have an account?'}
                 </p>
-                <Button
+                <button
                   type="button"
-                  variant="ghost"
                   onClick={toggleAuthMode}
-                  className="text-brand-600 hover:text-brand-700 font-semibold p-0 h-auto underline"
+                  className="text-accent-11 hover:text-accent-12 font-medium underline"
                   disabled={isLoading}
                 >
                   {isLogin ? 'Create account' : 'Sign in'}
-                </Button>
+                </button>
               </div>
             </div>
           </Card>
-
-          {/* Mobile Features */}
-          <div className="lg:hidden mt-8 grid grid-cols-2 gap-4">
-            {features.slice(0, 4).map((feature, index) => (
-              <motion.div
-                key={feature.title}
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.8 + index * 0.1 }}
-                className="p-4 rounded-xl border border-neutral-3 text-center bg-bg-overlay"
-              >
-                <feature.icon className={cn("h-5 w-5 mx-auto mb-2", feature.color)} />
-                <p className="text-xs font-medium text-fg">{feature.title}</p>
-              </motion.div>
-            ))}
-          </div>
-
-          {/* Mobile Download Links */}
-          <div className="lg:hidden mt-6 text-center">
-            <p className="text-xs text-fg-secondary mb-3">Also available on mobile</p>
-            <div className="flex justify-center gap-3">
-              <Button variant="secondary" size="sm" className="gap-2 rounded-xl">
-                <Smartphone className="h-3 w-3" />
-                <span className="text-xs">iOS</span>
-              </Button>
-              <Button variant="secondary" size="sm" className="gap-2 rounded-xl">
-                <Download className="h-3 w-3" />
-                <span className="text-xs">Android</span>
-              </Button>
-            </div>
-          </div>
         </motion.div>
       </div>
     </div>
