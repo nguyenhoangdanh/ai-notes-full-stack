@@ -58,7 +58,17 @@ export function AIChatInterface({
   className 
 }: AIChatInterfaceProps) {
   const { user } = useAuth()
-  const { notes, getNote } = useNotes()
+
+  // Add error handling for notes context
+  let notes: any[] = []
+  let getNote = (id: string) => undefined
+  try {
+    const notesContext = useNotes()
+    notes = notesContext.notes || []
+    getNote = notesContext.getNote
+  } catch (error) {
+    console.warn('Notes context not available in AIChatInterface:', error)
+  }
   const { 
     activeConversation: currentConversation, 
     sendMessage: askAI, 

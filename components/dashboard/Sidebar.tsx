@@ -27,7 +27,17 @@ interface SidebarProps {
 
 export function Sidebar({ onClose, searchQuery, onSearchChange }: SidebarProps) {
   const { user, logout } = useAuth()
-  const { notes } = useNotes()
+
+  // Add error handling for notes context
+  let notes: any[] = []
+  try {
+    const notesContext = useNotes()
+    notes = notesContext.notes || []
+  } catch (error) {
+    console.warn('Notes context not available in dashboard Sidebar:', error)
+    notes = []
+  }
+
   const isMobile = useIsMobile()
 
   // Get unique tags from all notes
