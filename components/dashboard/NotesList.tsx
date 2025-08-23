@@ -22,7 +22,19 @@ interface NotesListProps {
 }
 
 export function NotesList({ searchQuery, selectedNoteId, onSelectNote }: NotesListProps) {
-  const { notes, searchNotes, deleteNote } = useNotes()
+  // Add error handling for notes context
+  let notes: any[] = []
+  let searchNotes = (query: string) => []
+  let deleteNote = async (id: string) => {}
+
+  try {
+    const notesContext = useNotes()
+    notes = notesContext.notes || []
+    searchNotes = notesContext.searchNotes
+    deleteNote = notesContext.deleteNote
+  } catch (error) {
+    console.warn('Notes context not available in NotesList:', error)
+  }
   
   const displayedNotes = searchQuery ? searchNotes(searchQuery) : notes
   const sortedNotes = displayedNotes.sort((a, b) => 
