@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useMemo, memo } from 'react'
 import { useAuth } from '../../contexts/AuthContext'
 import { Sidebar } from './Sidebar'
 import { Header } from './Header'
@@ -97,6 +97,48 @@ export function AppLayout({ children }: AppLayoutProps) {
     setSidebarOpen(prev => !prev)
   }, [])
 
+  // Memoize computed values to prevent unnecessary re-renders
+  const sidebarClasses = useMemo(() => cn(
+    "relative z-50 flex-shrink-0 transition-modern",
+    // Desktop behavior
+    "lg:translate-x-0",
+    sidebarOpen && !isMobile ? "lg:w-72" : "lg:w-16",
+    // Mobile behavior
+    "fixed lg:relative inset-y-0 left-0",
+    isMobile && sidebarOpen ? "w-72 translate-x-0" : isMobile ? "w-72 -translate-x-full" : "",
+    // Enhanced shadows
+    "shadow-4 lg:shadow-2"
+  ), [sidebarOpen, isMobile])
+
+  const mainContentClasses = useMemo(() => cn(
+    "flex-1 overflow-auto focus:outline-none relative",
+    "bg-bg-elev-1/30",
+    "safe-area-inset safe-area-inset-bottom"
+  ), [])
+
+  const scrollToTopButtonClasses = useMemo(() => cn(
+    "fixed bottom-6 right-6 z-30",
+    "w-12 h-12 rounded-2xl",
+    "glass border border-glass-border",
+    "flex items-center justify-center",
+    "text-text-muted hover:text-primary-600",
+    "shadow-2 hover:shadow-3 hover-lift",
+    "transition-modern",
+    "opacity-0 pointer-events-none scale-90",
+    isScrolled && "opacity-100 pointer-events-auto scale-100"
+  ), [isScrolled])
+
+  const fabButtonClasses = useMemo(() => cn(
+    "fixed bottom-20 right-6 z-30",
+    "w-14 h-14 rounded-2xl",
+    "btn-primary text-white",
+    "flex items-center justify-center",
+    "shadow-2 hover:shadow-glow hover-lift",
+    "transition-modern border border-glass-border",
+    "opacity-0 pointer-events-none scale-90",
+    !isMobile && "opacity-100 pointer-events-auto scale-100"
+  ), [isMobile])
+
   // Auth layout for login/register with modern design
   if (!user) {
     return (
@@ -153,17 +195,7 @@ export function AppLayout({ children }: AppLayoutProps) {
       {/* Sidebar Container */}
       <aside
         id="app-sidebar"
-        className={cn(
-          "relative z-50 flex-shrink-0 transition-modern",
-          // Desktop behavior
-          "lg:translate-x-0",
-          sidebarOpen && !isMobile ? "lg:w-72" : "lg:w-16",
-          // Mobile behavior
-          "fixed lg:relative inset-y-0 left-0",
-          isMobile && sidebarOpen ? "w-72 translate-x-0" : isMobile ? "w-72 -translate-x-full" : "",
-          // Enhanced shadows
-          "shadow-4 lg:shadow-2"
-        )}
+        className={sidebarClasses}
         role="navigation"
         aria-label="Main navigation"
         aria-expanded={sidebarOpen}
@@ -188,11 +220,7 @@ export function AppLayout({ children }: AppLayoutProps) {
         {/* Main Content with enhanced styling */}
         <main
           id="main-content"
-          className={cn(
-            "flex-1 overflow-auto focus:outline-none relative",
-            "bg-bg-elev-1/30",
-            "safe-area-inset safe-area-inset-bottom"
-          )}
+          className={mainContentClasses}
           role="main"
           aria-label="Main content"
           tabIndex={-1}
@@ -206,17 +234,7 @@ export function AppLayout({ children }: AppLayoutProps) {
 
           {/* Modern scroll to top button */}
           <button
-            className={cn(
-              "fixed bottom-6 right-6 z-30",
-              "w-12 h-12 rounded-2xl",
-              "glass border border-glass-border",
-              "flex items-center justify-center",
-              "text-text-muted hover:text-primary-600",
-              "shadow-2 hover:shadow-3 hover-lift",
-              "transition-modern",
-              "opacity-0 pointer-events-none scale-90",
-              isScrolled && "opacity-100 pointer-events-auto scale-100"
-            )}
+            className={scrollToTopButtonClasses}
             onClick={() => {
               document.getElementById('main-content')?.scrollTo({
                 top: 0,
@@ -242,16 +260,7 @@ export function AppLayout({ children }: AppLayoutProps) {
 
           {/* Floating action button for quick note creation */}
           <button
-            className={cn(
-              "fixed bottom-20 right-6 z-30",
-              "w-14 h-14 rounded-2xl",
-              "btn-primary text-white",
-              "flex items-center justify-center",
-              "shadow-2 hover:shadow-glow hover-lift",
-              "transition-modern border border-glass-border",
-              "opacity-0 pointer-events-none scale-90",
-              !isMobile && "opacity-100 pointer-events-auto scale-100"
-            )}
+            className={fabButtonClasses}
             onClick={() => {
               // Navigate to new note creation
               window.location.href = '/notes/create'
