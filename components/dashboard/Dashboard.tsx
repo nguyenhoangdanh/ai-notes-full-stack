@@ -109,6 +109,12 @@ function DashboardLoading() {
 // Main Dashboard content component
 function DashboardContent() {
   const { user } = useAuth()
+
+  // Check if user is available before accessing notes context
+  if (!user) {
+    return <DashboardLoading />
+  }
+
   const { createNote, deleteNote, notes } = useNotes()
   const [selectedNoteId, setSelectedNoteId] = useState<string | null>(null)
   const [selectedNoteIds, setSelectedNoteIds] = useState<string[]>([])
