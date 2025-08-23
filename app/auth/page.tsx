@@ -12,7 +12,7 @@ export default function AuthPage() {
   useEffect(() => {
     // Redirect authenticated users to dashboard
     if (user && !isLoading) {
-      router.push('/dashboard')
+      router.replace('/dashboard')
     }
   }, [user, isLoading, router])
 
