@@ -2,7 +2,7 @@ import React, { createContext, useContext, useEffect, useState, useCallback } fr
 import { offlineStorage, OfflineNote, OfflineWorkspace } from '@/lib/offline-storage'
 import { syncService, SyncStatus } from '@/lib/sync-service'
 import { useAuth } from './AuthContext'
-import { useNotes, useWorkspaces, useCreateNote, useUpdateNote, useDeleteNote, useCreateWorkspace } from '../hooks'
+import { useNotes as useNotesQuery, useWorkspaces, useCreateNote, useUpdateNote, useDeleteNote, useCreateWorkspace } from '../hooks'
 import { v4 as uuidv4 } from 'uuid'
 import { toast } from 'sonner'
 
@@ -52,8 +52,8 @@ export function OfflineNotesProvider({ children }: { children: React.ReactNode }
   const { user } = useAuth()
   const userId = user?.id
   
-  // Use the new hooks for API calls
-  const { data: serverNotes, isLoading: notesLoading } = useNotes()
+  // Use the raw query hooks for API calls to avoid circular dependency
+  const { data: serverNotes, isLoading: notesLoading } = useNotesQuery()
   const { data: serverWorkspaces, isLoading: workspacesLoading } = useWorkspaces()
   const createNoteMutation = useCreateNote()
   const updateNoteMutation = useUpdateNote()
