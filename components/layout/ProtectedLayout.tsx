@@ -1,6 +1,7 @@
 'use client'
 
 import { memo, Suspense } from 'react'
+import { ErrorBoundary } from 'react-error-boundary'
 import { useAuth } from '../../contexts/AuthContext'
 import { NotesProvider } from '../../contexts/NotesContext'
 import { OfflineNotesProvider } from '../../contexts/OfflineNotesContext'
