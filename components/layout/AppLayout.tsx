@@ -10,7 +10,7 @@ interface AppLayoutProps {
   children: React.ReactNode
 }
 
-export function AppLayout({ children }: AppLayoutProps) {
+export const AppLayout = memo(function AppLayout({ children }: AppLayoutProps) {
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const [isMobile, setIsMobile] = useState(false)
   const [isScrolled, setIsScrolled] = useState(false)
@@ -285,4 +285,4 @@ export function AppLayout({ children }: AppLayoutProps) {
       </div>
     </div>
   )
-}
+})
