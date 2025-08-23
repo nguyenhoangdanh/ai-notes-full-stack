@@ -8,9 +8,23 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
       imports: [ConfigModule],
       useFactory: async (configService: ConfigService) => ({
         connection: {
-          host: configService.get('REDIS_HOST', 'localhost'),
-          port: configService.get('REDIS_PORT', 6379),
-          password: configService.get('REDIS_PASSWORD'),
+          url: configService.get('REDIS_URL'),
+          tls: {
+            rejectUnauthorized: false,
+          },
+          maxRetriesPerRequest: null,
+          retryDelayOnFailover: 100,
+          enableReadyCheck: false,
+          maxLoadingTimeout: 5000,
+          lazyConnect: true,
+          keepAlive: 30000,
+          connectTimeout: 20000,
+          commandTimeout: 10000,
+          family: 4,
+          reconnectOnError: (err) => {
+            const targetError = 'READONLY';
+            return err.message.includes(targetError);
+          },
         },
         defaultJobOptions: {
           removeOnComplete: 10,
