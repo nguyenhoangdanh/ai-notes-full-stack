@@ -476,3 +476,19 @@ function DashboardContent() {
     </div>
   )
 }
+
+// Main exported Dashboard component with error boundary
+export function Dashboard() {
+  return (
+    <ErrorBoundary
+      FallbackComponent={DashboardErrorFallback}
+      onError={(error, errorInfo) => {
+        console.error('Dashboard error:', error, errorInfo)
+      }}
+    >
+      <Suspense fallback={<DashboardLoading />}>
+        <DashboardContent />
+      </Suspense>
+    </ErrorBoundary>
+  )
+}
