@@ -41,15 +41,22 @@ const ProtectedLayout = memo(function ProtectedLayout({ children }: ProtectedLay
   // This ensures consistent sidebar state management across all pages
   // Use Suspense to handle any async loading states
   return (
-    <Suspense fallback={<AuthenticatedLoading />}>
-      <NotesProvider>
-        <OfflineNotesProvider>
-          <AppLayout>
-            {children}
-          </AppLayout>
-        </OfflineNotesProvider>
-      </NotesProvider>
-    </Suspense>
+    <ErrorBoundary
+      fallback={<AuthenticatedLoading />}
+      onError={(error) => {
+        console.error('ProtectedLayout error:', error)
+      }}
+    >
+      <Suspense fallback={<AuthenticatedLoading />}>
+        <NotesProvider>
+          <OfflineNotesProvider>
+            <AppLayout>
+              {children}
+            </AppLayout>
+          </OfflineNotesProvider>
+        </NotesProvider>
+      </Suspense>
+    </ErrorBoundary>
   )
 })
 
