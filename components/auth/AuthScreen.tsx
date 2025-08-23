@@ -97,6 +97,8 @@ export function AuthScreen() {
     try {
       await loginMutation.mutateAsync(data)
       toast.success('Welcome back! 🎉')
+      // Redirect to dashboard after successful login
+      window.location.href = '/dashboard'
     } catch (error) {
       console.error('Login failed:', error)
       toast.error('Login failed. Please check your credentials.')
@@ -111,6 +113,8 @@ export function AuthScreen() {
         password: data.password
       })
       toast.success('Account created successfully! 🎉')
+      // Redirect to dashboard after successful registration
+      window.location.href = '/dashboard'
     } catch (error) {
       console.error('Registration failed:', error)
       toast.error('Registration failed. Please try again.')
@@ -121,10 +125,12 @@ export function AuthScreen() {
     try {
       demoModeService.setDemoMode(true)
       await authService.demoLogin()
-      
+
       toast.success('Welcome to AI Notes Demo! 🎉', {
         description: 'Explore all features with sample data. Changes won\'t be saved permanently.'
       })
+      // Redirect to dashboard after demo login
+      window.location.href = '/dashboard'
     } catch (error) {
       console.error('Demo login failed:', error)
       toast.error('Demo mode failed to initialize')
