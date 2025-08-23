@@ -27,7 +27,20 @@ interface NoteEditorProps {
 }
 
 export function NoteEditor({ noteId, onClose }: NoteEditorProps) {
-  const { notes, updateNote, getRelatedNotes } = useNotes()
+  // Add error handling for notes context
+  let notes: any[] = []
+  let updateNote = async (id: string, updates: any) => {}
+  let getRelatedNotes = (id: string) => []
+
+  try {
+    const notesContext = useNotes()
+    notes = notesContext.notes || []
+    updateNote = notesContext.updateNote
+    getRelatedNotes = notesContext.getRelatedNotes
+  } catch (error) {
+    console.warn('Notes context not available in NoteEditor:', error)
+  }
+
   const isMobile = useIsMobile()
   
   const note = notes.find(n => n.id === noteId)
