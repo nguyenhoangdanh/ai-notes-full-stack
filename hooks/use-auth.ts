@@ -2,7 +2,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { toast } from 'sonner'
 import { authService } from '../services'
 import { queryKeys } from './query-keys'
-import { setAuthToken, clearAuthToken } from '../lib/api-config'
+import { setAuthToken, clearAuthToken, getAuthToken } from '../lib/api-config'
 import type {
   RegisterDto,
   LoginDto,
@@ -19,6 +19,7 @@ export function useAuthProfile() {
     queryFn: authService.getProfile,
     staleTime: 5 * 60 * 1000, // 5 minutes
     retry: false, // Don't retry auth failures
+    enabled: !!getAuthToken(), // Only run when we have a token
   })
 }
 
@@ -28,6 +29,7 @@ export function useAuthVerify() {
     queryFn: authService.verify,
     staleTime: 1 * 60 * 1000, // 1 minute
     retry: false,
+    enabled: !!getAuthToken(), // Only run when we have a token
   })
 }
 
@@ -36,6 +38,7 @@ export function useUserSettings() {
     queryKey: queryKeys.auth.settings(),
     queryFn: authService.getSettings,
     staleTime: 10 * 60 * 1000, // 10 minutes
+    enabled: !!getAuthToken(), // Only run when we have a token
   })
 }
 
@@ -44,6 +47,7 @@ export function useUsage() {
     queryKey: queryKeys.auth.usage(),
     queryFn: () => authService.getUsage(),
     staleTime: 5 * 60 * 1000, // 5 minutes
+    enabled: !!getAuthToken(), // Only run when we have a token
   })
 }
 
@@ -144,7 +148,9 @@ export function useAuth() {
     mutationFn: (data: LoginDto) => authService.login(data),
     onSuccess: (response: AuthResponseDto) => {
       setAuthToken(response.access_token)
+      // Set user data in cache and invalidate queries to refetch with new token
       queryClient.setQueryData(queryKeys.auth.profile(), response.user)
+      queryClient.invalidateQueries({ queryKey: queryKeys.auth.profile() })
       toast.success('Logged in successfully!')
     },
     onError: (error: any) => {
@@ -158,7 +164,9 @@ export function useAuth() {
     mutationFn: (data: RegisterDto) => authService.register(data),
     onSuccess: (response: AuthResponseDto) => {
       setAuthToken(response.access_token)
+      // Set user data in cache and invalidate queries to refetch with new token
       queryClient.setQueryData(queryKeys.auth.profile(), response.user)
+      queryClient.invalidateQueries({ queryKey: queryKeys.auth.profile() })
       toast.success('Account created successfully!')
     },
     onError: (error: any) => {
@@ -198,7 +206,7 @@ export function useAuth() {
   const verifyMutation = useMutation({
     mutationFn: authService.verify,
     onSuccess: (response) => {
-      if (response.valid) {
+      if (response.valid && response.user) {
         queryClient.setQueryData(queryKeys.auth.profile(), response.user)
       } else {
         clearAuthToken()

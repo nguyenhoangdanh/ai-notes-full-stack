@@ -22,14 +22,14 @@ const AuthContext = createContext<AuthContextType | null>(null)
 function AuthProvider({ children }: { children: React.ReactNode }) {
   const auth = useAuthHook()
 
-  // Check for existing token on mount
+  // Check for existing token on mount and when auth state changes
   useEffect(() => {
     const token = getAuthToken()
-    if (token && !auth.user) {
-      // Verify the token
+    if (token && !auth.user && !auth.isLoading) {
+      // Verify the token - this will trigger the profile query
       auth.verifyToken()
     }
-  }, [])
+  }, [auth.user, auth.isLoading, auth.verifyToken]) // Added verifyToken dependency
 
   // Handle OAuth callback
   useEffect(() => {
@@ -38,7 +38,7 @@ function AuthProvider({ children }: { children: React.ReactNode }) {
 
     const urlParams = new URLSearchParams(window.location.search)
     const token = urlParams.get('token')
-    
+
     if (token) {
       setAuthToken(token)
       auth.verifyToken()
