@@ -1,73 +1,75 @@
-import React, { createContext, useContext, useEffect, useMemo } from 'react'
-import { getAuthToken, setAuthToken, clearAuthToken } from '../lib/api-config'
-import { authService } from '../services/auth.service'
-import { useAuth as useAuthHook } from '../hooks/use-auth'
+import React, { createContext, useContext, useEffect } from 'react'
+import { useAuthStore } from '../stores/auth.store'
 import type { User, LoginDto, RegisterDto } from '../types/auth.types'
 
 interface AuthContextType {
   user: User | null
   isLoading: boolean
-  login: (data: LoginDto) => void
-  register: (data: RegisterDto) => void
-  logout: () => void
-  googleLogin: () => void
+  isAuthenticated: boolean
+  login: (data: LoginDto) => Promise<void>
+  register: (data: RegisterDto) => Promise<void>
+  logout: () => Promise<void>
+  googleLogin: () => Promise<void>
+  demoLogin: () => Promise<void>
   isRegistering: boolean
   isLoggingIn: boolean
 }
 
 const AuthContext = createContext<AuthContextType | null>(null)
 
+export function AuthProvider({ children }: { children: React.ReactNode }) {
+  const {
+    user,
+    isLoading,
+    isAuthenticated,
+    isRegistering,
+    isLoggingIn,
+    login,
+    register,
+    logout,
+    googleLogin,
+    demoLogin,
+    checkAuth
+  } = useAuthStore()
 
-// Auth provider component
-function AuthProvider({ children }: { children: React.ReactNode }) {
-  const auth = useAuthHook()
-
-  // Check for existing token on mount and when auth state changes
+  // Check authentication on mount
   useEffect(() => {
-    const token = getAuthToken()
-    if (token && !auth.user && !auth.isLoading) {
-      // Verify the token - this will trigger the profile query
-      auth.verifyToken()
-    }
-  }, [auth.user, auth.isLoading, auth.verifyToken]) // Added verifyToken dependency
+    checkAuth()
+  }, [checkAuth])
 
   // Handle OAuth callback
   useEffect(() => {
-    // Only run on client side
     if (typeof window === 'undefined') return
 
     const urlParams = new URLSearchParams(window.location.search)
     const token = urlParams.get('token')
 
     if (token) {
+      // Set token and verify
+      const { setAuthToken } = require('../lib/api-config')
       setAuthToken(token)
-      auth.verifyToken()
+      
+      // Verify the token to get user data
+      const { verifyToken } = useAuthStore.getState()
+      verifyToken()
+      
       // Clean up URL
       window.history.replaceState({}, document.title, window.location.pathname)
     }
   }, [])
 
-  // Memoize the context value to prevent unnecessary re-renders
-  const value: AuthContextType = useMemo(() => ({
-    user: auth.user || null,
-    isLoading: auth.isLoading,
-    login: auth.login,
-    register: auth.register,
-    logout: auth.logout,
-    googleLogin: auth.googleLogin,
-    isRegistering: auth.isRegistering,
-    isLoggingIn: auth.isLoggingIn,
-  }), [
-    auth.user?.id, // Only re-render when user ID changes
-    auth.user?.email, // Or email changes
-    auth.isLoading,
-    auth.login,
-    auth.register,
-    auth.logout,
-    auth.googleLogin,
-    auth.isRegistering,
-    auth.isLoggingIn,
-  ])
+  const value: AuthContextType = {
+    user,
+    isLoading,
+    isAuthenticated,
+    login,
+    register,
+    logout,
+    googleLogin,
+    demoLogin,
+    isRegistering,
+    isLoggingIn,
+  }
 
   return (
     <AuthContext.Provider value={value}>
@@ -76,7 +78,6 @@ function AuthProvider({ children }: { children: React.ReactNode }) {
   )
 }
 
-
 export function useAuth(): AuthContextType {
   const context = useContext(AuthContext)
   if (context === null) {
@@ -84,5 +85,3 @@ export function useAuth(): AuthContextType {
   }
   return context
 }
-
-export { AuthProvider }

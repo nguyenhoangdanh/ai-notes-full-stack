@@ -1,3 +1,4 @@
+import { ProtectedLayout } from '@/components/layout/ProtectedLayout'
 import { Metadata } from 'next'
 
 export const metadata: Metadata = {
@@ -10,5 +11,5 @@ export default function DuplicatesLayout({
 }: {
   children: React.ReactNode
 }) {
-  return <>{children}</>
+ return <ProtectedLayout>{children}</ProtectedLayout>
 }

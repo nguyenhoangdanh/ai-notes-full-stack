@@ -93,7 +93,7 @@ export function AuthScreen() {
       await loginMutation.mutateAsync(data)
       toast.success('Welcome back! 🎉')
       // Redirect to dashboard after successful login
-      window.location.href = '/dashboard'
+      // window.location.href = '/dashboard'
     } catch (error) {
       console.error('Login failed:', error)
       toast.error('Login failed. Please check your credentials.')

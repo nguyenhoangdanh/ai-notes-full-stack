@@ -2,7 +2,7 @@
 
 import { useState, useCallback, useMemo, Suspense } from 'react'
 import { ErrorBoundary } from 'react-error-boundary'
-import { useAuth } from '../../hooks/use-auth'
+import { useAuth } from '../../contexts/AuthContext' // Use context version
 import { useNotes } from '../../contexts/NotesContext'
 import { NotesList } from './NotesList'
 import { NoteEditor } from './NoteEditor'
@@ -108,10 +108,10 @@ function DashboardLoading() {
 
 // Main Dashboard content component
 function DashboardContent() {
-  const { user } = useAuth()
+  const { user, isLoading: userLoading } = useAuth()
 
   // Check if user is available before accessing notes context
-  if (!user) {
+  if (!user || userLoading) {
     return <DashboardLoading />
   }
 
@@ -165,7 +165,7 @@ function DashboardContent() {
       {/* Page Header */}
       <PageHeader
         title="Dashboard"
-        subtitle={`Welcome back, ${user?.name || 'User'}!`}
+        subtitle={`Welcome back, ${user?.name || user?.email || 'User'}!`}
         description="Here's your productivity overview and latest updates from your AI-powered workspace."
         icon={BarChart3}
         badge={{ text: 'Live', variant: 'success' }}

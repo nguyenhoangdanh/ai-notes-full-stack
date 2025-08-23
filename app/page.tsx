@@ -298,14 +298,14 @@ function LoadingScreen({ title, description, progress }: {
 
 
 function AppContent() {
-  const { user, isLoading } = useAuth()
+  const { user, isLoading, isAuthenticated } = useAuth()
   const router = useRouter()
 
   useEffect(() => {
-    if (user && !isLoading) {
+    if (isAuthenticated && user && !isLoading) {
       router.replace('/dashboard')
     }
-  }, [user, isLoading, router])
+  }, [isAuthenticated, user, isLoading, router])
 
   if (isLoading) {
     return (
@@ -317,7 +317,7 @@ function AppContent() {
     )
   }
 
-  if (!user) {
+  if (!isAuthenticated || !user) {
     return <LandingPage />
   }
 

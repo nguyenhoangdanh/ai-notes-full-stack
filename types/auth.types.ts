@@ -9,8 +9,8 @@ export interface User {
   image?: string;
   avatar?: string; // Add avatar alias for image
   role?: string; // Add role property
-  createdAt: string;
-  updatedAt: string;
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 export interface GoogleOAuthUser {

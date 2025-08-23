@@ -4,6 +4,7 @@ import { toast } from 'sonner'
 import { authService } from '../services'
 import { queryKeys } from './query-keys'
 import { setAuthToken, clearAuthToken, getAuthToken } from '../lib/api-config'
+import { useAuthStore } from '../stores/auth.store'
 import type {
   RegisterDto,
   LoginDto,
@@ -54,15 +55,8 @@ export function useUsage() {
 
 // Authentication mutations
 export function useRegister() {
-  const queryClient = useQueryClient()
-
   return useMutation({
-    mutationFn: (data: RegisterDto) => authService.register(data),
-    onSuccess: (response: AuthResponseDto) => {
-      // Update auth cache
-      queryClient.setQueryData(queryKeys.auth.profile(), response.user)
-      toast.success('Account created successfully!')
-    },
+    mutationFn: (data: RegisterDto) => useAuthStore.getState().register(data),
     onError: (error: any) => {
       const message = error.response?.message || 'Registration failed'
       toast.error(message)
@@ -71,15 +65,8 @@ export function useRegister() {
 }
 
 export function useLogin() {
-  const queryClient = useQueryClient()
-
   return useMutation({
-    mutationFn: (data: LoginDto) => authService.login(data),
-    onSuccess: (response: AuthResponseDto) => {
-      // Update auth cache
-      queryClient.setQueryData(queryKeys.auth.profile(), response.user)
-      toast.success('Logged in successfully!')
-    },
+    mutationFn: (data: LoginDto) => useAuthStore.getState().login(data),
     onError: (error: any) => {
       const message = error.response?.message || 'Login failed'
       toast.error(message)
@@ -88,18 +75,8 @@ export function useLogin() {
 }
 
 export function useLogout() {
-  const queryClient = useQueryClient()
-
   return useMutation({
-    mutationFn: async () => {
-      // No backend call needed for logout, just clear local state
-      return Promise.resolve()
-    },
-    onSuccess: () => {
-      // Clear all cached data
-      queryClient.clear()
-      toast.success('Logged out successfully')
-    },
+    mutationFn: () => useAuthStore.getState().logout(),
   })
 }
 
@@ -136,6 +113,8 @@ export function useResetSettings() {
     },
   })
 }
+
+
 
 // Main useAuth hook that combines all auth functionality
 export function useAuth() {
