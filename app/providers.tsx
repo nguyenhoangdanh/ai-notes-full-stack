@@ -8,7 +8,6 @@ import { ErrorBoundary } from 'react-error-boundary'
 import { useState, useEffect } from 'react'
 import { AuthProvider } from '../contexts/AuthContext'
 import { AIProvider } from '../contexts/AIContext'
-import { NotesProvider } from '../contexts/NotesContext'
 import { ErrorFallback } from '../ErrorFallback'
 import { DemoModeIndicator } from '../components/common/DemoModeIndicator'
 import { initializeApiClient } from '../lib/api-config'
@@ -60,8 +59,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
           storageKey="ai-notes-theme"
         >
           <AuthProvider>
-            <NotesProvider>
-              <AIProvider>
+            <AIProvider>
                 {children}
                 <DemoModeIndicator />
                 <Toaster
@@ -77,8 +75,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
                   }}
                   theme="system"
                 />
-              </AIProvider>
-            </NotesProvider>
+            </AIProvider>
           </AuthProvider>
         </ThemeProvider>
         <ReactQueryDevtools
