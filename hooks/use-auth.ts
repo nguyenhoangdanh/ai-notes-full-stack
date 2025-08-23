@@ -117,7 +117,7 @@ export function useResetSettings() {
 
 
 // Main useAuth hook that combines all auth functionality
-export function useAuth() {
+export function useAuthQueries() {
   const queryClient = useQueryClient()
   
   // Get current user from profile query

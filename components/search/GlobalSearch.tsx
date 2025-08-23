@@ -25,7 +25,7 @@ import { Badge } from '../ui/Badge'
 import { Separator } from '../ui/separator'
 import { ScrollArea } from '../ui/scroll-area'
 import { useNotes } from '../../contexts/NotesContext'
-import { useAuth } from '../../hooks/use-auth'
+import { useAuth } from '../../contexts/AuthContext'
 import { cn } from '../../lib/utils'
 import { toast } from 'sonner'
 

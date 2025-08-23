@@ -21,7 +21,7 @@ import {
   ArrowUp
 } from 'lucide-react'
 import { useAI } from '../../contexts/AIContext'
-import { useAuth } from '../../hooks/use-auth'
+import { useAuth } from '../../contexts/AuthContext'
 import { useNotes } from '../../contexts/NotesContext'
 import { cn } from '../../lib/utils'
 import { toast } from 'sonner'

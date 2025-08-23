@@ -37,7 +37,7 @@ import {
   AlertCircle,
   Sparkles
 } from 'lucide-react'
-import { useAuth } from '../../hooks/use-auth'
+import { useAuth } from '../../contexts/AuthContext'
 import { useTheme } from 'next-themes'
 import { cn } from '../../lib/utils'
 import { toast } from 'sonner'
