@@ -303,13 +303,13 @@ function AppContent() {
 
   useEffect(() => {
     if (user && !isLoading) {
-      router.push('/dashboard')
+      router.replace('/dashboard')
     }
   }, [user, isLoading, router])
 
   if (isLoading) {
     return (
-      <LoadingScreen 
+      <LoadingScreen
         title="Loading your workspace..."
         description="Preparing your intelligent workspace with AI-powered features"
         progress={75}
@@ -321,8 +321,14 @@ function AppContent() {
     return <LandingPage />
   }
 
-  // Will redirect to dashboard
-  return null
+  // Show loading while redirecting to dashboard
+  return (
+    <LoadingScreen
+      title="Redirecting to dashboard..."
+      description="Taking you to your workspace"
+      progress={90}
+    />
+  )
 }
 
 export default function HomePage() {
