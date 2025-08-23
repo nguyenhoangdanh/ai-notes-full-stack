@@ -1,18 +1,9 @@
-// Layout Components
-export { AppLayout } from './layout/AppLayout'
-export { Header } from './layout/Header'
-export { Sidebar } from './layout/Sidebar'
-
-// UI Components
+// Core UI Components only
 export { Button } from './ui/Button'
+export { Card, CardHeader, CardContent } from './ui/Card'
 export { Input } from './ui/input'
 export { Textarea } from './ui/textarea'
-export { Card, CardHeader, CardContent, CardFooter, FeatureCard, MetricCard, ActionCard } from './ui/Card'
-export { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter, DialogTrigger, DialogClose } from './ui/dialog'
-export { Badge, AIBadge, SuccessBadge, WarningBadge, DangerBadge, CountBadge, StatusBadge } from './ui/Badge'
-export { Separator } from './ui/separator'
-export { Tooltip, TooltipContent, TooltipTrigger, TooltipProvider } from './ui/tooltip'
-export { Label } from './ui/label'
+export { Badge } from './ui/Badge'
 
 // Form Components
 export { 
