@@ -41,10 +41,11 @@ interface SidebarProps {
   collapsed: boolean
   onToggle: () => void
   isMobile?: boolean
+  user?: any // Accept user prop to optimize re-renders
 }
 
 // Memoized Sidebar component to prevent unnecessary re-renders
-const Sidebar = memo(function Sidebar({ collapsed, onToggle, isMobile = false }: SidebarProps) {
+const Sidebar = memo(function Sidebar({ collapsed, onToggle, isMobile = false, user }: SidebarProps) {
   const pathname = usePathname()
 
   // Memoized active ID calculation to prevent recalculation on every render
@@ -181,5 +182,8 @@ const Sidebar = memo(function Sidebar({ collapsed, onToggle, isMobile = false }:
     </div>
   )
 })
+
+// Custom comparison function for memo
+Sidebar.displayName = 'Sidebar'
 
 export { Sidebar }
