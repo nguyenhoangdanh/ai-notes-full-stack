@@ -14,7 +14,10 @@ export const AppLayout = memo(function AppLayout({ children }: AppLayoutProps) {
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const [isMobile, setIsMobile] = useState(false)
   const [isScrolled, setIsScrolled] = useState(false)
-  const { user } = useAuth()
+  const { user, isLoading } = useAuth()
+
+  // Memoize user to prevent unnecessary re-renders
+  const memoizedUser = useMemo(() => user, [user?.id, user?.email])
 
   // Responsive sidebar management with improved UX
   const handleResize = useCallback(() => {
@@ -140,7 +143,8 @@ export const AppLayout = memo(function AppLayout({ children }: AppLayoutProps) {
   ), [isMobile])
 
   // Auth layout for login/register with modern design
-  if (!user) {
+  // Only show auth layout when not loading and no user
+  if (!isLoading && !memoizedUser) {
     return (
       <div className="min-h-screen bg-bg relative overflow-hidden">
         {/* Enhanced modern auth background with new tokens */}
@@ -205,6 +209,7 @@ export const AppLayout = memo(function AppLayout({ children }: AppLayoutProps) {
           collapsed={!sidebarOpen}
           onToggle={toggleSidebar}
           isMobile={isMobile}
+          user={memoizedUser}
         />
       </aside>
 

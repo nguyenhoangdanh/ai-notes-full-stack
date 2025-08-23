@@ -1,6 +1,7 @@
 'use client'
 
-import { useState, useCallback, useMemo } from 'react'
+import { useState, useCallback, useMemo, Suspense } from 'react'
+import { ErrorBoundary } from 'react-error-boundary'
 import { useAuth } from '../../hooks/use-auth'
 import { useNotes } from '../../contexts/NotesContext'
 import { NotesList } from './NotesList'

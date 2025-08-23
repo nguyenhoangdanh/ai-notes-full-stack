@@ -1,4 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { useCallback, useMemo } from 'react'
 import { toast } from 'sonner'
 import { authService } from '../services'
 import { queryKeys } from './query-keys'
@@ -219,18 +220,47 @@ export function useAuth() {
     },
   })
 
-  return {
+  // Memoize stable function references
+  const login = useCallback((data: LoginDto) => {
+    loginMutation.mutate(data)
+  }, [loginMutation.mutate])
+
+  const register = useCallback((data: RegisterDto) => {
+    registerMutation.mutate(data)
+  }, [registerMutation.mutate])
+
+  const logout = useCallback(() => {
+    logoutMutation.mutate()
+  }, [logoutMutation.mutate])
+
+  const verifyToken = useCallback(() => {
+    verifyMutation.mutate()
+  }, [verifyMutation.mutate])
+
+  // Memoize the return object to prevent recreation on every render
+  return useMemo(() => ({
     // State
     user: profileQuery.data || null,
     isLoading: profileQuery.isLoading || verifyMutation.isPending,
     isRegistering: registerMutation.isPending,
     isLoggingIn: loginMutation.isPending,
-    
+
     // Actions
-    login: loginMutation.mutate,
-    register: registerMutation.mutate,
-    logout: logoutMutation.mutate,
-    verifyToken: verifyMutation.mutate,
+    login,
+    register,
+    logout,
+    verifyToken,
     googleLogin: authService.googleLogin,
-  }
+  }), [
+    profileQuery.data?.id, // Only re-create when user ID changes
+    profileQuery.data?.email, // Or email changes
+    profileQuery.isLoading,
+    verifyMutation.isPending,
+    registerMutation.isPending,
+    loginMutation.isPending,
+    login,
+    register,
+    logout,
+    verifyToken
+  ])
 }
