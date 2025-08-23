@@ -1,8 +1,5 @@
 'use client'
 
-
-import { Badge, Button, Card } from '@/components'
-import { GradientCallout, PageHeader, Panel } from '@/components/ui'
 import { 
   Sparkles, 
   MessageSquare, 
@@ -16,6 +13,10 @@ import {
   BarChart3,
   Copy
 } from 'lucide-react'
+import { GradientCallout, PageHeader, Panel } from '@/components/ui'
+import { Button } from '@/components/ui/Button'
+import { Card } from '@/components/ui/Card'
+import { Badge } from '@/components/ui/Badge'
 
 export default function AIPage() {
   const handleStartChat = () => {
