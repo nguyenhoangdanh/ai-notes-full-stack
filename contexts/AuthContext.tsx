@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useEffect } from 'react'
+import React, { createContext, useContext, useEffect, useMemo } from 'react'
 import { getAuthToken, setAuthToken, clearAuthToken } from '../lib/api-config'
 import { authService } from '../services/auth.service'
 import { useAuth as useAuthHook } from '../hooks/use-auth'
@@ -47,7 +47,8 @@ function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   }, [])
 
-  const value: AuthContextType = {
+  // Memoize the context value to prevent unnecessary re-renders
+  const value: AuthContextType = useMemo(() => ({
     user: auth.user || null,
     isLoading: auth.isLoading,
     login: auth.login,
@@ -56,7 +57,17 @@ function AuthProvider({ children }: { children: React.ReactNode }) {
     googleLogin: auth.googleLogin,
     isRegistering: auth.isRegistering,
     isLoggingIn: auth.isLoggingIn,
-  }
+  }), [
+    auth.user?.id, // Only re-render when user ID changes
+    auth.user?.email, // Or email changes
+    auth.isLoading,
+    auth.login,
+    auth.register,
+    auth.logout,
+    auth.googleLogin,
+    auth.isRegistering,
+    auth.isLoggingIn,
+  ])
 
   return (
     <AuthContext.Provider value={value}>
