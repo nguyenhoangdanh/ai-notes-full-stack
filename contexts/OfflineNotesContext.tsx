@@ -56,7 +56,7 @@ export function OfflineNotesProvider({ children }: { children: React.ReactNode }
   const shouldFetch = !!user && !userLoading
 
   // Use the raw query hooks for API calls to avoid circular dependency
-  const { data: serverNotes, isLoading: notesLoading } = useNotesQuery(undefined, undefined)
+  const { data: serverNotes, isLoading: notesLoading } = useNotesQuery()
   const { data: serverWorkspaces, isLoading: workspacesLoading } = useWorkspaces()
   const createNoteMutation = useCreateNote()
   const updateNoteMutation = useUpdateNote()
