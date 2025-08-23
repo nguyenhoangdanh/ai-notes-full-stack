@@ -49,12 +49,15 @@ interface OfflineNotesContextType {
 const OfflineNotesContext = createContext<OfflineNotesContextType | undefined>(undefined)
 
 export function OfflineNotesProvider({ children }: { children: React.ReactNode }) {
-  const { user } = useAuth()
+  const { user, isLoading: userLoading } = useAuth()
   const userId = user?.id
-  
+
+  // Only fetch data when user is available to avoid errors
+  const shouldFetch = !!user && !userLoading
+
   // Use the raw query hooks for API calls to avoid circular dependency
-  const { data: serverNotes, isLoading: notesLoading } = useNotesQuery()
-  const { data: serverWorkspaces, isLoading: workspacesLoading } = useWorkspaces()
+  const { data: serverNotes, isLoading: notesLoading } = useNotesQuery(undefined, undefined, { enabled: shouldFetch })
+  const { data: serverWorkspaces, isLoading: workspacesLoading } = useWorkspaces({ enabled: shouldFetch })
   const createNoteMutation = useCreateNote()
   const updateNoteMutation = useUpdateNote()
   const deleteNoteMutation = useDeleteNote()
