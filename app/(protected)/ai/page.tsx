@@ -17,17 +17,6 @@ import {
   Copy
 } from 'lucide-react'
 
-export const metadata = {
-  title: 'AI Assistant - AI Notes',
-  description: 'Enhance your productivity with AI-powered features. Get intelligent suggestions, automated summaries, and smart content generation.',
-  keywords: ['AI assistant', 'artificial intelligence', 'smart suggestions', 'content generation', 'productivity', 'automation'],
-  openGraph: {
-    title: 'AI Assistant - AI Notes',
-    description: 'Enhance your productivity with AI-powered features and intelligent automation.',
-    type: 'website',
-  },
-}
-
 export default function AIPage() {
   const handleStartChat = () => {
     window.location.href = '/ai/chat'
