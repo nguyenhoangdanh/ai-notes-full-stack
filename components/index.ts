@@ -38,9 +38,6 @@ export { ResponsiveGrid } from './common/ResponsiveGrid'
 export { DashboardOverview } from './dashboard/DashboardOverview'
 export { Dashboard } from './dashboard/Dashboard'
 
-// SEO Components
-export { PageMeta } from './seo/PageMeta'
-
 // Accessibility Components
 export { 
   SkipLinks,

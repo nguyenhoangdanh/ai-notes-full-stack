@@ -15,16 +15,14 @@ import {
   PlusIcon,
   EyeIcon
 } from '@heroicons/react/24/outline'
-import { Button } from '../../../components/ui/Button'
-import { Card, CardContent, CardHeader, CardTitle } from '../../../components/ui/Card'
-import { Badge } from '../../../components/ui/Badge'
-import { Input } from '../../../components/ui/input'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '../../../components/ui/tabs'
+
 import { toast } from 'sonner'
 import { format } from 'date-fns'
-import { cn } from '../../../lib/utils'
 import Link from 'next/link'
 import { useCategory, useCategoryNotes } from '@/hooks/use-smart'
+import { Badge, Button, Card, CardContent, CardHeader, Input } from '@/components'
+import { CardTitle } from '@/components/ui'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 
 export default function CategoryDetailPage() {
   const params = useParams()

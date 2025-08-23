@@ -2,25 +2,12 @@
 
 import { useState } from 'react'
 import { Plus, Folder, Hash, Edit, Trash2, Search, Brain, Tag, Sparkles, Filter, MoreHorizontal, TrendingUp } from 'lucide-react'
+import { Category } from '@/types'
+import { useCategories, useCreateCategory, useDeleteCategory, useUpdateCategory } from '@/hooks'
+import { Badge, Button, EmptyState, GradientCallout, PageHeader, Panel, SearchInput, SkeletonCard, StatCard, Toggle, Toolbar, ToolbarSection } from '@/components/ui'
+import { CategoryCreateDialog } from '@/components/categories/CategoryCreateDialog'
+import { CategoryEditDialog } from '@/components/categories/CategoryEditDialog'
 
-// Import new UI components
-import { PageHeader } from '../../components/ui/PageHeader'
-import { StatCard } from '../../components/ui/StatCard'
-import { Panel } from '../../components/ui/Panel'
-import { Button } from '../../components/ui/Button'
-import { Badge } from '../../components/ui/Badge'
-import { SearchInput } from '../../components/ui/SearchInput'
-import { GradientCallout } from '../../components/ui/GradientCallout'
-import { EmptyState } from '../../components/ui/EmptyState'
-import { Toggle } from '../../components/ui/Toggle'
-import { Toolbar, ToolbarSection } from '../../components/ui/Toolbar'
-import { Skeleton, SkeletonCard } from '../../components/ui/Skeleton'
-
-import { CategoryCreateDialog } from '../../components/categories/CategoryCreateDialog'
-import { CategoryEditDialog } from '../../components/categories/CategoryEditDialog'
-import { CategoryCard } from '../../components/categories/CategoryCard'
-import { type Category } from '../../types'
-import { useCategories, useCreateCategory, useDeleteCategory, useUpdateCategory } from '../../hooks/use-smart'
 
 export default function CategoriesPage() {
   const [searchQuery, setSearchQuery] = useState('')

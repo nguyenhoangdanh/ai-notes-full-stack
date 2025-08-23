@@ -27,24 +27,12 @@ interface NoteEditorProps {
 }
 
 export function NoteEditor({ noteId, onClose }: NoteEditorProps) {
-  // Add error handling for notes context
-  let notes: any[] = []
-  let updateNote = async (id: string, updates: any) => {}
-  let getRelatedNotes = (id: string) => []
-
-  try {
-    const notesContext = useNotes()
-    notes = notesContext.notes || []
-    updateNote = notesContext.updateNote
-    getRelatedNotes = notesContext.getRelatedNotes
-  } catch (error) {
-    console.warn('Notes context not available in NoteEditor:', error)
-  }
+  const { notes, updateNote } = useNotes();
 
   const isMobile = useIsMobile()
   
   const note = notes.find(n => n.id === noteId)
-  const relatedNotes = getRelatedNotes(noteId)
+  // const relatedNotes = getRelatedNotes(noteId)
   
   const [title, setTitle] = useState('')
   const [content, setContent] = useState('')
@@ -278,7 +266,7 @@ export function NoteEditor({ noteId, onClose }: NoteEditorProps) {
             </div>
 
             {/* Related Notes */}
-            {relatedNotes.length > 0 && (
+            {notes.length > 0 && (
               <div className="flex-1 p-4 overflow-y-auto">
                 <Card>
                   <CardHeader className="pb-3">
@@ -288,7 +276,7 @@ export function NoteEditor({ noteId, onClose }: NoteEditorProps) {
                     </h3>
                   </CardHeader>
                   <CardContent className="space-y-3">
-                    {relatedNotes.map((relatedNote) => (
+                    {notes.map((relatedNote) => (
                       <div
                         key={relatedNote.id}
                         className="p-3 rounded-md border border-border hover:bg-secondary/50 cursor-pointer transition-colors"

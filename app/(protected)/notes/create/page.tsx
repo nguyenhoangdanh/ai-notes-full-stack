@@ -3,24 +3,14 @@
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { ArrowLeft, Upload, Eye, Tag, Folder, Sparkles, BookOpen } from 'lucide-react'
-import { Button } from '../../../components/ui/Button'
-import { Input } from '../../../components/ui/input'
-import { Textarea } from '../../../components/ui/textarea'
-import { 
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '../../../components/ui/select'
-import { Card, CardContent, CardHeader, CardTitle } from '../../../components/ui/Card'
-import { Badge } from '../../../components/ui/Badge'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '../../../components/ui/tabs'
-import { useNotes, useCreateNote } from '../../../hooks/use-notes'
-import { useWorkspaces } from '../../../hooks/use-workspaces'
 import { toast } from 'sonner'
 import { marked } from 'marked'
-import { cn } from '../../../lib/utils'
+import { useCreateNote, useWorkspaces } from '@/hooks'
+import { Button, Card, CardContent, CardHeader, Input, Textarea } from '@/components'
+import { Tabs, TabsList } from '@radix-ui/react-tabs'
+import { TabsContent, TabsTrigger } from '@/components/ui/tabs'
+import { CardTitle } from '@/components/ui'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 
 export default function CreateNotePage() {
   const router = useRouter()

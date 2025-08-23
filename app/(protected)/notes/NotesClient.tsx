@@ -3,15 +3,6 @@
 import { useState } from 'react'
 import Link from 'next/link'
 
-// Import new UI components
-import { PageHeader } from '../../components/ui/PageHeader'
-import { Panel } from '../../components/ui/Panel'
-import { Button } from '../../components/ui/Button'
-import { Badge } from '../../components/ui/Badge'
-import { SearchInput } from '../../components/ui/SearchInput'
-import { EmptyState } from '../../components/ui/EmptyState'
-import { Toolbar, ToolbarSection } from '../../components/ui/Toolbar'
-
 import { 
   Plus, 
   Search, 
@@ -27,6 +18,7 @@ import {
   MoreHorizontal,
   ChevronRight
 } from 'lucide-react'
+import { Badge, Button, EmptyState, PageHeader, Panel, SearchInput, Toolbar, ToolbarSection } from '@/components/ui'
 
 export default function NotesClient() {
   const [searchQuery, setSearchQuery] = useState('')

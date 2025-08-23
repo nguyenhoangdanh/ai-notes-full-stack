@@ -1,22 +1,14 @@
 'use client'
 import { ArrowLeft, Upload } from 'lucide-react'
 
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 
-import { Button } from '../../../components/ui/Button'
-import { Input } from '../../../components/ui/input'
-import { Textarea } from '../../../components/ui/textarea'
-import { 
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '../../../components/ui/select'
-import { Card, CardContent, CardHeader, CardTitle } from '../../../components/ui/Card'
-import { useWorkspaces, useCreateWorkspace } from '../../../hooks/use-workspaces'
 import { toast } from 'sonner'
+import { useCreateWorkspace } from '@/hooks'
+import { Button, Card, CardContent, CardHeader, Input, Textarea } from '@/components'
+import { CardTitle } from '@/components/ui'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 
 export default function CreateWorkspacePage() {
   const router = useRouter()

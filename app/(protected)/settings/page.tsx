@@ -2,21 +2,13 @@
 
 import { useState, useEffect } from 'react'
 import { User, Bell, Palette, Shield, Cloud } from 'lucide-react'
-import { Card, CardContent, CardHeader, CardTitle } from '../../components/ui/Card'
-import { Button } from '../../components/ui/Button'
-import { Input } from '../../components/ui/input'
-import { Switch } from '../../components/ui/switch'
-import { 
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '../../components/ui/select'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '../../components/ui/tabs'
-import { ThemeToggle } from '../../components/common/ThemeToggle'
-import { useAuth, useUserSettings, useUpdateSettings } from '../../hooks/use-auth'
 import { toast } from 'sonner'
+import { useAuth, useUpdateSettings, useUserSettings } from '@/hooks'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { Button, Card, CardContent, CardHeader, Input, ThemeToggle } from '@/components'
+import { CardTitle } from '@/components/ui'
+import { Switch } from '@/components/ui/switch'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 
 export default function SettingsPage() {
   const { user } = useAuth()

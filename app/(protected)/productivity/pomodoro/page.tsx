@@ -1,11 +1,10 @@
 'use client'
+import { Button, Card, CardContent, CardHeader } from '@/components'
+import { CardTitle } from '@/components/ui'
+import { Progress } from '@/components/ui/progress'
 import { Play, Pause, Square } from 'lucide-react'
 
 import { useState, useEffect } from 'react'
-
-import { Card, CardContent, CardHeader, CardTitle } from '../../../components/ui/Card'
-import { Button } from '../../../components/ui/Button'
-import { Progress } from '../../../components/ui/progress'
 
 export default function PomodoroPage() {
   const [timeLeft, setTimeLeft] = useState(25 * 60) // 25 minutes

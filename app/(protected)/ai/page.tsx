@@ -1,12 +1,8 @@
 'use client'
 
-import { PageMeta } from '../../components/seo/PageMeta'
-import { PageHeader } from '../../components/ui/PageHeader'
-import { GradientCallout } from '../../components/ui/GradientCallout'
-import { Button } from '../../components/ui/Button'
-import { Panel } from '../../components/ui/Panel'
-import { Badge } from '../../components/ui/Badge'
-import { Card } from '../../components/ui/Card'
+
+import { Badge, Button, Card } from '@/components'
+import { GradientCallout, PageHeader, Panel } from '@/components/ui'
 import { 
   Sparkles, 
   MessageSquare, 
@@ -43,12 +39,12 @@ export default function AIPage() {
 
   return (
     <>
-      <PageMeta
+      {/* <PageMeta
         title="AI Assistant"
         description="Enhance your productivity with AI-powered features. Get intelligent suggestions, automated summaries, and smart content generation."
         keywords={['AI assistant', 'artificial intelligence', 'smart suggestions', 'content generation', 'productivity', 'automation']}
         type="website"
-      />
+      /> */}
       
       <div className="space-y-8">
         {/* Page Header */}
@@ -59,7 +55,7 @@ export default function AIPage() {
           icon={Sparkles}
           badge={{ text: 'AI-Powered', variant: 'ai' }}
           actions={
-            <Button 
+            <Button
               variant="cta" 
               icon={MessageSquare}
               onClick={handleStartChat}

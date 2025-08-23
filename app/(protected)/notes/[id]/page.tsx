@@ -15,15 +15,13 @@ import {
   ClockIcon,
   DocumentTextIcon
 } from '@heroicons/react/24/outline'
-import { Button } from '../../../components/ui/Button'
-import { Card, CardContent, CardHeader, CardTitle } from '../../../components/ui/Card'
-import { Badge } from '../../../components/ui/Badge'
-import { Separator } from '../../../components/ui/separator'
-import { useNote } from '../../../hooks/use-notes'
 import { toast } from 'sonner'
 import { format } from 'date-fns'
 import { marked } from 'marked'
-import { cn } from '../../../lib/utils'
+import { useNote } from '@/hooks'
+import { Badge, Button, Card, CardContent, CardHeader, Separator } from '@/components'
+import { CardTitle } from '@/components/ui'
+import { cn } from '@/lib/utils'
 
 export default function NoteDetailPage() {
   const params = useParams()

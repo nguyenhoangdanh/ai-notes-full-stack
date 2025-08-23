@@ -17,17 +17,13 @@ import {
   EyeIcon,
   AdjustmentsHorizontalIcon
 } from '@heroicons/react/24/outline'
-import { Button } from '../../../components/ui/Button'
-import { Card, CardContent, CardHeader, CardTitle } from '../../../components/ui/Card'
-import { Badge } from '../../../components/ui/Badge'
-import { Separator } from '../../../components/ui/separator'
-import { Input } from '../../../components/ui/input'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '../../../components/ui/tabs'
-import { useWorkspace, useWorkspaceNotes } from '../../../hooks/use-workspaces'
 import { toast } from 'sonner'
 import { format } from 'date-fns'
-import { cn } from '../../../lib/utils'
 import Link from 'next/link'
+import { useWorkspace, useWorkspaceNotes } from '@/hooks'
+import { Badge, Button, Card, CardContent, CardHeader, Input } from '@/components'
+import { CardTitle } from '@/components/ui'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 
 export default function WorkspaceDetailPage() {
   const params = useParams()

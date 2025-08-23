@@ -75,7 +75,7 @@ const ProtectedLayout = memo(function ProtectedLayout({ children }: ProtectedLay
     >
       <Suspense fallback={<AuthenticatedLoading />}>
         <ErrorBoundary
-          fallback={ContextErrorFallback}
+          FallbackComponent={ContextErrorFallback}
           onError={(error) => {
             console.error('NotesProvider context error:', error)
           }}

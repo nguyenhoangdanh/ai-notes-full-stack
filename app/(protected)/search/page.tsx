@@ -3,18 +3,7 @@ import { Search, FileText, Folder, Filter, Sparkles, Clock, BarChart3 } from 'lu
 
 import { useState, useEffect, Suspense } from 'react'
 import { useSearchParams } from 'next/navigation'
-
-// Import new UI components
-import { PageHeader } from '../../components/ui/PageHeader'
-import { SearchInput } from '../../components/ui/SearchInput'
-import { Button } from '../../components/ui/Button'
-import { Badge } from '../../components/ui/Badge'
-import { Panel } from '../../components/ui/Panel'
-import { Card } from '../../components/ui/Card'
-import { EmptyState } from '../../components/ui/EmptyState'
-import { StatCard } from '../../components/ui/StatCard'
-import { Toolbar, ToolbarSection } from '../../components/ui/Toolbar'
-import { Toggle } from '../../components/ui/Toggle'
+import { Badge, Button, Card, EmptyState, PageHeader, Panel, SearchInput, StatCard, Toggle, Toolbar, ToolbarSection } from '@/components/ui'
 
 function SearchContent() {
   const searchParams = useSearchParams()

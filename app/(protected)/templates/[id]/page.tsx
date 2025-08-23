@@ -17,16 +17,13 @@ import {
   UserIcon,
   GlobeAltIcon
 } from '@heroicons/react/24/outline'
-import { Button } from '../../../components/ui/Button'
-import { Card, CardContent, CardHeader, CardTitle } from '../../../components/ui/Card'
-import { Badge } from '../../../components/ui/Badge'
-import { Separator } from '../../../components/ui/separator'
-import { useTemplate } from '../../../hooks/use-features'
 import { toast } from 'sonner'
 import { format } from 'date-fns'
 import { marked } from 'marked'
-import { cn } from '../../../lib/utils'
-import Link from 'next/link'
+import { useTemplate } from '@/hooks/use-templates'
+import { Badge, Button, Card, CardContent, CardHeader, Separator } from '@/components'
+import { CardTitle } from '@/components/ui'
+import { cn } from '@/lib/utils'
 
 export default function TemplateDetailPage() {
   const params = useParams()

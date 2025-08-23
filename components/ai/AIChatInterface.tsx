@@ -61,11 +61,9 @@ export function AIChatInterface({
 
   // Add error handling for notes context
   let notes: any[] = []
-  let getNote = (id: string) => undefined
   try {
     const notesContext = useNotes()
     notes = notesContext.notes || []
-    getNote = notesContext.getNote
   } catch (error) {
     console.warn('Notes context not available in AIChatInterface:', error)
   }
@@ -82,7 +80,7 @@ export function AIChatInterface({
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)
 
-  const currentNote = selectedNoteId ? getNote(selectedNoteId) : null
+  const currentNote = selectedNoteId ? notes.find(note => note.id === selectedNoteId) : null
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })

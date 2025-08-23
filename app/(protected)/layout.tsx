@@ -1,4 +1,3 @@
-'use client'
 
 import { ProtectedLayout } from '../../components/layout/ProtectedLayout'
 

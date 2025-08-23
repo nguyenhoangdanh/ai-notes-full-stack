@@ -1,3 +1,4 @@
+"use client"
 import { createContext, useContext, ReactNode, useMemo } from 'react'
 import { useNotes as useNotesQuery, useCreateNote, useUpdateNote, useDeleteNote, useSearchNotes } from '../hooks'
 import { Note } from '../types'

@@ -58,15 +58,9 @@ export function GlobalSearch({
   autoFocus = false,
   className
 }: GlobalSearchProps) {
-  // Add error handling for notes context
-  let notes: any[] = []
-  try {
-    const notesContext = useNotes()
-    notes = notesContext.notes || []
-  } catch (error) {
-    console.warn('Notes context not available in GlobalSearch:', error)
-    notes = []
-  }
+
+  const { notes } = useNotes();
+
 
   const { user } = useAuth()
   const [query, setQuery] = useState('')

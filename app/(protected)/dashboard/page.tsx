@@ -1,5 +1,4 @@
-import { Dashboard } from '../../components/dashboard/Dashboard'
-import { PageMeta } from '../../components/seo/PageMeta'
+import { Dashboard } from "@/components/dashboard/Dashboard"
 
 export const metadata = {
   title: 'Dashboard - AI Notes',
@@ -32,7 +31,7 @@ export const metadata = {
 export default function DashboardPage() {
   return (
     <>
-      <PageMeta
+      {/* <PageMeta
         title="Dashboard"
         description="Your AI-powered productivity dashboard with intelligent note management, advanced analytics, and collaborative features for enhanced workflow optimization."
         keywords={[
@@ -40,7 +39,7 @@ export default function DashboardPage() {
           'collaboration tools', 'workflow analytics', 'note organization', 'AI insights'
         ]}
         type="website"
-      />
+      /> */}
       <main role="main" aria-label="AI Notes Dashboard - Productivity Hub" className="h-full">
         <Dashboard />
       </main>

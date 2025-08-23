@@ -4,19 +4,8 @@ import { Plus, Folder, Users, Settings, Search, Star, MoreHorizontal, Clock, Act
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { formatDistanceToNow } from 'date-fns'
-
-// Import new UI components
-import { PageHeader } from '../../components/ui/PageHeader'
-import { StatCard } from '../../components/ui/StatCard'
-import { Panel } from '../../components/ui/Panel'
-import { Button } from '../../components/ui/Button'
-import { Badge } from '../../components/ui/Badge'
-import { SearchInput } from '../../components/ui/SearchInput'
-import { EmptyState } from '../../components/ui/EmptyState'
-import { Toolbar, ToolbarSection } from '../../components/ui/Toolbar'
-import { Skeleton, SkeletonCard } from '../../components/ui/Skeleton'
-
-import { useWorkspaces } from '../../hooks/use-workspaces'
+import { useWorkspaces } from '@/hooks'
+import { Badge, Button, EmptyState, PageHeader, Panel, SearchInput, SkeletonCard, StatCard, Toolbar, ToolbarSection } from '@/components/ui'
 
 export default function WorkspacesPage() {
   const router = useRouter()

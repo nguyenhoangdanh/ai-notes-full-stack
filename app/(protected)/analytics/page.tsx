@@ -1,14 +1,8 @@
 'use client'
 
-// Import new UI components
-import { PageHeader } from '../../components/ui/PageHeader'
-import { StatCard } from '../../components/ui/StatCard'
-import { Panel } from '../../components/ui/Panel'
-import { Button } from '../../components/ui/Button'
-import { Badge } from '../../components/ui/Badge'
-import { EmptyState } from '../../components/ui/EmptyState'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '../../components/ui/tabs'
 
+import { Badge, Button, EmptyState, PageHeader, Panel, StatCard } from '@/components/ui'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import {
   BarChart3,
   TrendingUp,
