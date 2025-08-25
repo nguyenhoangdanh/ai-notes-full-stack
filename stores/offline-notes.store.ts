@@ -103,7 +103,7 @@ export const useOfflineNotesStore = create<OfflineNotesState>()(
             }))
             
             // Trigger sync if online
-            if (navigator.onLine) {
+            if (typeof window !== 'undefined' && navigator.onLine) {
               get().forceSync()
             }
             
@@ -143,7 +143,7 @@ export const useOfflineNotesStore = create<OfflineNotesState>()(
             }))
 
             // Trigger sync if online
-            if (navigator.onLine) {
+            if (typeof window !== 'undefined' && navigator.onLine) {
               get().forceSync()
             }
           } catch (error) {
@@ -163,7 +163,7 @@ export const useOfflineNotesStore = create<OfflineNotesState>()(
             }))
 
             // Trigger sync if online
-            if (navigator.onLine) {
+            if (typeof window !== 'undefined' && navigator.onLine) {
               get().forceSync()
             }
             
@@ -253,7 +253,7 @@ export const useOfflineNotesStore = create<OfflineNotesState>()(
         forceSync: async (): Promise<void> => {
           const { isAuthenticated } = useAuthStore.getState()
           
-          if (!isAuthenticated || !navigator.onLine) {
+          if (!isAuthenticated || (typeof window !== 'undefined' && !navigator.onLine)) {
             return
           }
 

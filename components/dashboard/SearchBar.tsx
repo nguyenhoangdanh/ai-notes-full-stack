@@ -281,7 +281,7 @@ export function SearchBar({
             {!isFocused && !value && (
               <div className="hidden sm:flex items-center gap-1 text-xs text-text-subtle">
                 <kbd className="px-2 py-1 bg-bg-muted rounded-md text-xs font-mono border border-border-subtle">
-                  {navigator.platform?.includes('Mac') ? '⌘' : 'Ctrl'}
+                  {typeof window !== 'undefined' && navigator.platform?.includes('Mac') ? '⌘' : 'Ctrl'}
                 </kbd>
                 <kbd className="px-2 py-1 bg-bg-muted rounded-md text-xs font-mono border border-border-subtle">K</kbd>
               </div>

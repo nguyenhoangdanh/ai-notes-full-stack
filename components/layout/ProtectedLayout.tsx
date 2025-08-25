@@ -30,7 +30,7 @@ const ProtectedLayout = memo(function ProtectedLayout({ children }: ProtectedLay
   // Check authentication on mount
   useEffect(() => {
     checkAuth()
-  }, [checkAuth])
+  }, []) // Remove checkAuth from dependency to prevent infinite calls
 
   // Handle OAuth callback
   useEffect(() => {
