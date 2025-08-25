@@ -1,5 +1,12 @@
 'use client'
 
+import { Input } from '@/components/ui/input'
+import { CardHeader } from '@/components/ui/Card'
+import { CardContent } from '@/components/ui/Card'
+import { Card } from '@/components/ui/Card'
+import { Button } from '@/components/ui/Button'
+import { Badge } from '@/components/ui/Badge'
+
 import { useState } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import { 
@@ -21,7 +28,6 @@ import { toast } from 'sonner'
 import { format } from 'date-fns'
 import Link from 'next/link'
 import { useWorkspace, useWorkspaceNotes } from '@/hooks'
-import { Badge, Button, Card, CardContent, CardHeader, Input } from '@/components'
 import { CardTitle } from '@/components/ui'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 

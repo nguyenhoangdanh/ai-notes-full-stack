@@ -4,15 +4,15 @@ import { useState, useEffect } from 'react'
 import { User, Bell, Palette, Shield, Cloud } from 'lucide-react'
 import { toast } from 'sonner'
 import { useUpdateSettings, useUserSettings } from '@/hooks'
-import { useAuth } from '@/contexts/AuthContext'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Button, Card, CardContent, CardHeader, Input, ThemeToggle } from '@/components'
 import { CardTitle } from '@/components/ui'
 import { Switch } from '@/components/ui/switch'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { useAuthStore } from '@/stores'
 
 export default function SettingsPage() {
-  const { user } = useAuth()
+  const { user } = useAuthStore()
   const { data: settings, isLoading: settingsLoading } = useUserSettings()
   const updateSettingsMutation = useUpdateSettings()
   

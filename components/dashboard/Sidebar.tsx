@@ -1,5 +1,4 @@
-import { useAuth } from '../../contexts/AuthContext'
-import { useNotes } from '../../contexts/NotesContext'
+import { useNotes as useNotesQuery } from '../../hooks'
 import { SearchBar } from './SearchBar'
 import { UserMenu } from '../header/UserMenu'
 import { ThemeToggle } from '../common/ThemeToggle'
@@ -18,6 +17,7 @@ import {
   Settings
 } from 'lucide-react'
 import { useIsMobile } from '../../hooks/use-mobile'
+import { useAuthStore } from '@/stores'
 
 interface SidebarProps {
   onClose?: () => void
@@ -26,17 +26,10 @@ interface SidebarProps {
 }
 
 export function Sidebar({ onClose, searchQuery, onSearchChange }: SidebarProps) {
-  const { user, logout } = useAuth()
+  const { user } = useAuthStore()
 
-  // Add error handling for notes context
-  let notes: any[] = []
-  try {
-    const notesContext = useNotes()
-    notes = notesContext.notes || []
-  } catch (error) {
-    console.warn('Notes context not available in dashboard Sidebar:', error)
-    notes = []
-  }
+  // Get notes data from React Query
+  const { data: notes = [] } = useNotesQuery()
 
   const isMobile = useIsMobile()
 

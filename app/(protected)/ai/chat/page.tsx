@@ -3,7 +3,9 @@
 import { useState, useRef, useEffect } from 'react'
 import { Send, Sparkles } from 'lucide-react'
 import { useCompleteChat } from '@/hooks'
-import { Button, Card, CardContent, CardHeader, Input } from '@/components'
+import { Button } from '@/components/ui/Button'
+import { Card, CardContent, CardHeader } from '@/components/ui/Card'
+import { Input } from '@/components/ui/input'
 import { CardTitle } from '@/components/ui'
 import { ScrollArea } from '@/components/ui/scroll-area'
 

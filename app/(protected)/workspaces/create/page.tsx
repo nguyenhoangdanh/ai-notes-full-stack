@@ -1,12 +1,14 @@
 'use client'
-import { ArrowLeft, Upload } from 'lucide-react'
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-
+import { ArrowLeft, Upload } from 'lucide-react'
 import { toast } from 'sonner'
 import { useCreateWorkspace } from '@/hooks'
-import { Button, Card, CardContent, CardHeader, Input, Textarea } from '@/components'
+import { Button } from '@/components/ui/Button'
+import { Card, CardContent, CardHeader } from '@/components/ui/Card'
+import { Input } from '@/components/ui/input'
+import { Textarea } from '@/components/ui/textarea'
 import { CardTitle } from '@/components/ui'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 

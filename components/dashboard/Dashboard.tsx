@@ -2,8 +2,8 @@
 
 import { useState, useCallback, useMemo, Suspense } from 'react'
 import { ErrorBoundary } from 'react-error-boundary'
-import { useAuth } from '../../contexts/AuthContext' // Use context version
-import { useNotes } from '../../contexts/NotesContext'
+import { useAuthStore } from '../../stores/auth.store'
+import { useNotes as useNotesQuery, useCreateNote, useDeleteNote } from '../../hooks'
 import { NoteEditor } from './NoteEditor'
 import { BulkActionsBar } from './BulkActionsBar'
 import { AIAssistantToggle } from '../ai/AIAssistantToggle'
@@ -106,14 +106,26 @@ function DashboardLoading() {
 
 // Main Dashboard content component
 function DashboardContent() {
-  const { user, isLoading: userLoading } = useAuth()
-
-  // Check if user is available before accessing notes context
+  const user = useAuthStore((state) => state.user)
+  const userLoading = useAuthStore((state) => state.isLoading)
+  
+  // Check if user is available before accessing notes data
   if (!user || userLoading) {
     return <DashboardLoading />
   }
-
-  const { createNote, deleteNote, notes } = useNotes()
+  
+  // Get notes data and mutations from React Query
+  const { data: notes = [] } = useNotesQuery()
+  const createNoteMutation = useCreateNote()
+  const deleteNoteMutation = useDeleteNote()
+  
+  const createNote = async (noteData: any) => {
+    return await createNoteMutation.mutateAsync(noteData)
+  }
+  
+  const deleteNote = async (id: string) => {
+    return await deleteNoteMutation.mutateAsync(id)
+  }
   const [selectedNoteId, setSelectedNoteId] = useState<string | null>(null)
   const [selectedNoteIds, setSelectedNoteIds] = useState<string[]>([])
   const [searchQuery, setSearchQuery] = useState('')

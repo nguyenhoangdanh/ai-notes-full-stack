@@ -37,17 +37,17 @@ import {
   AlertCircle,
   Sparkles
 } from 'lucide-react'
-import { useAuth } from '../../contexts/AuthContext'
 import { useTheme } from 'next-themes'
 import { cn } from '../../lib/utils'
 import { toast } from 'sonner'
+import { useAuthStore } from '@/stores'
 
 interface UserMenuProps {
   className?: string
 }
 
 export function UserMenu({ className }: UserMenuProps) {
-  const { user, logout } = useAuth()
+  const { user, logout } = useAuthStore()
   const { theme, setTheme } = useTheme()
   const [isOpen, setIsOpen] = useState(false)
 

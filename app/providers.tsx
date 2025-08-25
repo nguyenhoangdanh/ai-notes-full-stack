@@ -6,8 +6,6 @@ import { ThemeProvider } from 'next-themes'
 import { Toaster } from 'sonner'
 import { ErrorBoundary } from 'react-error-boundary'
 import { useState, useEffect } from 'react'
-import { AuthProvider } from '../contexts/AuthContext'
-import { AIProvider } from '../contexts/AIContext'
 import { ErrorFallback } from '../ErrorFallback'
 import { DemoModeIndicator } from '../components/common/DemoModeIndicator'
 import { initializeApiClient } from '../lib/api-config'
@@ -58,25 +56,21 @@ export function Providers({ children }: { children: React.ReactNode }) {
           themes={['light', 'dark', 'system']}
           storageKey="ai-notes-theme"
         >
-          <AuthProvider>
-            <AIProvider>
-                {children}
-                <DemoModeIndicator />
-                <Toaster
-                  position="top-right"
-                  toastOptions={{
-                    duration: 4000,
-                    className: "glass border border-border-subtle shadow-3",
-                    style: {
-                      background: 'var(--color-surface)',
-                      color: 'var(--color-text)',
-                      border: '1px solid var(--color-border-subtle)',
-                    },
-                  }}
-                  theme="system"
-                />
-            </AIProvider>
-          </AuthProvider>
+          {children}
+          <DemoModeIndicator />
+          <Toaster
+            position="top-right"
+            toastOptions={{
+              duration: 4000,
+              className: "glass border border-border-subtle shadow-3",
+              style: {
+                background: 'var(--color-surface)',
+                color: 'var(--color-text)',
+                border: '1px solid var(--color-border-subtle)',
+              },
+            }}
+            theme="system"
+          />
         </ThemeProvider>
         <ReactQueryDevtools
           initialIsOpen={false}

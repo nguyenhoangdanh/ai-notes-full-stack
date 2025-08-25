@@ -23,7 +23,7 @@ import {
   Info,
   ExternalLink
 } from 'lucide-react'
-import { useOfflineNotes } from '../../contexts/OfflineNotesContext'
+import { useOfflineNotes } from '../../stores/offline-notes.store'
 import { offlineStorage, AppSettings } from '../../lib/offline-storage'
 import { useAuthProfile as useProfile, useUserSettings as useSettings, useUpdateSettings } from '../../hooks'
 import { toast } from 'sonner'
