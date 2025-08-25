@@ -1,8 +1,8 @@
 'use client'
 
-import { memo, Suspense } from 'react'
+import { memo, Suspense, useEffect } from 'react'
 import { ErrorBoundary } from 'react-error-boundary'
-import { useAuth } from '../../contexts/AuthContext'
+import { useAuthStore } from '../../stores/auth.store'
 import { NotesProvider } from '../../contexts/NotesContext'
 import { OfflineNotesProvider } from '../../contexts/OfflineNotesContext'
 import { AppLayout } from './AppLayout'
@@ -50,7 +50,35 @@ function ContextErrorFallback({ error }: { error: Error }) {
 
 // Memoized ProtectedLayout to prevent unnecessary re-renders across all pages
 const ProtectedLayout = memo(function ProtectedLayout({ children }: ProtectedLayoutProps) {
-  const { user, isLoading } = useAuth()
+  const user = useAuthStore((state) => state.user)
+  const isLoading = useAuthStore((state) => state.isLoading)
+  const checkAuth = useAuthStore((state) => state.checkAuth)
+
+  // Check authentication on mount
+  useEffect(() => {
+    checkAuth()
+  }, [checkAuth])
+
+  // Handle OAuth callback
+  useEffect(() => {
+    if (typeof window === 'undefined') return
+
+    const urlParams = new URLSearchParams(window.location.search)
+    const token = urlParams.get('token')
+
+    if (token) {
+      // Set token and verify
+      const { setAuthToken } = require('../../lib/api-config')
+      setAuthToken(token)
+      
+      // Verify the token to get user data
+      const { verifyToken } = useAuthStore.getState()
+      verifyToken()
+      
+      // Clean up URL
+      window.history.replaceState({}, document.title, window.location.pathname)
+    }
+  }, [])
 
   // Show loading state while auth is being checked
   if (isLoading) {
