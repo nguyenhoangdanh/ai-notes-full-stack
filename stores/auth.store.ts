@@ -1,7 +1,6 @@
 import { create } from 'zustand'
 import { persist, createJSONStorage } from 'zustand/middleware'
 import { authService } from '../services/auth.service'
-import { demoModeService } from '../services/demo.service'
 import { setAuthToken, clearAuthToken, getAuthToken } from '../lib/api-config'
 import type { User, LoginDto, RegisterDto, AuthResponseDto } from '../types/auth.types'
 import { toast } from 'sonner'
@@ -19,7 +18,6 @@ interface AuthState {
   register: (data: RegisterDto) => Promise<void>
   logout: () => Promise<void>
   googleLogin: () => Promise<void>
-  demoLogin: () => Promise<void>
   setUser: (user: User | null) => void
   setLoading: (loading: boolean) => void
   verifyToken: () => Promise<void>
@@ -104,32 +102,6 @@ export const useAuthStore = create<AuthState>()(
         }
       },
 
-      // Demo login
-      demoLogin: async () => {
-        set({ isLoading: true })
-        
-        try {
-          demoModeService.setDemoMode(true)
-          const response: AuthResponseDto = await authService.demoLogin()
-          
-          // Update state
-          set({
-            user: response.user,
-            isAuthenticated: true,
-            isLoading: false
-          })
-          
-          toast.success('Welcome to AI Notes Demo! 🎉', {
-            description: 'Explore all features with sample data. Changes won\'t be saved permanently.'
-          })
-        } catch (error: any) {
-          set({ isLoading: false })
-          const message = error?.message || 'Demo mode failed to initialize'
-          toast.error(message)
-          throw error
-        }
-      },
-
       // Google login
       googleLogin: async () => {
         try {
@@ -152,8 +124,6 @@ export const useAuthStore = create<AuthState>()(
         } finally {
           // Clear client-side state regardless of server response
           clearAuthToken()
-          demoModeService.setDemoMode(false)
-          
           set({
             user: null,
             isAuthenticated: false,
@@ -216,17 +186,6 @@ export const useAuthStore = create<AuthState>()(
           set({
             user: null,
             isAuthenticated: false,
-            isLoading: false
-          })
-          return
-        }
-
-        // If demo mode is enabled, get demo user
-        if (demoModeService.isDemoMode()) {
-          const demoUser = demoModeService.getDemoUser()
-          set({
-            user: demoUser,
-            isAuthenticated: true,
             isLoading: false
           })
           return

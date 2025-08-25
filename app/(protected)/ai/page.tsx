@@ -17,16 +17,11 @@ import {
   Copy
 } from 'lucide-react'
 
-export const metadata = {
-  title: 'AI Assistant - AI Notes',
-  description: 'Enhance your productivity with AI-powered features. Get intelligent suggestions, automated summaries, and smart content generation.',
-  keywords: ['AI assistant', 'artificial intelligence', 'smart suggestions', 'content generation', 'productivity', 'automation'],
-  openGraph: {
-    title: 'AI Assistant - AI Notes',
-    description: 'Enhance your productivity with AI-powered features and intelligent automation.',
-    type: 'website',
-  },
-}
+// Metadata should be in a layout.tsx or server component, not in a client component
+// export const metadata = {
+//   title: 'AI Assistant - AI Notes',
+//   description: 'Enhance your productivity with AI-powered features. Get intelligent suggestions, automated summaries, and smart content generation.',
+// }
 
 export default function AIPage() {
   const handleStartChat = () => {

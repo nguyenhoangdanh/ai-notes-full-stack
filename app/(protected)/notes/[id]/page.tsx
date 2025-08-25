@@ -18,7 +18,7 @@ import {
 import { toast } from 'sonner'
 import { format } from 'date-fns'
 import { marked } from 'marked'
-import { useNote } from '@/hooks'
+import { useNote, useDeleteNote, useCreateShareLink } from '@/hooks'
 import { Badge, Button, Card, CardContent, CardHeader, Separator } from '@/components'
 import { CardTitle } from '@/components/ui'
 import { cn } from '@/lib/utils'
@@ -29,6 +29,8 @@ export default function NoteDetailPage() {
   const noteId = params.id as string
   
   const { data: note, isLoading, error } = useNote(noteId)
+  const deleteNoteMutation = useDeleteNote()
+  const createShareLinkMutation = useCreateShareLink()
   const [isBookmarked, setIsBookmarked] = useState(false)
   const [readingTime, setReadingTime] = useState(0)
 
@@ -47,32 +49,55 @@ export default function NoteDetailPage() {
   const handleDelete = async () => {
     if (confirm('Are you sure you want to delete this note?')) {
       try {
-        // Delete logic here
-        toast.success('Note deleted successfully')
+        await deleteNoteMutation.mutateAsync(noteId)
         router.push('/notes')
       } catch (error) {
-        toast.error('Failed to delete note')
+        // Error is handled by the mutation itself via toast
       }
     }
   }
 
   const handleShare = async () => {
     try {
-      await navigator.share({
-        title: note?.title,
-        text: note?.content?.substring(0, 100) + '...',
-        url: window.location.href
+      // First try to create a share link via the API
+      const shareLink = await createShareLinkMutation.mutateAsync({
+        noteId,
+        options: {
+          expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7 days
+          allowComments: false
+        }
       })
+      
+      // Construct the share URL from the token
+      const shareUrl = `${window.location.origin}/share/${shareLink.token}`
+      
+      // Try native sharing first
+      if (navigator.share) {
+        await navigator.share({
+          title: note?.title,
+          text: note?.content?.substring(0, 100) + '...',
+          url: shareUrl
+        })
+      } else {
+        // Fallback to copying URL
+        await navigator.clipboard.writeText(shareUrl)
+        toast.success('Share link copied to clipboard')
+      }
     } catch (error) {
-      // Fallback to copying URL
-      navigator.clipboard.writeText(window.location.href)
-      toast.success('Link copied to clipboard')
+      // Fallback to copying current URL
+      try {
+        await navigator.clipboard.writeText(window.location.href)
+        toast.success('Link copied to clipboard')
+      } catch (clipboardError) {
+        toast.error('Failed to share note')
+      }
     }
   }
 
   const toggleBookmark = () => {
     setIsBookmarked(!isBookmarked)
     toast.success(isBookmarked ? 'Bookmark removed' : 'Note bookmarked')
+    // TODO: Implement actual bookmark functionality with backend
   }
 
   if (isLoading) {
@@ -142,7 +167,12 @@ export default function NoteDetailPage() {
               >
                 <BookmarkIcon className="h-4 w-4" />
               </Button>
-              <Button variant="ghost" size="icon-sm" onClick={handleShare}>
+              <Button 
+                variant="ghost" 
+                size="icon-sm" 
+                onClick={handleShare}
+                disabled={createShareLinkMutation.isPending}
+              >
                 <ShareIcon className="h-4 w-4" />
               </Button>
               <Button variant="ghost" size="icon-sm" onClick={handleEdit}>
@@ -152,6 +182,7 @@ export default function NoteDetailPage() {
                 variant="ghost" 
                 size="icon-sm" 
                 onClick={handleDelete}
+                disabled={deleteNoteMutation.isPending}
                 className="text-destructive hover:bg-destructive/10"
               >
                 <TrashIcon className="h-4 w-4" />
