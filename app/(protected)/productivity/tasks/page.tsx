@@ -31,7 +31,7 @@ export default function TasksPage() {
   const handleToggleTask = async (task: any) => {
     try {
       await updateTaskMutation.mutateAsync({
-        taskId: task.id,
+        id: task.id,
         data: {
           status: task.status === 'COMPLETED' ? 'TODO' : 'COMPLETED'
         }
