@@ -1,3 +1,4 @@
+import { Note } from '@/types'
 import { create } from 'zustand'
 import { devtools, persist, createJSONStorage } from 'zustand/middleware'
 
@@ -112,7 +113,7 @@ export const useNotesStore = create<NotesUIState>()(
 // Utility functions that work with server data from React Query
 // These can be used directly in components alongside the store
 export const notesUtils = {
-  searchNotes: (notes: any[], query: string) => {
+  searchNotes: (notes: Note[], query: string) => {
     if (!query.trim()) return notes
     
     const searchTerm = query.toLowerCase()

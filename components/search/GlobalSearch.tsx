@@ -22,13 +22,11 @@ import { Input } from '../ui/input'
 import { Button } from '../ui/Button'
 import { Card } from '../ui/Card'
 import { Badge } from '../ui/Badge'
-import { Separator } from '../ui/separator'
 import { ScrollArea } from '../ui/scroll-area'
-import { useNotes as useNotesQuery } from '../../hooks'
-import { notesUtils } from '../../stores/notes.store'
 import { useAuth } from '../../hooks/use-auth'
 import { cn } from '../../lib/utils'
 import { toast } from 'sonner'
+import { useNotes } from '@/hooks'
 
 interface SearchResult {
   id: string
@@ -60,7 +58,7 @@ export function GlobalSearch({
   className
 }: GlobalSearchProps) {
 
-  const { notes } = useNotes();
+  const { data: notes = [] } = useNotes();
 
 
   const { user } = useAuth()
