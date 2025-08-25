@@ -20,9 +20,9 @@ import {
   RotateCcw,
   ArrowUp
 } from 'lucide-react'
-import { useAI } from '../../contexts/AIContext'
-import { useAuth } from '../../hooks/use-auth'
-import { useNotes } from '../../contexts/NotesContext'
+import { useAI } from '../../stores/ai.store'
+import { useAuthStore } from '../../stores/auth.store'
+import { useNotes as useNotesQuery } from '../../hooks'
 import { cn } from '../../lib/utils'
 import { toast } from 'sonner'
 
@@ -57,16 +57,11 @@ export function AIChatInterface({
   onClose,
   className 
 }: AIChatInterfaceProps) {
-  const { user } = useAuth()
+  const user = useAuthStore((state) => state.user)
 
-  // Add error handling for notes context
-  let notes: any[] = []
-  try {
-    const notesContext = useNotes()
-    notes = notesContext.notes || []
-  } catch (error) {
-    console.warn('Notes context not available in AIChatInterface:', error)
-  }
+  // Get notes data from React Query
+  const { data: notes = [] } = useNotesQuery()
+  
   const { 
     activeConversation: currentConversation, 
     sendMessage: askAI, 
