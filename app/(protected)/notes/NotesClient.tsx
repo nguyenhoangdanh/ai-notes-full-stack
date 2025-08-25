@@ -19,61 +19,30 @@ import {
   ChevronRight
 } from 'lucide-react'
 import { Badge, Button, EmptyState, PageHeader, Panel, SearchInput, Toolbar, ToolbarSection } from '@/components/ui'
+import { useNotes } from '@/hooks'
 
 export default function NotesClient() {
   const [searchQuery, setSearchQuery] = useState('')
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid')
-  const [filterBy, setFilterBy] = useState<'all' | 'recent' | 'starred' | 'shared'>('all')
-  
-  // Mock notes data
-  const notes = [
-    {
-      id: '1',
-      title: 'Project Planning Session',
-      content: 'Comprehensive notes from our quarterly planning meeting...',
-      tags: ['planning', 'quarterly', 'strategy'],
-      category: 'work',
-      createdAt: '2024-01-15',
-      updatedAt: '2024-01-15',
-      starred: true
-    },
-    {
-      id: '2', 
-      title: 'Machine Learning Research',
-      content: 'Notes on latest AI developments and potential applications...',
-      tags: ['AI', 'research', 'technology'],
-      category: 'research',
-      createdAt: '2024-01-14',
-      updatedAt: '2024-01-14',
-      starred: false
-    },
-    {
-      id: '3',
-      title: 'Book Notes: Deep Work',
-      content: 'Key insights from Cal Newport\'s book on focused productivity...',
-      tags: ['books', 'productivity', 'focus'],
-      category: 'personal',
-      createdAt: '2024-01-13',
-      updatedAt: '2024-01-13',
-      starred: true
-    }
-  ]
+  // const [filterBy, setFilterBy] = useState<'all' | 'recent' | 'starred' | 'shared'>('all')
 
-  const filteredNotes = notes.filter(note => {
+  const { data: notes = [] } = useNotes();
+  
+   const filteredNotes = notes.filter(note => {
     if (searchQuery) {
       return note.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
              note.content.toLowerCase().includes(searchQuery.toLowerCase()) ||
              note.tags.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase()))
     }
     
-    switch (filterBy) {
-      case 'starred':
-        return note.starred
-      case 'recent':
-        return new Date(note.updatedAt) > new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)
-      default:
-        return true
-    }
+    // switch (filterBy) {
+    //   case 'starred':
+    //     return note.starred
+    //   case 'recent':
+    //     return new Date(note.updatedAt) > new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)
+    //   default:
+    //     return true
+    // }
   })
 
   return (
@@ -106,7 +75,7 @@ export default function NotesClient() {
         
         {/* Filter Tabs */}
         <div className="flex flex-wrap gap-2">
-          {[
+          {/* {[
             { key: 'all', label: 'All Notes', count: notes.length },
             { key: 'recent', label: 'Recent', count: notes.filter(n => new Date(n.updatedAt) > new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)).length },
             { key: 'starred', label: 'Starred', count: notes.filter(n => n.starred).length },
@@ -122,7 +91,7 @@ export default function NotesClient() {
               {filter.label}
               <Badge variant="default" size="sm">{filter.count}</Badge>
             </Button>
-          ))}
+          ))} */}
         </div>
       </div>
 
@@ -200,9 +169,9 @@ export default function NotesClient() {
                         <h3 className="font-semibold text-text group-hover:text-primary-600 transition-colors truncate">
                           {note.title}
                         </h3>
-                        {note.starred && (
+                        {/* {note.starred && (
                           <Star className="w-4 h-4 text-warning fill-warning flex-shrink-0" />
-                        )}
+                        )} */}
                       </div>
                       <p className="text-sm text-text-muted line-clamp-2">
                         {note.content}
@@ -249,7 +218,7 @@ export default function NotesClient() {
                       </div>
                       <div className="flex items-center gap-1">
                         <Tag className="w-3 h-3" />
-                        <span className="capitalize">{note.category}</span>
+                        {/* <span className="capitalize">{note.category}</span> */}
                       </div>
                     </div>
                     <div className="flex items-center gap-1">

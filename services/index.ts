@@ -4,7 +4,6 @@ export { workspaceService } from './workspace.service'
 export { noteService } from './note.service'
 export { aiService } from './ai.service'
 export { userService } from './user.service'
-export { demoModeService } from './demo.service'
 
 // New comprehensive services for expanded modules
 export { activitiesService } from './activities.service'

@@ -7,7 +7,6 @@ import { useEffect, useState } from 'react'
 import { Badge } from '../ui/Badge'
 import { Button } from '../ui/Button'
 import { Info, RotateCcw, X } from 'lucide-react'
-import { demoModeService } from '../../services/demo.service'
 import { toast } from 'sonner'
 
 export function DemoModeIndicator() {
@@ -15,7 +14,7 @@ export function DemoModeIndicator() {
   const [isVisible, setIsVisible] = useState(true)
 
   useEffect(() => {
-    setIsDemoMode(demoModeService.isDemoMode())
+    // setIsDemoMode(demoModeService.isDemoMode())
   }, [])
 
   if (!isDemoMode || !isVisible) {
@@ -23,7 +22,7 @@ export function DemoModeIndicator() {
   }
 
   const handleResetDemo = () => {
-    demoModeService.resetDemoData()
+    // demoModeService.resetDemoData()
     toast.success('Demo data has been reset!')
     // Trigger a page refresh to reload the demo data
     window.location.reload()

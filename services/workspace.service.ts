@@ -13,33 +13,35 @@ export const workspaceService = {
    * Get all workspaces for current user
    */
   async getAll(): Promise<Workspace[]> {
-    return apiClient.get<Workspace[]>('/workspaces');
+    return await apiClient.get<Workspace[]>('/workspaces');
   },
 
   /**
    * Get default workspace for current user
    */
   async getDefault(): Promise<Workspace> {
-    return apiClient.get<Workspace>('/workspaces/default');
+    return await apiClient.get<Workspace>('/workspaces/default');
   },
 
   /**
    * Create new workspace
    */
   async create(data: CreateWorkspaceDto): Promise<Workspace> {
-    return apiClient.post<Workspace>('/workspaces', { body: data });
+    return await apiClient.post<Workspace>('/workspaces', { body: data });
   },
 
   // Aliases for compatibility
   async getWorkspaces(): Promise<Workspace[]> {
-    return this.getAll();
+    // return this.getAll();
+    const rs = await apiClient.get<Workspace[]>('/workspaces');
+    return rs;
   },
 
   async getDefaultWorkspace(): Promise<Workspace> {
-    return this.getDefault();
+   return await apiClient.get<Workspace>('/workspaces/default');
   },
 
   async createWorkspace(data: CreateWorkspaceDto): Promise<Workspace> {
-    return this.create(data);
+    return await apiClient.post<Workspace>('/workspaces', { body: data });
   },
 };
