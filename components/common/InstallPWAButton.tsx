@@ -99,7 +99,7 @@ export function InstallPWAButton({
   const handleInstall = useCallback(async () => {
     if (!deferredPrompt) {
       // Fallback for iOS or other browsers
-      if (/iPad|iPhone|iPod/.test(navigator.userAgent)) {
+      if (typeof window !== 'undefined' && /iPad|iPhone|iPod/.test(navigator.userAgent)) {
         toast.info('To install on iOS:', {
           description: 'Tap the share button and select "Add to Home Screen"',
           duration: 6000
@@ -343,7 +343,7 @@ export function InstallPWAButton({
           </Card>
 
           {/* iOS-specific instruction */}
-          {/iPad|iPhone|iPod/.test(navigator.userAgent) && (
+          {typeof window !== 'undefined' && /iPad|iPhone|iPod/.test(navigator.userAgent) && (
             <motion.div
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}

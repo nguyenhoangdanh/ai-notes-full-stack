@@ -8,6 +8,9 @@ import { Badge, Button, EmptyState, GradientCallout, PageHeader, Panel, SearchIn
 import { CategoryCreateDialog } from '@/components/categories/CategoryCreateDialog'
 import { CategoryEditDialog } from '@/components/categories/CategoryEditDialog'
 
+// Force dynamic rendering to avoid SSR issues
+export const dynamic = 'force-dynamic'
+
 
 export default function CategoriesPage() {
   const [searchQuery, setSearchQuery] = useState('')

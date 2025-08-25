@@ -20,7 +20,7 @@ export class DemoModeService {
       id: 'demo-user-id',
       email: 'demo@example.com',
       name: 'Demo User',
-      image: null,
+      image: undefined,
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString()
     }

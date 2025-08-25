@@ -82,7 +82,7 @@ export class SyncService {
     const failedOps = syncQueue.filter(op => op.retryCount >= 3)
 
     return {
-      isOnline: navigator.onLine,
+      isOnline: typeof window !== 'undefined' ? navigator.onLine : true,
       isSyncing: this.syncInProgress,
       lastSyncTime: this.getLastSyncTime(),
       pendingOperations: pendingOps.length,
@@ -454,4 +454,37 @@ export class SyncService {
   }
 }
 
-export const syncService = SyncService.getInstance()
+export const syncService = (() => {
+  // Only create instance when accessed, and only on client side
+  let instance: SyncService | null = null
+  return {
+    getInstance(): SyncService {
+      if (typeof window === 'undefined') {
+        // Return a dummy service for SSR that won't cause errors
+        return {
+          getSyncStatus: () => Promise.resolve({
+            isOnline: true,
+            isSyncing: false,
+            lastSyncTime: undefined,
+            pendingOperations: 0,
+            failedOperations: 0
+          }),
+          addSyncListener: () => () => {},
+          forcSync: () => Promise.resolve(),
+          resolveConflict: () => Promise.resolve()
+        } as any
+      }
+      
+      if (!instance) {
+        instance = SyncService.getInstance()
+      }
+      return instance
+    },
+    
+    // Proxy the main methods for convenience
+    getSyncStatus: function() { return this.getInstance().getSyncStatus() },
+    addSyncListener: function(callback: (status: SyncStatus) => void) { return this.getInstance().addSyncListener(callback) },
+    forcSync: function() { return this.getInstance().forcSync() },
+    resolveConflict: function(noteId: string, resolution: 'local' | 'server' | 'merge') { return this.getInstance().resolveConflict(noteId, resolution) }
+  }
+})()
