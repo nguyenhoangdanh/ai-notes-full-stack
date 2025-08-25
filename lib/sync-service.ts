@@ -45,7 +45,7 @@ export class SyncService {
       // Check backend availability and start sync if available
       this.checkBackendAvailability().then(available => {
         this.backendAvailable = available
-        if (available && navigator.onLine) {
+        if (available && typeof window !== 'undefined' && navigator.onLine) {
           this.startBackgroundSync()
         }
       })
@@ -66,6 +66,17 @@ export class SyncService {
   }
 
   async getSyncStatus(): Promise<SyncStatus> {
+    // Return safe defaults during SSR
+    if (typeof window === 'undefined') {
+      return {
+        isOnline: true,
+        isSyncing: false,
+        lastSyncTime: undefined,
+        pendingOperations: 0,
+        failedOperations: 0
+      }
+    }
+
     const syncQueue = await offlineStorage.getSyncQueue()
     const pendingOps = syncQueue.filter(op => op.retryCount < 3)
     const failedOps = syncQueue.filter(op => op.retryCount >= 3)
@@ -80,6 +91,7 @@ export class SyncService {
   }
 
   private getLastSyncTime(): Date | undefined {
+    if (typeof window === 'undefined') return undefined
     const lastSync = localStorage.getItem('ai-notes-last-sync')
     return lastSync ? new Date(lastSync) : undefined
   }
@@ -105,7 +117,9 @@ export class SyncService {
   }
 
   private setLastSyncTime(): void {
-    localStorage.setItem('ai-notes-last-sync', new Date().toISOString())
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('ai-notes-last-sync', new Date().toISOString())
+    }
   }
 
   // Online/Offline Handling
@@ -122,7 +136,7 @@ export class SyncService {
 
   // Background Sync
   private async startBackgroundSync(): Promise<void> {
-    if (!navigator.onLine || this.syncInProgress) return
+    if (typeof window === 'undefined' || !navigator.onLine || this.syncInProgress) return
 
     // Check if backend is available before attempting sync
     if (!this.backendAvailable) {
@@ -155,7 +169,7 @@ export class SyncService {
 
   // Manual Sync
   async forcSync(): Promise<void> {
-    if (!navigator.onLine) {
+    if (typeof window === 'undefined' || !navigator.onLine) {
       throw new Error('Cannot sync while offline')
     }
 
@@ -427,13 +441,14 @@ export class SyncService {
     const retryDelay = Math.min(30000 * Math.pow(2, this.getRetryCount()), 300000)
     
     this.retryTimeout = setTimeout(() => {
-      if (navigator.onLine) {
+      if (typeof window !== 'undefined' && navigator.onLine) {
         this.startBackgroundSync()
       }
     }, retryDelay)
   }
 
   private getRetryCount(): number {
+    if (typeof window === 'undefined') return 0
     const lastRetry = localStorage.getItem('ai-notes-retry-count')
     return lastRetry ? parseInt(lastRetry, 10) : 0
   }
