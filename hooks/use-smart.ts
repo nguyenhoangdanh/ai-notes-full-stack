@@ -148,16 +148,26 @@ export const useUnassignCategory = () => {
   });
 };
 
-// Hook to get notes by category - this is implemented as a filtered search
-// since there's no direct backend endpoint for this
+// Hook to get notes by category - improved implementation using search
 export const useCategoryNotes = (categoryId: string) => {
   return useQuery({
     queryKey: [...smartQueryKeys.categories.detail(categoryId), 'notes'] as const,
     queryFn: async () => {
-      // For now, return empty array - this should be implemented properly
-      // when backend provides an endpoint to get notes by category
-      // Or we could use a search with category filter if available
-      return [];
+      try {
+        // First try to get the category to ensure it exists
+        const category = await categoriesService.getById(categoryId);
+        if (!category) {
+          return [];
+        }
+        
+        // For now, we'll use the note categories endpoint which should return notes for this category
+        // This is a temporary solution until the backend provides a proper endpoint
+        const noteCategories = await categoriesService.getNoteCategories(categoryId);
+        return noteCategories || [];
+      } catch (error) {
+        console.error('Failed to fetch category notes:', error);
+        return [];
+      }
     },
     enabled: !!categoryId,
     staleTime: 2 * 60 * 1000, // 2 minutes
