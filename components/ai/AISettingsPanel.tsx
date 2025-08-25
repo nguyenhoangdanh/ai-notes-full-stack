@@ -18,7 +18,7 @@ import {
   Bot,
   MessageSquare
 } from 'lucide-react'
-import { useAI } from '../../contexts/AIContext'
+import { useAI } from '../../stores/ai.store'
 import { cn } from '../../lib/utils'
 import { toast } from 'sonner'
 

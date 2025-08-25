@@ -4,6 +4,7 @@ export { Card, CardHeader, CardContent } from './ui/Card'
 export { Input } from './ui/input'
 export { Textarea } from './ui/textarea'
 export { Badge } from './ui/Badge'
+export { Separator } from './ui/separator'
 
 // Form Components
 export { 

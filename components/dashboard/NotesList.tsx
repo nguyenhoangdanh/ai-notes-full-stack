@@ -1,4 +1,6 @@
-import { useNotes, Note } from '../../contexts/NotesContext'
+import { useNotes as useNotesQuery, useDeleteNote } from '../../hooks'
+import { notesUtils } from '../../stores/notes.store'
+import type { Note } from '../../types'
 import { Card, CardContent } from '../ui/Card'
 import { Badge } from '../ui/Badge'
 import { Button } from '../ui/Button'
@@ -22,9 +24,14 @@ interface NotesListProps {
 }
 
 export function NotesList({ searchQuery, selectedNoteId, onSelectNote }: NotesListProps) {
-const { notes, searchNotes, deleteNote } = useNotes()
+  const { data: notes = [] } = useNotesQuery()
+  const deleteNoteMutation = useDeleteNote()
+  
+  const deleteNote = async (id: string) => {
+    return await deleteNoteMutation.mutateAsync(id)
+  }
 
-  const displayedNotes = searchQuery ? searchNotes(searchQuery) : notes
+  const displayedNotes = searchQuery ? notesUtils.searchNotes(notes, searchQuery) : notes
   const sortedNotes = displayedNotes.sort((a, b) => 
     new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()
   )

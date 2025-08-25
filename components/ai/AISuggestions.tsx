@@ -27,8 +27,8 @@ import {
   ChevronRight,
   Bot
 } from 'lucide-react'
-import { useAI } from '../../contexts/AIContext'
-import { useNotes } from '../../contexts/NotesContext'
+import { useAI } from '../../stores/ai.store'
+import { useNotes as useNotesQuery } from '../../hooks'
 import { cn } from '../../lib/utils'
 import { toast } from 'sonner'
 
@@ -69,14 +69,8 @@ export function AISuggestions({
   
   const { askAI, isProcessing } = useAI()
 
-  // Add error handling for notes context
-  let notes: any[] = []
-  try {
-    const notesContext = useNotes()
-    notes = notesContext.notes || []
-  } catch (error) {
-    console.warn('Notes context not available in AISuggestions:', error)
-  }
+  // Get notes data from React Query
+  const { data: notes = [] } = useNotesQuery()
 
   // Generate contextual suggestions based on content and context
   const generateSuggestions = useMemo(() => {

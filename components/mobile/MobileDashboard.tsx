@@ -27,7 +27,7 @@ import {
   Clock,
   Folder
 } from 'lucide-react'
-import { useOfflineNotes } from '../../contexts/OfflineNotesContext'
+import { useOfflineNotes } from '../../stores/offline-notes.store'
 import { OfflineNote } from '../../lib/offline-storage'
 import { MobileNoteEditor } from './MobileNoteEditor'
 import { VoiceNoteRecorder } from './VoiceNoteRecorder'
