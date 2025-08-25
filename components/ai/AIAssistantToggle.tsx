@@ -21,7 +21,7 @@ import {
   FileText
 } from 'lucide-react'
 import { AIChatInterface } from './AIChatInterface'
-import { useAI } from '../../contexts/AIContext'
+import { useAI } from '../../stores/ai.store'
 import { cn } from '../../lib/utils'
 
 interface AIAssistantToggleProps {

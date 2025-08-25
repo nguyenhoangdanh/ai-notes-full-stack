@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { useNotes } from '../../contexts/NotesContext'
+import { useNotes as useNotesQuery, useUpdateNote } from '../../hooks'
 import { Button } from '../ui/Button'
 import { Input } from '../ui/input'
 import { Textarea } from '../ui/textarea'
@@ -27,7 +27,12 @@ interface NoteEditorProps {
 }
 
 export function NoteEditor({ noteId, onClose }: NoteEditorProps) {
-  const { notes, updateNote } = useNotes();
+  const { data: notes = [] } = useNotesQuery()
+  const updateNoteMutation = useUpdateNote()
+  
+  const updateNote = async (id: string, updates: any) => {
+    return await updateNoteMutation.mutateAsync({ id, data: updates })
+  }
 
   const isMobile = useIsMobile()
   
