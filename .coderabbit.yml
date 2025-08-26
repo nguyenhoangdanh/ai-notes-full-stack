@@ -1,0 +1,7 @@
+review:
+  language: typescript
+  rules:
+    - check_code_style
+    - check_security_issues
+    - suggest_refactor
+  severity: medium

@@ -65,6 +65,7 @@ export const useOfflineNotesStore = create<OfflineNotesState>()(
         isLoading: false,
         syncStatus: {
           isOnline: navigator?.onLine ?? true,
+          // isOnline: window.navigator?.onLine ?? true,
           isSyncing: false,
           pendingOperations: 0,
           failedOperations: 0
@@ -290,6 +291,7 @@ export const useOfflineNotesStore = create<OfflineNotesState>()(
             set({ 
               syncStatus: {
                 isOnline: navigator?.onLine ?? true,
+                // isOnline: window.navigator?.onLine ?? true,
                 isSyncing: false,
                 pendingOperations: 0,
                 failedOperations: 1
