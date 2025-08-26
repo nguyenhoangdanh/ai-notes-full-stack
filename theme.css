@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@import './theme-modern.css';
 
 @import '@radix-ui/colors/sage-dark.css' layer(base);
 @import '@radix-ui/colors/olive.css' layer(base);
@@ -261,11 +262,11 @@
     --shadow-inner: inset 0 2px 4px 0 rgb(0 0 0 / 0.04);
     --shadow-none: 0 0 #0000;
 
-    /* Modern Glass Morphism */
-    --glass-bg: color-mix(in srgb, transparent 20%, white);
-    --glass-bg-strong: color-mix(in srgb, transparent 10%, white);
-    --glass-border: color-mix(in srgb, transparent 80%, white);
-    --glass-border-strong: color-mix(in srgb, transparent 60%, white);
+    /* Modern Glass Morphism - UPDATED */
+    --glass-bg: rgba(255, 255, 255, 0.8);
+    --glass-bg-strong: rgba(255, 255, 255, 0.9);
+    --glass-border: rgba(255, 255, 255, 0.18);
+    --glass-border-strong: rgba(255, 255, 255, 0.3);
     --glass-blur: blur(20px) saturate(180%) brightness(110%);
     --glass-blur-strong: blur(24px) saturate(200%) brightness(120%);
 
@@ -343,7 +344,7 @@
     --tracking-wider: 0.05em;
     --tracking-widest: 0.1em;
 
-    /* Enhanced Color System */
+    /* Enhanced Color System - IMPROVED */
     --color-neutral-1: var(--slate-1);
     --color-neutral-2: var(--slate-2);
     --color-neutral-3: var(--slate-3);
@@ -370,7 +371,7 @@
     --color-neutral-a12: var(--slate-a12);
     --color-neutral-contrast: var(--slate-contrast);
 
-    /* Primary Accent Colors */
+    /* Primary Accent Colors - IMPROVED */
     --color-accent-1: var(--indigo-1);
     --color-accent-2: var(--indigo-2);
     --color-accent-3: var(--indigo-3);
@@ -414,7 +415,7 @@
     --color-info-9: var(--blue-9);
     --color-info-11: var(--blue-11);
 
-    /* UI Color Tokens */
+    /* UI Color Tokens - IMPROVED */
     --color-fg: var(--color-neutral-12);
     --color-fg-secondary: var(--color-neutral-11);
     --color-fg-muted: var(--color-neutral-10);
@@ -426,11 +427,28 @@
     --color-bg-elevated: #ffffff;
     --color-bg-surface: var(--color-neutral-2);
 
+    /* NEW: Panel and Layout Colors */
+    --color-panel: rgba(255, 255, 255, 0.95);
+    --color-panel-2: rgba(248, 250, 252, 0.95);
+    --color-bg-elev-1: rgba(248, 250, 252, 0.8);
+    --color-bg-elev-2: rgba(241, 245, 249, 0.8);
+
+    /* NEW: Text Colors for better readability */
+    --color-text: var(--color-neutral-12);
+    --color-text-secondary: var(--color-neutral-11);
+    --color-text-muted: var(--color-neutral-10);
+    --color-text-subtle: var(--color-neutral-9);
+
     --color-border: var(--color-neutral-6);
     --color-border-strong: var(--color-neutral-8);
     --color-border-subtle: var(--color-neutral-4);
+    --color-border-soft: var(--color-neutral-3);
 
     --color-focus-ring: var(--color-accent-9);
+
+    /* NEW: Primary color shortcuts */
+    --color-primary-600: var(--color-accent-9);
+    --color-primary-700: var(--color-accent-10);
 
     /* Font Families */
     --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
@@ -439,13 +457,20 @@
     --font-family: var(--font-sans);
   }
 
-  /* Dark Mode Theme */
-  #spark-app.dark-theme {
+  /* Dark Mode Theme - ENHANCED */
+  #spark-app.dark-theme,
+  [data-theme="dark"] {
     --color-bg: var(--color-neutral-1);
     --color-bg-inset: #000000;
     --color-bg-overlay: color-mix(in srgb, var(--color-neutral-1) 95%, transparent);
     --color-bg-elevated: var(--color-neutral-2);
     --color-bg-surface: var(--color-neutral-3);
+
+    /* NEW: Dark mode panel colors */
+    --color-panel: rgba(30, 41, 59, 0.95);
+    --color-panel-2: rgba(15, 23, 42, 0.95);
+    --color-bg-elev-1: rgba(30, 41, 59, 0.8);
+    --color-bg-elev-2: rgba(51, 65, 85, 0.8);
 
     /* Dark mode glass effects */
     --glass-bg: color-mix(in srgb, transparent 70%, var(--color-neutral-1));
@@ -466,6 +491,7 @@
     --color-border: var(--color-neutral-6);
     --color-border-strong: var(--color-neutral-8);
     --color-border-subtle: var(--color-neutral-4);
+    --color-border-soft: var(--color-neutral-3);
   }
 
   /* High Contrast Mode Support */
@@ -477,7 +503,8 @@
       --shadow-sm: 0 1px 3px 0 rgb(0 0 0 / 0.25);
     }
     
-    #spark-app.dark-theme {
+    #spark-app.dark-theme,
+    [data-theme="dark"] {
       --color-accent-9: #4d9eff;
       --color-border: var(--color-neutral-7);
     }
@@ -502,19 +529,52 @@
 }
 
 @layer components {
-  /* Modern Glass Morphism Components */
-  .glass-effect {
+  /* Modern Glass Morphism Components - ENHANCED */
+  .glass {
     background: var(--glass-bg);
     border: 1px solid var(--glass-border);
     backdrop-filter: var(--glass-blur);
     -webkit-backdrop-filter: var(--glass-blur);
   }
 
-  .glass-effect-strong {
+  .glass-strong {
     background: var(--glass-bg-strong);
     border: 1px solid var(--glass-border-strong);
     backdrop-filter: var(--glass-blur-strong);
     -webkit-backdrop-filter: var(--glass-blur-strong);
+  }
+
+  /* Panel styles - UPDATED */
+  .panel {
+    background: var(--color-panel);
+    border: 1px solid var(--color-border-soft);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-sm);
+  }
+
+  .panel-2 {
+    background: var(--color-panel-2);
+    border: 1px solid var(--color-border-soft);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-md);
+  }
+
+  /* NEW: Modern transition utility */
+  .transition-modern {
+    transition: all var(--duration-fast) var(--ease-out);
+  }
+
+  .transition-spring {
+    transition: all var(--duration-normal) var(--ease-back-out);
+  }
+
+  /* NEW: Hover lift effect */
+  .hover-lift {
+    transition: transform var(--duration-fast) var(--ease-out);
+  }
+
+  .hover-lift:hover {
+    transform: translateY(-1px);
   }
 
   /* Advanced Text Gradients */
@@ -564,6 +624,13 @@
   .elevation-3 { box-shadow: var(--elevation-3); }
   .elevation-4 { box-shadow: var(--elevation-4); }
   .elevation-5 { box-shadow: var(--elevation-5); }
+
+  /* NEW: Shadow levels for convenience */
+  .shadow-1 { box-shadow: var(--shadow-xs); }
+  .shadow-2 { box-shadow: var(--shadow-sm); }
+  .shadow-3 { box-shadow: var(--shadow-md); }
+  .shadow-4 { box-shadow: var(--shadow-lg); }
+  .shadow-5 { box-shadow: var(--shadow-xl); }
 
   /* Performance-optimized animations */
   .animate-fade-in {
@@ -643,6 +710,13 @@
     max-width: var(--container-xl);
     margin: 0 auto;
     padding: 0 var(--size-4);
+  }
+
+  /* NEW: Modern container with better responsive padding */
+  .container-modern {
+    max-width: var(--container-2xl);
+    margin: 0 auto;
+    padding: 0 clamp(var(--size-4), 4vw, var(--size-8));
   }
 
   /* Responsive Utilities */
@@ -736,8 +810,8 @@
     --color-border: #cccccc;
   }
 
-  .glass-effect,
-  .glass-effect-strong {
+  .glass,
+  .glass-strong {
     background: white;
     border: 1px solid #cccccc;
     backdrop-filter: none;
