@@ -14,7 +14,7 @@ interface AppLayoutProps {
 // Separate scroll context to avoid re-renders
 const useScrollState = () => {
   const [isScrolled, setIsScrolled] = useState(false)
-  const scrollTimeoutRef = useRef<NodeJS.Timeout>()
+  const scrollTimeoutRef = useRef<NodeJS.Timeout | null>(null)
 
   useEffect(() => {
     const handleScroll = () => {
@@ -32,7 +32,7 @@ const useScrollState = () => {
       if (scrollTimeoutRef.current) return
       scrollTimeoutRef.current = setTimeout(() => {
         handleScroll()
-        scrollTimeoutRef.current = undefined
+        scrollTimeoutRef.current = null
       }, 16) // ~60fps
     }
 
