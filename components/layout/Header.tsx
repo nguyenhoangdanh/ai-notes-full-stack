@@ -188,14 +188,13 @@ const ActionButtons = memo(function ActionButtons({ isMobile }: { isMobile: bool
 })
 
 // Mobile search overlay component
-const MobileSearchOverlay = memo(function MobileSearchOverlay({ 
-  isOpen, 
-  onClose 
-}: { 
+const MobileSearchOverlay = memo(function MobileSearchOverlay({
+  isOpen,
+  onClose
+}: {
   isOpen: boolean
-  onClose: () => void 
+  onClose: () => void
 }) {
-  const [searchValue, setSearchValue] = useState('')
 
   useEffect(() => {
     if (isOpen) {
@@ -226,11 +225,9 @@ const MobileSearchOverlay = memo(function MobileSearchOverlay({
           />
           
           <div className="flex-1">
-            <GlobalSearch 
+            <GlobalSearch
               autoFocus
               placeholder="Search notes, workspaces, and more..."
-              value={searchValue}
-              onChange={setSearchValue}
             />
           </div>
         </div>
