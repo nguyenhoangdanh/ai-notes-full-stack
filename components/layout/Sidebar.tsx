@@ -407,7 +407,7 @@ export const Sidebar = memo(function Sidebar({
               <div className="text-xs text-neutral-10 font-medium">
                 AI Notes v1.0
               </div>
-              <Badge variant="accent" size="sm" className="px-2 py-1">
+              <Badge variant="ai" size="sm" className="px-2 py-1">
                 Beta
               </Badge>
             </div>
@@ -420,7 +420,7 @@ export const Sidebar = memo(function Sidebar({
           </>
         ) : (
           <div className="flex justify-center">
-            <Badge variant="accent" size="sm" className="px-1.5 py-1 text-xs">
+            <Badge variant="ai" size="sm" className="px-1.5 py-1 text-xs">
               β
             </Badge>
           </div>
