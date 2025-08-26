@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useRef, useEffect } from 'react'
-import { Menu, X, Search, Bell, Settings, Sparkles, GitPullRequest } from 'lucide-react'
+import { Menu, X, Search, Bell, Settings, Sparkles, GitPullRequest, Zap, Command, Palette } from 'lucide-react'
 import { Button, IconButton } from '../ui/Button'
 import { ThemeToggle } from '../common/ThemeToggle'
 import { UserMenu } from '../header/UserMenu'
@@ -18,24 +18,28 @@ interface HeaderProps {
 export function Header({ onMenuClick, sidebarOpen, isMobile }: HeaderProps) {
   const [isSearchFocused, setIsSearchFocused] = useState(false)
   const [isScrolled, setIsScrolled] = useState(false)
+  const [searchQuery, setSearchQuery] = useState('')
   const headerRef = useRef<HTMLElement>(null)
 
-  // Modern scroll detection with enhanced visual feedback
+  // Enhanced scroll detection with throttling
   useEffect(() => {
+    let ticking = false
+    
     const handleScroll = () => {
-      const scrolled = window.scrollY > 10
-      setIsScrolled(scrolled)
+      if (!ticking) {
+        requestAnimationFrame(() => {
+          setIsScrolled(window.scrollY > 10)
+          ticking = false
+        })
+        ticking = true
+      }
     }
 
-    const throttledScroll = () => {
-      requestAnimationFrame(handleScroll)
-    }
-
-    window.addEventListener('scroll', throttledScroll, { passive: true })
-    return () => window.removeEventListener('scroll', throttledScroll)
+    window.addEventListener('scroll', handleScroll, { passive: true })
+    return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 
-  // Enhanced keyboard shortcuts for modern UX
+  // Global keyboard shortcuts
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
       // Focus search with Ctrl/Cmd + K
@@ -44,219 +48,308 @@ export function Header({ onMenuClick, sidebarOpen, isMobile }: HeaderProps) {
         const searchInput = document.querySelector('[data-search-input]') as HTMLInputElement
         if (searchInput) {
           searchInput.focus()
+          setIsSearchFocused(true)
         }
       }
 
       // Close search overlay on Escape
       if (event.key === 'Escape' && isSearchFocused) {
         setIsSearchFocused(false)
+        setSearchQuery('')
+      }
+
+      // Toggle sidebar with Ctrl/Cmd + \
+      if ((event.ctrlKey || event.metaKey) && event.key === '\\') {
+        event.preventDefault()
+        onMenuClick()
       }
     }
 
     document.addEventListener('keydown', handleKeyDown)
     return () => document.removeEventListener('keydown', handleKeyDown)
-  }, [isSearchFocused])
+  }, [isSearchFocused, onMenuClick])
+
+  const handleSearchFocus = () => {
+    setIsSearchFocused(true)
+  }
+
+  const handleSearchBlur = () => {
+    // Delay hiding to allow for click events
+    setTimeout(() => setIsSearchFocused(false), 150)
+  }
+
+  const handlePRAction = () => {
+    // Trigger platform's PR creation flow
+    window.parent?.postMessage({ type: 'create-pr' }, '*')
+  }
 
   return (
     <>
       <header
         ref={headerRef}
         className={cn(
-          "h-16 sticky top-0 z-40 transition-modern",
-          // Enhanced modern glass effect with dynamic styling
-          isScrolled 
-            ? "glass border-b border-glass-border shadow-3" 
-            : "bg-panel/60 border-b border-border-soft shadow-1",
-          // Modern gradient overlay for visual appeal
-          "before:absolute before:inset-0 before:bg-gradient-to-r before:from-primary-600/5 before:to-transparent before:pointer-events-none",
+          "header-modern",
+          isScrolled && "scrolled",
           isMobile && "safe-area-inset-top"
         )}
         role="banner"
         aria-label="Application header"
       >
-        <div className="flex items-center justify-between h-full px-4 sm:px-6 lg:px-8 max-w-8xl mx-auto relative z-10">
-          {/* Left section - Menu and Brand/Search */}
-          <div className="flex items-center gap-3 min-w-0 flex-1">
-            {/* Modern menu toggle */}
-            <IconButton
-              variant="ghost"
-              size="md"
-              icon={isMobile && sidebarOpen ? X : Menu}
+        <div className="header-content relative z-10">
+          {/* Left Section */}
+          <div className="flex items-center gap-4 min-w-0 flex-1">
+            {/* Menu Toggle Button */}
+            <button
+              className="menu-toggle"
               onClick={onMenuClick}
-              className={cn(
-                "rounded-xl transition-modern hover-lift",
-                "hover:bg-bg-elev-1 hover:text-primary-600",
-                "focus-ring"
-              )}
               aria-label={sidebarOpen ? "Close sidebar" : "Open sidebar"}
               aria-expanded={sidebarOpen}
               aria-controls="app-sidebar"
-            />
-
-            {/* Brand logo for mobile when sidebar is closed */}
-            {isMobile && !sidebarOpen && (
-              <div className="flex items-center gap-2">
-                <div className="p-1.5 bg-gradient-to-br from-primary-600/10 to-purple/10 rounded-lg border border-glass-border">
-                  <Sparkles className="h-4 w-4 text-primary-600" aria-hidden="true" />
-                </div>
-                <span className="font-bold text-lg text-gradient">AI Notes</span>
+            >
+              <div className={cn(
+                "relative transition-transform duration-300",
+                sidebarOpen && isMobile && "rotate-90"
+              )}>
+                {isMobile && sidebarOpen ? (
+                  <X className="h-5 w-5" />
+                ) : (
+                  <Menu className="h-5 w-5" />
+                )}
               </div>
+            </button>
+
+            {/* Brand Logo for Mobile when Sidebar is Closed */}
+            {isMobile && !sidebarOpen && (
+              <Link href="/dashboard" className="flex items-center gap-3 group">
+                <div className="p-2 bg-gradient-to-br from-blue-500/10 to-indigo-500/10 rounded-xl border border-blue-200/30 dark:border-blue-800/30 transition-all group-hover:scale-105">
+                  <Sparkles className="h-5 w-5 text-blue-600 dark:text-blue-400" />
+                </div>
+                <span className="font-bold text-lg brand-gradient">AI Notes</span>
+              </Link>
             )}
 
-            {/* Modern search */}
+            {/* Search Section */}
             <div className={cn(
-              "flex-1 max-w-md transition-modern",
-              isSearchFocused && "max-w-lg"
+              "flex-1 max-w-2xl transition-all duration-300",
+              isSearchFocused && "max-w-3xl",
+              isMobile && "max-w-sm"
             )}>
-              <div className="relative">
-                <GlobalSearch 
-                  onFocusChange={setIsSearchFocused}
+              <div className="relative group">
+                <div className="absolute inset-y-0 left-3 flex items-center pointer-events-none">
+                  <Search className="h-4 w-4 text-slate-400 transition-colors group-focus-within:text-blue-500" />
+                </div>
+                
+                <input
+                  data-search-input
+                  type="text"
+                  placeholder="Search notes, workspaces, and more..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  onFocus={handleSearchFocus}
+                  onBlur={handleSearchBlur}
                   className={cn(
-                    "w-full transition-modern",
-                    isSearchFocused && "ring-2 ring-primary-600/20 shadow-2"
+                    "search-modern pl-10 pr-20",
+                    "w-full transition-all duration-300",
+                    isSearchFocused && "ring-2 ring-blue-500/20 bg-white dark:bg-slate-900"
                   )}
                 />
                 
-                {/* Keyboard shortcut hint */}
-                {!isMobile && !isSearchFocused && (
-                  <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-1 text-xs text-text-subtle">
-                    <kbd className="px-1.5 py-0.5 bg-bg-elev-1 rounded-md text-xs font-mono border border-border-soft">
-                      {navigator.platform.includes('Mac') ? '⌘' : 'Ctrl'}
+                {/* Keyboard Shortcut Hint */}
+                {!isMobile && !isSearchFocused && !searchQuery && (
+                  <div className="absolute inset-y-0 right-3 flex items-center gap-1 pointer-events-none">
+                    <kbd className="px-2 py-1 bg-slate-100 dark:bg-slate-800 text-xs font-mono rounded border border-slate-200 dark:border-slate-700 text-slate-500 dark:text-slate-400">
+                      <Command className="h-3 w-3 inline mr-1" />
+                      K
                     </kbd>
-                    <kbd className="px-1.5 py-0.5 bg-bg-elev-1 rounded-md text-xs font-mono border border-border-soft">K</kbd>
+                  </div>
+                )}
+
+                {/* Search Results Quick Preview */}
+                {isSearchFocused && (searchQuery || true) && (
+                  <div className="absolute top-full left-0 right-0 mt-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl shadow-lg backdrop-blur-xl z-50">
+                    <div className="p-4">
+                      {searchQuery ? (
+                        <div className="space-y-3">
+                          <div className="text-sm font-medium text-slate-900 dark:text-slate-100">
+                            Search results for "{searchQuery}"
+                          </div>
+                          {/* Search results would go here */}
+                          <div className="text-sm text-slate-500 dark:text-slate-400">
+                            Start typing to search...
+                          </div>
+                        </div>
+                      ) : (
+                        <div className="space-y-4">
+                          <div>
+                            <h3 className="text-sm font-medium text-slate-900 dark:text-slate-100 mb-2">Recent searches</h3>
+                            <div className="space-y-1 text-sm text-slate-600 dark:text-slate-400">
+                              <div className="hover:bg-slate-50 dark:hover:bg-slate-800 p-2 rounded-lg cursor-pointer">Project planning</div>
+                              <div className="hover:bg-slate-50 dark:hover:bg-slate-800 p-2 rounded-lg cursor-pointer">Meeting notes</div>
+                            </div>
+                          </div>
+                          
+                          <div>
+                            <h3 className="text-sm font-medium text-slate-900 dark:text-slate-100 mb-2">Quick actions</h3>
+                            <div className="grid grid-cols-2 gap-2">
+                              <Button variant="ghost" size="sm" className="justify-start h-9">
+                                <Sparkles className="h-4 w-4 mr-2" />
+                                New Note
+                              </Button>
+                              <Button variant="ghost" size="sm" className="justify-start h-9">
+                                <Settings className="h-4 w-4 mr-2" />
+                                Settings
+                              </Button>
+                            </div>
+                          </div>
+                        </div>
+                      )}
+                    </div>
                   </div>
                 )}
               </div>
             </div>
           </div>
 
-          {/* Right section - Actions and User Menu */}
+          {/* Right Section */}
           <nav 
-            className="flex items-center gap-1" 
+            className="flex items-center gap-2" 
             role="navigation" 
             aria-label="User actions and settings"
           >
-            {/* Desktop actions */}
+            {/* Desktop Actions */}
             {!isMobile && (
-              <div className="flex items-center gap-1">
-                {/* Send PR / Push Code Button */}
+              <div className="flex items-center gap-2">
+                {/* AI Assistant Quick Access */}
+                <button className="header-action group" aria-label="AI Assistant">
+                  <Zap className="h-5 w-5" />
+                  <div className="absolute -bottom-1 -right-1 w-3 h-3 bg-gradient-to-br from-blue-500 to-indigo-500 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                </button>
+
+                {/* Theme Toggle */}
+                <button className="header-action" aria-label="Toggle theme">
+                  <Palette className="h-5 w-5" />
+                </button>
+
+                {/* Notifications */}
+                <NotificationBell />
+
+                {/* Settings */}
+                <button className="header-action" aria-label="Settings">
+                  <Settings className="h-5 w-5" />
+                </button>
+
+                {/* Separator */}
+                <div className="w-px h-6 bg-slate-200 dark:bg-slate-700 mx-2"></div>
+
+                {/* PR/Push Button */}
                 <Button
                   variant="gradient"
                   size="sm"
-                  icon={GitPullRequest}
-                  onClick={() => {
-                    // This will trigger the platform's PR creation flow
-                    window.parent?.postMessage({ type: 'create-pr' }, '*')
-                  }}
-                  className="rounded-xl transition-modern hover-lift shadow-lg hover:shadow-xl"
+                  onClick={handlePRAction}
+                  className="bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white border-0 shadow-lg hover:shadow-xl transition-all duration-200 hover:-translate-y-0.5"
                   aria-label="Create Pull Request"
                 >
+                  <GitPullRequest className="h-4 w-4 mr-2" />
                   Send PR
                 </Button>
-
-                <ThemeToggle />
-                <NotificationBell />
-
-                {/* Quick settings */}
-                <IconButton
-                  variant="ghost"
-                  size="md"
-                  icon={Settings}
-                  className="rounded-xl transition-modern hover-lift hover:bg-bg-elev-1 hover:text-primary-600"
-                  aria-label="Quick settings"
-                />
               </div>
             )}
 
-            {/* Mobile quick actions */}
+            {/* Mobile Actions */}
             {isMobile && (
-              <div className="flex items-center gap-1">
-                {/* Mobile Send PR Button */}
-                <IconButton
-                  variant="gradient"
-                  size="md"
-                  icon={GitPullRequest}
-                  onClick={() => {
-                    // This will trigger the platform's PR creation flow
-                    window.parent?.postMessage({ type: 'create-pr' }, '*')
-                  }}
-                  className="rounded-xl transition-modern hover-lift shadow-lg hover:shadow-xl"
-                  aria-label="Create Pull Request"
-                />
+              <div className="flex items-center gap-2">
+                {/* Mobile AI Assistant */}
+                <button className="header-action" aria-label="AI Assistant">
+                  <Zap className="h-5 w-5" />
+                </button>
 
-                <IconButton
-                  variant="ghost"
-                  size="md"
-                  icon={Search}
-                  className="rounded-xl transition-modern hover-lift hover:bg-bg-elev-1"
-                  aria-label="Search"
-                  onClick={() => setIsSearchFocused(true)}
-                />
-
+                {/* Mobile Notifications */}
                 <NotificationBell />
+
+                {/* Mobile PR Button */}
+                <Button
+                  variant="gradient"
+                  size="sm"
+                  onClick={handlePRAction}
+                  className="bg-gradient-to-r from-blue-500 to-indigo-600 text-white border-0 px-3"
+                  aria-label="Create Pull Request"
+                >
+                  <GitPullRequest className="h-4 w-4" />
+                </Button>
               </div>
             )}
 
-            {/* Modern separator */}
-            <div className="w-px h-5 bg-border-soft ml-2 mr-1" />
-
-            {/* User menu */}
-            <div className="ml-1">
+            {/* User Menu */}
+            <div className="ml-2 pl-2 border-l border-slate-200 dark:border-slate-700">
               <UserMenu />
             </div>
           </nav>
         </div>
 
-        {/* Modern progress indicator for loading states */}
-        <div 
-          className="absolute bottom-0 left-0 right-0 h-0.5 bg-grad-primary scale-x-0 origin-left transition-transform duration-300" 
-          data-loading-bar 
-        />
+        {/* Progress Bar for Loading States */}
+        <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-blue-500 to-indigo-500 transform scale-x-0 origin-left transition-transform duration-300 opacity-0" data-loading-bar />
       </header>
 
-      {/* Mobile search overlay */}
+      {/* Mobile Search Overlay */}
       {isMobile && isSearchFocused && (
-        <div className="fixed inset-0 z-50 glass-bg backdrop-blur-xl animate-fade-in">
-          <div className="flex flex-col h-full">
-            {/* Search header */}
-            <div className="flex items-center gap-3 p-4 border-b border-border">
-              <IconButton
-                variant="ghost"
-                size="md"
-                icon={X}
+        <div className="fixed inset-0 z-50 bg-black/20 backdrop-blur-sm animate-in fade-in duration-200">
+          <div className="bg-white dark:bg-slate-900 h-full flex flex-col">
+            {/* Search Header */}
+            <div className="flex items-center gap-3 p-4 border-b border-slate-200 dark:border-slate-700">
+              <button
                 onClick={() => setIsSearchFocused(false)}
-                className="rounded-xl"
+                className="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors"
                 aria-label="Close search"
-              />
+              >
+                <X className="h-5 w-5" />
+              </button>
               
-              <div className="flex-1">
-                <GlobalSearch 
-                  onFocusChange={setIsSearchFocused}
+              <div className="flex-1 relative">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+                <input
+                  type="text"
+                  placeholder="Search everything..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="w-full pl-10 pr-4 py-3 bg-slate-50 dark:bg-slate-800 rounded-xl border-0 focus:ring-2 focus:ring-blue-500"
                   autoFocus
-                  placeholder="Search notes, workspaces, and more..."
                 />
               </div>
             </div>
 
-            {/* Search content area */}
+            {/* Search Content */}
             <div className="flex-1 overflow-auto p-4">
-              {/* Search suggestions, recent searches, etc. would go here */}
-              <div className="space-y-4">
+              <div className="space-y-6">
                 <div>
-                  <h3 className="text-sm font-medium text-text-muted mb-2">Recent searches</h3>
-                  <div className="space-y-1">
-                    {/* Recent search items */}
+                  <h3 className="text-sm font-medium text-slate-900 dark:text-slate-100 mb-3">Recent searches</h3>
+                  <div className="space-y-2">
+                    <div className="p-3 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-lg cursor-pointer">
+                      <div className="font-medium">Project planning</div>
+                      <div className="text-sm text-slate-500">in Workspace • 2 results</div>
+                    </div>
+                    <div className="p-3 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-lg cursor-pointer">
+                      <div className="font-medium">Meeting notes</div>
+                      <div className="text-sm text-slate-500">in Notes • 5 results</div>
+                    </div>
                   </div>
                 </div>
                 
                 <div>
-                  <h3 className="text-sm font-medium text-text-muted mb-2">Quick actions</h3>
-                  <div className="grid grid-cols-2 gap-2">
-                    <Button variant="secondary" size="sm" icon={Sparkles} className="justify-start">
-                      New Note
+                  <h3 className="text-sm font-medium text-slate-900 dark:text-slate-100 mb-3">Quick actions</h3>
+                  <div className="grid grid-cols-1 gap-2">
+                    <Button variant="ghost" size="sm" className="justify-start h-12 text-left">
+                      <Sparkles className="h-5 w-5 mr-3" />
+                      <div>
+                        <div className="font-medium">Create New Note</div>
+                        <div className="text-xs text-slate-500">Start writing instantly</div>
+                      </div>
                     </Button>
-                    <Button variant="secondary" size="sm" icon={Settings} className="justify-start">
-                      Settings
+                    <Button variant="ghost" size="sm" className="justify-start h-12 text-left">
+                      <Settings className="h-5 w-5 mr-3" />
+                      <div>
+                        <div className="font-medium">Settings</div>
+                        <div className="text-xs text-slate-500">Customize your experience</div>
+                      </div>
                     </Button>
                   </div>
                 </div>
