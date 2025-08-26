@@ -10,7 +10,6 @@ import { Input } from '../ui/input'
 import { Card } from '../ui/Card'
 import { Label } from '../ui/label'
 import { Separator } from '../ui/separator'
-import { Badge } from '../ui/Badge'
 import { 
   Brain, 
   Mail, 
@@ -31,9 +30,7 @@ import {
   AlertCircle
 } from 'lucide-react'
 import { useLogin, useRegister } from '../../hooks'
-import { authService, demoModeService } from '../../services'
 import { toast } from 'sonner'
-import { cn } from '../../lib/utils'
 
 // Validation schemas
 const loginSchema = z.object({
@@ -113,22 +110,6 @@ export function AuthScreen() {
     } catch (error) {
       console.error('Registration failed:', error)
       toast.error('Registration failed. Please try again.')
-    }
-  }
-
-  const handleDemoLogin = async () => {
-    try {
-      demoModeService.setDemoMode(true)
-      await authService.demoLogin()
-
-      toast.success('Welcome to AI Notes Demo! 🎉', {
-        description: 'Explore all features with sample data. Changes won\'t be saved permanently.'
-      })
-      // Redirect to dashboard after demo login
-      window.location.href = '/dashboard'
-    } catch (error) {
-      console.error('Demo login failed:', error)
-      toast.error('Demo mode failed to initialize')
     }
   }
 
@@ -588,24 +569,6 @@ export function AuthScreen() {
               </AnimatePresence>
 
               {/* Demo Login */}
-              <div className="space-y-4">
-                <div className="relative">
-                  <Separator className="bg-neutral-6" />
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <span className="bg-neutral-2 px-3 text-xs text-neutral-11">Try demo</span>
-                  </div>
-                </div>
-                
-                <Button
-                  variant="secondary"
-                  onClick={handleDemoLogin}
-                  disabled={isLoading}
-                  className="w-full h-11 gap-2 border border-accent-6 text-accent-11 hover:bg-accent-3"
-                >
-                  <Sparkles className="h-4 w-4" />
-                  Explore Demo Version
-                </Button>
-              </div>
 
               {/* Toggle between login/register */}
               <div className="text-center pt-4 border-t border-neutral-6">
