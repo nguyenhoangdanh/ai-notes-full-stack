@@ -1,294 +1,342 @@
 'use client'
 
-import { useState, useEffect, useCallback, useMemo, memo } from 'react'
+import { useState, useEffect, useCallback, useMemo, memo, useRef } from 'react'
 import { useAuthStore } from '../../stores/auth.store'
 import { Sidebar } from './Sidebar'
 import { Header } from './Header'
 import { cn } from '../../lib/utils'
+import { ChevronUp, Plus } from 'lucide-react'
 
 interface AppLayoutProps {
   children: React.ReactNode
 }
 
-export const AppLayout = memo(function AppLayout({ children }: AppLayoutProps) {
-  const [sidebarOpen, setSidebarOpen] = useState(false)
-  const [isMobile, setIsMobile] = useState(false)
+// Separate scroll context to avoid re-renders
+const useScrollState = () => {
   const [isScrolled, setIsScrolled] = useState(false)
-  const user = useAuthStore((state) => state.user)
-  const isLoading = useAuthStore((state) => state.isLoading)
+  const scrollTimeoutRef = useRef<NodeJS.Timeout>()
 
-  // Memoize user to prevent unnecessary re-renders
-  const memoizedUser = useMemo(() => user, [user?.id, user?.email])
-
-  // Responsive sidebar management with improved UX
-  const handleResize = useCallback(() => {
-    const mobile = window.innerWidth < 1024
-    setIsMobile(mobile)
-    
-    if (mobile) {
-      setSidebarOpen(false)
-    } else {
-      setSidebarOpen(true)
-    }
-  }, [])
-
-  useEffect(() => {
-    handleResize()
-    
-    let resizeTimer: NodeJS.Timeout
-    const throttledResize = () => {
-      clearTimeout(resizeTimer)
-      resizeTimer = setTimeout(handleResize, 100)
-    }
-
-    window.addEventListener('resize', throttledResize, { passive: true })
-    return () => {
-      window.removeEventListener('resize', throttledResize)
-      clearTimeout(resizeTimer)
-    }
-  }, [handleResize])
-
-  // Enhanced scroll detection for modern visual feedback
   useEffect(() => {
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 20)
+      if (scrollTimeoutRef.current) {
+        clearTimeout(scrollTimeoutRef.current)
+      }
+      
+      const scrolled = window.scrollY > 10
+      if (scrolled !== isScrolled) {
+        setIsScrolled(scrolled)
+      }
     }
 
     const throttledScroll = () => {
-      requestAnimationFrame(handleScroll)
+      if (scrollTimeoutRef.current) return
+      scrollTimeoutRef.current = setTimeout(() => {
+        handleScroll()
+        scrollTimeoutRef.current = undefined
+      }, 16) // ~60fps
     }
 
     window.addEventListener('scroll', throttledScroll, { passive: true })
-    return () => window.removeEventListener('scroll', throttledScroll)
-  }, [])
-
-  // Close sidebar on mobile when clicking outside
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (isMobile && sidebarOpen) {
-        const sidebar = document.getElementById('app-sidebar')
-        const target = event.target as Node
-        if (sidebar && !sidebar.contains(target) && target !== sidebar) {
-          setSidebarOpen(false)
-        }
+    return () => {
+      window.removeEventListener('scroll', throttledScroll)
+      if (scrollTimeoutRef.current) {
+        clearTimeout(scrollTimeoutRef.current)
       }
     }
+  }, [isScrolled])
 
-    document.addEventListener('mousedown', handleClickOutside)
-    return () => document.removeEventListener('mousedown', handleClickOutside)
-  }, [isMobile, sidebarOpen])
+  return isScrolled
+}
 
-  // Modern keyboard shortcuts
+// Optimized viewport hook
+const useViewport = () => {
+  const [viewport, setViewport] = useState({
+    isMobile: false,
+    isTablet: false,
+    isDesktop: false,
+    width: 0,
+    height: 0
+  })
+
+  useEffect(() => {
+    const updateViewport = () => {
+      const width = window.innerWidth
+      const height = window.innerHeight
+      
+      setViewport({
+        isMobile: width < 768,
+        isTablet: width >= 768 && width < 1024,
+        isDesktop: width >= 1024,
+        width,
+        height
+      })
+    }
+
+    updateViewport()
+    
+    let resizeTimer: NodeJS.Timeout
+    const handleResize = () => {
+      clearTimeout(resizeTimer)
+      resizeTimer = setTimeout(updateViewport, 100)
+    }
+
+    window.addEventListener('resize', handleResize, { passive: true })
+    return () => {
+      window.removeEventListener('resize', handleResize)
+      clearTimeout(resizeTimer)
+    }
+  }, [])
+
+  return viewport
+}
+
+// Memoized auth context
+const useOptimizedAuth = () => {
+  const user = useAuthStore((state) => state.user)
+  const isLoading = useAuthStore((state) => state.isLoading)
+  
+  return useMemo(() => ({
+    user,
+    isLoading,
+    isAuthenticated: !!user
+  }), [user?.id, user?.email, isLoading])
+}
+
+export const AppLayout = memo(function AppLayout({ children }: AppLayoutProps) {
+  const [sidebarOpen, setSidebarOpen] = useState(false)
+  const { isMobile, isTablet, isDesktop } = useViewport()
+  const isScrolled = useScrollState()
+  const { user, isLoading, isAuthenticated } = useOptimizedAuth()
+
+  // Memoized sidebar state management
+  const sidebarState = useMemo(() => {
+    if (isMobile) return { isOpen: sidebarOpen, isCompact: false }
+    if (isTablet) return { isOpen: true, isCompact: true }
+    return { isOpen: true, isCompact: false }
+  }, [isMobile, isTablet, sidebarOpen])
+
+  // Optimized sidebar toggle
+  const toggleSidebar = useCallback(() => {
+    setSidebarOpen(prev => !prev)
+  }, [])
+
+  // Auto-manage sidebar on viewport changes
+  useEffect(() => {
+    if (isDesktop || isTablet) {
+      setSidebarOpen(false) // Reset mobile state
+    }
+  }, [isDesktop, isTablet])
+
+  // Optimized keyboard shortcuts
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
-      // Toggle sidebar with Ctrl/Cmd + \
       if ((event.ctrlKey || event.metaKey) && event.key === '\\') {
         event.preventDefault()
-        setSidebarOpen(prev => !prev)
+        if (isMobile) {
+          toggleSidebar()
+        }
       }
       
-      // Close sidebar with Escape on mobile
       if (event.key === 'Escape' && isMobile && sidebarOpen) {
         setSidebarOpen(false)
       }
     }
 
-    document.addEventListener('keydown', handleKeyDown)
+    document.addEventListener('keydown', handleKeyDown, { passive: false })
     return () => document.removeEventListener('keydown', handleKeyDown)
+  }, [isMobile, sidebarOpen, toggleSidebar])
+
+  // Optimized click outside handler
+  useEffect(() => {
+    if (!isMobile || !sidebarOpen) return
+
+    const handleClickOutside = (event: MouseEvent) => {
+      const sidebar = document.getElementById('app-sidebar')
+      const target = event.target as Node
+      
+      if (sidebar && !sidebar.contains(target)) {
+        setSidebarOpen(false)
+      }
+    }
+
+    // Delay to avoid immediate closure
+    const timer = setTimeout(() => {
+      document.addEventListener('mousedown', handleClickOutside)
+    }, 100)
+
+    return () => {
+      clearTimeout(timer)
+      document.removeEventListener('mousedown', handleClickOutside)
+    }
   }, [isMobile, sidebarOpen])
 
-  const toggleSidebar = useCallback(() => {
-    setSidebarOpen(prev => !prev)
+  // Scroll to top handler
+  const scrollToTop = useCallback(() => {
+    const mainContent = document.getElementById('main-content')
+    if (mainContent) {
+      mainContent.scrollTo({ top: 0, behavior: 'smooth' })
+    } else {
+      window.scrollTo({ top: 0, behavior: 'smooth' })
+    }
   }, [])
 
-  // Memoize computed values to prevent unnecessary re-renders
-  const sidebarClasses = useMemo(() => cn(
-    "relative z-50 flex-shrink-0 transition-modern",
-    // Desktop behavior
-    "lg:translate-x-0",
-    sidebarOpen && !isMobile ? "lg:w-72" : "lg:w-16",
-    // Mobile behavior
-    "fixed lg:relative inset-y-0 left-0",
-    isMobile && sidebarOpen ? "w-72 translate-x-0" : isMobile ? "w-72 -translate-x-full" : "",
-    // Enhanced shadows
-    "shadow-4 lg:shadow-2"
-  ), [sidebarOpen, isMobile])
+  // Quick note creation
+  const createNote = useCallback(() => {
+    window.location.href = '/notes/create'
+  }, [])
 
-  const mainContentClasses = useMemo(() => cn(
-    "flex-1 overflow-auto focus:outline-none relative",
-    "bg-bg-elev-1/30",
-    "safe-area-inset safe-area-inset-bottom"
+  // Memoized layout classes
+  const layoutClasses = useMemo(() => cn(
+    "h-screen flex overflow-hidden relative",
+    "bg-bg transition-colors duration-300"
   ), [])
 
-  const scrollToTopButtonClasses = useMemo(() => cn(
-    "fixed bottom-6 right-6 z-30",
-    "w-12 h-12 rounded-2xl",
-    "glass border border-glass-border",
+  const sidebarClasses = useMemo(() => cn(
+    "relative z-30 flex-shrink-0 transition-all duration-300 ease-out",
+    // Desktop & Tablet
+    "lg:translate-x-0",
+    isDesktop && sidebarState.isOpen && !sidebarState.isCompact && "lg:w-72",
+    isDesktop && (!sidebarState.isOpen || sidebarState.isCompact) && "lg:w-16",
+    isTablet && "lg:w-16",
+    // Mobile
+    "fixed lg:relative inset-y-0 left-0 z-40",
+    isMobile && sidebarOpen ? "w-72 translate-x-0" : "w-72 -translate-x-full lg:translate-x-0",
+    // Enhanced shadows
+    "shadow-xl lg:shadow-lg"
+  ), [sidebarState, isMobile, isTablet, isDesktop, sidebarOpen])
+
+  const mainContentClasses = useMemo(() => cn(
+    "flex-1 flex flex-col min-w-0 overflow-hidden relative",
+    "bg-neutral-1"
+  ), [])
+
+  const scrollButtonClasses = useMemo(() => cn(
+    "fixed bottom-6 right-6 z-20",
+    "w-12 h-12 rounded-xl",
+    "bg-bg border border-neutral-6 shadow-lg",
     "flex items-center justify-center",
-    "text-text-muted hover:text-primary-600",
-    "shadow-2 hover:shadow-3 hover-lift",
-    "transition-modern",
-    "opacity-0 pointer-events-none scale-90",
-    isScrolled && "opacity-100 pointer-events-auto scale-100"
+    "text-neutral-11 hover:text-accent-11",
+    "transition-all duration-300 ease-out",
+    "transform hover:scale-105 active:scale-95",
+    isScrolled ? "opacity-100 visible translate-y-0" : "opacity-0 invisible translate-y-2"
   ), [isScrolled])
 
-  const fabButtonClasses = useMemo(() => cn(
-    "fixed bottom-20 right-6 z-30",
-    "w-14 h-14 rounded-2xl",
-    "btn-primary text-white",
-    "flex items-center justify-center",
-    "shadow-2 hover:shadow-glow hover-lift",
-    "transition-modern border border-glass-border",
-    "opacity-0 pointer-events-none scale-90",
-    !isMobile && "opacity-100 pointer-events-auto scale-100"
-  ), [isMobile])
+  const fabClasses = useMemo(() => cn(
+    "fixed z-20",
+    isMobile ? "bottom-20 right-6" : "bottom-6 right-20",
+    "w-14 h-14 rounded-xl",
+    "bg-accent-9 hover:bg-accent-10 text-accent-contrast",
+    "flex items-center justify-center shadow-lg hover:shadow-xl",
+    "transition-all duration-300 ease-out",
+    "transform hover:scale-105 active:scale-95",
+    isAuthenticated ? "opacity-100 visible translate-y-0" : "opacity-0 invisible translate-y-2"
+  ), [isMobile, isAuthenticated])
 
-  // Auth layout for login/register with modern design
-  // Only show auth layout when not loading and no user
-  if (!isLoading && !memoizedUser) {
+  // Auth layout for non-authenticated users
+  if (!isLoading && !isAuthenticated) {
     return (
       <div className="min-h-screen bg-bg relative overflow-hidden">
-        {/* Enhanced modern auth background with new tokens */}
-        <div className="absolute inset-0 bg-gradient-to-br from-bg via-bg-elev-1 to-bg-elev-2" />
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--primary-600)_0%,_transparent_50%)] opacity-20" />
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_right,_var(--purple)_0%,_transparent_60%)] opacity-15" />
-
-        {/* Modern geometric patterns */}
-        <div className={"absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg width=\"60\" height=\"60\" viewBox=\"0 0 60 60\" xmlns=\"http://www.w3.org/2000/svg\"%3E%3Cg fill=\"none\" fill-rule=\"evenodd\"%3E%3Cg fill=\"%23ffffff\" fill-opacity=\"0.02\"%3E%3Ccircle cx=\"30\" cy=\"30\" r=\"1\"/%3E%3C/g%3E%3C/g%3E%3C/svg%3E')] bg-[size:60px_60px]"} />
-
-        {/* Floating geometric shapes for modern appeal */}
-        <div className="absolute top-1/4 left-1/4 w-64 h-64 bg-primary-600/10 rounded-full blur-3xl animate-float-subtle" />
-        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-purple/10 rounded-full blur-3xl animate-float" />
+        {/* Modern background with proper design tokens */}
+        <div className="absolute inset-0 bg-gradient-to-br from-bg via-neutral-1 to-neutral-2" />
+        <div className="absolute inset-0 bg-gradient-radial at-top-left from-accent-6/20 via-transparent to-transparent" />
+        <div className="absolute inset-0 bg-gradient-radial at-bottom-right from-accent-secondary-6/20 via-transparent to-transparent" />
         
-        <div className="relative z-10">
-          {children}
+        {/* Subtle pattern overlay */}
+        <div className="absolute inset-0 opacity-30">
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--color-neutral-6)_1px,_transparent_1px)] bg-[size:24px_24px]" />
         </div>
+        
+        <div className="relative z-10">{children}</div>
       </div>
     )
   }
 
   return (
-    <div 
-      className={cn(
-        "h-screen flex bg-bg relative overflow-hidden",
-        "transition-modern"
-      )} 
-      role="application" 
-      aria-label="AI Notes Application"
-    >
-      {/* Enhanced modern background layers with new tokens */}
-      <div className="absolute inset-0 bg-gradient-to-br from-bg via-bg-elev-1 to-bg-elev-2" />
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_left,_var(--primary-600)_0%,_transparent_60%)] opacity-20" />
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_right,_var(--purple)_0%,_transparent_60%)] opacity-15" />
+    <div className={layoutClasses} role="application" aria-label="AI Notes Application">
+      {/* Background layers with proper design tokens */}
+      <div className="absolute inset-0 bg-gradient-to-br from-bg via-neutral-1 to-neutral-2" />
+      <div className="absolute inset-0 bg-gradient-radial at-top-left from-accent-6/10 via-transparent to-transparent" />
+      <div className="absolute inset-0 bg-gradient-radial at-bottom-right from-accent-secondary-6/10 via-transparent to-transparent" />
+      
+      {/* Subtle grid pattern */}
+      <div className="absolute inset-0 opacity-20">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--color-neutral-6)_1px,_transparent_1px)] bg-[size:32px_32px]" />
+      </div>
 
-      {/* Modern grid pattern */}
-      <div className={"absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg width=\"60\" height=\"60\" viewBox=\"0 0 60 60\" xmlns=\"http://www.w3.org/2000/svg\"%3E%3Cg fill=\"none\" fill-rule=\"evenodd\"%3E%3Cg fill=\"%23ffffff\" fill-opacity=\"0.015\"%3E%3Ccircle cx=\"30\" cy=\"30\" r=\"1\"/%3E%3C/g%3E%3C/g%3E%3C/svg%3E')] bg-[size:60px_60px]"} />
-
-      {/* Subtle animated elements for visual interest */}
-      <div className="absolute top-1/3 right-1/3 w-48 h-48 bg-primary-600/10 rounded-full blur-3xl animate-float-subtle opacity-50" />
-      <div className="absolute bottom-1/3 left-1/3 w-64 h-64 bg-purple/10 rounded-full blur-3xl animate-float opacity-30" />
-
-      {/* Mobile overlay with improved backdrop */}
+      {/* Mobile overlay */}
       {isMobile && sidebarOpen && (
         <div
-          className="fixed inset-0 z-40 glass-bg backdrop-blur-xl lg:hidden animate-fade-in"
+          className="fixed inset-0 z-30 bg-neutral-12/20 backdrop-blur-sm lg:hidden"
           onClick={() => setSidebarOpen(false)}
           aria-hidden="true"
         />
       )}
 
-      {/* Sidebar Container */}
+      {/* Sidebar */}
       <aside
         id="app-sidebar"
         className={sidebarClasses}
         role="navigation"
         aria-label="Main navigation"
-        aria-expanded={sidebarOpen}
-        aria-hidden={!sidebarOpen && isMobile}
+        aria-expanded={sidebarState.isOpen}
+        aria-hidden={!sidebarState.isOpen && isMobile}
       >
         <Sidebar
-          collapsed={!sidebarOpen}
+          collapsed={!sidebarState.isOpen || sidebarState.isCompact}
           onToggle={toggleSidebar}
           isMobile={isMobile}
-          user={memoizedUser}
+          user={user}
         />
       </aside>
 
-      {/* Main Content Area */}
+      {/* Main content area */}
       <div className="flex-1 flex flex-col min-w-0 overflow-hidden relative">
         {/* Header */}
         <Header
           onMenuClick={toggleSidebar}
-          sidebarOpen={sidebarOpen}
+          sidebarOpen={sidebarState.isOpen}
           isMobile={isMobile}
         />
 
-        {/* Main Content with enhanced styling */}
+        {/* Main content */}
         <main
           id="main-content"
           className={mainContentClasses}
           role="main"
           aria-label="Main content"
-          tabIndex={-1}
         >
-          {/* Content container with responsive padding */}
-          <div className="container-modern min-h-full py-6">
-            <div className="w-full h-full animate-fade-in">
-              {children}
+          {/* Content container */}
+          <div className="flex-1 overflow-auto">
+            <div className="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-6">
+              <div className="w-full animate-fade-in">
+                {children}
+              </div>
             </div>
           </div>
 
-          {/* Modern scroll to top button */}
+          {/* Scroll to top button */}
           <button
-            className={scrollToTopButtonClasses}
-            onClick={() => {
-              document.getElementById('main-content')?.scrollTo({
-                top: 0,
-                behavior: 'smooth'
-              })
-            }}
+            className={scrollButtonClasses}
+            onClick={scrollToTop}
             aria-label="Scroll to top"
+            type="button"
           >
-            <svg
-              className="w-5 h-5"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M5 10l7-7m0 0l7 7m-7-7v18"
-              />
-            </svg>
+            <ChevronUp className="w-5 h-5" />
           </button>
 
           {/* Floating action button for quick note creation */}
           <button
-            className={fabButtonClasses}
-            onClick={() => {
-              // Navigate to new note creation
-              window.location.href = '/notes/create'
-            }}
+            className={fabClasses}
+            onClick={createNote}
             aria-label="Create new note"
+            type="button"
           >
-            <svg
-              className="w-6 h-6"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M12 4v16m8-8H4"
-              />
-            </svg>
+            <Plus className="w-6 h-6" />
           </button>
         </main>
       </div>
     </div>
   )
 })
+
+AppLayout.displayName = 'AppLayout'
