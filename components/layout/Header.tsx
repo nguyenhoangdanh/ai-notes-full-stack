@@ -18,7 +18,7 @@ interface HeaderProps {
 // Optimized scroll state hook
 const useHeaderScroll = () => {
   const [isScrolled, setIsScrolled] = useState(false)
-  const scrollTimeoutRef = useRef<NodeJS.Timeout>()
+  const scrollTimeoutRef = useRef<NodeJS.Timeout | null>(null)
 
   useEffect(() => {
     const handleScroll = () => {
@@ -31,7 +31,7 @@ const useHeaderScroll = () => {
         if (scrolled !== isScrolled) {
           setIsScrolled(scrolled)
         }
-        scrollTimeoutRef.current = undefined
+        scrollTimeoutRef.current = null
       }, 16) // ~60fps throttling
     }
 
