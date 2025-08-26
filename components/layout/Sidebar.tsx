@@ -32,8 +32,27 @@ interface SidebarProps {
   user?: any
 }
 
+// Navigation item type definition
+interface NavItem {
+  id: string
+  label: string
+  icon: any
+  href: string
+  description: string
+  badge?: {
+    text: string
+    variant: 'default' | 'ai' | 'success' | 'warning' | 'danger' | 'info' | 'purple' | 'secondary'
+  }
+}
+
+interface NavGroup {
+  id: string
+  label: string
+  items: NavItem[]
+}
+
 // Navigation items configuration
-const NAVIGATION_ITEMS = [
+const NAVIGATION_ITEMS: NavGroup[] = [
   {
     id: 'main',
     label: 'Main',
@@ -78,7 +97,7 @@ const NAVIGATION_ITEMS = [
         icon: MessageSquare,
         href: '/ai/chat',
         description: 'Chat with AI assistant',
-        badge: { text: 'AI', variant: 'accent' as const }
+        badge: { text: 'AI', variant: 'ai' }
       },
       {
         id: 'summaries',
@@ -130,16 +149,16 @@ const NAVIGATION_ITEMS = [
       }
     ]
   }
-] as const
+]
 
 // Memoized navigation item component
-const NavItem = memo(function NavItem({ 
-  item, 
-  isActive, 
-  collapsed, 
-  onClick 
+const NavItem = memo(function NavItem({
+  item,
+  isActive,
+  collapsed,
+  onClick
 }: {
-  item: typeof NAVIGATION_ITEMS[0]['items'][0]
+  item: NavItem
   isActive: boolean
   collapsed: boolean
   onClick?: () => void
@@ -203,13 +222,13 @@ const NavItem = memo(function NavItem({
 })
 
 // Memoized navigation group component
-const NavGroup = memo(function NavGroup({ 
-  group, 
-  activeId, 
-  collapsed, 
-  onItemClick 
+const NavGroupComponent = memo(function NavGroupComponent({
+  group,
+  activeId,
+  collapsed,
+  onItemClick
 }: {
-  group: typeof NAVIGATION_ITEMS[0]
+  group: NavGroup
   activeId: string
   collapsed: boolean
   onItemClick?: () => void
@@ -355,7 +374,7 @@ export const Sidebar = memo(function Sidebar({
         aria-label="Main navigation"
       >
         {NAVIGATION_ITEMS.map((group) => (
-          <NavGroup
+          <NavGroupComponent
             key={group.id}
             group={group}
             activeId={activeId}
