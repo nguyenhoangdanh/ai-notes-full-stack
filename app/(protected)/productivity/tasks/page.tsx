@@ -2,31 +2,67 @@
 import { Badge, Button, Card, CardContent, CardHeader, Input } from '@/components'
 import { CardTitle } from '@/components/ui'
 import { CheckCircle, Clock, Plus } from 'lucide-react'
-
+import { useTasks, useCreateTask, useUpdateTask } from '@/hooks/use-productivity'
 import { useState } from 'react'
+import { toast } from 'sonner'
 
 export default function TasksPage() {
-  const [tasks] = useState([
-    { id: '1', title: 'Review notes from meeting', completed: false, priority: 'high', dueDate: '2024-01-15' },
-    { id: '2', title: 'Organize workspace files', completed: true, priority: 'medium', dueDate: '2024-01-14' },
-    { id: '3', title: 'Write project summary', completed: false, priority: 'low', dueDate: '2024-01-16' }
-  ])
+  const { data: tasks = [], isLoading } = useTasks()
+  const createTaskMutation = useCreateTask()
+  const updateTaskMutation = useUpdateTask()
   const [newTask, setNewTask] = useState('')
 
-  const handleAddTask = () => {
+  const handleAddTask = async () => {
     if (newTask.trim()) {
-      console.log('Adding task:', newTask)
-      setNewTask('')
+      try {
+        await createTaskMutation.mutateAsync({
+          title: newTask,
+          description: '',
+          priority: 'MEDIUM',
+          status: 'TODO'
+        })
+        setNewTask('')
+      } catch (error) {
+        // Error handled by mutation
+      }
+    }
+  }
+
+  const handleToggleTask = async (task: any) => {
+    try {
+      await updateTaskMutation.mutateAsync({
+        id: task.id,
+        data: {
+          status: task.status === 'COMPLETED' ? 'TODO' : 'COMPLETED'
+        }
+      })
+    } catch (error) {
+      // Error handled by mutation
     }
   }
 
   const getPriorityColor = (priority: string) => {
-    switch (priority) {
-      case 'high': return 'bg-red-500/10 text-red-600 border-red-500/20'
+    switch (priority?.toLowerCase()) {
+      case 'high':
+      case 'urgent': return 'bg-red-500/10 text-red-600 border-red-500/20'
       case 'medium': return 'bg-yellow-500/10 text-yellow-600 border-yellow-500/20'
       case 'low': return 'bg-green-500/10 text-green-600 border-green-500/20'
       default: return 'bg-gray-500/10 text-gray-600 border-gray-500/20'
     }
+  }
+
+  if (isLoading) {
+    return (
+      <div className="container mx-auto px-4 py-8">
+        <div className="space-y-4">
+          {[...Array(3)].map((_, i) => (
+            <div key={i} className="animate-pulse">
+              <div className="h-16 bg-muted rounded-lg"></div>
+            </div>
+          ))}
+        </div>
+      </div>
+    )
   }
 
   return (
@@ -45,9 +81,14 @@ export default function TasksPage() {
             </div>
             <p className="text-muted-foreground text-lg leading-relaxed">Manage your tasks and to-dos</p>
           </div>
-          <Button size="lg" className="gap-2 rounded-full superhuman-gradient superhuman-glow px-6 py-3">
+          <Button 
+            size="lg" 
+            className="gap-2 rounded-full superhuman-gradient superhuman-glow px-6 py-3"
+            onClick={handleAddTask}
+            disabled={createTaskMutation.isPending}
+          >
             <Plus className="h-5 w-5" />
-            New Task
+            {createTaskMutation.isPending ? 'Creating...' : 'New Task'}
           </Button>
         </div>
 
@@ -78,25 +119,26 @@ export default function TasksPage() {
             Your Tasks
           </h2>
           <div className="grid gap-3">
-            {tasks.map((task, index) => (
+            {tasks.map((task: any, index: number) => (
               <Card 
                 key={task.id} 
                 variant="glass" 
                 className={`group cursor-pointer superhuman-hover border-border/30 animate-superhuman-fade-in ${
-                  task.completed ? 'opacity-75' : ''
+                  task.status === 'COMPLETED' ? 'opacity-75' : ''
                 }`}
                 style={{ animationDelay: `${index * 100}ms` }}
+                onClick={() => handleToggleTask(task)}
               >
                 <CardContent className="p-4">
                   <div className="flex items-center gap-4">
                     <CheckCircle 
                       className={`h-5 w-5 transition-colors ${
-                        task.completed ? 'text-green-500 fill-green-500' : 'text-muted-foreground hover:text-green-500'
+                        task.status === 'COMPLETED' ? 'text-green-500 fill-green-500' : 'text-muted-foreground hover:text-green-500'
                       }`} 
                     />
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center justify-between gap-3">
-                        <span className={`font-medium ${task.completed ? 'line-through text-muted-foreground' : 'group-hover:text-primary'} superhuman-transition`}>
+                        <span className={`font-medium ${task.status === 'COMPLETED' ? 'line-through text-muted-foreground' : 'group-hover:text-primary'} superhuman-transition`}>
                           {task.title}
                         </span>
                         <Badge 
@@ -106,10 +148,12 @@ export default function TasksPage() {
                           {task.priority}
                         </Badge>
                       </div>
-                      <div className="flex items-center gap-2 mt-1 text-sm text-muted-foreground">
-                        <Clock className="h-3 w-3" />
-                        <span>Due {new Date(task.dueDate).toLocaleDateString()}</span>
-                      </div>
+                      {task.dueDate && (
+                        <div className="flex items-center gap-2 mt-1 text-sm text-muted-foreground">
+                          <Clock className="h-3 w-3" />
+                          <span>Due {new Date(task.dueDate).toLocaleDateString()}</span>
+                        </div>
+                      )}
                     </div>
                   </div>
                 </CardContent>

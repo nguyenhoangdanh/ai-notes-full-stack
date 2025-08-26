@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import { useAuth } from '../contexts/AuthContext'
+import { useAuthStore } from '../stores/auth.store'
 import { AuthScreen } from '../components/auth/AuthScreen'
 import { toast } from 'sonner'
 import { initializeApiClient } from '../lib/api-config'
@@ -298,7 +298,7 @@ function LoadingScreen({ title, description, progress }: {
 
 
 function AppContent() {
-  const { user, isLoading, isAuthenticated } = useAuth()
+  const { user, isLoading, isAuthenticated } = useAuthStore()
   const router = useRouter()
 
   useEffect(() => {

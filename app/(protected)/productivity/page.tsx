@@ -4,8 +4,15 @@ import { Button, Card, CardContent, CardHeader } from '@/components'
 import { CardTitle } from '@/components/ui'
 import { CheckCircle, Clock, Calendar, BookOpen } from 'lucide-react'
 import Link from 'next/link'
+import { useTaskStats, usePomodoroStats, useCalendarEvents, useReviewStats } from '@/hooks/use-productivity'
 
 export default function ProductivityPage() {
+  // Use real productivity hooks
+  const { data: taskStats, isLoading: loadingTasks } = useTaskStats()
+  const { data: pomodoroStats, isLoading: loadingPomodoro } = usePomodoroStats()
+  const { data: calendarEvents, isLoading: loadingCalendar } = useCalendarEvents()
+  const { data: reviewStats, isLoading: loadingReview } = useReviewStats()
+
   const tools = [
     {
       title: 'Tasks',
@@ -40,6 +47,8 @@ export default function ProductivityPage() {
       features: ['Spaced repetition', 'Knowledge retention', 'Progress analytics']
     }
   ]
+
+  const isLoading = loadingTasks || loadingPomodoro || loadingCalendar || loadingReview
 
   return (
     <div className="container mx-auto py-6 space-y-8">
@@ -93,24 +102,34 @@ export default function ProductivityPage() {
       {/* Overview Stats */}
       <div className="bg-muted/50 rounded-lg p-6">
         <h3 className="text-lg font-semibold mb-4">Productivity Overview</h3>
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 text-center">
-          <div>
-            <div className="text-2xl font-bold text-green-600">0</div>
-            <div className="text-sm text-muted-foreground">Tasks Completed Today</div>
+        {isLoading ? (
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+            {[...Array(4)].map((_, i) => (
+              <div key={i} className="animate-pulse">
+                <div className="h-16 bg-muted rounded"></div>
+              </div>
+            ))}
           </div>
-          <div>
-            <div className="text-2xl font-bold text-red-600">0</div>
-            <div className="text-sm text-muted-foreground">Pomodoro Sessions</div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4 text-center">
+            <div>
+              <div className="text-2xl font-bold text-green-600">{taskStats?.completedToday || 0}</div>
+              <div className="text-sm text-muted-foreground">Tasks Completed Today</div>
+            </div>
+            <div>
+              <div className="text-2xl font-bold text-red-600">{pomodoroStats?.sessionsToday || 0}</div>
+              <div className="text-sm text-muted-foreground">Pomodoro Sessions</div>
+            </div>
+            <div>
+              <div className="text-2xl font-bold text-blue-600">{calendarEvents?.length || 0}</div>
+              <div className="text-sm text-muted-foreground">Calendar Events</div>
+            </div>
+            <div>
+              <div className="text-2xl font-bold text-purple-600">{reviewStats?.sessionsToday || 0}</div>
+              <div className="text-sm text-muted-foreground">Review Sessions</div>
+            </div>
           </div>
-          <div>
-            <div className="text-2xl font-bold text-blue-600">0</div>
-            <div className="text-sm text-muted-foreground">Calendar Events</div>
-          </div>
-          <div>
-            <div className="text-2xl font-bold text-purple-600">0</div>
-            <div className="text-sm text-muted-foreground">Review Sessions</div>
-          </div>
-        </div>
+        )}
       </div>
     </div>
   )

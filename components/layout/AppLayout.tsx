@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect, useCallback, useMemo, memo } from 'react'
-import { useAuth } from '../../contexts/AuthContext'
+import { useAuthStore } from '../../stores/auth.store'
 import { Sidebar } from './Sidebar'
 import { Header } from './Header'
 import { cn } from '../../lib/utils'
@@ -14,7 +14,8 @@ export const AppLayout = memo(function AppLayout({ children }: AppLayoutProps) {
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const [isMobile, setIsMobile] = useState(false)
   const [isScrolled, setIsScrolled] = useState(false)
-  const { user, isLoading } = useAuth()
+  const user = useAuthStore((state) => state.user)
+  const isLoading = useAuthStore((state) => state.isLoading)
 
   // Memoize user to prevent unnecessary re-renders
   const memoizedUser = useMemo(() => user, [user?.id, user?.email])

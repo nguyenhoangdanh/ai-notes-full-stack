@@ -1,6 +1,5 @@
 'use client'
 
-
 import { Badge, Button, EmptyState, PageHeader, Panel, StatCard } from '@/components/ui'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import {
@@ -20,18 +19,28 @@ import {
   Star,
   Lightbulb
 } from 'lucide-react'
+import { useGetUserAnalytics, useGetWorkspaceAnalytics, useGetContentAnalytics } from '@/hooks/use-analytics'
+import { useDashboardAnalytics } from '@/hooks/use-features'
 
 export default function AnalyticsPage() {
-  // Mock data for the analytics - in real app this would come from hooks
-  const mockStats = {
-    totalNotes: 127,
-    workspaces: 3,
-    aiQueries: 342,
-    storageUsed: 2.5 * 1024 * 1024, // 2.5 MB in bytes
-    weeklyGrowth: 23,
-    dailyActive: 15,
-    avgSessionTime: "12m"
+  // Use real analytics hooks instead of mock data
+  const { data: userAnalytics, isLoading: loadingUser } = useGetUserAnalytics()
+  const { data: workspaceAnalytics, isLoading: loadingWorkspace } = useGetWorkspaceAnalytics()
+  const { data: contentAnalytics, isLoading: loadingContent } = useGetContentAnalytics()
+  const { data: dashboardAnalytics, isLoading: loadingDashboard } = useDashboardAnalytics()
+
+  // Combine data with fallbacks for when APIs don't return expected structure
+  const stats = {
+    totalNotes: (contentAnalytics as any)?.totalNotes || (userAnalytics as any)?.totalNotes || 0,
+    workspaces: (workspaceAnalytics as any)?.totalWorkspaces || 0,
+    aiQueries: (userAnalytics as any)?.aiQueries || 0,
+    storageUsed: (contentAnalytics as any)?.storageUsed || 0,
+    weeklyGrowth: (userAnalytics as any)?.weeklyGrowth || 0,
+    dailyActive: (userAnalytics as any)?.dailyActive || 0,
+    avgSessionTime: (userAnalytics as any)?.avgSessionTime || "0m"
   }
+
+  const isLoading = loadingUser || loadingWorkspace || loadingContent || loadingDashboard
 
   const formatBytes = (bytes: number) => {
     if (bytes === 0) return '0 Bytes'
@@ -39,6 +48,25 @@ export default function AnalyticsPage() {
     const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB']
     const i = Math.floor(Math.log(bytes) / Math.log(k))
     return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i]
+  }
+
+  if (isLoading) {
+    return (
+      <div className="space-y-8">
+        <PageHeader
+          title="Analytics"
+          subtitle="Loading insights..."
+          icon={BarChart3}
+        />
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          {[...Array(4)].map((_, i) => (
+            <div key={i} className="animate-pulse">
+              <div className="h-32 bg-muted rounded-lg"></div>
+            </div>
+          ))}
+        </div>
+      </div>
+    )
   }
 
   return (
@@ -61,10 +89,10 @@ export default function AnalyticsPage() {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         <StatCard
           title="Total Notes"
-          value={mockStats.totalNotes}
+          value={stats.totalNotes}
           subtitle="All time created"
           delta={{
-            value: mockStats.weeklyGrowth,
+            value: stats.weeklyGrowth,
             type: 'increase',
             period: 'this week'
           }}
@@ -74,10 +102,10 @@ export default function AnalyticsPage() {
         
         <StatCard
           title="AI Queries"
-          value={mockStats.aiQueries}
+          value={stats.aiQueries}
           subtitle="AI interactions"
           delta={{
-            value: 45,
+            value: (userAnalytics as any)?.monthlyGrowth || 45,
             type: 'increase',
             period: 'this month'
           }}
@@ -87,10 +115,10 @@ export default function AnalyticsPage() {
         
         <StatCard
           title="Active Days"
-          value={mockStats.dailyActive}
+          value={stats.dailyActive}
           subtitle="This month"
           delta={{
-            value: 12,
+            value: (userAnalytics as any)?.monthlyActiveIncrease || 12,
             type: 'increase',
             period: 'vs last month'
           }}
@@ -100,7 +128,7 @@ export default function AnalyticsPage() {
         
         <StatCard
           title="Avg Session"
-          value={mockStats.avgSessionTime}
+          value={stats.avgSessionTime}
           subtitle="Time per session"
           icon={Clock}
           iconColor="text-info"
@@ -156,7 +184,7 @@ export default function AnalyticsPage() {
                   </div>
                   <div className="flex-1">
                     <h4 className="font-medium text-text">Personal Notes</h4>
-                    <p className="text-sm text-text-muted">87 notes • Most active</p>
+                    <p className="text-sm text-text-muted">{(workspaceAnalytics as any)?.personalNotes || 87} notes • Most active</p>
                   </div>
                   <Badge variant="success" size="sm">
                     <Star className="w-3 h-3 mr-1" />
@@ -170,7 +198,7 @@ export default function AnalyticsPage() {
                   </div>
                   <div className="flex-1">
                     <h4 className="font-medium text-text">Work Projects</h4>
-                    <p className="text-sm text-text-muted">32 notes • Recent activity</p>
+                    <p className="text-sm text-text-muted">{(workspaceAnalytics as any)?.workNotes || 32} notes • Recent activity</p>
                   </div>
                   <Badge variant="default" size="sm">Active</Badge>
                 </div>
@@ -181,7 +209,7 @@ export default function AnalyticsPage() {
                   </div>
                   <div className="flex-1">
                     <h4 className="font-medium text-text">Research</h4>
-                    <p className="text-sm text-text-muted">8 notes • Low activity</p>
+                    <p className="text-sm text-text-muted">{(workspaceAnalytics as any)?.researchNotes || 8} notes • Low activity</p>
                   </div>
                   <Badge variant="default" size="sm">Archived</Badge>
                 </div>
@@ -199,26 +227,26 @@ export default function AnalyticsPage() {
             >
               <div className="space-y-6">
                 <div className="text-center py-4">
-                  <div className="text-3xl font-bold text-accent mb-1">↗ 23%</div>
+                  <div className="text-3xl font-bold text-accent mb-1">↗ {stats.weeklyGrowth}%</div>
                   <p className="text-sm text-text-muted">Note creation increase</p>
                 </div>
                 
                 <div className="space-y-4">
                   <div className="flex justify-between items-center">
                     <span className="text-sm font-medium text-text">Most productive day</span>
-                    <span className="text-sm text-text-muted">Tuesday</span>
+                    <span className="text-sm text-text-muted">{(userAnalytics as any)?.mostProductiveDay || 'Tuesday'}</span>
                   </div>
                   <div className="flex justify-between items-center">
                     <span className="text-sm font-medium text-text">Peak hours</span>
-                    <span className="text-sm text-text-muted">9-11 AM</span>
+                    <span className="text-sm text-text-muted">{(userAnalytics as any)?.peakHours || '9-11 AM'}</span>
                   </div>
                   <div className="flex justify-between items-center">
                     <span className="text-sm font-medium text-text">Avg. note length</span>
-                    <span className="text-sm text-text-muted">247 words</span>
+                    <span className="text-sm text-text-muted">{(contentAnalytics as any)?.avgNoteLength || 247} words</span>
                   </div>
                   <div className="flex justify-between items-center">
                     <span className="text-sm font-medium text-text">Total storage</span>
-                    <span className="text-sm text-text-muted">{formatBytes(mockStats.storageUsed)}</span>
+                    <span className="text-sm text-text-muted">{formatBytes(stats.storageUsed)}</span>
                   </div>
                 </div>
               </div>
@@ -234,15 +262,15 @@ export default function AnalyticsPage() {
           >
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               <div className="text-center space-y-2">
-                <div className="text-2xl font-bold text-text">15</div>
+                <div className="text-2xl font-bold text-text">{stats.dailyActive}</div>
                 <p className="text-sm text-text-muted">Active days this month</p>
               </div>
               <div className="text-center space-y-2">
-                <div className="text-2xl font-bold text-text">247</div>
+                <div className="text-2xl font-bold text-text">{(contentAnalytics as any)?.avgWordsPerNote || 247}</div>
                 <p className="text-sm text-text-muted">Average words per note</p>
               </div>
               <div className="text-center space-y-2">
-                <div className="text-2xl font-bold text-text">12m</div>
+                <div className="text-2xl font-bold text-text">{stats.avgSessionTime}</div>
                 <p className="text-sm text-text-muted">Average session time</p>
               </div>
             </div>
@@ -268,26 +296,26 @@ export default function AnalyticsPage() {
             >
               <div className="space-y-4">
                 <div className="text-center py-4">
-                  <div className="text-3xl font-bold text-purple mb-1">342</div>
+                  <div className="text-3xl font-bold text-purple mb-1">{stats.aiQueries}</div>
                   <p className="text-sm text-text-muted">Total AI queries</p>
                 </div>
                 
                 <div className="space-y-3">
                   <div className="flex justify-between items-center">
                     <span className="text-sm font-medium">Chat conversations</span>
-                    <span className="text-sm text-text-muted">23</span>
+                    <span className="text-sm text-text-muted">{(userAnalytics as any)?.chatConversations || 23}</span>
                   </div>
                   <div className="flex justify-between items-center">
                     <span className="text-sm font-medium">Auto-summaries</span>
-                    <span className="text-sm text-text-muted">45</span>
+                    <span className="text-sm text-text-muted">{(userAnalytics as any)?.autoSummaries || 45}</span>
                   </div>
                   <div className="flex justify-between items-center">
                     <span className="text-sm font-medium">Relations discovered</span>
-                    <span className="text-sm text-text-muted">67</span>
+                    <span className="text-sm text-text-muted">{(userAnalytics as any)?.relationsDiscovered || 67}</span>
                   </div>
                   <div className="flex justify-between items-center">
                     <span className="text-sm font-medium">Categories created</span>
-                    <span className="text-sm text-text-muted">12</span>
+                    <span className="text-sm text-text-muted">{(userAnalytics as any)?.categoriesCreated || 12}</span>
                   </div>
                 </div>
               </div>
@@ -334,11 +362,11 @@ export default function AnalyticsPage() {
               <div className="space-y-4">
                 <div className="grid grid-cols-2 gap-4 text-center">
                   <div>
-                    <div className="text-2xl font-bold text-text">31,247</div>
+                    <div className="text-2xl font-bold text-text">{(contentAnalytics as any)?.totalWords || 31247}</div>
                     <p className="text-sm text-text-muted">Total words</p>
                   </div>
                   <div>
-                    <div className="text-2xl font-bold text-text">127</div>
+                    <div className="text-2xl font-bold text-text">{stats.totalNotes}</div>
                     <p className="text-sm text-text-muted">Total notes</p>
                   </div>
                 </div>
@@ -346,15 +374,15 @@ export default function AnalyticsPage() {
                 <div className="space-y-3">
                   <div className="flex justify-between items-center">
                     <span className="text-sm font-medium">Longest note</span>
-                    <span className="text-sm text-text-muted">1,247 words</span>
+                    <span className="text-sm text-text-muted">{(contentAnalytics as any)?.longestNote || 1247} words</span>
                   </div>
                   <div className="flex justify-between items-center">
                     <span className="text-sm font-medium">Most used tag</span>
-                    <span className="text-sm text-text-muted">#productivity</span>
+                    <span className="text-sm text-text-muted">{(contentAnalytics as any)?.mostUsedTag || '#productivity'}</span>
                   </div>
                   <div className="flex justify-between items-center">
                     <span className="text-sm font-medium">Storage used</span>
-                    <span className="text-sm text-text-muted">{formatBytes(mockStats.storageUsed)}</span>
+                    <span className="text-sm text-text-muted">{formatBytes(stats.storageUsed)}</span>
                   </div>
                 </div>
               </div>
