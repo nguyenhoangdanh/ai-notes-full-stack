@@ -20,7 +20,7 @@ export const AppLayout = memo(function AppLayout({ children }: AppLayoutProps) {
   // Memoize user to prevent unnecessary re-renders
   const memoizedUser = useMemo(() => user, [user?.id, user?.email])
 
-  // Responsive sidebar management with improved UX
+  // Enhanced responsive sidebar management
   const handleResize = useCallback(() => {
     const mobile = window.innerWidth < 1024
     setIsMobile(mobile)
@@ -28,6 +28,7 @@ export const AppLayout = memo(function AppLayout({ children }: AppLayoutProps) {
     if (mobile) {
       setSidebarOpen(false)
     } else {
+      // Auto-open sidebar on desktop
       setSidebarOpen(true)
     }
   }, [])
@@ -48,37 +49,49 @@ export const AppLayout = memo(function AppLayout({ children }: AppLayoutProps) {
     }
   }, [handleResize])
 
-  // Enhanced scroll detection for modern visual feedback
+  // Enhanced scroll detection
   useEffect(() => {
+    let ticking = false
+    
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 20)
-    }
-
-    const throttledScroll = () => {
-      requestAnimationFrame(handleScroll)
-    }
-
-    window.addEventListener('scroll', throttledScroll, { passive: true })
-    return () => window.removeEventListener('scroll', throttledScroll)
-  }, [])
-
-  // Close sidebar on mobile when clicking outside
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (isMobile && sidebarOpen) {
-        const sidebar = document.getElementById('app-sidebar')
-        const target = event.target as Node
-        if (sidebar && !sidebar.contains(target) && target !== sidebar) {
-          setSidebarOpen(false)
-        }
+      if (!ticking) {
+        requestAnimationFrame(() => {
+          setIsScrolled(window.scrollY > 20)
+          ticking = false
+        })
+        ticking = true
       }
     }
 
-    document.addEventListener('mousedown', handleClickOutside)
-    return () => document.removeEventListener('mousedown', handleClickOutside)
+    window.addEventListener('scroll', handleScroll, { passive: true })
+    return () => window.removeEventListener('scroll', handleScroll)
+  }, [])
+
+  // Enhanced click outside handler for mobile
+  useEffect(() => {
+    if (!isMobile || !sidebarOpen) return
+
+    const handleClickOutside = (event: MouseEvent) => {
+      const sidebar = document.getElementById('app-sidebar')
+      const target = event.target as Node
+      
+      if (sidebar && !sidebar.contains(target)) {
+        setSidebarOpen(false)
+      }
+    }
+
+    // Add a small delay to prevent immediate closure
+    const timeoutId = setTimeout(() => {
+      document.addEventListener('mousedown', handleClickOutside)
+    }, 100)
+
+    return () => {
+      clearTimeout(timeoutId)
+      document.removeEventListener('mousedown', handleClickOutside)
+    }
   }, [isMobile, sidebarOpen])
 
-  // Modern keyboard shortcuts
+  // Global keyboard shortcuts
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
       // Toggle sidebar with Ctrl/Cmd + \
@@ -101,66 +114,45 @@ export const AppLayout = memo(function AppLayout({ children }: AppLayoutProps) {
     setSidebarOpen(prev => !prev)
   }, [])
 
-  // Memoize computed values to prevent unnecessary re-renders
-  const sidebarClasses = useMemo(() => cn(
-    "relative z-50 flex-shrink-0 transition-modern",
-    // Desktop behavior
-    "lg:translate-x-0",
-    sidebarOpen && !isMobile ? "lg:w-72" : "lg:w-16",
-    // Mobile behavior
-    "fixed lg:relative inset-y-0 left-0",
-    isMobile && sidebarOpen ? "w-72 translate-x-0" : isMobile ? "w-72 -translate-x-full" : "",
-    // Enhanced shadows
-    "shadow-4 lg:shadow-2"
-  ), [sidebarOpen, isMobile])
+  // Scroll to top function
+  const scrollToTop = useCallback(() => {
+    const mainContent = document.getElementById('main-content')
+    if (mainContent) {
+      mainContent.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+      })
+    } else {
+      window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+      })
+    }
+  }, [])
 
-  const mainContentClasses = useMemo(() => cn(
-    "flex-1 overflow-auto focus:outline-none relative",
-    "bg-bg-elev-1/30",
-    "safe-area-inset safe-area-inset-bottom"
-  ), [])
+  // Quick note creation
+  const createNote = useCallback(() => {
+    window.location.href = '/notes/create'
+  }, [])
 
-  const scrollToTopButtonClasses = useMemo(() => cn(
-    "fixed bottom-6 right-6 z-30",
-    "w-12 h-12 rounded-2xl",
-    "glass border border-glass-border",
-    "flex items-center justify-center",
-    "text-text-muted hover:text-primary-600",
-    "shadow-2 hover:shadow-3 hover-lift",
-    "transition-modern",
-    "opacity-0 pointer-events-none scale-90",
-    isScrolled && "opacity-100 pointer-events-auto scale-100"
-  ), [isScrolled])
-
-  const fabButtonClasses = useMemo(() => cn(
-    "fixed bottom-20 right-6 z-30",
-    "w-14 h-14 rounded-2xl",
-    "btn-primary text-white",
-    "flex items-center justify-center",
-    "shadow-2 hover:shadow-glow hover-lift",
-    "transition-modern border border-glass-border",
-    "opacity-0 pointer-events-none scale-90",
-    !isMobile && "opacity-100 pointer-events-auto scale-100"
-  ), [isMobile])
-
-  // Auth layout for login/register with modern design
-  // Only show auth layout when not loading and no user
+  // Enhanced auth layout for better user experience
   if (!isLoading && !memoizedUser) {
     return (
-      <div className="min-h-screen bg-bg relative overflow-hidden">
-        {/* Enhanced modern auth background with new tokens */}
-        <div className="absolute inset-0 bg-gradient-to-br from-bg via-bg-elev-1 to-bg-elev-2" />
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--primary-600)_0%,_transparent_50%)] opacity-20" />
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_right,_var(--purple)_0%,_transparent_60%)] opacity-15" />
-
-        {/* Modern geometric patterns */}
-        <div className={"absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg width=\"60\" height=\"60\" viewBox=\"0 0 60 60\" xmlns=\"http://www.w3.org/2000/svg\"%3E%3Cg fill=\"none\" fill-rule=\"evenodd\"%3E%3Cg fill=\"%23ffffff\" fill-opacity=\"0.02\"%3E%3Ccircle cx=\"30\" cy=\"30\" r=\"1\"/%3E%3C/g%3E%3C/g%3E%3C/svg%3E')] bg-[size:60px_60px]"} />
-
-        {/* Floating geometric shapes for modern appeal */}
-        <div className="absolute top-1/4 left-1/4 w-64 h-64 bg-primary-600/10 rounded-full blur-3xl animate-float-subtle" />
-        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-purple/10 rounded-full blur-3xl animate-float" />
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 dark:from-slate-900 dark:via-slate-800 dark:to-indigo-950 relative overflow-hidden">
+        {/* Modern background patterns */}
+        <div className="absolute inset-0 bg-gradient-to-br from-white/50 via-blue-50/30 to-indigo-100/50 dark:from-slate-900/50 dark:via-slate-800/30 dark:to-indigo-950/50" />
         
-        <div className="relative z-10">
+        {/* Animated gradient orbs */}
+        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-gradient-to-br from-blue-400/20 to-indigo-500/20 rounded-full blur-3xl animate-pulse" />
+        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-gradient-to-br from-indigo-400/20 to-purple-500/20 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }} />
+        
+        {/* Subtle grid pattern */}
+        <div className="absolute inset-0 opacity-30 dark:opacity-10" style={{
+          backgroundImage: 'radial-gradient(circle at 1px 1px, rgba(99,102,241,0.15) 1px, transparent 0)',
+          backgroundSize: '20px 20px'
+        }} />
+        
+        <div className="relative z-10 h-full">
           {children}
         </div>
       </div>
@@ -169,29 +161,27 @@ export const AppLayout = memo(function AppLayout({ children }: AppLayoutProps) {
 
   return (
     <div 
-      className={cn(
-        "h-screen flex bg-bg relative overflow-hidden",
-        "transition-modern"
-      )} 
+      className="h-screen flex bg-gradient-to-br from-slate-50 via-white to-blue-50 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 relative overflow-hidden"
       role="application" 
       aria-label="AI Notes Application"
     >
-      {/* Enhanced modern background layers with new tokens */}
-      <div className="absolute inset-0 bg-gradient-to-br from-bg via-bg-elev-1 to-bg-elev-2" />
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_left,_var(--primary-600)_0%,_transparent_60%)] opacity-20" />
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_right,_var(--purple)_0%,_transparent_60%)] opacity-15" />
+      {/* Enhanced background layers */}
+      <div className="absolute inset-0 bg-gradient-to-br from-white/80 via-blue-50/30 to-indigo-50/50 dark:from-slate-900/80 dark:via-slate-800/30 dark:to-indigo-950/50" />
+      
+      {/* Subtle animated elements */}
+      <div className="absolute top-1/3 right-1/3 w-64 h-64 bg-gradient-to-br from-blue-400/10 to-indigo-500/10 rounded-full blur-3xl animate-pulse" />
+      <div className="absolute bottom-1/3 left-1/4 w-96 h-96 bg-gradient-to-br from-indigo-400/5 to-purple-500/5 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '2s' }} />
 
-      {/* Modern grid pattern */}
-      <div className={"absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg width=\"60\" height=\"60\" viewBox=\"0 0 60 60\" xmlns=\"http://www.w3.org/2000/svg\"%3E%3Cg fill=\"none\" fill-rule=\"evenodd\"%3E%3Cg fill=\"%23ffffff\" fill-opacity=\"0.015\"%3E%3Ccircle cx=\"30\" cy=\"30\" r=\"1\"/%3E%3C/g%3E%3C/g%3E%3C/svg%3E')] bg-[size:60px_60px]"} />
+      {/* Modern geometric pattern */}
+      <div className="absolute inset-0 opacity-20 dark:opacity-5" style={{
+        backgroundImage: 'radial-gradient(circle at 2px 2px, rgba(99,102,241,0.1) 1px, transparent 0)',
+        backgroundSize: '30px 30px'
+      }} />
 
-      {/* Subtle animated elements for visual interest */}
-      <div className="absolute top-1/3 right-1/3 w-48 h-48 bg-primary-600/10 rounded-full blur-3xl animate-float-subtle opacity-50" />
-      <div className="absolute bottom-1/3 left-1/3 w-64 h-64 bg-purple/10 rounded-full blur-3xl animate-float opacity-30" />
-
-      {/* Mobile overlay with improved backdrop */}
+      {/* Mobile Overlay with enhanced backdrop */}
       {isMobile && sidebarOpen && (
         <div
-          className="fixed inset-0 z-40 glass-bg backdrop-blur-xl lg:hidden animate-fade-in"
+          className="mobile-overlay active"
           onClick={() => setSidebarOpen(false)}
           aria-hidden="true"
         />
@@ -200,7 +190,17 @@ export const AppLayout = memo(function AppLayout({ children }: AppLayoutProps) {
       {/* Sidebar Container */}
       <aside
         id="app-sidebar"
-        className={sidebarClasses}
+        className={cn(
+          "relative z-50 flex-shrink-0 transition-all duration-300 ease-out",
+          // Desktop behavior
+          "lg:translate-x-0",
+          sidebarOpen && !isMobile ? "lg:w-72" : "lg:w-16",
+          // Mobile behavior
+          "fixed lg:relative inset-y-0 left-0",
+          isMobile && sidebarOpen ? "w-72 translate-x-0" : isMobile ? "w-72 -translate-x-full" : "",
+          // Enhanced shadows and borders
+          "shadow-xl lg:shadow-lg border-r border-slate-200/60 dark:border-slate-700/60"
+        )}
         role="navigation"
         aria-label="Main navigation"
         aria-expanded={sidebarOpen}
@@ -223,30 +223,40 @@ export const AppLayout = memo(function AppLayout({ children }: AppLayoutProps) {
           isMobile={isMobile}
         />
 
-        {/* Main Content with enhanced styling */}
+        {/* Main Content */}
         <main
           id="main-content"
-          className={mainContentClasses}
+          className={cn(
+            "flex-1 overflow-auto focus:outline-none relative",
+            "bg-white/30 dark:bg-slate-900/30",
+            "backdrop-blur-sm",
+            isMobile && "safe-area-inset-bottom"
+          )}
           role="main"
           aria-label="Main content"
           tabIndex={-1}
         >
-          {/* Content container with responsive padding */}
+          {/* Content Container */}
           <div className="container-modern min-h-full py-6">
-            <div className="w-full h-full animate-fade-in">
+            <div className="w-full h-full animate-in fade-in duration-500">
               {children}
             </div>
           </div>
 
-          {/* Modern scroll to top button */}
+          {/* Modern Scroll to Top Button */}
           <button
-            className={scrollToTopButtonClasses}
-            onClick={() => {
-              document.getElementById('main-content')?.scrollTo({
-                top: 0,
-                behavior: 'smooth'
-              })
-            }}
+            className={cn(
+              "fixed bottom-6 right-6 z-30 w-12 h-12 rounded-2xl",
+              "bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm",
+              "border border-slate-200/60 dark:border-slate-700/60",
+              "flex items-center justify-center",
+              "text-slate-600 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400",
+              "shadow-lg hover:shadow-xl transition-all duration-300",
+              "opacity-0 pointer-events-none scale-90 translate-y-4",
+              isScrolled && "opacity-100 pointer-events-auto scale-100 translate-y-0",
+              "hover:-translate-y-1"
+            )}
+            onClick={scrollToTop}
             aria-label="Scroll to top"
           >
             <svg
@@ -264,13 +274,19 @@ export const AppLayout = memo(function AppLayout({ children }: AppLayoutProps) {
             </svg>
           </button>
 
-          {/* Floating action button for quick note creation */}
+          {/* Enhanced Floating Action Button */}
           <button
-            className={fabButtonClasses}
-            onClick={() => {
-              // Navigate to new note creation
-              window.location.href = '/notes/create'
-            }}
+            className={cn(
+              "fixed bottom-20 right-6 z-30 w-14 h-14 rounded-2xl",
+              "bg-gradient-to-br from-blue-500 to-indigo-600",
+              "text-white shadow-lg hover:shadow-xl",
+              "flex items-center justify-center",
+              "transition-all duration-300 hover:-translate-y-1",
+              "opacity-0 pointer-events-none scale-90",
+              !isMobile && "opacity-100 pointer-events-auto scale-100",
+              "hover:from-blue-600 hover:to-indigo-700"
+            )}
+            onClick={createNote}
             aria-label="Create new note"
           >
             <svg
@@ -287,8 +303,43 @@ export const AppLayout = memo(function AppLayout({ children }: AppLayoutProps) {
               />
             </svg>
           </button>
+
+          {/* AI Assistant Quick Access (Desktop) */}
+          {!isMobile && (
+            <button
+              className={cn(
+                "fixed bottom-36 right-6 z-30 w-12 h-12 rounded-xl",
+                "bg-gradient-to-br from-purple-500 to-indigo-600",
+                "text-white shadow-lg hover:shadow-xl",
+                "flex items-center justify-center",
+                "transition-all duration-300 hover:-translate-y-1",
+                "opacity-90 hover:opacity-100",
+                "hover:from-purple-600 hover:to-indigo-700"
+              )}
+              onClick={() => window.location.href = '/ai/chat'}
+              aria-label="Open AI Assistant"
+            >
+              <svg
+                className="w-5 h-5"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M13 10V3L4 14h7v7l9-11h-7z"
+                />
+              </svg>
+            </button>
+          )}
         </main>
       </div>
     </div>
   )
 })
+
+AppLayout.displayName = 'AppLayout'
+
+export { AppLayout }
