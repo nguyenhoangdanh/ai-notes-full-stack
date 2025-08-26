@@ -840,6 +840,168 @@
     animation-fill-mode: forwards;
     animation-direction: reverse;
   }
+
+  /* Safe Area Support */
+  .safe-area-inset {
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
+  }
+
+  .safe-area-inset-top {
+    padding-top: env(safe-area-inset-top);
+  }
+
+  .safe-area-inset-bottom {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+
+  .safe-area-inset-left {
+    padding-left: env(safe-area-inset-left);
+  }
+
+  .safe-area-inset-right {
+    padding-right: env(safe-area-inset-right);
+  }
+
+  /* Glass Morphism Utilities */
+  .glass {
+    background: var(--glass-bg);
+    backdrop-filter: var(--glass-blur);
+    -webkit-backdrop-filter: var(--glass-blur);
+  }
+
+  .glass-bg {
+    background: var(--glass-bg);
+  }
+
+  .glass-border {
+    border-color: var(--glass-border);
+  }
+
+  /* Panel System */
+  .panel {
+    background: var(--color-bg);
+    border: 1px solid var(--color-border);
+  }
+
+  .panel-2 {
+    background: var(--color-bg-surface);
+  }
+
+  /* Text Color Utilities */
+  .text-text {
+    color: var(--color-fg);
+  }
+
+  .text-text-muted {
+    color: var(--color-fg-secondary);
+  }
+
+  .text-text-subtle {
+    color: var(--color-fg-muted);
+  }
+
+  /* Background Elevation System */
+  .bg-bg-elev-1 {
+    background: var(--color-bg-surface);
+  }
+
+  .bg-bg-elev-2 {
+    background: var(--color-neutral-3);
+  }
+
+  /* Border Utilities */
+  .border-border {
+    border-color: var(--color-border);
+  }
+
+  .border-border-soft {
+    border-color: var(--color-border-subtle);
+  }
+
+  .border-glass-border {
+    border-color: var(--glass-border);
+  }
+
+  /* Focus Ring */
+  .focus-ring {
+    outline: 2px solid transparent;
+    outline-offset: 2px;
+  }
+
+  .focus-ring:focus-visible {
+    outline: 2px solid var(--color-focus-ring);
+    outline-offset: 2px;
+  }
+
+  /* Shadow Utilities */
+  .shadow-1 {
+    box-shadow: var(--elevation-1);
+  }
+
+  .shadow-2 {
+    box-shadow: var(--elevation-2);
+  }
+
+  .shadow-3 {
+    box-shadow: var(--elevation-3);
+  }
+
+  .shadow-4 {
+    box-shadow: var(--elevation-4);
+  }
+
+  .shadow-5 {
+    box-shadow: var(--elevation-5);
+  }
+
+  /* Brand Colors */
+  .brand-500 {
+    color: var(--color-accent-9);
+  }
+
+  .brand-600 {
+    color: var(--color-accent-10);
+  }
+
+  .brand-700 {
+    color: var(--color-accent-11);
+  }
+
+  .bg-brand-500 {
+    background-color: var(--color-accent-9);
+  }
+
+  .bg-brand-600 {
+    background-color: var(--color-accent-10);
+  }
+
+  .bg-brand-700 {
+    background-color: var(--color-accent-11);
+  }
+
+  /* Primary Color Scale */
+  .primary-600 {
+    color: var(--color-accent-9);
+  }
+
+  .text-primary-600 {
+    color: var(--color-accent-9);
+  }
+
+  /* Purple Color */
+  .purple {
+    color: var(--color-accent-secondary-9);
+  }
+
+  /* Danger/Error Colors */
+  .danger {
+    color: var(--color-error-9);
+  }
+
+  .bg-danger {
+    background-color: var(--color-error-9);
+  }
 }
 
 /* Keyframes for modern animations */
