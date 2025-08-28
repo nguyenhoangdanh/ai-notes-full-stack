@@ -8,7 +8,7 @@ import { syncService, SyncStatus } from '../../lib/sync-service';
 
 export function SyncStatusIndicator() {
   const [syncStatus, setSyncStatus] = useState<SyncStatus>({
-    isOnline: navigator.onLine,
+    isOnline: typeof window !== 'undefined' ? navigator.onLine : true,
     isSyncing: false,
     pendingOperations: 0,
     failedOperations: 0
@@ -16,6 +16,9 @@ export function SyncStatusIndicator() {
   const [isExpanded, setIsExpanded] = useState(false);
 
   useEffect(() => {
+    // Only initialize sync status on client-side
+    if (typeof window === 'undefined') return;
+
     const updateStatus = async () => {
       const status = await syncService.getSyncStatus();
       setSyncStatus(status);

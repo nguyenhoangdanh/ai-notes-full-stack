@@ -91,5 +91,23 @@ export const authService = {
    */
   async logout(): Promise<{ message: string }> {
     return await apiClient.post('/auth/logout');
+  },
+
+  /**
+   * Demo login (no server request needed)
+   */
+  async demoLogin(): Promise<AuthResponseDto> {
+    // Return a mock auth response for demo mode
+    return Promise.resolve({
+      access_token: 'demo-token',
+      user: {
+        id: 'demo-user-id',
+        email: 'demo@example.com',
+        name: 'Demo User',
+        image: undefined,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString()
+      }
+    })
   }
 };

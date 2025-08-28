@@ -1,5 +1,8 @@
 'use client'
 
+// Force dynamic rendering to avoid SSR issues
+export const dynamic = 'force-dynamic'
+
 import { Badge, Button, EmptyState, PageHeader, Panel, StatCard } from '@/components/ui'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import {

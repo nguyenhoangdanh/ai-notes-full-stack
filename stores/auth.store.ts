@@ -1,6 +1,7 @@
 import { create } from 'zustand'
 import { persist, createJSONStorage } from 'zustand/middleware'
 import { authService } from '../services/auth.service'
+import { demoModeService } from '../services/demo.service'
 import { setAuthToken, clearAuthToken, getAuthToken } from '../lib/api-config'
 import type { User, LoginDto, RegisterDto, AuthResponseDto } from '../types/auth.types'
 import { toast } from 'sonner'
@@ -18,6 +19,7 @@ interface AuthState {
   register: (data: RegisterDto) => Promise<void>
   logout: () => Promise<void>
   googleLogin: () => Promise<void>
+  demoLogin: () => Promise<void>
   setUser: (user: User | null) => void
   setLoading: (loading: boolean) => void
   verifyToken: () => Promise<void>
@@ -113,6 +115,33 @@ export const useAuthStore = create<AuthState>()(
         }
       },
 
+      // Demo login
+      demoLogin: async () => {
+        set({ isLoggingIn: true })
+        
+        try {
+          // Enable demo mode
+          demoModeService.setDemoMode(true)
+          
+          // Set demo user
+          const demoUser = demoModeService.getDemoUser()
+          
+          set({
+            user: demoUser,
+            isAuthenticated: true,
+            isLoggingIn: false,
+            isLoading: false
+          })
+          
+          toast.success('Demo mode activated! All data is stored locally.')
+        } catch (error: any) {
+          set({ isLoggingIn: false })
+          const message = error?.message || 'Demo login failed'
+          toast.error(message)
+          throw error
+        }
+      },
+
       // Logout
       logout: async () => {
         set({ isLoading: true })
@@ -186,6 +215,17 @@ export const useAuthStore = create<AuthState>()(
           set({
             user: null,
             isAuthenticated: false,
+            isLoading: false
+          })
+          return
+        }
+
+        // If demo mode is enabled, get demo user
+        if (demoModeService.isDemoMode()) {
+          const demoUser = demoModeService.getDemoUser()
+          set({
+            user: demoUser,
+            isAuthenticated: true,
             isLoading: false
           })
           return
