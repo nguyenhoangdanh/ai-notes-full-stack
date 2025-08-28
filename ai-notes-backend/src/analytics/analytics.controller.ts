@@ -34,7 +34,6 @@ export class AnalyticsController {
   trackNoteAction(
     @Param('noteId') noteId: string,
     @Body() body: { action: 'view' | 'edit' | 'share' },
-    @CurrentUser() user: any,
   ) {
     return this.analyticsService.updateNoteAnalytics(noteId, body.action);
   }

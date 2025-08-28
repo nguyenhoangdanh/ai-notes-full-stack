@@ -2,7 +2,7 @@
  * AI and Chat Types
  */
 
-import { SuggestionType, DuplicateStatus } from './common.types';
+import { SuggestionType, DuplicateStatus } from "./common.types";
 
 export interface AIConversation {
   id: string;
@@ -18,7 +18,7 @@ export interface AIConversation {
 
 export interface AIMessage {
   id: string;
-  role: 'user' | 'assistant' | 'system';
+  role: "user" | "assistant" | "system";
   content: string;
   timestamp: string;
   noteContext?: {
@@ -46,8 +46,22 @@ export interface ChatQueryDto {
 export interface GenerateSuggestionDto {
   content: string;
   selectedText?: string;
-  suggestionType: 'improve' | 'expand' | 'summarize' | 'restructure' | 'examples' | 'grammar' | 'translate';
+  suggestionType:
+    | "improve"
+    | "expand"
+    | "summarize"
+    | "restructure"
+    | "examples"
+    | "grammar"
+    | "translate";
   targetLanguage?: string;
+}
+
+export interface GenerateSuggestionResponse {
+  originalText: string;
+  suggestion: string;
+  type: string;
+  hasSelection: boolean;
 }
 
 export interface ApplySuggestionDto {
@@ -55,8 +69,14 @@ export interface ApplySuggestionDto {
   originalContent: string;
   suggestion: string;
   selectedText?: string;
-  applyType: 'replace' | 'append' | 'insert';
+  applyType: "replace" | "append" | "insert";
   position?: number;
+}
+
+export interface ApplySuggestionResponse {
+  newContent: string;
+  applied: boolean;
+  type: "replace" | "append" | "insert";
 }
 
 export interface ChatRequest {
@@ -93,7 +113,7 @@ export interface DuplicateReport {
   duplicateNoteId: string;
   similarity: number;
   status: DuplicateStatus;
-  type: 'CONTENT' | 'TITLE' | 'SEMANTIC';
+  type: "CONTENT" | "TITLE" | "SEMANTIC";
   createdAt: string;
 }
 
@@ -101,7 +121,7 @@ export interface DuplicateReport {
 export interface RelatedNote {
   noteId: string;
   similarity: number;
-  type: 'SEMANTIC' | 'CONTEXTUAL' | 'TEMPORAL' | 'REFERENCE';
+  type: "SEMANTIC" | "CONTEXTUAL" | "TEMPORAL" | "REFERENCE";
   note: {
     id: string;
     title: string;
@@ -167,15 +187,15 @@ export interface SemanticSearchDto {
 }
 
 export interface SemanticSearchResult {
-  note: {
-    id: string;
-    title: string;
-    content: string;
-    tags: string[];
-    createdAt: string;
-  };
-  relevance: number;
-  snippet: string;
+  id: string;
+  noteId: string;
+  chunkId: string;
   chunkContent: string;
-  heading?: string;
+  chunkIndex: number;
+  heading: string;
+  embedding: number[];
+  ownerId: string;
+  createdAt: Date;
+  noteTitle: string;
+  similarity: number;
 }

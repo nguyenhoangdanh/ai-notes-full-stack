@@ -3,6 +3,8 @@
  * Provides consistent cache key generation for all API queries
  */
 
+import { ActivitiesDto } from "@/types";
+
 export const queryKeys = {
   // Auth
   auth: {
@@ -61,11 +63,11 @@ export const queryKeys = {
   // Activities
   activities: {
     all: () => ['activities'] as const,
-    getActivities: () => ['activities', 'list'] as const,
+    getActivities: (query?: ActivitiesDto) => ['activities', 'list', query] as const,
     getActivityInsights: () => ['activities', 'insights'] as const,
     getActivityFeed: () => ['activities', 'feed'] as const,
     getActivityStats: () => ['activities', 'stats'] as const,
-    getActivityHeatmap: () => ['activities', 'heatmap'] as const,
+    getActivityHeatmap: (query?: { days?: string }) => ['activities', 'heatmap', query] as const,
     getProductivityMetrics: () => ['activities', 'productivity'] as const,
   },
 
@@ -83,7 +85,7 @@ export const queryKeys = {
   attachments: {
     all: () => ['attachments'] as const,
     getAttachments: (noteId: string) => ['attachments', noteId] as const,
-    getAttachmentAnalytics: () => ['attachments', 'analytics'] as const,
+    getAttachmentAnalytics: (query?: { days?: string }) => ['attachments', 'analytics', query] as const,
     getSupportedTypes: () => ['attachments', 'types'] as const,
     searchAttachments: (query: string) => ['attachments', 'search', query] as const,
   },

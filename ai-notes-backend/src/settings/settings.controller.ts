@@ -34,9 +34,9 @@ export class SettingsController {
   @ApiOperation({ summary: 'Get usage statistics' })
   @ApiResponse({ status: 200, description: 'Usage statistics retrieved' })
   async getUsage(
-    @Query('days') days: string,
+    @Query('days') days: number,
     @CurrentUser() user: User,
   ) {
-    return this.settingsService.getUsage(user.id, parseInt(days) || 30);
+    return this.settingsService.getUsage(user.id, days || 30);
   }
 }

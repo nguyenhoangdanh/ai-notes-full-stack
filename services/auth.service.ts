@@ -38,6 +38,13 @@ export const authService = {
   },
 
   /**
+   * Google callback URL
+   */
+  async googleCallback(): Promise<void> {
+    return await apiClient.get('/auth/google/callback');
+  },
+
+  /**
    * Verify current JWT token
    */
   async verifyToken(): Promise<TokenVerificationResponse> {
@@ -83,7 +90,7 @@ export const authService = {
    * Get usage statistics
    */
   async getUsage(days: number = 30): Promise<Usage[]> {
-    return await apiClient.get<Usage[]>('/settings/usage', { query: { days: days.toString() } });
+    return await apiClient.get<Usage[]>('/settings/usage', { query: { days } });
   },
 
   /**

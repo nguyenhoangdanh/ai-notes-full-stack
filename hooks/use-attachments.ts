@@ -1,6 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { attachmentsService } from '../services/attachments.service';
 import { queryKeys } from './query-keys';
+import { UploadAttachmentRequest } from '@/types/attachments.types';
 
 /**
  * Attachments Hooks
@@ -11,7 +12,7 @@ export const useUploadNoteAttachment = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: ({ noteId, data }: { noteId: string; data: any }) => 
+    mutationFn: ({ noteId, data }: { noteId: string; data: UploadAttachmentRequest }) => 
       attachmentsService.uploadAttachment({ noteId }, data),
     onSuccess: () => {
       // Invalidate related queries
@@ -53,10 +54,10 @@ export const useSearchAttachments = (params: { query: string }) => {
   });
 };
 
-export const useGetAttachmentAnalytics = () => {
+export const useGetAttachmentAnalytics = (query?: { days?: string }) => {
   return useQuery({
-    queryKey: queryKeys.attachments.getAttachmentAnalytics(),
-    queryFn: () => attachmentsService.getAttachmentAnalytics(),
+    queryKey: queryKeys.attachments.getAttachmentAnalytics(query),
+    queryFn: () => attachmentsService.getAttachmentAnalytics(query),
   });
 };
 

@@ -220,7 +220,7 @@ export class ActivitiesController {
   @ApiQuery({ name: 'format', required: false, enum: ['json', 'csv'] })
   @ApiQuery({ name: 'days', required: false, type: Number })
   async exportActivities(
-      @Query('format') format: 'json' | 'csv' = 'json',
+    @Query('format') format: 'json' | 'csv' = 'json',
     @CurrentUser() user: User,
     @Query('days') days?: string,
   ) {

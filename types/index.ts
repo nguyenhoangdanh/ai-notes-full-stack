@@ -12,6 +12,14 @@ export * from './export.types'
 export * from './notifications.types'
 export * from './reminders.types'
 
+export type JsonValue = string | number | boolean | null | { [key: string]: JsonValue } | Array<JsonValue> | null;
+
+export interface IPeriod {
+  days: number;
+  startDate: string;
+  endDate: string;
+}
+
 // Export specific items from auth to avoid conflicts with user.types
 export type { 
   GoogleOAuthUser,

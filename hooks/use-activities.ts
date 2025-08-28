@@ -1,16 +1,17 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { activitiesService } from '../services/activities.service';
 import { queryKeys } from './query-keys';
+import { ActivitiesDto, TrackActivityRequest } from '@/types';
 
 /**
  * Activities Hooks
  * Generated from backend analysis
  */
 
-export const useGetActivities = () => {
+export const useGetActivities = (query?: ActivitiesDto) => {
   return useQuery({
-    queryKey: queryKeys.activities.getActivities(),
-    queryFn: () => activitiesService.getActivities(),
+    queryKey: queryKeys.activities.getActivities(query),
+    queryFn: () => activitiesService.getActivities(query),
   });
 };
 
@@ -39,7 +40,7 @@ export const useTrackActivity = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (data: any) => activitiesService.trackActivity(data),
+    mutationFn: (data: TrackActivityRequest) => activitiesService.trackActivity(data),
     onSuccess: () => {
       // Invalidate related queries
       queryClient.invalidateQueries({ queryKey: queryKeys.activities.all() });
@@ -47,11 +48,11 @@ export const useTrackActivity = () => {
   });
 };
 
-export const useCleanupOldActivities = () => {
+export const useCleanupOldActivities = (query?: { days?: string }) => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: () => activitiesService.cleanupOldActivities(),
+    mutationFn: () => activitiesService.cleanupOldActivities(query),
     onSuccess: () => {
       // Invalidate related queries
       queryClient.invalidateQueries({ queryKey: queryKeys.activities.all() });
@@ -59,17 +60,20 @@ export const useCleanupOldActivities = () => {
   });
 };
 
-export const useExportActivities = () => {
+export const useExportActivities = ( query?: { 
+      format?: 'json' | 'csv' 
+      days?: string
+    }) => {
   return useQuery({
-    queryKey: [...queryKeys.activities.all(), 'export'] as const,
-    queryFn: () => activitiesService.exportActivities(),
+    queryKey: [...queryKeys.activities.all(), 'export', query] as const,
+    queryFn: () => activitiesService.exportActivities(query),
   });
 };
 
-export const useGetActivityHeatmap = () => {
+export const useGetActivityHeatmap = (query?: { days?: string }) => {
   return useQuery({
-    queryKey: queryKeys.activities.getActivityHeatmap(),
-    queryFn: () => activitiesService.getActivityHeatmap(),
+    queryKey: queryKeys.activities.getActivityHeatmap(query),
+    queryFn: () => activitiesService.getActivityHeatmap(query),
   });
 };
 

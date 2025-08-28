@@ -1,6 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { analyticsService } from '../services/analytics.service';
 import { queryKeys } from './query-keys';
+import { TrackNoteActionRequest } from '@/types';
 
 /**
  * Analytics Hooks
@@ -32,7 +33,7 @@ export const useTrackNoteAction = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: ({ noteId, data }: { noteId: string; data: any }) => 
+    mutationFn: ({ noteId, data }: { noteId: string; data: TrackNoteActionRequest }) => 
       analyticsService.trackNoteAction({ noteId }, data),
     onSuccess: () => {
       // Invalidate related queries
