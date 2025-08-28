@@ -7,27 +7,33 @@ import type {
   ContentSuggestionRequest,
   ApplySuggestionRequest,
   SemanticSearchDto,
-  SemanticSearchResult
+  SemanticSearchResult,
+  ChatQueryDto,
+  GenerateSuggestionDto,
+  ApplySuggestionDto
 } from '../types'
 
 // AI Chat hooks
 export function useStreamChat() {
   return useMutation({
-    mutationFn: async (request: ChatRequest): Promise<{
-      stream: ReadableStream<Uint8Array>
-      citations: any[]
-    }> => {
-      const stream = await aiService.streamChat({
-        query: request.message,
-        // Note: conversationId and context are not supported by current backend
-      })
-      if (!stream) {
-        throw new Error('No stream received')
-      }
+    // mutationFn: async (request: ChatRequest): Promise<{
+    //   stream: ReadableStream<Uint8Array>
+    //   citations: any[]
+    // }> => {
+    //   const stream = await aiService.streamChat({
+    //     query: request.message,
+    //     // Note: conversationId and context are not supported by current backend
+    //   })
+    //   if (!stream) {
+    //     throw new Error('No stream received')
+    //   }
       
-      // For now, return empty citations array
-      // In a real implementation, citations would come from response headers
-      return { stream, citations: [] }
+    //   // For now, return empty citations array
+    //   // In a real implementation, citations would come from response headers
+    //   return { stream, citations: [] }
+    // },
+    mutationFn: async (data: ChatQueryDto) => {
+        await aiService.streamChat(data)
     },
     onError: (error: any) => {
       const message = error.message || 'Failed to start chat stream'
@@ -51,11 +57,12 @@ export function useCompleteChat() {
 
 export function useGenerateSuggestion() {
   return useMutation({
-    mutationFn: (request: ContentSuggestionRequest) => aiService.getSuggestions({
-      content: request.content,
-      suggestionType: request.type as any || 'improve',
-      targetLanguage: undefined // Not supported in current frontend request type
-    }),
+    // mutationFn: (request: ContentSuggestionRequest) => aiService.getSuggestions({
+    //   content: request.content,
+    //   suggestionType: request.type as any || 'improve',
+    //   targetLanguage: undefined // Not supported in current frontend request type
+    // }),
+ mutationFn: (request: GenerateSuggestionDto) => aiService.getSuggestions(request),
     onError: (error: any) => {
       const message = error.response?.message || 'Failed to generate suggestion'
       toast.error(message)
@@ -67,10 +74,12 @@ export function useApplySuggestion() {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: async (request: ApplySuggestionRequest): Promise<{ updatedContent: string }> => {
+    mutationFn: async (request: ApplySuggestionDto) => {
+    
       // The frontend and backend use different APIs for this functionality
       // For now, throw an error indicating this needs to be implemented
-      throw new Error('Apply suggestion feature needs to be updated to match backend API');
+      // throw new Error('Apply suggestion feature needs to be updated to match backend API');
+      await aiService.applySuggestion(request);
     },
     onSuccess: (result, variables) => {
       // Invalidate the note to get fresh content
