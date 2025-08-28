@@ -1,0 +1,14 @@
+version: "3.8"
+
+services:
+  redis:
+    image: redis:7
+    container_name: redis-local
+    ports:
+      - "6379:6379"
+    command: ["redis-server", "--maxmemory-policy", "noeviction"]
+    volumes:
+      - redis-data:/data
+
+volumes:
+  redis-data:

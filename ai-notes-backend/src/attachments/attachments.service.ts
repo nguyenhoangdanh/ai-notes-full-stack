@@ -6,23 +6,7 @@ import { CloudflareR2Service } from '../common/r2.service';
 import { ActivitiesService } from '../activities/activities.service';
 import * as path from 'path';
 import * as crypto from 'crypto';
-
-interface UploadedFile {
-  fieldname: string;
-  originalname: string;
-  encoding: string;
-  mimetype: string;
-  size: number;
-  buffer: Buffer;
-}
-
-export interface AttachmentMetadata {
-  dimensions?: { width: number; height: number };
-  duration?: number; // For audio/video files
-  pages?: number; // For PDF files
-  extractedText?: string; // For OCR results
-  thumbnail?: string; // Thumbnail URL for preview
-}
+import { UploadedFile } from '@/types/attachment.types';
 
 @Injectable()
 export class AttachmentsService {

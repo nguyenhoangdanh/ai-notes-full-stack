@@ -2,11 +2,7 @@ import { Processor, WorkerHost, OnWorkerEvent } from '@nestjs/bullmq';
 import { Logger, Injectable } from '@nestjs/common';
 import { Job } from 'bullmq';
 import { PrismaService } from '../prisma/prisma.service';
-
-interface AttachmentProcessingJobData {
-  attachmentId: string;
-  userId: string;
-}
+import { AttachmentProcessingJobData } from '@/types/attachment.types';
 
 @Injectable()
 @Processor('attachment-processing')

@@ -16,20 +16,8 @@ import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { CollaborationService } from './collaboration.service';
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
 import { User } from '../types/user.types';
-import { IsString, IsEmail, IsEnum } from 'class-validator';
+import { InviteCollaboratorDto, UpdatePermissionDto } from '@/types/collaboration.types';
 
-export class InviteCollaboratorDto {
-  @IsEmail()
-  email: string;
-
-  @IsEnum(['READ', 'write', 'admin'])
-  permission: 'read' | 'write' | 'admin';
-}
-
-export class UpdatePermissionDto {
-  @IsEnum(['read', 'write', 'admin'])
-  permission: 'read' | 'write' | 'admin';
-}
 
 @ApiTags('collaboration')
 @ApiBearerAuth()

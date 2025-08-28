@@ -2,18 +2,7 @@ import { Processor, WorkerHost, OnWorkerEvent } from '@nestjs/bullmq';
 import { Logger, Injectable } from '@nestjs/common';
 import { Job } from 'bullmq';
 import { PrismaService } from '../prisma/prisma.service';
-
-interface VersionCleanupJobData {
-  noteId: string;
-  userId: string;
-  maxVersions?: number;
-  olderThanDays?: number;
-}
-
-interface VersionAnalyticsJobData {
-  noteId: string;
-  userId: string;
-}
+import { VersionAnalyticsJobData, VersionCleanupJobData } from '@/types/versions.types';
 
 @Injectable()
 @Processor('version-control')

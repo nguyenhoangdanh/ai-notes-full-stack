@@ -3,16 +3,8 @@ import { Logger, Injectable } from '@nestjs/common';
 import { Job } from 'bullmq';
 import { PrismaService } from '../prisma/prisma.service';
 import { ConfigService } from '@nestjs/config';
+import { InvitationEmailJobData } from '@/types/collaboration.types';
 
-interface InvitationEmailJobData {
-  inviteeEmail: string;
-  inviterName: string;
-  noteTitle: string;
-  permission: string;
-  noteId: string;
-  inviteId: string;
-  isPending?: boolean;
-}
 
 @Injectable()
 @Processor('collaboration')

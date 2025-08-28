@@ -4,35 +4,8 @@ import { Queue } from 'bullmq';
 import { PrismaService } from '../prisma/prisma.service';
 import { UsersService } from '../users/users.service';
 import { NotesService } from '../notes/notes.service';
+import { ActiveCollaborator } from '@/types/collaboration.types';
 
-export interface CollaborationInvite {
-  id: string;
-  noteId: string;
-  inviteeEmail: string;
-  permission: 'READ' | 'WRITE' | 'ADMIN';
-  inviterName: string;
-  noteTitle: string;
-  expiresAt: Date;
-  status: 'PENDING' | 'ACCEPTED' | 'DECLINED' | 'EXPIRED';
-}
-
-export interface ActiveCollaborator {
-  id: string;
-  user: {
-    id: string;
-    name: string;
-    email: string;
-    image: string | null;
-  };
-  permission: 'READ' | 'WRITE' | 'ADMIN';
-  lastActive: Date;
-  isOnline: boolean;
-  cursor?: {
-    line: number;
-    column: number;
-    selection?: { start: number; end: number };
-  };
-}
 
 @Injectable()
 export class CollaborationService {

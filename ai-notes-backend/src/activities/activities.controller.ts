@@ -11,57 +11,14 @@ import {
 } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth, ApiQuery } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
-import { ActivitiesService, ActivityAction } from './activities.service';
+import { ActivitiesService } from './activities.service';
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
 import { User } from '../types/user.types';
-import { IsString, IsOptional, IsNumber, IsEnum, Min, Max } from 'class-validator';
-import { Type } from 'class-transformer';
+import { GetActivitiesDto } from './dto/activities.dto';
+import { ActivityAction } from '@/types/activites.types';
 
-export class GetActivitiesDto {
-  @IsOptional()
-  @IsEnum([
-    'NOTE_CREATE', 'NOTE_UPDATE', 'NOTE_DELETE', 'NOTE_VIEW',
-    'SEARCH_QUERY', 'SEARCH_CLICK',
-    'COLLABORATION_JOIN', 'COLLABORATION_INVITE', 'COLLABORATION_EDIT',
-    'SHARE_CREATE', 'SHARE_VIEW', 'SHARE_ACCESS',
-    'VERSION_CREATE', 'VERSION_RESTORE',
-    'CATEGORY_CREATE', 'CATEGORY_ASSIGN',
-    'DUPLICATE_DETECT', 'DUPLICATE_MERGE',
-    'SUMMARY_GENERATE', 'SUMMARY_VIEW',
-    'CHAT_QUERY', 'CHAT_RESPONSE',
-    'LOGIN', 'LOGOUT',
-    'SETTINGS_UPDATE',
-    'EXPORT_START', 'EXPORT_COMPLETE',
-    'TASK_CREATE', 'TASK_COMPLETE',
-    'POMODORO_START', 'POMODORO_COMPLETE'
-  ])
-  action?: ActivityAction;
 
-  @IsOptional()
-  @IsString()
-  noteId?: string;
 
-  @IsOptional()
-  @Type(() => Number)
-  @IsNumber()
-  @Min(1)
-  @Max(100)
-  limit?: number = 50;
-
-  @IsOptional()
-  @Type(() => Number)
-  @IsNumber()
-  @Min(0)
-  offset?: number = 0;
-
-  @IsOptional()
-  @IsString()
-  startDate?: string;
-
-  @IsOptional()
-  @IsString()
-  endDate?: string;
-}
 
 @ApiTags('activities')
 @ApiBearerAuth()

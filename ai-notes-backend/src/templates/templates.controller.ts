@@ -13,67 +13,12 @@ import {
 } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth, ApiQuery } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
-import { TemplatesService, TemplateMetadata } from './templates.service';
+import { TemplatesService } from './templates.service';
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
 import { User } from '../types/user.types';
-import { IsString, IsOptional, IsArray, IsBoolean, IsObject } from 'class-validator';
+import { CreateTemplateDto, ProcessTemplateDto, UpdateTemplateDto } from './dto/templates.dto';
+import { TemplateMetadata } from '@/types/templates.types';
 
-export class CreateTemplateDto {
-  @IsString()
-  name: string;
-
-  @IsOptional()
-  @IsString()
-  description?: string;
-
-  @IsString()
-  content: string;
-
-  @IsOptional()
-  @IsArray()
-  @IsString({ each: true })
-  tags?: string[];
-
-  @IsOptional()
-  @IsBoolean()
-  isPublic?: boolean = false;
-
-  @IsOptional()
-  @IsObject()
-  metadata?: Record<string, any>; // Fix: use generic object instead of Partial<TemplateMetadata>
-}
-
-export class UpdateTemplateDto {
-  @IsOptional()
-  @IsString()
-  name?: string;
-
-  @IsOptional()
-  @IsString()
-  description?: string;
-
-  @IsOptional()
-  @IsString()
-  content?: string;
-
-  @IsOptional()
-  @IsArray()
-  @IsString({ each: true })
-  tags?: string[];
-
-  @IsOptional()
-  @IsBoolean()
-  isPublic?: boolean;
-
-  @IsOptional()
-  @IsObject()
-  metadata?: Record<string, any>; // Fix: use generic object instead of Partial<TemplateMetadata>
-}
-
-export class ProcessTemplateDto {
-  @IsObject()
-  variables: Record<string, any>;
-}
 
 @ApiTags('templates')
 @ApiBearerAuth()

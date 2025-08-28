@@ -12,91 +12,11 @@ import {
 } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth, ApiQuery } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
-import { SearchService, AdvancedSearchFilters } from './search.service';
+import { SearchService } from './search.service';
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
 import { User } from '../types/user.types';
-import { IsString, IsArray, IsOptional, IsBoolean, IsNumber, IsEnum, IsDateString, ValidateNested } from 'class-validator';
-import { Type, Transform } from 'class-transformer';
-
-export class DateRangeDto {
-  @IsDateString()
-  from: string;
-
-  @IsDateString()
-  to: string;
-}
-
-export class WordCountRangeDto {
-  @IsNumber()
-  @Type(() => Number)
-  min: number;
-
-  @IsNumber()
-  @Type(() => Number)
-  max: number;
-}
-
-export class AdvancedSearchDto {
-  @IsString()
-  query: string;
-
-  @IsOptional()
-  @IsString()
-  workspaceId?: string;
-
-  @IsOptional()
-  @IsArray()
-  @IsString({ each: true })
-  tags?: string[];
-
-  @IsOptional()
-  @ValidateNested()
-  @Type(() => DateRangeDto)
-  dateRange?: DateRangeDto;
-
-  @IsOptional()
-  @IsBoolean()
-  hasAttachments?: boolean;
-
-  @IsOptional()
-  @ValidateNested()
-  @Type(() => WordCountRangeDto)
-  wordCountRange?: WordCountRangeDto;
-
-  @IsOptional()
-  @IsArray()
-  @IsString({ each: true })
-  categories?: string[];
-
-  @IsOptional()
-  @IsNumber()
-  @Type(() => Number)
-  lastModifiedDays?: number;
-
-  @IsOptional()
-  @IsEnum(['relevance', 'created', 'updated', 'title', 'size'])
-  sortBy?: 'relevance' | 'created' | 'updated' | 'title' | 'size';
-
-  @IsOptional()
-  @IsEnum(['asc', 'desc'])
-  sortOrder?: 'asc' | 'desc';
-
-  @IsOptional()
-  @IsNumber()
-  @Type(() => Number)
-  limit?: number = 20;
-}
-
-export class SaveSearchDto {
-  @IsString()
-  name: string;
-
-  @IsString()
-  query: string;
-
-  @IsOptional()
-  filters?: AdvancedSearchFilters;
-}
+import { AdvancedSearchFilters } from '@/types/search.types';
+import { AdvancedSearchDto, SaveSearchDto } from './dto/search.dto';
 
 @ApiTags('search')
 @ApiBearerAuth()

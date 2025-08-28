@@ -9,9 +9,9 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
       useFactory: async (configService: ConfigService) => ({
         connection: {
           url: configService.get('REDIS_URL'),
-          tls: {
-            rejectUnauthorized: false,
-          },
+          // tls: {
+          //   rejectUnauthorized: false,
+          // },
           maxRetriesPerRequest: null,
           retryDelayOnFailover: 100,
           enableReadyCheck: false,

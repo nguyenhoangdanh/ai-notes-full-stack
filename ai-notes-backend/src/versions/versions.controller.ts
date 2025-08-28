@@ -15,22 +15,8 @@ import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { VersionsService, CreateVersionOptions } from './versions.service';
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
 import { User } from '../types/user.types';
-import { IsString, IsOptional, IsNumber, Min, IsEnum } from 'class-validator';
-import { Type } from 'class-transformer';
+import { CreateVersionDto } from './dto/versions.dto';
 
-export class CreateVersionDto {
-  @IsOptional()
-  @IsString()
-  changeLog?: string;
-
-  @IsOptional()
-  @IsEnum(['major', 'minor', 'patch'])
-  changeType?: 'major' | 'minor' | 'patch';
-
-  @IsOptional()
-  @IsString()
-  isAutomatic?: boolean = false;
-}
 
 @ApiTags('versions')
 @ApiBearerAuth()

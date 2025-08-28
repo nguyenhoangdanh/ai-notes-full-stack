@@ -25,3 +25,17 @@ export interface JwtPayload {
   iat?: number;
   exp?: number;
 }
+
+export interface CreateUserData {
+  email: string;
+  name?: string;
+  image?: string;
+  password?: string;
+}
+
+export interface UpdateUserData {
+  name?: string;
+  image?: string;
+}
+
+

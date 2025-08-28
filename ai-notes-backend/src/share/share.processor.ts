@@ -3,21 +3,7 @@ import { Logger, Injectable } from '@nestjs/common';
 import { Job } from 'bullmq';
 import { PrismaService } from '../prisma/prisma.service';
 import { ConfigService } from '@nestjs/config';
-
-interface ShareAnalyticsJobData {
-  shareLinkId: string;
-  userId: string;
-}
-
-interface ShareViewJobData {
-  shareLinkId: string;
-  viewerInfo: {
-    ipAddress: string;
-    userAgent: string;
-    referrer?: string;
-    userId?: string;
-  };
-}
+import { ShareAnalyticsJobData, ShareViewJobData } from '@/types/share.types';
 
 @Injectable()
 @Processor('share-analytics')

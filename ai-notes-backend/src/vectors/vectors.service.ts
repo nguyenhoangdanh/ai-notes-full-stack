@@ -2,17 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { PrismaService } from '../prisma/prisma.service';
 import { OpenAI } from 'openai';
-
-interface TextChunk {
-  id: string;
-  content: string;
-  index: number;
-  heading?: string;
-}
-
-interface EmbeddedChunk extends TextChunk {
-  embedding: number[];
-}
+import { EmbeddedChunk, TextChunk } from '@/types/vectors.types';
 
 @Injectable()
 export class VectorsService {
