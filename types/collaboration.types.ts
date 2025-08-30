@@ -1,20 +1,95 @@
 // Collaboration types
 export interface InviteCollaboratorDto {
   email: string;
-  permission: 'READ' | 'COMMENT' | 'EDIT' | 'ADMIN';
-  message?: string;
+  permission: "read" | "write" | "admin";
 }
 
+export interface PendingInvitation {
+  success: boolean;
+  message: string;
+  pendingInvitation: {
+    email: string;
+    permission: "READ" | "WRITE" | "ADMIN";
+    noteTitle: string;
+  };
+}
+
+export interface Collaboration {
+  id: string;
+  note: {
+    id: string;
+    title: string;
+    updatedAt: Date;
+    owner: {
+      email: string;
+      id: string;
+      name: string;
+      image: string;
+    };
+  };
+  permission: string;
+  joinedAt: Date;
+  isOwner: boolean;
+}
+
+export interface MyCollaborationResponse {
+  success: boolean;
+  collaborations: Collaboration[];
+  count?: number;
+  error?: any;
+}
+
+export interface GetCollaborationStatsResponse {
+  success: boolean;
+  stats: {
+    ownedNotes: number;
+    collaboratedNotes: number;
+    totalCollaborators: number;
+  };
+}
+
+export interface JoinCollaborationResponse {
+  success: boolean;
+  collaborators: ActiveCollaborator[];
+  message?: any;
+}
+
+export interface AcceptedInvitation {
+  success: boolean;
+  collaboration: {
+    id: string;
+    user: {
+      email: string;
+      id: string;
+      name: string;
+      image: string;
+    };
+    permission: string;
+    createdAt: Date;
+  };
+  message: string;
+}
+
+export interface InvitationError {
+  success: boolean;
+  message: string;
+}
+
+export type InviteCollaboratorResponse =
+  | PendingInvitation
+  | AcceptedInvitation
+  | InvitationError;
+
 export interface UpdatePermissionDto {
-  permission: 'READ' | 'COMMENT' | 'EDIT' | 'ADMIN';
+  permission: "read" | "write" | "admin";
 }
 
 export interface Collaborator {
   id: string;
   userId: string;
   noteId: string;
-  permission: 'READ' | 'COMMENT' | 'EDIT' | 'ADMIN';
-  status: 'PENDING' | 'ACCEPTED' | 'DECLINED';
+  permission: "READ" | "COMMENT" | "EDIT" | "ADMIN";
+  status: "PENDING" | "ACCEPTED" | "DECLINED";
   invitedAt: string;
   acceptedAt?: string;
   user: {
@@ -25,6 +100,50 @@ export interface Collaborator {
   };
 }
 
+export interface ActiveCollaborator {
+  id: string;
+  user: {
+    id: string;
+    name: string;
+    email: string;
+    image: string | null;
+  };
+  permission: "READ" | "WRITE" | "ADMIN";
+  lastActive: Date;
+  isOnline: boolean;
+  cursor?: {
+    line: number;
+    column: number;
+    selection?: { start: number; end: number };
+  };
+}
+
+export interface ICollaboratorError {
+  success: boolean;
+  collaborators: any[];
+  error: any;
+  noteId?: undefined;
+  count?: undefined;
+}
+
+export interface ICollaboratorSuccess {
+  success: boolean;
+  noteId: string;
+  collaborators: ActiveCollaborator[];
+  count: number;
+  error?: any;
+}
+
+export type CollaborationResponse = ICollaboratorSuccess | ICollaboratorError;
+
+export interface GetPermissionResponse {
+  success: boolean;
+  noteId?: string;
+  permission: "READ" | "WRITE" | "ADMIN";
+  hasAccess: boolean;
+  error?: any;
+}
+
 export interface CollaborationStats {
   totalCollaborations: number;
   activeCollaborations: number;
@@ -33,148 +152,29 @@ export interface CollaborationStats {
 }
 
 export interface CursorUpdate {
-  noteId: string;
-  position: number;
-  userId: string;
-  timestamp: string;
-}
-
-// Share types
-export interface CreateShareLinkDto {
-  expiresAt?: string;
-  password?: string;
-  allowDownload?: boolean;
-  allowPrint?: boolean;
-  trackViews?: boolean;
-}
-
-export interface UpdateShareLinkDto {
-  expiresAt?: string;
-  password?: string;
-  allowDownload?: boolean;
-  allowPrint?: boolean;
-  trackViews?: boolean;
-  isActive?: boolean;
-}
-
-export interface ShareLink {
-  id: string;
-  token: string;
-  noteId: string;
-  isActive: boolean;
-  expiresAt?: string;
-  password?: string;
-  allowDownload: boolean;
-  allowPrint: boolean;
-  trackViews: boolean;
-  viewCount: number;
-  lastViewedAt?: string;
-  createdAt: string;
-  updatedAt: string;
-  note: {
-    id: string;
-    title: string;
-    ownerId: string;
+  socketId: string;
+  cursor: {
+    line: number;
+    column: number;
+    selection?: { start: number; end: number };
   };
 }
 
-export interface ShareAnalytics {
-  totalViews: number;
-  uniqueVisitors: number;
-  viewHistory: Array<{
-    date: string;
-    views: number;
-  }>;
-  geographicData: Array<{
-    country: string;
-    views: number;
-  }>;
-  referrers: Array<{
-    source: string;
-    views: number;
-  }>;
-}
 
-export interface ShareStats {
-  totalSharedNotes: number;
-  activeLinks: number;
-  totalViews: number;
-  topSharedNotes: Array<{
-    noteId: string;
-    title: string;
-    views: number;
-  }>;
-}
-
-// Versions types
-export interface CreateVersionDto {
-  message?: string;
-  tags?: string[];
-}
-
-export interface NoteVersion {
-  id: string;
-  noteId: string;
-  version: number;
-  title: string;
-  content: string;
-  tags: string[];
-  message?: string;
-  isAutoGenerated: boolean;
-  createdAt: string;
-  author: {
-    id: string;
-    name?: string;
-    email: string;
-  };
-}
-
-export interface VersionComparison {
-  from: NoteVersion;
-  to: NoteVersion;
-  changes: Array<{
-    type: 'addition' | 'deletion' | 'modification';
-    field: 'title' | 'content' | 'tags';
-    oldValue?: string;
-    newValue?: string;
-    position?: number;
-  }>;
-}
-
-export interface VersionStatistics {
-  totalVersions: number;
-  autoGeneratedVersions: number;
-  manualVersions: number;
-  averageVersionsPerNote: number;
-  lastVersionCreated: string;
-}
-
-export interface VersionTimeline {
-  versions: Array<{
-    id: string;
-    version: number;
-    message?: string;
-    isAutoGenerated: boolean;
-    createdAt: string;
-    author: {
-      name?: string;
-      email: string;
-    };
-  }>;
-  milestones: Array<{
-    date: string;
-    event: string;
-    description: string;
-  }>;
-}
 
 // Activities types
 export interface Activity {
   id: string;
   userId: string;
-  type: 'NOTE_CREATED' | 'NOTE_UPDATED' | 'NOTE_DELETED' | 'WORKSPACE_CREATED' | 'COLLABORATION_INVITED' | 'EXPORT_COMPLETED';
+  type:
+    | "NOTE_CREATED"
+    | "NOTE_UPDATED"
+    | "NOTE_DELETED"
+    | "WORKSPACE_CREATED"
+    | "COLLABORATION_INVITED"
+    | "EXPORT_COMPLETED";
   entityId: string;
-  entityType: 'NOTE' | 'WORKSPACE' | 'COLLABORATION';
+  entityType: "NOTE" | "WORKSPACE" | "COLLABORATION";
   metadata: Record<string, any>;
   createdAt: string;
   user: {
@@ -207,9 +207,9 @@ export interface ActivityStats {
 }
 
 export interface TrackActivityDto {
-  type: Activity['type'];
+  type: Activity["type"];
   entityId: string;
-  entityType: Activity['entityType'];
+  entityType: Activity["entityType"];
   metadata?: Record<string, any>;
 }
 
@@ -279,7 +279,7 @@ export interface TagSuggestion {
 }
 
 export interface BulkTagOperationDto {
-  operation: 'DELETE' | 'MERGE' | 'RENAME';
+  operation: "DELETE" | "MERGE" | "RENAME";
   tagIds: string[];
   targetTagId?: string; // For merge operation
   newName?: string; // For rename operation

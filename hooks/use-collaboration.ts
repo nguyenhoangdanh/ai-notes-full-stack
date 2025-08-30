@@ -134,7 +134,7 @@ export const useJoinNote = () => {
   const queryClient = useQueryClient();
   
   return useMutation({
-    mutationFn: (noteId: string) => collaborationService.joinNote(noteId),
+    mutationFn: ({ noteId, data }: { noteId: string; data: { socketId: string } }) => collaborationService.joinNote(noteId, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: collaborationQueryKeys.collaboration.myCollaborations() });
     },
@@ -145,7 +145,7 @@ export const useLeaveCollaboration = () => {
   const queryClient = useQueryClient();
   
   return useMutation({
-    mutationFn: () => collaborationService.leave(),
+    mutationFn: (data: { socketId: string }) => collaborationService.leaveNote(data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: collaborationQueryKeys.collaboration.myCollaborations() });
     },

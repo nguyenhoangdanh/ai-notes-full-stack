@@ -4,7 +4,7 @@ export class InviteCollaboratorDto {
   @IsEmail()
   email: string;
 
-  @IsEnum(['READ', 'write', 'admin'])
+  @IsEnum(['read', 'write', 'admin'])
   permission: 'read' | 'write' | 'admin';
 }
 
